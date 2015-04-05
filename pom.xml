@@ -41,13 +41,13 @@
     </developers>
     
     <scm>
-        <url>https://bitbucket.org/foxinbox/foxlabs-common/</url>
-        <connection>scm:git:https://bitbucket.org/foxinbox/foxlabs-common.git</connection>
+        <url>https://github.com/foxinboxx/foxlabs-common</url>
+        <connection>scm:git:https://github.com/foxinboxx/foxlabs-common.git</connection>
     </scm>
     
     <issueManagement>
-        <system>Bitbucket</system>
-        <url>https://bitbucket.org/foxinbox/foxlabs-common/issues</url>
+        <system>GitHub</system>
+        <url>https://github.com/foxinboxx/foxlabs-common/issues</url>
     </issueManagement>
     
     <properties>
