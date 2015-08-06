@@ -44,8 +44,9 @@ public abstract class Assert {
      *         <code>false</code>.
      */
     public static void assertTrue(boolean flag, String message) {
-        if (!flag)
+        if (!flag) {
             throw assertError(message);
+        }
     }
     
     /**
@@ -58,8 +59,9 @@ public abstract class Assert {
      *         <code>true</code>.
      */
     public static void assertFalse(boolean flag, String message) {
-        if (flag)
+        if (flag) {
             throw assertError(message);
+        }
     }
     
     /**
@@ -73,9 +75,11 @@ public abstract class Assert {
      *         <code>null</code>.
      */
     public static <T> T notNull(T object, String message) {
-        if (object == null)
+        if (object == null) {
             throw assertError(message);
-        return object;
+        } else {
+            return object;
+        }
     }
     
     /**
@@ -89,9 +93,11 @@ public abstract class Assert {
      *         <code>null</code> or empty.
      */
     public static String notEmpty(String string, String message) {
-        if (string == null || string.isEmpty())
+        if (string == null || string.isEmpty()) {
             throw assertError(message);
-        return string;
+        } else {
+            return string;
+        }
     }
     
     /**
@@ -105,9 +111,11 @@ public abstract class Assert {
      *         <code>null</code> or empty.
      */
     public static <T> T[] notEmpty(T[] array, String message) {
-        if (array == null || array.length == 0)
+        if (array == null || array.length == 0) {
             throw assertError(message);
-        return array;
+        } else {
+            return array;
+        }
     }
     
     /**
@@ -121,9 +129,11 @@ public abstract class Assert {
      *         <code>null</code> or empty.
      */
     public static <T extends Collection<?>> T notEmpty(T collection, String message) {
-        if (collection == null || collection.isEmpty())
+        if (collection == null || collection.isEmpty()) {
             throw assertError(message);
-        return collection;
+        } else {
+            return collection;
+        }
     }
     
     /**
@@ -138,11 +148,14 @@ public abstract class Assert {
      *         elements.
      */
     public static <T> T[] noNullElements(T[] array, String message) {
-        if (array == null || array.length == 0)
+        if (array == null || array.length == 0) {
             throw assertError(message);
-        for (T element : array)
-            if (element == null)
+        }
+        for (T element : array) {
+            if (element == null) {
                 throw assertError(message);
+            }
+        }
         return array;
     }
     
@@ -158,11 +171,14 @@ public abstract class Assert {
      *         elements.
      */
     public static <T extends Collection<?>> T noNullElements(T collection, String message) {
-        if (collection == null || collection.isEmpty())
+        if (collection == null || collection.isEmpty()) {
             throw assertError(message);
-        for (Object element : collection)
-            if (element == null)
+        }
+        for (Object element : collection) {
+            if (element == null) {
                 throw assertError(message);
+            }
+        }
         return collection;
     }
     
@@ -179,11 +195,14 @@ public abstract class Assert {
      *         or empty strings.
      */
     public static String[] noEmptyElements(String[] array, String message) {
-        if (array == null || array.length == 0)
+        if (array == null || array.length == 0) {
             throw assertError(message);
-        for (int i = 0; i < array.length; i++)
-            if (array[i] == null || array[i].isEmpty())
+        }
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == null || array[i].isEmpty()) {
                 throw assertError(message);
+            }
+        }
         return array;
     }
     
@@ -200,11 +219,14 @@ public abstract class Assert {
      *         or empty strings.
      */
     public static <T extends Collection<String>> T noEmptyElements(T collection, String message) {
-        if (collection == null || collection.isEmpty())
+        if (collection == null || collection.isEmpty()) {
             throw assertError(message);
-        for (String element : collection)
-            if (element == null || element.isEmpty())
+        }
+        for (String element : collection) {
+            if (element == null || element.isEmpty()) {
                 throw assertError(message);
+            }
+        }
         return collection;
     }
     
@@ -220,12 +242,14 @@ public abstract class Assert {
      *         strings.
      */
     public static Set<String> noNullStringSet(String[] array, String message) {
-        if (array == null || array.length == 0)
+        if (array == null || array.length == 0) {
             throw assertError(message);
+        }
         Set<String> set = new LinkedHashSet<String>(array.length);
         for (String element : array) {
-            if (element == null)
+            if (element == null) {
                 throw assertError(message);
+            }
             set.add(element);
         }
         return set;
@@ -244,12 +268,14 @@ public abstract class Assert {
      *         or empty strings.
      */
     public static Set<String> noEmptyStringSet(String[] array, String message) {
-        if (array == null || array.length == 0)
+        if (array == null || array.length == 0) {
             throw assertError(message);
+        }
         Set<String> set = new LinkedHashSet<String>(array.length);
         for (String element : array) {
-            if (element == null || element.isEmpty())
+            if (element == null || element.isEmpty()) {
                 throw assertError(message);
+            }
             set.add(element);
         }
         return set;
@@ -265,9 +291,11 @@ public abstract class Assert {
      * @throws IllegalArgumentException if the specified value is negative.
      */
     public static int notNegative(int value, String message) {
-        if (value < 0)
+        if (value < 0) {
             throw assertError(message);
-        return value;
+        } else {
+            return value;
+        }
     }
     
     /**
@@ -280,9 +308,11 @@ public abstract class Assert {
      * @throws IllegalArgumentException if the specified value is negative.
      */
     public static long notNegative(long value, String message) {
-        if (value < 0L)
+        if (value < 0L) {
             throw assertError(message);
-        return value;
+        } else {
+            return value;
+        }
     }
     
     /**
@@ -295,9 +325,11 @@ public abstract class Assert {
      * @throws IllegalArgumentException if the specified value is negative.
      */
     public static float notNegative(float value, String message) {
-        if (value < 0.0f)
+        if (value < 0.0f) {
             throw assertError(message);
-        return value;
+        } else {
+            return value;
+        }
     }
     
     /**
@@ -310,9 +342,11 @@ public abstract class Assert {
      * @throws IllegalArgumentException if the specified value is negative.
      */
     public static double notNegative(double value, String message) {
-        if (value < 0.0d)
+        if (value < 0.0d) {
             throw assertError(message);
-        return value;
+        } else {
+            return value;
+        }
     }
     
     /**
@@ -326,9 +360,11 @@ public abstract class Assert {
      *         zero.
      */
     public static int notNegativeOrZero(int value, String message) {
-        if (value <= 0)
+        if (value <= 0) {
             throw assertError(message);
-        return value;
+        } else {
+            return value;
+        }
     }
     
     /**
@@ -342,9 +378,11 @@ public abstract class Assert {
      *         zero.
      */
     public static long notNegativeOrZero(long value, String message) {
-        if (value <= 0L)
+        if (value <= 0L) {
             throw assertError(message);
-        return value;
+        } else {
+            return value;
+        }
     }
     
     /**
@@ -358,9 +396,11 @@ public abstract class Assert {
      *         zero.
      */
     public static float notNegativeOrZero(float value, String message) {
-        if (value <= 0.0f)
+        if (value <= 0.0f) {
             throw assertError(message);
-        return value;
+        } else {
+            return value;
+        }
     }
     
     /**
@@ -374,9 +414,11 @@ public abstract class Assert {
      *         zero.
      */
     public static double notNegativeOrZero(double value, String message) {
-        if (value <= 0.0d)
+        if (value <= 0.0d) {
             throw assertError(message);
-        return value;
+        } else {
+            return value;
+        }
     }
     
     /**

@@ -159,8 +159,9 @@ public class ByteBuffer implements java.io.Serializable {
      */
     public ByteBuffer append(short[] array, int offset, int count) {
         ensureCapacity(length + count * 2);
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < count; i++) {
             append(array[offset + i]);
+        }
         return this;
     }
     
@@ -204,8 +205,9 @@ public class ByteBuffer implements java.io.Serializable {
      */
     public ByteBuffer append(int[] array, int offset, int count) {
         ensureCapacity(length + count * 4);
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < count; i++) {
             append(array[offset + i]);
+        }
         return this;
     }
     
@@ -253,8 +255,9 @@ public class ByteBuffer implements java.io.Serializable {
      */
     public ByteBuffer append(long[] array, int offset, int count) {
         ensureCapacity(length + count * 8);
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < count; i++) {
             append(array[offset + i]);
+        }
         return this;
     }
     
@@ -294,8 +297,9 @@ public class ByteBuffer implements java.io.Serializable {
      */
     public ByteBuffer append(float[] array, int offset, int count) {
         ensureCapacity(length + count * 4);
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < count; i++) {
             append(Float.floatToIntBits(array[offset + i]));
+        }
         return this;
     }
     
@@ -335,8 +339,9 @@ public class ByteBuffer implements java.io.Serializable {
      */
     public ByteBuffer append(double[] array, int offset, int count) {
         ensureCapacity(length + count * 8);
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < count; i++) {
             append(Double.doubleToLongBits(array[offset + i]));
+        }
         return this;
     }
     
@@ -376,8 +381,9 @@ public class ByteBuffer implements java.io.Serializable {
      */
     public ByteBuffer append(char[] array, int offset, int count) {
         ensureCapacity(length + count * 8);
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < count; i++) {
             append((short) array[offset + i]);
+        }
         return this;
     }
     
@@ -418,8 +424,9 @@ public class ByteBuffer implements java.io.Serializable {
      */
     public ByteBuffer append(boolean[] array, int offset, int count) {
         ensureCapacity(length + count * 8);
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < count; i++) {
             append(array[offset + i] ? (byte) 1 : (byte) 0);
+        }
         return this;
     }
     
@@ -483,8 +490,9 @@ public class ByteBuffer implements java.io.Serializable {
         stream.defaultReadObject();
         data = new byte[stream.readInt()];
         length = stream.read(data);
-        if (length != data.length)
+        if (length != data.length) {
             throw new java.io.IOException();
+        }
     }
     
 }

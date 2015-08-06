@@ -154,9 +154,11 @@ public final class UnicodeSet implements java.io.Serializable {
      *         single characters; <code>false</code> otherwise.
      */
     public boolean isElementSet() {
-        for (int i = 0; i < min.length; i++)
-            if (min[i] < max[i])
+        for (int i = 0; i < min.length; i++) {
+            if (min[i] < max[i]) {
                 return false;
+            }
+        }
         return true;
     }
     
@@ -168,12 +170,13 @@ public final class UnicodeSet implements java.io.Serializable {
      *         character; <code>false</code> otherwise.
      */
     public boolean contains(int ch) {
-        if (this == EMPTY)
+        if (this == EMPTY) {
             return false;
-        if (this == WHOLE)
+        } else if (this == WHOLE) {
             return ch >= MIN_ELEMENT && ch <= MAX_ELEMENT;
-        
-        return contains(ch, 0, min.length - 1);
+        } else {
+            return contains(ch, 0, min.length - 1);
+        }
     }
     
     /**
@@ -188,13 +191,14 @@ public final class UnicodeSet implements java.io.Serializable {
      *         <code>false</code> otherwise.
      */
     private boolean contains(int ch, int i, int j) {
-        if (ch < min[i] || ch > max[j])
+        if (ch < min[i] || ch > max[j]) {
             return false;
-        if (i < j) {
+        } else if (i < j) {
             int m = i + (j - i) / 2 + 1;
             return contains(ch, i, m - 1) || contains(ch, m, j);
+        } else {
+            return true;
         }
-        return true;
     }
     
     /**
@@ -216,13 +220,13 @@ public final class UnicodeSet implements java.io.Serializable {
      * @return Inverse character set for this character set.
      */
     public UnicodeSet inverse() {
-        if (inverse != null)
+        if (inverse != null) {
             return inverse;
-        
-        if (this == EMPTY)
+        } else if (this == EMPTY) {
             return inverse = WHOLE;
-        if (this == WHOLE)
+        } else if (this == WHOLE) {
             return inverse = EMPTY;
+        }
         
         int[] min;
         int[] max;
@@ -232,7 +236,6 @@ public final class UnicodeSet implements java.io.Serializable {
         int size = this.min.length;
         
         int j = 0;
-        
         if (n == MIN_ELEMENT) {
             if (m == MAX_ELEMENT) {
                 min = new int[size - 1];
@@ -240,21 +243,18 @@ public final class UnicodeSet implements java.io.Serializable {
             } else {
                 min = new int[size];
                 max = new int[size];
-                
                 min[min.length - 1] = m + 1;
                 max[max.length - 1] = MAX_ELEMENT;
             }
         } else if (m == MAX_ELEMENT) {
             min = new int[size];
             max = new int[size];
-            
             min[0] = MIN_ELEMENT;
             max[0] = n - 1;
             j = 1;
         } else {
             min = new int[size + 1];
             max = new int[size + 1];
-            
             min[0] = MIN_ELEMENT;
             max[0] = n - 1;
             min[min.length - 1] = m + 1;
@@ -276,9 +276,11 @@ public final class UnicodeSet implements java.io.Serializable {
      * @return A hash code value for this character set.
      */
     public int hashCode() {
-        if (hash == 0)
-            for (int i = 0, hash = 1; i < min.length; i++)
+        if (hash == 0) {
+            for (int i = 0, hash = 1; i < min.length; i++) {
                 hash = 31 * (31 * hash + min[i]) + max[i];
+            }
+        }
         return hash;
     }
     
@@ -292,11 +294,14 @@ public final class UnicodeSet implements java.io.Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof UnicodeSet) {
             UnicodeSet other = (UnicodeSet) obj;
-            if (min.length != other.min.length)
+            if (min.length != other.min.length) {
                 return false;
-            for (int i = 0; i < min.length; i++)
-                if (min[i] != other.min[i] || max[i] != other.max[i])
+            }
+            for (int i = 0; i < min.length; i++) {
+                if (min[i] != other.min[i] || max[i] != other.max[i]) {
                     return false;
+                }
+            }
             return true;
         }
         return false;
@@ -409,20 +414,23 @@ public final class UnicodeSet implements java.io.Serializable {
      */
     public static UnicodeSet unionAll(UnicodeSet... usets) {
         int length = usets.length;
-        if (length == 0)
+        if (length == 0) {
             return EMPTY;
-        if (length == 1)
+        } else if (length == 1) {
             return usets[0];
+        }
         
         int size = 0;
         for (UnicodeSet uset : usets) {
-            if (uset == WHOLE)
+            if (uset == WHOLE) {
                 return WHOLE;
+            }
             size += uset.size();
         }
         
-        if (size == 0)
+        if (size == 0) {
             return EMPTY;
+        }
         
         int[] min = new int[size];
         int[] max = new int[size];
@@ -448,8 +456,9 @@ public final class UnicodeSet implements java.io.Serializable {
      */
     public static UnicodeSet fromElements(char... elements) {
         int length = elements.length;
-        if (length == 0)
+        if (length == 0) {
             return EMPTY;
+        }
         
         int[] intervals = new int[length * 2];
         for (int i = 0, j = 0; i < length; i++) {
@@ -469,8 +478,9 @@ public final class UnicodeSet implements java.io.Serializable {
      */
     public static UnicodeSet fromElements(int[] elements) {
         int length = elements.length;
-        if (length == 0)
+        if (length == 0) {
             return EMPTY;
+        }
         
         int[] intervals = new int[length * 2];
         for (int i = 0, j = 0; i < length; i++) {
@@ -490,8 +500,9 @@ public final class UnicodeSet implements java.io.Serializable {
      */
     public static UnicodeSet fromElements(String elements) {
         int length = elements.length();
-        if (length == 0)
+        if (length == 0) {
             return EMPTY;
+        }
         
         int[] intervals = new int[length * 2];
         for (int i = 0, j = 0; i < length; i++) {
@@ -514,11 +525,11 @@ public final class UnicodeSet implements java.io.Serializable {
      */
     public static UnicodeSet fromIntervals(char... intervals) {
         int length = intervals.length;
-        if (length % 2 > 0)
+        if (length % 2 > 0) {
             throw new IllegalArgumentException();
-        
-        if (length == 0)
+        } else if (length == 0) {
             return EMPTY;
+        }
         
         int size = length / 2;
         int[] min = new int[size];
@@ -527,7 +538,6 @@ public final class UnicodeSet implements java.io.Serializable {
         for (int i = 0, j = 0; i < max.length; i++) {
             int n = intervals[j++];
             int m = intervals[j++];
-            
             if (n < m) {
                 min[i] = n;
                 max[i] = m;
@@ -551,11 +561,11 @@ public final class UnicodeSet implements java.io.Serializable {
      */
     public static UnicodeSet fromIntervals(int[] intervals) {
         int length = intervals.length;
-        if (length % 2 > 0)
+        if (length % 2 > 0) {
             throw new IllegalArgumentException();
-        
-        if (length == 0)
+        } else if (length == 0) {
             return EMPTY;
+        }
         
         int size = length / 2;
         int[] min = new int[size];
@@ -564,7 +574,6 @@ public final class UnicodeSet implements java.io.Serializable {
         for (int i = 0, j = 0; i < min.length; i++) {
             int n = alignElement(intervals[j++]);
             int m = alignElement(intervals[j++]);
-            
             if (n < m) {
                 min[i] = n;
                 max[i] = m;
@@ -594,14 +603,15 @@ public final class UnicodeSet implements java.io.Serializable {
      * @throws IllegalArgumentException if the specified pattern is invalid.
      */
     public static UnicodeSet fromPattern(String pattern) {
-        if (pattern.isEmpty())
+        if (pattern.isEmpty()) {
             return EMPTY;
+        }
         
         int i = 0, length = pattern.length();
         boolean inverse = pattern.charAt(0) == '^';
-        if (inverse)
-            if (length == ++i)
-                return WHOLE;
+        if (inverse && length == ++i) {
+            return WHOLE;
+        }
         
         int size = 0;
         int[] min = new int[length];
@@ -610,18 +620,21 @@ public final class UnicodeSet implements java.io.Serializable {
         for (; i < length; size++) {
             char ch = pattern.charAt(i++);
             if (ch == '\\') {
-                if (i == length)
+                if (i == length) {
                     throw new IllegalArgumentException(pattern);
+                }
                 ch = pattern.charAt(i++);
             }
             if (i < length && pattern.charAt(i) == '-') {
-                if (++i == length)
+                if (++i == length) {
                     throw new IllegalArgumentException(pattern);
+                }
                 min[size] = ch;
                 ch = pattern.charAt(i++);
                 if (ch == '\\') {
-                    if (i == length)
+                    if (i == length) {
                         throw new IllegalArgumentException(pattern);
+                    }
                     ch = pattern.charAt(i++);
                 }
                 max[size] = ch;
@@ -664,12 +677,15 @@ public final class UnicodeSet implements java.io.Serializable {
         max[size] = max[max.length - 1];
         size++;
         
-        if (size == 1)
-            if (min[0] == MIN_ELEMENT && max[0] == MAX_ELEMENT)
+        if (size == 1) {
+            if (min[0] == MIN_ELEMENT && max[0] == MAX_ELEMENT) {
                 return WHOLE;
+            }
+        }
         
-        if (size == max.length)
+        if (size == max.length) {
             return new UnicodeSet(min, max);
+        }
         
         return new UnicodeSet(Arrays.copyOf(min, size),
                               Arrays.copyOf(max, size));
@@ -712,8 +728,9 @@ public final class UnicodeSet implements java.io.Serializable {
             case '\f':
                 return "\\f";
             default:
-                if (PRINT.contains(ch))
+                if (PRINT.contains(ch)) {
                     return Character.toString(ch);
+                }
                 char[] ucode = new char[]{'\\', 'u', '0', '0', '0', '0'};
                 for (int i = 3; i >= 0; i--) {
                     int x = (ch >> i * 4) & 0x0f;
@@ -731,9 +748,11 @@ public final class UnicodeSet implements java.io.Serializable {
      * @see #escape(String, StringBuilder)
      */
     public static String escape(String source) {
-        if (source == null || source.length() == 0)
+        if (source == null || source.length() == 0) {
             return source;
-        return escape(source, new StringBuilder(source.length())).toString();
+        } else {
+            return escape(source, new StringBuilder(source.length())).toString();
+        }
     }
     
     /**
@@ -747,8 +766,9 @@ public final class UnicodeSet implements java.io.Serializable {
      */
     public static StringBuilder escape(String source, StringBuilder buf) {
         int length = source == null ? 0 : source.length();
-        for (int i = 0; i < length; i++)
+        for (int i = 0; i < length; i++) {
             buf.append(escape(source.charAt(i)));
+        }
         return buf;
     }
     
@@ -761,9 +781,11 @@ public final class UnicodeSet implements java.io.Serializable {
      * @see #unescape(String, StringBuilder)
      */
     public static String unescape(String source) {
-        if (source == null || source.length() == 0)
+        if (source == null || source.length() == 0) {
             return source;
-        return unescape(source, new StringBuilder(source.length())).toString();
+        } else {
+            return unescape(source, new StringBuilder(source.length())).toString();
+        }
     }
     
     /**
@@ -780,8 +802,9 @@ public final class UnicodeSet implements java.io.Serializable {
         for (int i = 0; i < length;) {
             char ch = source.charAt(i++);
             if (ch == '\\') {
-                if (i == length)
+                if (i == length) {
                     throw new IllegalArgumentException(source);
+                }
                 switch (source.charAt(i++)) {
                     case '\"':
                         buf.append('\"');
@@ -808,8 +831,9 @@ public final class UnicodeSet implements java.io.Serializable {
                         buf.append('\b');
                         break;
                     case 'u':
-                        if (i + 4 > length)
+                        if (i + 4 > length) {
                             throw new IllegalArgumentException(source);
+                        }
                         int ucode = 0;
                         for (int j = 0; j < 4; j++) {
                             ucode <<= 4;

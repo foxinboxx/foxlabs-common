@@ -54,12 +54,13 @@ public abstract class Types {
      */
     public static Class<?>[] typesOf(Object... objs) {
         Class<?>[] types = new Class<?>[objs.length];
-        for (int i = 0; i < objs.length; i++)
+        for (int i = 0; i < objs.length; i++) {
             types[i] = objs[i] == null
                 ? Object.class
                 : objs[i] instanceof Annotation
                     ? ((Annotation) objs[i]).annotationType()
                     : objs[i].getClass();
+        }
         return types;
     }
     
@@ -168,22 +169,23 @@ public abstract class Types {
      */
     public static <T> Class<T> wrapperTypeOf(Class<T> type) {
         if (type != null && type.isPrimitive()) {
-            if (type == Boolean.TYPE)
+            if (type == Boolean.TYPE) {
                 return (Class<T>) Boolean.class;
-            if (type == Character.TYPE)
+            } else if (type == Character.TYPE) {
                 return (Class<T>) Character.class;
-            if (type == Byte.TYPE)
+            } else if (type == Byte.TYPE) {
                 return (Class<T>) Byte.class;
-            if (type == Short.TYPE)
+            } else if (type == Short.TYPE) {
                 return (Class<T>) Short.class;
-            if (type == Integer.TYPE)
+            } else if (type == Integer.TYPE) {
                 return (Class<T>) Integer.class;
-            if (type == Long.TYPE)
+            } else if (type == Long.TYPE) {
                 return (Class<T>) Long.class;
-            if (type == Float.TYPE)
+            } else if (type == Float.TYPE) {
                 return (Class<T>) Float.class;
-            if (type == Double.TYPE)
+            } else if (type == Double.TYPE) {
                 return (Class<T>) Double.class;
+            }
         }
         return type;
     }
@@ -196,23 +198,25 @@ public abstract class Types {
      * @return Primitive type for the specified wrapper type.
      */
     public static Class<?> primitiveTypeOf(Class<?> type) {
-        if (type == Boolean.class)
+        if (type == Boolean.class) {
             return Boolean.TYPE;
-        if (type == Character.class)
+        } else if (type == Character.class) {
             return Character.TYPE;
-        if (type == Byte.class)
+        } else if (type == Byte.class) {
             return Byte.TYPE;
-        if (type == Short.class)
+        } else if (type == Short.class) {
             return Short.TYPE;
-        if (type == Integer.class)
+        } else if (type == Integer.class) {
             return Integer.TYPE;
-        if (type == Long.class)
+        } else if (type == Long.class) {
             return Long.TYPE;
-        if (type == Float.class)
+        } else if (type == Float.class) {
             return Float.TYPE;
-        if (type == Double.class)
+        } else if (type == Double.class) {
             return Double.TYPE;
-        return type;
+        } else {
+            return type;
+        }
     }
     
     /**
@@ -225,22 +229,23 @@ public abstract class Types {
      */
     public static <T> T defaultValueOf(Class<T> type) {
         if (type != null && type.isPrimitive()) {
-            if (type == Boolean.TYPE)
+            if (type == Boolean.TYPE) {
                 return (T) Boolean.FALSE;
-            if (type == Character.TYPE)
+            } else if (type == Character.TYPE) {
                 return (T) Character.valueOf((char) 0);
-            if (type == Byte.TYPE)
+            } else if (type == Byte.TYPE) {
                 return (T) Byte.valueOf((byte) 0);
-            if (type == Short.TYPE)
+            } else if (type == Short.TYPE) {
                 return (T) Short.valueOf((short) 0);
-            if (type == Integer.TYPE)
+            } else if (type == Integer.TYPE) {
                 return (T) Integer.valueOf(0);
-            if (type == Long.TYPE)
+            } else if (type == Long.TYPE) {
                 return (T) Long.valueOf(0L);
-            if (type == Float.TYPE)
+            } else if (type == Float.TYPE) {
                 return (T) Float.valueOf(0f);
-            if (type == Double.TYPE)
+            } else if (type == Double.TYPE) {
                 return (T) Double.valueOf(0d);
+            }
         }
         return null;
     }
@@ -265,17 +270,19 @@ public abstract class Types {
      * @return Super type for the specified two types.
      */
     public static Class<?> superTypeOf(Class<?> type1, Class<?> type2) {
-        if (type1 == type2)
+        if (type1 == type2) {
             return type1;
-        if (type1 == null)
+        } else if (type1 == null) {
             return type2;
-        if (type2 == null)
+        } else if (type2 == null) {
             return type1;
-        if (type1.isAssignableFrom(type2))
+        } else if (type1.isAssignableFrom(type2)) {
             return type1;
-        if (type2.isAssignableFrom(type1))
+        } else if (type2.isAssignableFrom(type1)) {
             return type2;
-        return Object.class;
+        } else {
+            return Object.class;
+        }
     }
     
     /**
@@ -286,15 +293,18 @@ public abstract class Types {
      */
     public static Class<?> superTypeOf(Class<?>... types) {
         int count = types.length;
-        if (count == 0)
+        if (count == 0) {
             return Object.class;
+        }
         Class<?> type = types[0];
-        if (count == 1)
+        if (count == 1) {
             return superTypeOf(type);
+        }
         for (int i = 1; i < count; i++) {
             type = superTypeOf(type, types[i]);
-            if (type == Object.class)
+            if (type == Object.class) {
                 return Object.class;
+            }
         }
         return type;
     }
@@ -306,13 +316,15 @@ public abstract class Types {
      * @return Raw type for the specified generic type.
      */
     public static <T> Class<T> rawTypeOf(Type type) {
-        if (type instanceof Class)
+        if (type instanceof Class) {
             return (Class<T>) type;
-        if (type instanceof ParameterizedType)
+        } else if (type instanceof ParameterizedType) {
             return (Class<T>) ((ParameterizedType) type).getRawType();
-        if (type instanceof GenericArrayType)
+        } else if (type instanceof GenericArrayType) {
             return (Class<T>) arrayTypeOf(rawTypeOf(((GenericArrayType) type).getGenericComponentType()));
-        return (Class<T>) Object.class;
+        } else {
+            return (Class<T>) Object.class;
+        }
     }
     
     /**
@@ -322,9 +334,11 @@ public abstract class Types {
      * @return Array type for the specified type of array elements.
      */
     public static <T, E> Class<T> arrayTypeOf(Class<E> elementType) {
-        if (elementType == null)
+        if (elementType == null) {
             return (Class<T>) Object[].class;
-        return (Class<T>) Array.newInstance(elementType, 0).getClass();
+        } else {
+            return (Class<T>) Array.newInstance(elementType, 0).getClass();
+        }
     }
     
     /**
@@ -337,19 +351,19 @@ public abstract class Types {
      */
     public static <T> Class<T> elementTypeOf(Type type) {
         Class<?> rawtype = rawTypeOf(type);
-        if (rawtype.isArray())
+        if (rawtype.isArray()) {
             return (Class<T>) rawtype.getComponentType();
-        if (Collection.class.isAssignableFrom(rawtype)) {
-            if (type instanceof Class)
+        } else if (Collection.class.isAssignableFrom(rawtype)) {
+            if (type instanceof Class) {
                 return (Class<T>) parameterTypeOf((Class<?>) type, Collection.class, 0);
-            if (type instanceof ParameterizedType) {
+            } else if (type instanceof ParameterizedType) {
                 Type[] argtypes = ((ParameterizedType) type).getActualTypeArguments();
                 return (Class<T>) (argtypes.length == 0 ? Object.class : rawTypeOf(argtypes[0]));
             }
         } else if (Map.class.isAssignableFrom(rawtype)) {
-            if (type instanceof Class)
+            if (type instanceof Class) {
                 return (Class<T>) parameterTypeOf((Class<?>) type, Map.class, 1);
-            if (type instanceof ParameterizedType) {
+            } else if (type instanceof ParameterizedType) {
                 Type[] argtypes = ((ParameterizedType) type).getActualTypeArguments();
                 return (Class<T>) (argtypes.length < 2 ? Object.class : rawTypeOf(argtypes[1]));
             }
@@ -366,9 +380,9 @@ public abstract class Types {
      */
     public static <T> Class<T> keyTypeOf(Type type) {
         if (Map.class.isAssignableFrom(rawTypeOf(type))) {
-            if (type instanceof Class)
+            if (type instanceof Class) {
                 return (Class<T>) parameterTypeOf((Class<?>) type, Map.class, 0);
-            if (type instanceof ParameterizedType) {
+            } else if (type instanceof ParameterizedType) {
                 Type[] argtypes = ((ParameterizedType) type).getActualTypeArguments();
                 return (Class<T>) (argtypes.length < 1 ? Object.class : rawTypeOf(argtypes[0]));
             }
@@ -388,20 +402,23 @@ public abstract class Types {
      */
     public static Class<?> parameterTypeOf(Class<?> type, Class<?> base, int index) {
         List<Type> supertypes = new LinkedList<Type>();
-        if (type.getGenericSuperclass() != null)
+        if (type.getGenericSuperclass() != null) {
             supertypes.add(type.getGenericSuperclass());
-        for (Type intf : type.getGenericInterfaces())
+        }
+        for (Type intf : type.getGenericInterfaces()) {
             supertypes.add(intf);
+        }
         for (Type supertype : supertypes) {
             Class<?> rawtype = rawTypeOf(supertype);
             if (base.isAssignableFrom(rawtype)) {
                 Class<?> paramtype = parameterTypeOf(rawtype, base, index);
-                if (paramtype != Object.class)
+                if (paramtype != Object.class) {
                     return paramtype;
-                if (supertype instanceof ParameterizedType) {
+                } else if (supertype instanceof ParameterizedType) {
                     Type[] argtypes = ((ParameterizedType) supertype).getActualTypeArguments();
-                    if (index < argtypes.length && argtypes[index] instanceof Class)
+                    if (index < argtypes.length && argtypes[index] instanceof Class) {
                         return (Class<?>) argtypes[index];
+                    }
                 }
             }
         }
@@ -442,15 +459,17 @@ public abstract class Types {
      * @return A new collection of the specified type.
      */
     public static <T extends Collection<E>, E> T newCollection(Class<T> type, int size) {
-        if (Collection.class.equals(type))
+        if (Collection.class.equals(type)) {
             return type.cast(new ArrayList<E>(size));
-        if (List.class.isAssignableFrom(type))
+        } else if (List.class.isAssignableFrom(type)) {
             return type.cast(newList(type.asSubclass(List.class), size));
-        if (Set.class.isAssignableFrom(type))
+        } else if (Set.class.isAssignableFrom(type)) {
             return type.cast(newSet(type.asSubclass(Set.class), size));
-        if (Queue.class.isAssignableFrom(type))
+        } else if (Queue.class.isAssignableFrom(type)) {
             return type.cast(newQueue(type.asSubclass(Queue.class), size));
-        return newInstance(type);
+        } else {
+            return newInstance(type);
+        }
     }
     
     /**
@@ -461,11 +480,13 @@ public abstract class Types {
      * @return A new list of the specified type.
      */
     public static <T extends List<E>, E> T newList(Class<T> type, int size) {
-        if (List.class.equals(type) || ArrayList.class.equals(type))
+        if (List.class.equals(type) || ArrayList.class.equals(type)) {
             return type.cast(new ArrayList<E>(size));
-        if (LinkedList.class.equals(type))
+        } else if (LinkedList.class.equals(type)) {
             return type.cast(new LinkedList<E>());
-        return newInstance(type);
+        } else {
+            return newInstance(type);
+        }
     }
     
     /**
@@ -476,15 +497,17 @@ public abstract class Types {
      * @return A new set of the specified type.
      */
     public static <T extends Set<E>, E> T newSet(Class<T> type, int size) {
-        if (Set.class.equals(type) || LinkedHashSet.class.equals(type))
+        if (Set.class.equals(type) || LinkedHashSet.class.equals(type)) {
             return type.cast(new LinkedHashSet<E>(size));
-        if (HashSet.class.equals(type))
+        } else if (HashSet.class.equals(type)) {
             return type.cast(new HashSet<E>(size));
-        if (SortedSet.class.equals(type) || NavigableSet.class.equals(type) || TreeSet.class.equals(type))
+        } else if (SortedSet.class.equals(type) || NavigableSet.class.equals(type) || TreeSet.class.equals(type)) {
             return type.cast(new TreeSet<E>());
-        if (ConcurrentSkipListSet.class.equals(type))
+        } else if (ConcurrentSkipListSet.class.equals(type)) {
             return type.cast(new ConcurrentSkipListSet<E>());
-        return newInstance(type);
+        } else {
+            return newInstance(type);
+        }
     }
     
     /**
@@ -495,25 +518,27 @@ public abstract class Types {
      * @return A new queue of the specified type.
      */
     public static <T extends Queue<E>, E> T newQueue(Class<T> type, int size) {
-        if (Queue.class.equals(type) || PriorityQueue.class.equals(type))
+        if (Queue.class.equals(type) || PriorityQueue.class.equals(type)) {
             return type.cast(new PriorityQueue<E>(size));
-        if (Deque.class.equals(type) || LinkedList.class.equals(type))
+        } else if (Deque.class.equals(type) || LinkedList.class.equals(type)) {
             return type.cast(new LinkedList<E>());
-        if (ArrayDeque.class.equals(type))
+        } else if (ArrayDeque.class.equals(type)) {
             return type.cast(new ArrayDeque<E>(size));
-        if (ConcurrentLinkedQueue.class.equals(type))
+        } else if (ConcurrentLinkedQueue.class.equals(type)) {
             return type.cast(new ConcurrentLinkedQueue<E>());
-        if (BlockingQueue.class.equals(type) || LinkedBlockingQueue.class.equals(type))
+        } else if (BlockingQueue.class.equals(type) || LinkedBlockingQueue.class.equals(type)) {
             return type.cast(new LinkedBlockingQueue<E>(size));
-        if (ArrayBlockingQueue.class.equals(type))
+        } else if (ArrayBlockingQueue.class.equals(type)) {
             return type.cast(new ArrayBlockingQueue<E>(size));
-        if (PriorityBlockingQueue.class.equals(type))
+        } else if (PriorityBlockingQueue.class.equals(type)) {
             return type.cast(new PriorityBlockingQueue<E>(size));
-        if (SynchronousQueue.class.equals(type))
+        } else if (SynchronousQueue.class.equals(type)) {
             return type.cast(new SynchronousQueue<E>());
-        if (BlockingDeque.class.equals(type) || LinkedBlockingDeque.class.equals(type))
+        } else if (BlockingDeque.class.equals(type) || LinkedBlockingDeque.class.equals(type)) {
             return type.cast(new LinkedBlockingDeque<E>(size));
-        return newInstance(type);
+        } else {
+            return newInstance(type);
+        }
     }
     
     /**
@@ -524,19 +549,21 @@ public abstract class Types {
      * @return A new map of the specified type.
      */
     public static <T extends Map<K, V>, K, V> T newMap(Class<T> type, int size) {
-        if (Map.class.equals(type) || LinkedHashMap.class.equals(type))
+        if (Map.class.equals(type) || LinkedHashMap.class.equals(type)) {
             return type.cast(new LinkedHashMap<K, V>(size));
-        if (HashMap.class.equals(type))
+        } else if (HashMap.class.equals(type)) {
             return type.cast(new HashMap<K, V>(size));
-        if (IdentityHashMap.class.equals(type))
+        } else if (IdentityHashMap.class.equals(type)) {
             return type.cast(new IdentityHashMap<K, V>(size));
-        if (SortedMap.class.equals(type) || NavigableMap.class.equals(type) || TreeMap.class.equals(type))
+        } else if (SortedMap.class.equals(type) || NavigableMap.class.equals(type) || TreeMap.class.equals(type)) {
             return type.cast(new TreeMap<K, V>());
-        if (ConcurrentMap.class.equals(type) || ConcurrentHashMap.class.equals(type))
+        } else if (ConcurrentMap.class.equals(type) || ConcurrentHashMap.class.equals(type)) {
             return type.cast(new ConcurrentHashMap<K, V>(size));
-        if (ConcurrentNavigableMap.class.equals(type) || ConcurrentSkipListMap.class.equals(type))
+        } else if (ConcurrentNavigableMap.class.equals(type) || ConcurrentSkipListMap.class.equals(type)) {
             return type.cast(new ConcurrentSkipListMap<K, V>());
-        return newInstance(type);
+        } else {
+            return newInstance(type);
+        }
     }
     
     /**
@@ -546,11 +573,13 @@ public abstract class Types {
      * @return A hash code value for the specified array of types.
      */
     public static int hashCode(Class<?>... types) {
-        if (types == null || types.length == 0)
+        if (types == null || types.length == 0) {
             return 0;
+        }
         int hash = 1;
-        for (Class<?> type : types)
+        for (Class<?> type : types) {
             hash = 31 * hash + (type == null ? 0 : type.hashCode());
+        }
         return hash;
     }
     

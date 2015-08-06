@@ -291,7 +291,8 @@ public abstract class ResourceHelper {
                     String className = pkg + "." + name.substring(0, name.length() - 6);
                     try {
                         classes.add(cl.loadClass(className));
-                    } catch (ClassNotFoundException e) {}
+                    } catch (ClassNotFoundException e) {
+                    }
                 }
             } else if (recurse && file.isDirectory()) {
                 findClasses(file, pkg + "." + file.getName(), cl, classes, recurse);

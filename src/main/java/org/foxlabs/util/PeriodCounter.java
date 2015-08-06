@@ -83,8 +83,9 @@ public class PeriodCounter {
         
         tst.setTime(date);
         tst.add(MINUTE, 1);
-        if (now.compareTo(tst) < 0)
+        if (now.compareTo(tst) < 0) {
             return getNowPeriod();
+        }
         
         tst.setTime(date);
         tst.add(HOUR_OF_DAY, 1);
@@ -403,19 +404,22 @@ public class PeriodCounter {
      */
     public static String period(Date date, Locale locale) {
         PeriodCounter counter = counters.get(locale);
-        if (counter != null)
+        if (counter != null) {
             return counter.evaluate(date);
+        }
         if (locale.getVariant().length() > 0) {
             locale = new Locale(locale.getLanguage(), locale.getCountry());
             counter = counters.get(locale);
-            if (counter != null)
+            if (counter != null) {
                 return counter.evaluate(date);
+            }
         }
         if (locale.getCountry().length() > 0) {
             locale = new Locale(locale.getLanguage());
             counter = counters.get(locale);
-            if (counter != null)
+            if (counter != null) {
                 return counter.evaluate(date);
+            }
         }
         return ENGLISH.evaluate(date);
     }
@@ -433,8 +437,9 @@ public class PeriodCounter {
      */
     public static long decodeInterval(String interval) {
         int length = interval == null ? 0 : (interval = interval.trim()).length();
-        if (length == 0)
+        if (length == 0) {
             return 0L;
+        }
         
         int count = -1;
         long result = 0L;
@@ -446,11 +451,13 @@ public class PeriodCounter {
             } else {
                 int unit = INTERVAL_UNITS.indexOf(Character.toLowerCase(ch));
                 if (unit < 0) {
-                    if (!Character.isWhitespace(ch))
+                    if (!Character.isWhitespace(ch)) {
                         throw new IllegalArgumentException(interval);
+                    }
                 } else {
-                    if (count < 0 || flags[unit])
+                    if (count < 0 || flags[unit]) {
                         throw new IllegalArgumentException(interval);
+                    }
                     result += count * INTERVAL_SIZES[unit];
                     flags[unit] = true;
                     count = -1;
@@ -458,9 +465,11 @@ public class PeriodCounter {
             }
         }
         
-        if (count < 0)
+        if (count < 0) {
             return result;
-        throw new IllegalArgumentException(interval);
+        } else {
+            throw new IllegalArgumentException(interval);
+        }
     }
     
     /**
@@ -474,8 +483,9 @@ public class PeriodCounter {
      *         negative.
      */
     public static String encodeInterval(long interval) {
-        if (interval < 0L)
+        if (interval < 0L) {
             throw new IllegalArgumentException(Long.toString(interval));
+        }
         
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < INTERVAL_SIZES.length; i++) {
@@ -486,9 +496,11 @@ public class PeriodCounter {
             }
         }
         
-        if (result.length() > 0)
+        if (result.length() > 0) {
             return result.substring(1);
-        return "0" + INTERVAL_UNITS.charAt(INTERVAL_UNITS.length() - 1);
+        } else {
+            return "0" + INTERVAL_UNITS.charAt(INTERVAL_UNITS.length() - 1);
+        }
     }
     
     /**
@@ -503,16 +515,19 @@ public class PeriodCounter {
      * @see #encodeInterval(long)
      */
     public static String encodeDuration(long duration) {
-        if (duration < 0L)
+        if (duration < 0L) {
             throw new IllegalArgumentException(Long.toString(duration));
+        }
         
         long millis = duration % 60000L;
         long interval = duration / 60000L * 60000L;
         String seconds = (millis / 1000L) + "." + (millis % 1000L) + "s";
         
-        if (interval == 0L)
+        if (interval == 0L) {
             return seconds;
-        return encodeInterval(interval) + " " + seconds;
+        } else {
+            return encodeInterval(interval) + " " + seconds;
+        }
     }
     
     // Time interval constants

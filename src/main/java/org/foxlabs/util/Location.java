@@ -22,7 +22,7 @@ package org.foxlabs.util;
  * @author Fox Mulder
  */
 public final class Location implements Comparable<Location>, java.io.Serializable {
-    private static final long serialVersionUID = -6872809804356827786L;
+    private static final long serialVersionUID = -8995151179791454627L;
     
     /**
      * Unknown location.
@@ -59,6 +59,16 @@ public final class Location implements Comparable<Location>, java.io.Serializabl
     }
     
     /**
+     * Determines if this location is unknown location.
+     * 
+     * @return <code>true</code> if this location is unknown location;
+     *         <code>false</code> otherwise.
+     */
+    public boolean isUnknown() {
+        return this == UNKNOWN;
+    }
+    
+    /**
      * Compares this location to the specified one. Returns a negative integer,
      * zero, or a positive integer as this location is less than, equal to, or
      * greater than the specified location.
@@ -69,13 +79,15 @@ public final class Location implements Comparable<Location>, java.io.Serializabl
      */
     public int compareTo(Location other) {
         if (file != other.file) {
-            if (file == null)
+            if (file == null) {
                 return -1;
-            if (other.file == null)
+            } else if (other.file == null) {
                 return 1;
+            }
             int c = file.compareTo(other.file);
-            if (c != 0)
+            if (c != 0) {
                 return c;
+            }
         }
         int c = line - other.line;
         return c == 0 ? column - other.column : c;
@@ -87,7 +99,7 @@ public final class Location implements Comparable<Location>, java.io.Serializabl
      * @return A hash code value for this location.
      */
     public int hashCode() {
-        int hash = file == null ? 0 : file.hashCode();
+        int hash = file == null ? 17 : file.hashCode();
         hash = 31 * hash + line;
         hash = 31 * hash + column;
         return hash;
@@ -105,8 +117,9 @@ public final class Location implements Comparable<Location>, java.io.Serializabl
     public boolean equals(Object obj) {
         if (obj instanceof Location) {
             Location other = (Location) obj;
-            if (line == other.line && column == other.column)
+            if (line == other.line && column == other.column) {
                 return file == null ? other.file == null : file.equals(other.file);
+            }
         }
         return false;
     }
@@ -130,11 +143,13 @@ public final class Location implements Comparable<Location>, java.io.Serializabl
      * @param buf Buffer to append.
      */
     public void toString(StringBuilder buf) {
-        if (file != null)
+        if (file != null) {
             buf.append(file);
+        }
         if (line > 0) {
-            if (file != null)
+            if (file != null) {
                 buf.append(':');
+            }
             buf.append(line);
             if (column > 0) {
                 buf.append(':');
@@ -159,9 +174,11 @@ public final class Location implements Comparable<Location>, java.io.Serializabl
      * @return Location for the specified resource name.
      */
     public static Location valueOf(String file) {
-        if (file == null || (file = file.trim()).isEmpty())
+        if (file == null || (file = file.trim()).isEmpty()) {
             return UNKNOWN;
-        return new Location(file, 0, 0);
+        } else {
+            return new Location(file, 0, 0);
+        }
     }
     
     /**
@@ -172,9 +189,11 @@ public final class Location implements Comparable<Location>, java.io.Serializabl
      * @return Location for the specified line and column positions.
      */
     public static Location valueOf(int line, int column) {
-        if (line > 0)
+        if (line > 0) {
             return new Location(null, line, column < 0 ? 0 : column);
-        return column > 0 ? new Location(null, 1, column) : UNKNOWN;
+        } else {
+            return column > 0 ? new Location(null, 1, column) : UNKNOWN;
+        }
     }
     
     /**
@@ -188,11 +207,13 @@ public final class Location implements Comparable<Location>, java.io.Serializabl
      *         positions.
      */
     public static Location valueOf(String file, int line, int column) {
-        if (file == null || (file = file.trim()).isEmpty())
+        if (file == null || (file = file.trim()).isEmpty()) {
             return valueOf(line, column);
-        if (line > 0)
+        } else if (line > 0) {
             return new Location(file, line, column < 0 ? 0 : column);
-        return column > 0 ? new Location(file, 1, column) : UNKNOWN;
+        } else {
+            return column > 0 ? new Location(file, 1, column) : UNKNOWN;
+        }
     }
     
 }

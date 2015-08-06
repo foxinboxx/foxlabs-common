@@ -36,7 +36,9 @@ import java.util.NoSuchElementException;
 public abstract class Service {
     
     // Can't be inherited.
-    private Service() {}
+    private Service() {
+        super();
+    }
     
     /**
      * SPI resources directory.
@@ -181,8 +183,9 @@ public abstract class Service {
         public P next() {
             Class<? extends P> cls = clsItr.next();
             P provider = cache.get(cls);
-            if (provider != null)
+            if (provider != null) {
                 return provider;
+            }
             
             try {
                 provider = cls.newInstance();
@@ -298,8 +301,9 @@ public abstract class Service {
                             next = parseLine(line);
                         }
                     } finally {
-                        if (fail)
+                        if (fail) {
                             reader.close();
+                        }
                     }
                 } catch (IOException e) {
                     throw new ResourceError("An error occured when reading provider-configuration file (" +
@@ -345,12 +349,14 @@ public abstract class Service {
         private Class<? extends P> parseLine(String line) {
             int index = line.indexOf('#');
             String name = (index < 0 ? line : line.substring(0, index)).trim();
-            if (name.isEmpty())
+            if (name.isEmpty()) {
                 return null;
+            }
             
             Class<? extends P> cls = cache.get(name);
-            if (cls != null)
+            if (cls != null) {
                 return cls;
+            }
             
             try {
                 cls = loader.loadClass(name).asSubclass(category);

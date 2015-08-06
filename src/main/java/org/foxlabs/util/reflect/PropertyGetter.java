@@ -249,13 +249,15 @@ public abstract class PropertyGetter {
      * @throws IllegalArgumentException if illegal member type specified.
      */
     public static PropertyGetter newGetter(java.lang.reflect.Member getter) {
-        if (getter == null || Modifier.isAbstract(getter.getModifiers()))
+        if (getter == null || Modifier.isAbstract(getter.getModifiers())) {
             return null;
-        if (getter instanceof java.lang.reflect.Method)
+        } else if (getter instanceof java.lang.reflect.Method) {
             return new Method((java.lang.reflect.Method) getter);
-        if (getter instanceof java.lang.reflect.Field)
+        } else if (getter instanceof java.lang.reflect.Field) {
             return new Field((java.lang.reflect.Field) getter);
-        throw new IllegalArgumentException();
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
     
 }

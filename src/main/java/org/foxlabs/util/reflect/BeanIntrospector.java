@@ -205,8 +205,9 @@ public final class BeanIntrospector {
                         PropertySetter setter = PropertySetter.newSetter(writeMethod);
                         Property property = properties.get(propertyName);
                         Map<Class<?>, Annotation> annotations = new LinkedHashMap<Class<?>, Annotation>();
-                        if (property != null)
+                        if (property != null) {
                             annotations.putAll(property.annotations);
+                        }
                         overrideAnnotations(readMethod, annotations);
                         overrideAnnotations(writeMethod, annotations);
                         property = new Property(propertyName, propertyType, getter, setter, annotations);
@@ -228,9 +229,11 @@ public final class BeanIntrospector {
      *         should be accepted; <code>false</code> otherwise.
      */
     static boolean acceptProperty(Class<?> type, String name) {
-        if ("class".equals(name))
+        if ("class".equals(name)) {
             return false;
-        return true;
+        } else {
+            return true;
+        }
     }
     
     /**
@@ -241,9 +244,11 @@ public final class BeanIntrospector {
      * @param annotations Annotations to override.
      */
     static void overrideAnnotations(AnnotatedElement source, Map<Class<?>, Annotation> annotations) {
-        if (source != null)
-            for (Annotation annotation : source.getAnnotations())
+        if (source != null) {
+            for (Annotation annotation : source.getAnnotations()) {
                 annotations.put(annotation.annotationType(), annotation);
+            }
+        }
     }
     
     /**
@@ -273,8 +278,9 @@ public final class BeanIntrospector {
         if (itr.hasNext()) {
             buf.append('(');
             buf.append(itr.next());
-            while (itr.hasNext())
+            while (itr.hasNext()) {
                 buf.append(',').append(itr.next());
+            }
             buf.append(')');
         }
     }
@@ -473,8 +479,9 @@ public final class BeanIntrospector {
      */
     public static synchronized BeanIntrospector getInstance(Class<?> type) {
         BeanIntrospector introspector = cache.get(type);
-        if (introspector == null)
+        if (introspector == null) {
             cache.put(type, introspector = new BeanIntrospector(type));
+        }
         return introspector;
     }
     

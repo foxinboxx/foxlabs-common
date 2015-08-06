@@ -250,13 +250,15 @@ public abstract class PropertySetter {
      * @throws IllegalArgumentException if illegal member type specified.
      */
     public static PropertySetter newSetter(java.lang.reflect.Member setter) {
-        if (setter == null || Modifier.isAbstract(setter.getModifiers()))
+        if (setter == null || Modifier.isAbstract(setter.getModifiers())) {
             return null;
-        if (setter instanceof java.lang.reflect.Method)
+        } else if (setter instanceof java.lang.reflect.Method) {
             return new Method((java.lang.reflect.Method) setter);
-        if (setter instanceof java.lang.reflect.Field)
+        } else if (setter instanceof java.lang.reflect.Field) {
             return new Field((java.lang.reflect.Field) setter);
-        throw new IllegalArgumentException();
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
     
 }

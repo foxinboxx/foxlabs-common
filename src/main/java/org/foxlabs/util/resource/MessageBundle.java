@@ -140,10 +140,12 @@ public final class MessageBundle {
         try {
             return getResourceBundle(locale).getString(key);
         } catch (MissingResourceException e) {
-            if (parentBundle != null)
+            if (parentBundle != null) {
                 try {
                     return parentBundle.get(key);
-                } catch (MissingResourceException unused) {}
+                } catch (MissingResourceException unused) {
+                }
+            }
             throw new MissingResourceException("Can't find message \"" + key + "\": " + this,
                     e.getClassName(), key);
         }
@@ -212,10 +214,11 @@ public final class MessageBundle {
     public boolean equals(Object obj) {
         if (obj instanceof MessageBundle) {
             MessageBundle other = (MessageBundle) obj;
-            if (baseName.equals(other.baseName) && classLoader.equals(other.classLoader))
+            if (baseName.equals(other.baseName) && classLoader.equals(other.classLoader)) {
                 return parentBundle == null
                     ? other.parentBundle == null
                     : parentBundle.equals(other.parentBundle);
+            }
         }
         return false;
     }
@@ -228,11 +231,13 @@ public final class MessageBundle {
      *         parent bundles.
      */
     public String toString() {
-        if (parentBundle == null)
+        if (parentBundle == null) {
             return baseName;
+        }
         StringBuilder buf = new StringBuilder(baseName);
-        for (MessageBundle bundle = parentBundle; bundle != null; bundle = bundle.parentBundle)
+        for (MessageBundle bundle = parentBundle; bundle != null; bundle = bundle.parentBundle) {
             buf.append(", ").append(bundle.baseName);
+        }
         return buf.toString();
     }
     
@@ -297,8 +302,9 @@ public final class MessageBundle {
         MessageBundle bundle = new MessageBundle(name, ResourceHelper.getClassLoader(loader), parent);
         if (parent == null) {
             MessageBundle cached = bundleCache.get(bundle);
-            if (cached != null)
+            if (cached != null) {
                 return cached;
+            }
             bundleCache.put(bundle, bundle);
             return bundle;
         }
