@@ -168,6 +168,18 @@ public final class Location implements Comparable<Location>, java.io.Serializabl
     }
     
     /**
+     * Returns the specified location or {@link #UNKNOWN} if the specified
+     * location is <code>null</code>.
+     * 
+     * @param location Location to be checked for <code>null</code>.
+     * @return The specified location or {@link #UNKNOWN} if the specified
+     *         location is <code>null</code>.
+     */
+    public static Location resolve(Location location) {
+        return location == null ? UNKNOWN : location;
+    }
+    
+    /**
      * Returns location for the specified resource name.
      * 
      * @param file Abstract resource name.

@@ -17,14 +17,15 @@
 package org.foxlabs.util.resource;
 
 import java.net.URL;
-
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
-
+import java.util.Enumeration;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 import org.foxlabs.util.ByteBuffer;
 
@@ -36,14 +37,14 @@ import org.foxlabs.util.ByteBuffer;
 public abstract class ResourceHelper {
     
     /**
+     * Default encoding used for loading content of character resources.
+     */
+    public static final String DEFAULT_ENCODING = "utf-8";
+    
+    /**
      * Size of buffer used for loading content of resources.
      */
     private static final int BUFFER_SIZE = 8192;
-    
-    /**
-     * Default encoding used for loading content of character resources.
-     */
-    private static final String DEFAULT_ENCODING = "utf-8";
     
     /**
      * Returns class loader.
@@ -297,6 +298,55 @@ public abstract class ResourceHelper {
             } else if (recurse && file.isDirectory()) {
                 findClasses(file, pkg + "." + file.getName(), cl, classes, recurse);
             }
+        }
+    }
+    
+    /**
+     * Searches for attribute with the specified name in all META-INF/MANIFEST.MF
+     * resources and returns attribute value or <code>null</code> if attribute
+     * with the specified name is not found.
+     * 
+     * @param names Attribute name to search.
+     * @return Attribute value or <code>null</code> if attribute with the
+     *         specified name is not found.
+     */
+    public static String readManifestAttribute(String name) {
+        return readManifestAttributes(name)[0];
+    }
+    
+    /**
+     * Searches for attributes with the specified names in all META-INF/MANIFEST.MF
+     * resources and returns array of attribute values. If attribute with
+     * specified name is not found then correponding array element will contain
+     * <code>null</code> value.
+     * 
+     * @param names Array of attribute names to search.
+     * @return Array of attribute values.
+     */
+    public static String[] readManifestAttributes(String... names) {
+        try {
+            int found = 0;
+            String[] values = new String[names.length];
+            Enumeration<URL> manifests = getClassLoader().getResources(JarFile.MANIFEST_NAME);
+            while (found < names.length && manifests.hasMoreElements()) {
+                InputStream stream = manifests.nextElement().openStream();
+                try {
+                    Manifest manifest = new Manifest(stream);
+                    for (int i = 0; i < names.length; i++) {
+                        if (values[i] == null) {
+                            values[i] = manifest.getMainAttributes().getValue(names[i]);
+                            if (values[i] != null) {
+                                found++;
+                            }
+                        }
+                    }
+                } finally {
+                    stream.close();
+                }
+            }
+            return values;
+        } catch (IOException e) {
+            throw new ResourceError("Error reading \"" + JarFile.MANIFEST_NAME + "\" resource", e);
         }
     }
     
