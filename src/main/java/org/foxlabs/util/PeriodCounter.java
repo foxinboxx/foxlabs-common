@@ -427,8 +427,8 @@ public class PeriodCounter {
     /**
      * Parses the specified string representation of time interval and returns
      * number of milliseconds. The format is <code>*w *d *h *m *s</code>
-     * (representing weeks, days, hours, minutes and seconds - where
-     * <code>*</code> is positive number).
+     * representing weeks, days, hours, minutes and seconds, where
+     * <code>*</code> is positive number.
      * 
      * @param interval String representation of time interval.
      * @return Number of milliseconds.
@@ -474,8 +474,8 @@ public class PeriodCounter {
     
     /**
      * Returns string representation of the specified time interval. The format
-     * is <code>*w *d *h *m *s</code> (representing weeks, days, hours, minutes
-     * and seconds - where <code>*</code> is positive number).
+     * is <code>*w *d *h *m *s</code> representing weeks, days, hours, minutes
+     * and seconds, where <code>*</code> is positive number.
      * 
      * @param interval Time interval in milliseconds.
      * @return String representation of the specified time interval.
@@ -500,33 +500,6 @@ public class PeriodCounter {
             return result.substring(1);
         } else {
             return "0" + INTERVAL_UNITS.charAt(INTERVAL_UNITS.length() - 1);
-        }
-    }
-    
-    /**
-     * Returns string representation of the specified time interval. This
-     * method differs from the {@link #encodeInterval(long)} in that it renders
-     * milliseconds.
-     * 
-     * @param duration Time interval in milliseconds.
-     * @return String representation of the specified time interval.
-     * @throws IllegalArgumentException if the specified time interval is
-     *         negative.
-     * @see #encodeInterval(long)
-     */
-    public static String encodeDuration(long duration) {
-        if (duration < 0L) {
-            throw new IllegalArgumentException(Long.toString(duration));
-        }
-        
-        long millis = duration % 60000L;
-        long interval = duration / 60000L * 60000L;
-        String seconds = (millis / 1000L) + "." + (millis % 1000L) + "s";
-        
-        if (interval == 0L) {
-            return seconds;
-        } else {
-            return encodeInterval(interval) + " " + seconds;
         }
     }
     

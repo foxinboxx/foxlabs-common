@@ -21,8 +21,8 @@ package org.foxlabs.util;
  * 
  * @author Fox Mulder
  */
-public final class Location implements Comparable<Location>, java.io.Serializable {
-    private static final long serialVersionUID = -8995151179791454627L;
+public final class Location extends ToString.Adapter implements Comparable<Location>, java.io.Serializable {
+    private static final long serialVersionUID = 3670990876003089209L;
     
     /**
      * Unknown location.
@@ -125,24 +125,14 @@ public final class Location implements Comparable<Location>, java.io.Serializabl
     }
     
     /**
-     * Returns string representing this location.
-     * 
-     * @return String representing this location.
-     * @see #toString(StringBuilder)
-     */
-    public String toString() {
-        StringBuilder buf = new StringBuilder();
-        toString(buf);
-        return buf.toString();
-    }
-    
-    /**
      * Appends string representation of this location to the specified buffer.
      * The full format is <code>file:line:column</code>.
      * 
      * @param buf Buffer to append.
+     * @return The specified buffer.
      */
-    public void toString(StringBuilder buf) {
+    @Override
+    public StringBuilder toString(StringBuilder buf) {
         if (file != null) {
             buf.append(file);
         }
@@ -158,6 +148,7 @@ public final class Location implements Comparable<Location>, java.io.Serializabl
         } else if (file == null) {
             buf.append("unknown");
         }
+        return buf;
     }
     
     /**

@@ -24,8 +24,8 @@ import java.util.Arrays;
  * 
  * @author Fox Mulder
  */
-public final class UnicodeSet implements java.io.Serializable {
-    private static final long serialVersionUID = 6383904768150245166L;
+public final class UnicodeSet extends ToString.Adapter implements java.io.Serializable {
+    private static final long serialVersionUID = 8609572179021840846L;
     
     /**
      * The minimum value of a unicode code point.
@@ -323,23 +323,13 @@ public final class UnicodeSet implements java.io.Serializable {
     }
     
     /**
-     * Returns string representing this character set.
-     * 
-     * @return String representing this character set.
-     */
-    public String toString() {
-        StringBuilder buf = new StringBuilder();
-        toString(buf);
-        return buf.toString();
-    }
-    
-    /**
      * Appends string representation of this character set to the specified
      * buffer.
      * 
      * @param buf Buffer to append.
      */
-    public void toString(StringBuilder buf) {
+    @Override
+    public StringBuilder toString(StringBuilder buf) {
         buf.append('[');
         if (min.length > 0) {
             toString(buf, min[0], max[0]);
@@ -348,7 +338,7 @@ public final class UnicodeSet implements java.io.Serializable {
                 toString(buf, min[i], max[i]);
             }
         }
-        buf.append(']');
+        return buf.append(']');
     }
     
     /**
@@ -396,12 +386,12 @@ public final class UnicodeSet implements java.io.Serializable {
      */
     private static void toString(StringBuilder buf, int n, int m) {
         buf.append('\'')
-           .append(escape((char) n))
+           .append(Strings.escape((char) n))
            .append('\'');
         if (n < m) {
             buf.append('-')
                .append('\'')
-               .append(escape((char) m))
+               .append(Strings.escape((char) m))
                .append('\'');
         }
     }
@@ -699,165 +689,6 @@ public final class UnicodeSet implements java.io.Serializable {
      */
     private static int alignElement(int ch) {
         return ch < MIN_ELEMENT ? MIN_ELEMENT : ch > MAX_ELEMENT ? MAX_ELEMENT : ch;
-    }
-    
-    // Helper methods
-    
-    /**
-     * Adds escape (<code>\</code>) character to the specified one if needed.
-     * 
-     * @param ch Source character.
-     * @return Escaped character string.
-     */
-    public static String escape(char ch) {
-        switch (ch) {
-            case '\\':
-                return "\\\\";
-            case '\'':
-                return "\\'";
-            case '\"':
-                return "\\\"";
-            case '\n':
-                return "\\n";
-            case '\r':
-                return "\\r";
-            case '\t':
-                return "\\t";
-            case '\b':
-                return "\\b";
-            case '\f':
-                return "\\f";
-            default:
-                if (PRINT.contains(ch)) {
-                    return Character.toString(ch);
-                }
-                char[] ucode = new char[]{'\\', 'u', '0', '0', '0', '0'};
-                for (int i = 3; i >= 0; i--) {
-                    int x = (ch >> i * 4) & 0x0f;
-                    ucode[5 - i] = (char) (x + (x > 0x09 ? 0x57 : 0x30));
-                }
-                return new String(ucode);
-        }
-    }
-    
-    /**
-     * Adds escape (<code>\</code>) characters to the specified string.
-     * 
-     * @param source Source string.
-     * @return String with added escape characters.
-     * @see #escape(String, StringBuilder)
-     */
-    public static String escape(String source) {
-        if (source == null || source.length() == 0) {
-            return source;
-        } else {
-            return escape(source, new StringBuilder(source.length())).toString();
-        }
-    }
-    
-    /**
-     * Adds escape (<code>\</code>) characters to the specified string and
-     * appends result to the specified buffer.
-     * 
-     * @param source Source string.
-     * @param buf Buffer to append.
-     * @return The specified buffer.
-     * @see #escape(char)
-     */
-    public static StringBuilder escape(String source, StringBuilder buf) {
-        int length = source == null ? 0 : source.length();
-        for (int i = 0; i < length; i++) {
-            buf.append(escape(source.charAt(i)));
-        }
-        return buf;
-    }
-    
-    /**
-     * Removes escape (<code>\</code>) characters from the specified string.
-     * 
-     * @param source Source string.
-     * @return String with removed escape characters.
-     * @throws IllegalArgumentException if the specified string is malformed.
-     * @see #unescape(String, StringBuilder)
-     */
-    public static String unescape(String source) {
-        if (source == null || source.length() == 0) {
-            return source;
-        } else {
-            return unescape(source, new StringBuilder(source.length())).toString();
-        }
-    }
-    
-    /**
-     * Removes escape (<code>\</code>) characters from the specified string and
-     * appends result to the specified buffer.
-     * 
-     * @param source Source string.
-     * @param buf Buffer to append.
-     * @return The specified buffer.
-     * @throws IllegalArgumentException if the specified string is malformed.
-     */
-    public static StringBuilder unescape(String source, StringBuilder buf) {
-        int length = source == null ? 0 : source.length();
-        for (int i = 0; i < length;) {
-            char ch = source.charAt(i++);
-            if (ch == '\\') {
-                if (i == length) {
-                    throw new IllegalArgumentException(source);
-                }
-                switch (source.charAt(i++)) {
-                    case '\"':
-                        buf.append('\"');
-                        break;
-                    case '\'':
-                        buf.append('\'');
-                        break;
-                    case '\\':
-                        buf.append('\\');
-                        break;
-                    case 'n':
-                        buf.append('\n');
-                        break;
-                    case 'r':
-                        buf.append('\r');
-                        break;
-                    case 't':
-                        buf.append('\t');
-                        break;
-                    case 'f':
-                        buf.append('\f');
-                        break;
-                    case 'b':
-                        buf.append('\b');
-                        break;
-                    case 'u':
-                        if (i + 4 > length) {
-                            throw new IllegalArgumentException(source);
-                        }
-                        int ucode = 0;
-                        for (int j = 0; j < 4; j++) {
-                            ucode <<= 4;
-                            ch = source.charAt(i++);
-                            if (ch >= 0x30 && ch <= 0x39) {
-                                ucode |= ch - 0x30;
-                            } else if (ch >= 0x61 && ch <= 0x7a) {
-                                ucode |= ch - 0x57;
-                            } else if (ch >= 0x41 && ch <= 0x5a) {
-                                ucode |= ch - 0x37;
-                            } else {
-                                throw new IllegalArgumentException(source);
-                            }
-                        }
-                        buf.append((char) ucode);
-                        break;
-                    default:
-                        throw new IllegalArgumentException(source);
-                }
-            } else {
-                buf.append(ch);
-            }
-        }
-        return buf;
     }
     
 }

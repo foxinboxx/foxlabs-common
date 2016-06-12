@@ -176,7 +176,7 @@ public final class MessageBundle {
      *         missing.
      */
     public String format(String key, Locale locale, Object... args) {
-        return new MessageFormat(get(key, locale), locale).format(args);
+        return args.length == 0 ? get(key, locale) : new MessageFormat(get(key, locale), locale).format(args);
     }
     
     /**
