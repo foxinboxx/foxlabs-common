@@ -349,9 +349,12 @@ public abstract class ResourceHelper {
                     Manifest manifest = new Manifest(stream);
                     for (int i = 0; i < names.length; i++) {
                         if (values[i] == null) {
-                            values[i] = manifest.getMainAttributes().getValue(names[i]);
-                            if (values[i] != null) {
-                                found++;
+                            try {
+                                values[i] = manifest.getMainAttributes().getValue(names[i]);
+                                if (values[i] != null) {
+                                    found++;
+                                }
+                            } catch (IllegalArgumentException e) {
                             }
                         }
                     }
