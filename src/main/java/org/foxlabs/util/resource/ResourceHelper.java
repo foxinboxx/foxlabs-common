@@ -315,6 +315,21 @@ public abstract class ResourceHelper {
     }
     
     /**
+     * Searches for attribute with the specified name in all META-INF/MANIFEST.MF
+     * resources and returns attribute value or the specified default value if
+     * attribute with the specified name is not found.
+     * 
+     * @param names Attribute name to search.
+     * @param defaultValue Default value.
+     * @return Attribute value the specified default value if attribute with
+     *         the specified name is not found.
+     */
+    public static String readManifestAttribute(String name, String defaultValue) {
+        String value = readManifestAttributes(name)[0];
+        return value == null ? defaultValue : value;
+    }
+    
+    /**
      * Searches for attributes with the specified names in all META-INF/MANIFEST.MF
      * resources and returns array of attribute values. If attribute with
      * specified name is not found then correponding array element will contain
