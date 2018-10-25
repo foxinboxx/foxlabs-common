@@ -107,6 +107,7 @@ public final class BeanIntrospector {
      * Returns bean annotation for the specified annotation type or
      * <code>null</code> if annotation is not defined.
      * 
+     * @param <A> The annotation type.
      * @param annotationType The type of annotation.
      * @return Bean annotation for the specified annotation type or
      *         <code>null</code> if annotation is not defined.
@@ -418,6 +419,7 @@ public final class BeanIntrospector {
          * Returns this property annotation for the specified annotation type
          * or <code>null</code> if annotation is not defined.
          * 
+         * @param <A> The annotation type.
          * @param annotationType The type of annotation.
          * @return This property annotation for the specified annotation type
          *         or <code>null</code> if annotation is not defined.

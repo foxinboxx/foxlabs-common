@@ -49,6 +49,7 @@ public abstract class Service {
      * Searches for service provider classes of the specified category and
      * returns iterator over their instances.
      * 
+     * @param <P> The service provider type.
      * @param category Service provider category to search.
      * @return Iterator over service provider instances of the specified
      *         category.
@@ -63,6 +64,7 @@ public abstract class Service {
      * Searches for service provider classes of the specified category using
      * the specified class loader and returns iterator over their instances.
      * 
+     * @param <P> The service provider type.
      * @param category Service provider category to search.
      * @param cl Class loader to be used for service provider class loading.
      * @return Iterator over service provider instances of the specified
@@ -77,6 +79,7 @@ public abstract class Service {
      * Searches for service provider classes of the specified category and
      * returns first service provider instance.
      * 
+     * @param <P> The service provider type.
      * @param category Service provider category to search.
      * @return First service provider instance or <code>null</code> if there
      *         are no service provider classes found.
@@ -91,6 +94,7 @@ public abstract class Service {
      * Searches for service provider classes of the specified category using
      * the specified class loader and returns first service provider instance.
      * 
+     * @param <P> The service provider type.
      * @param category Service provider category to search.
      * @param cl Class loader to be used for service provider class loading.
      * @return First service provider instance or <code>null</code> if there
@@ -106,6 +110,7 @@ public abstract class Service {
      * Searches for service provider classes of the specified category and
      * returns iterator over them.
      * 
+     * @param <P> The service provider type.
      * @param category Service provider category to search.
      * @return Iterator over service provider classes of the specified category.
      * @throws ResourceError if an error occured when reading SPI resources.
@@ -119,6 +124,7 @@ public abstract class Service {
      * Searches for service provider classes of the specified category using
      * the specified class loader and returns iterator over them.
      * 
+     * @param <P> The service provider type.
      * @param category Service provider category to search.
      * @param cl Class loader to be used for service provider class loading.
      * @return Iterator over service provider classes of the specified category.
@@ -133,6 +139,7 @@ public abstract class Service {
     /**
      * Lazy iterator over service provider instances.
      * 
+     * @param <P> The service provider type.
      * @author Fox Mulder
      */
     protected static class ProviderItr<P> implements Iterator<P> {

@@ -49,14 +49,14 @@ public abstract class ResourceHelper {
     /**
      * Returns class loader.
      * 
-     * <p>This method tries to resolve class loader in the following sequence:
+     * <p>This method tries to resolve class loader in the following sequence:</p>
      * <ul>
      *   <li>Context class loader for the current thread.</li>
      *   <li>Class loader of this class.</li>
      *   <li>System class loader.</li>
      * </ul>
      * If all attempts above return <code>null</code> then this method returns
-     * <code>null</code>.</p>
+     * <code>null</code>.
      * 
      * @return Class loader.
      */
@@ -306,7 +306,7 @@ public abstract class ResourceHelper {
      * resources and returns attribute value or <code>null</code> if attribute
      * with the specified name is not found.
      * 
-     * @param names Attribute name to search.
+     * @param name Attribute name to search.
      * @return Attribute value or <code>null</code> if attribute with the
      *         specified name is not found.
      */
@@ -319,7 +319,7 @@ public abstract class ResourceHelper {
      * resources and returns attribute value or the specified default value if
      * attribute with the specified name is not found.
      * 
-     * @param names Attribute name to search.
+     * @param name Attribute name to search.
      * @param defaultValue Default value.
      * @return Attribute value the specified default value if attribute with
      *         the specified name is not found.

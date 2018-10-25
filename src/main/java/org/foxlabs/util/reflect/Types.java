@@ -37,6 +37,7 @@ public abstract class Types {
     /**
      * Casts an object.
      * 
+     * @param <T> The object type.
      * @param obj The object to be cast.
      * @return The object after casting.
      */
@@ -164,6 +165,7 @@ public abstract class Types {
      * Returns corresponding wrapper type for the specified primitive type.
      * This method has no effect if the specified type is not primitive type.
      * 
+     * @param <T> The wrapper type.
      * @param type Primitive type.
      * @return Wrapper type for the specified primitive type.
      */
@@ -224,6 +226,7 @@ public abstract class Types {
      * return default value for primitive types only. For other types it
      * returns <code>null</code>.
      * 
+     * @param <T> The value type.
      * @param type The type for which default value should be returned.
      * @return Default value for the specified type.
      */
@@ -312,6 +315,7 @@ public abstract class Types {
     /**
      * Returns raw type for the specified generic type.
      * 
+     * @param <T> The raw type.
      * @param type Generic type.
      * @return Raw type for the specified generic type.
      */
@@ -330,6 +334,8 @@ public abstract class Types {
     /**
      * Returns array type for the specified type of array elements.
      * 
+     * @param <T> The array type.
+     * @param <E> The array element type.
      * @param elementType Type of array elements.
      * @return Array type for the specified type of array elements.
      */
@@ -346,6 +352,7 @@ public abstract class Types {
      * collection or map type. Note that this method returns <code>null</code>
      * if the specified type is not array, collection or map type.
      * 
+     * @param <T> The element type.
      * @param type Generic array, collection or map type.
      * @return Raw element (value) type for the specified type.
      */
@@ -375,6 +382,7 @@ public abstract class Types {
      * Returns raw key type for the specified generic map type. Note that this
      * method returns <code>null</code> if the specified type is not map type.
      * 
+     * @param <T> The key type.
      * @param type Generic map type.
      * @return Raw key type for the specified type.
      */
@@ -428,6 +436,7 @@ public abstract class Types {
     /**
      * Creates a new object instance of the specified type.
      * 
+     * @param <T> The object instance type.
      * @param type The type of object to be created.
      * @return A new object instance of the specified type.
      * @throws RuntimeException if object instantiation fails.
@@ -443,6 +452,8 @@ public abstract class Types {
     /**
      * Creates a new array for the specified type of array elements.
      * 
+     * @param <T> The array type.
+     * @param <E> The array element type.
      * @param elementType The type of array elements.
      * @param length Length of the new array.
      * @return A new array for the specified type of array elements.
@@ -454,6 +465,8 @@ public abstract class Types {
     /**
      * Creates a new collection of the specified type.
      * 
+     * @param <T> The collection type.
+     * @param <E> The collection element type.
      * @param type The type of collection to be created.
      * @param size Initial size of the new collection.
      * @return A new collection of the specified type.
@@ -475,6 +488,8 @@ public abstract class Types {
     /**
      * Creates a new list of the specified type.
      * 
+     * @param <T> The list type.
+     * @param <E> The list element type.
      * @param type The type of list to be created.
      * @param size Initial size of the new list.
      * @return A new list of the specified type.
@@ -492,6 +507,8 @@ public abstract class Types {
     /**
      * Creates a new set of the specified type.
      * 
+     * @param <T> The set type.
+     * @param <E> The set element type.
      * @param type The type of set to be created.
      * @param size Initial size of the new set.
      * @return A new set of the specified type.
@@ -513,6 +530,8 @@ public abstract class Types {
     /**
      * Creates a new queue of the specified type.
      * 
+     * @param <T> The queue type.
+     * @param <E> The queue element type.
      * @param type The type of queue to be created.
      * @param size Initial size of the new queue.
      * @return A new queue of the specified type.
@@ -544,6 +563,9 @@ public abstract class Types {
     /**
      * Creates a new map of the specified type.
      * 
+     * @param <T> The map type.
+     * @param <K> The map key type.
+     * @param <V> The map value type.
      * @param type The type of map to be created.
      * @param size Initial size of the new map.
      * @return A new map of the specified type.

@@ -343,6 +343,9 @@ public final class UnicodeSet extends ToString.Adapter implements java.io.Serial
     
     /**
      * Serializes this character set.
+     * 
+     * @param stream Output stream.
+     * @throws java.io.IOException if an IO error occurred.
      */
     private void writeObject(java.io.ObjectOutputStream stream)
             throws java.io.IOException {
@@ -356,6 +359,11 @@ public final class UnicodeSet extends ToString.Adapter implements java.io.Serial
     
     /**
      * Deserializes this character set.
+     * 
+     * @param stream Input stream.
+     * @throws java.io.IOException if an IO error occurred.
+     * @throws ClassNotFoundException if the class of a serialized object could
+     *         not be found.
      */
     private void readObject(java.io.ObjectInputStream stream)
             throws java.io.IOException, ClassNotFoundException {
@@ -371,6 +379,9 @@ public final class UnicodeSet extends ToString.Adapter implements java.io.Serial
     
     /**
      * Replaces deserialized {@link #EMPTY} and {@link #WHOLE} instances.
+     * 
+     * @return {@link #EMPTY} or {@link #WHOLE} or this instance.
+     * @throws java.io.ObjectStreamException never.
      */
     private Object readResolve() throws java.io.ObjectStreamException {
         return EMPTY.equals(this) ? EMPTY : WHOLE.equals(this) ? WHOLE : this;
@@ -579,14 +590,14 @@ public final class UnicodeSet extends ToString.Adapter implements java.io.Serial
     /**
      * Creates a new character set from the specified pattern.
      * 
-     * <p>The following rules are applied to pattern expressions:
+     * <p>The following rules are applied to pattern expressions:</p>
      * <ul>
      *   <li>The <code>\</code> character is considered as escape character.</li>
      *   <li>The first <code>^</code> character is considered as set inverse.</li>
      *   <li>The <code>X-Y</code> is considered as characters interval from
      *       <code>X</code> to <code>Y</code>.</li>
      *   <li>Any other character is considered as single character interval.</li>
-     * </ul></p>
+     * </ul>
      * 
      * @param pattern Pattern expression string.
      * @return A new character set from the specified pattern.

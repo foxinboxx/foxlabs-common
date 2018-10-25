@@ -153,6 +153,9 @@ public final class Location extends ToString.Adapter implements Comparable<Locat
     
     /**
      * Replaces deserialized unknown location to {@link #UNKNOWN}.
+     * 
+     * @return {@link #UNKNOWN} or this instance.
+     * @throws java.io.ObjectStreamException never.
      */
     private Object readResolve() throws java.io.ObjectStreamException {
         return UNKNOWN.equals(this) ? UNKNOWN : this;

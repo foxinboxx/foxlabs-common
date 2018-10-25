@@ -23,12 +23,12 @@ import java.util.LinkedHashSet;
 /**
  * This class defines a number of methods that help to validate arguments.
  * 
- * <p>For example:
+ * <p>For example:</p>
  * <pre>
  *   public void setName(String name) {
  *       this.name = Assert.notEmpty(name, "Name cannot be empty!");
  *   }
- * </pre></p>
+ * </pre>
  * 
  * @author Fox Mulder
  */
@@ -68,6 +68,7 @@ public abstract class Assert {
      * Throws <code>IllegalArgumentException</code> if the specified object is
      * <code>null</code>.
      * 
+     * @param <T> The object type.
      * @param object Object to test.
      * @param message Exception message.
      * @return The specified object.
@@ -104,6 +105,7 @@ public abstract class Assert {
      * Throws <code>IllegalArgumentException</code> if the specified array is
      * <code>null</code> or empty.
      * 
+     * @param <T> The array type.
      * @param array Array to test.
      * @param message Exception message.
      * @return The specified array.
@@ -122,6 +124,7 @@ public abstract class Assert {
      * Throws <code>IllegalArgumentException</code> if the specified collection
      * is <code>null</code> or empty.
      * 
+     * @param <T> The collection type.
      * @param collection Collection to test.
      * @param message Exception message.
      * @return The specified collection.
@@ -140,6 +143,7 @@ public abstract class Assert {
      * Throws <code>IllegalArgumentException</code> if the specified array is
      * <code>null</code> or empty or contains <code>null</code> elements.
      * 
+     * @param <T> The array type.
      * @param array Array to test.
      * @param message Exception message.
      * @return The specified array.
@@ -163,6 +167,7 @@ public abstract class Assert {
      * Throws <code>IllegalArgumentException</code> if the specified collection
      * is <code>null</code> or empty or contains <code>null</code> elements.
      * 
+     * @param <T> The collection type.
      * @param collection Collection to test.
      * @param message Exception message.
      * @return The specified collection.
@@ -211,6 +216,7 @@ public abstract class Assert {
      * is <code>null</code> or empty or contains <code>null</code> or empty
      * strings.
      * 
+     * @param <T> The collection type.
      * @param collection Collection to test.
      * @param message Exception message.
      * @return The specified collection.

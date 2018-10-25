@@ -474,6 +474,9 @@ public class ByteBuffer implements java.io.Serializable {
     
     /**
      * Serializes this buffer data.
+     * 
+     * @param stream Output stream.
+     * @throws java.io.IOException if an IO error occurred.
      */
     private void writeObject(java.io.ObjectOutputStream stream)
             throws java.io.IOException {
@@ -484,6 +487,11 @@ public class ByteBuffer implements java.io.Serializable {
     
     /**
      * Deserializes this buffer data.
+     * 
+     * @param stream Input stream.
+     * @throws java.io.IOException if an IO error occurred.
+     * @throws ClassNotFoundException if the class of a serialized object could
+     *         not be found.
      */
     private void readObject(java.io.ObjectInputStream stream)
             throws java.io.IOException, ClassNotFoundException {
