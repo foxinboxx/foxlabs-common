@@ -77,6 +77,16 @@ public final class Path implements Comparable<Path>, java.io.Serializable {
     }
     
     /**
+     * Returns relative pathname of this path (i.e. pathname without leading
+     * <code>'/'</code> character).
+     * 
+     * @return Relative pathname of this path.
+     */
+    public String getRelativePathname() {
+        return pathname.substring(1);
+    }
+    
+    /**
      * Returns name part of the pathname. If this path is root path then empty
      * string will be returned.
      * 
@@ -236,22 +246,22 @@ public final class Path implements Comparable<Path>, java.io.Serializable {
      * 
      * <p>Pathname syntax:</p>
      * <ul>
+     *   <li>All <code>'\'</code> characters will be replaced with <code>'/'</code> character.</li>
+     *   <li>Empty parts like <code>'//'</code> are not allowed.</li>
      *   <li>Pathname always starts with <code>'/'</code> character.</li>
      *   <li>Pathname never ends with <code>'/'</code> character.</li>
-     *   <li>Leading and trailing whitespaces will be removed.</li>
-     *   <li>Empty parts like <code>'//'</code> or <code>'/   /'</cdode> are
-     *       not allowed.</li>
-     *   <li>All <code>'\'</code> characters will be replaced with
-     *       <code>'/'</code> character.</li>
      * </ul>
      * 
      * @return Path instance for the specified pathname.
      * @throws IllegalArgumentException if the specified pathname is invalid.
      */
     public static Path parse(String pathname) {
-        final int length = pathname == null ? 0 : (pathname = pathname.trim().replace('\\', SEPARATOR)).length();
-        if (length == 0 || ROOT.pathname.equals(pathname)) {
+        if (pathname.equals(ROOT.pathname) || pathname.equals('\\')) {
             return ROOT;
+        }
+        pathname = pathname.replace('\\', SEPARATOR);
+        if (pathname.contains("//")) {
+            throw new IllegalArgumentException("Invalid pathname: \"" + pathname + "\"");
         }
         if (pathname.charAt(0) != SEPARATOR) {
             pathname = SEPARATOR + pathname;
@@ -259,7 +269,6 @@ public final class Path implements Comparable<Path>, java.io.Serializable {
         if (pathname.charAt(pathname.length() - 1) == SEPARATOR) {
             pathname = pathname.substring(0, pathname.length() - 1);
         }
-        // TODO Validate pathname for //
         return new Path(pathname);
     }
     
