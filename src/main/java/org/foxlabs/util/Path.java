@@ -26,7 +26,7 @@ import java.io.File;
  * @author Fox Mulder
  */
 public final class Path implements Comparable<Path>, java.io.Serializable {
-    private static final long serialVersionUID = 7453763729390828576L;
+    private static final long serialVersionUID = -783805860928936578L;
     
     /**
      * Path separator character.
@@ -260,14 +260,14 @@ public final class Path implements Comparable<Path>, java.io.Serializable {
             return ROOT;
         }
         pathname = pathname.replace('\\', SEPARATOR);
-        if (pathname.contains("//")) {
-            throw new IllegalArgumentException("Invalid pathname: \"" + pathname + "\"");
-        }
         if (pathname.charAt(0) != SEPARATOR) {
             pathname = SEPARATOR + pathname;
         }
         if (pathname.charAt(pathname.length() - 1) == SEPARATOR) {
             pathname = pathname.substring(0, pathname.length() - 1);
+        }
+        if (pathname.contains("//")) {
+            throw new IllegalArgumentException("Invalid pathname: \"" + pathname + "\"");
         }
         return new Path(pathname);
     }
