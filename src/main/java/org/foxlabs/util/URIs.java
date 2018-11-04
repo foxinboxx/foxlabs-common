@@ -44,9 +44,7 @@ public abstract class URIs {
         final String userInfo = uri.getUserInfo();
         if (userInfo != null) {
             final int index = userInfo.indexOf(':');
-            if (index > 0) {
-                return userInfo.substring(0, index);
-            }
+            return index < 0 ? userInfo : userInfo.substring(0, index);
         }
         return null;
     }
