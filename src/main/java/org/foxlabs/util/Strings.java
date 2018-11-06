@@ -17,6 +17,7 @@
 package org.foxlabs.util;
 
 import java.util.Locale;
+import java.util.function.Supplier;
 
 /**
  * Implemention of commonly used string operations.
@@ -29,16 +30,43 @@ public abstract class Strings {
      * It is utility class, don't allow instantiation.
      */
     private Strings() {
-        super();
+        throw new IllegalAccessError();
     }
     
     /**
-     * Returns trimmed copy of the specified string or <code>null</code> if the
-     * specified string is empty or <code>null</code>.
+     * Returns {@code Object} instance with overridden {@code toString()} method
+     * that uses the specified formatter to generate resulting string. This
+     * method is useful for lazy message construction in Log4J logging.
+     * 
+     * <pre>
+     * // Instead of this
+     * if (log.isDebugEnabled()) {
+     *     log.debug("System properties:\n" + System.getProperties());
+     * }
+     * 
+     * // You can use this
+     * log.debug(Strings.message(() -> "System properties:\n" + System.getProperties()));
+     * </pre>
+     * 
+     * @param formatter {@code toString()} result formatter.
+     * @return {@code Object} instance with overridden {@code toString()} method
+     *         that uses the specified formatter to generate resulting string.
+     */
+    public static Object message(Supplier<String> formatter) {
+        return new Object() {
+            @Override public String toString() {
+                return formatter.get();
+            }
+        };
+    }
+    
+    /**
+     * Returns trimmed copy of the specified string or {@code null} if the
+     * specified string is empty or {@code null}.
      * 
      * @param value String value.
-     * @return Trimmed copy of the specified string or <code>null</code> if the
-     *         specified string is empty or <code>null</code>.
+     * @return Trimmed copy of the specified string or {@code null} if the
+     *         specified string is empty or {@code null}.
      */
     public static String trim(String value) {
         return value == null || (value = value.trim()).isEmpty() ? null : value;
@@ -65,7 +93,7 @@ public abstract class Strings {
     }
     
     /**
-     * Adds escape (<code>\</code>) character to the specified one if needed.
+     * Adds escape ({@code \}) character to the specified one if needed.
      * 
      * @param ch Source character.
      * @return Escaped character string.
@@ -102,7 +130,7 @@ public abstract class Strings {
     }
     
     /**
-     * Adds escape (<code>\</code>) characters to the specified string.
+     * Adds escape ({@code \}) characters to the specified string.
      * 
      * @param value Source string.
      * @return String with added escape characters.
@@ -116,7 +144,7 @@ public abstract class Strings {
     }
     
     /**
-     * Adds escape (<code>\</code>) characters to the specified string and
+     * Adds escape ({@code \}) characters to the specified string and
      * appends result to the specified buffer.
      * 
      * @param value Source string.
@@ -133,7 +161,7 @@ public abstract class Strings {
     }
     
     /**
-     * Removes escape (<code>\</code>) characters from the specified string.
+     * Removes escape ({@code \}) characters from the specified string.
      * 
      * @param value Source string.
      * @return String with removed escape characters.
@@ -148,7 +176,7 @@ public abstract class Strings {
     }
     
     /**
-     * Removes escape (<code>\</code>) characters from the specified string and
+     * Removes escape ({@code \}) characters from the specified string and
      * appends result to the specified buffer.
      * 
      * @param value Source string.
