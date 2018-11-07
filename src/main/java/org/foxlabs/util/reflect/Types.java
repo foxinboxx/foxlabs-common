@@ -475,11 +475,11 @@ public abstract class Types {
         if (Collection.class.equals(type)) {
             return type.cast(new ArrayList<E>(size));
         } else if (List.class.isAssignableFrom(type)) {
-            return type.cast(newList(type.asSubclass(List.class), size));
+            return type.cast(newList(cast(type.asSubclass(List.class)), size));
         } else if (Set.class.isAssignableFrom(type)) {
-            return type.cast(newSet(type.asSubclass(Set.class), size));
+            return type.cast(newSet(cast(type.asSubclass(Set.class)), size));
         } else if (Queue.class.isAssignableFrom(type)) {
-            return type.cast(newQueue(type.asSubclass(Queue.class), size));
+            return type.cast(newQueue(cast(type.asSubclass(Queue.class)), size));
         } else {
             return newInstance(type);
         }
