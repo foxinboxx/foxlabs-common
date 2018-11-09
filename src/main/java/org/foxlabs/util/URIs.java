@@ -40,7 +40,7 @@ public abstract class URIs {
      * @param uri URI reference.
      * @return Username part for the specified URI reference.
      */
-    public static String username(URI uri) {
+    public static String getUsername(URI uri) {
         final String userInfo = uri.getUserInfo();
         if (userInfo != null) {
             final int index = userInfo.indexOf(':');
@@ -56,7 +56,7 @@ public abstract class URIs {
      * @param uri URI reference.
      * @return Password part for the specified URI reference.
      */
-    public static String password(URI uri) {
+    public static String getPassword(URI uri) {
         final String userInfo = uri.getUserInfo();
         if (userInfo != null) {
             final int index = userInfo.indexOf(':');
@@ -68,33 +68,32 @@ public abstract class URIs {
     }
     
     /**
-     * Removes password from the specified URI reference and returns new URI
-     * reference. If the specified URI does not contain password part then the
-     * same URI instance will be returned.
+     * Returns last scheme from scheme part of the specified URI. For example,
+     * for the {@code "zip:http://..."} URI last scheme is {@code "http"}.
+     * Returns {@code null} if scheme part is not provided.
      * 
-     * <p>Use this method to construct exception and log messages to hide
-     * confidential information.</p>
-     * 
-     * @param uri URI reference to remove password.
-     * @return URI reference without password part.
+     * @param uri URI reference.
+     * @return Last scheme from scheme part of the specified URI.
      */
-    public static URI toPublicURI(URI uri) {
-        if (password(uri) != null) {
-            final String username = username(uri);
-            final String scheme = uri.getScheme();
-            final String host = uri.getHost();
-            final int port = uri.getPort();
-            final String path = uri.getPath();
-            final String query = uri.getQuery();
-            final String fragment = uri.getFragment();
-            final String userInfo = username == null ? null : username + ":***";
-            try {
-                return new URI(scheme, userInfo, host, port, path, query, fragment);
-            } catch (URISyntaxException e) {
-                // Should never happen
+    public static String getLastSchemePart(URI uri) {
+        final String scheme = uri.getScheme();
+        if (scheme == null) {
+            return null;
+        } else {
+            final String spec = uri.getSchemeSpecificPart();
+            for (int end = spec.lastIndexOf(':') - 1; end >= 0; end--) {
+                if (spec.charAt(end) != ':') {
+                    final int start = spec.lastIndexOf(':', end);
+                    final String last = spec.substring(Math.max(0, start + 1), end + 1);
+                    if (last.isEmpty()) {
+                        end = start;
+                    } else {
+                        return last;
+                    }
+                }
             }
+            return scheme;
         }
-        return uri;
     }
     
     /**
@@ -119,6 +118,36 @@ public abstract class URIs {
             }
         }
         return false;
+    }
+    
+    /**
+     * Removes password from the specified URI reference and returns new URI
+     * reference. If the specified URI does not contain password part then the
+     * same URI instance will be returned.
+     * 
+     * <p>Use this method to construct exception and log messages to hide
+     * confidential information.</p>
+     * 
+     * @param uri URI reference to remove password.
+     * @return URI reference without password part.
+     */
+    public static URI toPublicURI(URI uri) {
+        if (getPassword(uri) != null) {
+            final String username = getUsername(uri);
+            final String scheme = uri.getScheme();
+            final String host = uri.getHost();
+            final int port = uri.getPort();
+            final String path = uri.getPath();
+            final String query = uri.getQuery();
+            final String fragment = uri.getFragment();
+            final String userInfo = username == null ? null : username + ":***";
+            try {
+                return new URI(scheme, userInfo, host, port, path, query, fragment);
+            } catch (URISyntaxException e) {
+                // Should never happen
+            }
+        }
+        return uri;
     }
     
 }

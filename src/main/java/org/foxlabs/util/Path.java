@@ -34,7 +34,7 @@ public final class Path implements Comparable<Path>, java.io.Serializable {
     public static final char SEPARATOR = '/';
     
     /**
-     * Root path (<code>'/'</code>).
+     * Root path ({@code '/'}).
      */
     public static final Path ROOT = new Path(Character.toString(SEPARATOR));
     
@@ -78,7 +78,7 @@ public final class Path implements Comparable<Path>, java.io.Serializable {
     
     /**
      * Returns relative pathname of this path (i.e. pathname without leading
-     * <code>'/'</code> character).
+     * {@code '/'} character).
      * 
      * @return Relative pathname of this path.
      */
@@ -116,7 +116,7 @@ public final class Path implements Comparable<Path>, java.io.Serializable {
     
     /**
      * Returns parent path of this path. If this path is root path then parent
-     * path is <code>null</code>.
+     * path is {@code null}.
      * 
      * @return Parent path of this path.
      */
@@ -129,10 +129,10 @@ public final class Path implements Comparable<Path>, java.io.Serializable {
     }
     
     /**
-     * Determines if this path is root path (i.e. <code>'/'</code>).
+     * Determines if this path is root path (i.e. {@code '/'}).
      * 
-     * @return <code>true</code> if this path is root path;
-     *         <code>false</code> otherwise.
+     * @return {@code true} if this path is root path;
+     *         {@code false} otherwise.
      */
     public boolean isRoot() {
         return this == ROOT;
@@ -201,8 +201,8 @@ public final class Path implements Comparable<Path>, java.io.Serializable {
      * equal if their pathnames are exactly the same.
      * 
      * @param obj Path to compare with this path.
-     * @return <code>true</code> if this path is equal to the specified one;
-     *         <code>false</code> otherwise.
+     * @return {@code true} if this path is equal to the specified one;
+     *         {@code false} otherwise.
      */
     @Override
     public boolean equals(Object obj) {
@@ -246,10 +246,12 @@ public final class Path implements Comparable<Path>, java.io.Serializable {
      * 
      * <p>Pathname syntax:</p>
      * <ul>
-     *   <li>All <code>'\'</code> characters will be replaced with <code>'/'</code> character.</li>
-     *   <li>Empty parts like <code>'//'</code> are not allowed.</li>
-     *   <li>Pathname always starts with <code>'/'</code> character.</li>
-     *   <li>Pathname never ends with <code>'/'</code> character.</li>
+     *   <li>All {@code '\'} characters will be replaced with {@code '/'}
+     *       character.</li>
+     *   <li>Pathnames like {@code '//'}, {@code '/./} and {@code '/../'} are
+     *       not allowed.</li>
+     *   <li>Pathname always starts with {@code '/'} character.</li>
+     *   <li>Pathname never ends with {@code '/'} character.</li>
      * </ul>
      * 
      * @return Path instance for the specified pathname.
@@ -266,7 +268,7 @@ public final class Path implements Comparable<Path>, java.io.Serializable {
         if (pathname.charAt(pathname.length() - 1) == SEPARATOR) {
             pathname = pathname.substring(0, pathname.length() - 1);
         }
-        if (pathname.contains("//")) {
+        if (pathname.contains("//") || pathname.contains("/./") || pathname.contains("/../")) {
             throw new IllegalArgumentException("Invalid pathname: \"" + pathname + "\"");
         }
         return new Path(pathname);

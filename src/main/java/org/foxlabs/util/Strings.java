@@ -73,6 +73,38 @@ public abstract class Strings {
     }
     
     /**
+     * Cuts length of the specified string to the specified maximum length.
+     * 
+     * @param value String to cut.
+     * @param maxlength Maximum allowed length for the specified string.
+     * @return Cutted string or the specified one if its length less or equal
+     *         than maximum length.
+     */
+    public static String cut(String value, int maxlength) {
+        return value == null
+            ? null
+            : value.length() > maxlength
+                ? value.substring(0, Math.max(maxlength, 0))
+                : value;
+    }
+    
+    /**
+     * Does the same as {@link #cut(String, int)} but adds {@code "..."} at the
+     * end of cutted string if cut operation has been applied.
+     * 
+     * @param value String to cut.
+     * @param maxlength Maximum allowed length for the specified string.
+     * @return Cutted string with {@code "..."} at the end.
+     */
+    public static String ellipsis(String value, int maxlength) {
+        return value == null
+            ? null
+            : value.length() > maxlength
+                ? value.substring(0, Math.max(maxlength, 0)) + "..."
+                : value;
+    }
+    
+    /**
      * Converts the specified string to lower case in locale insensitive way.
      * 
      * @param value String to be converted.
