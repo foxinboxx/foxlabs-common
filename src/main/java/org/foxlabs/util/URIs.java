@@ -60,7 +60,7 @@ public abstract class URIs {
         final String userInfo = uri.getUserInfo();
         if (userInfo != null) {
             final int index = userInfo.indexOf(':');
-            if (index < userInfo.length() - 1) {
+            if (!(index < 0 || index + 1 == userInfo.length())) {
                 return userInfo.substring(index + 1);
             }
         }
