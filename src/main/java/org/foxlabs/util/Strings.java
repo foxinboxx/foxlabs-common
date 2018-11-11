@@ -16,7 +16,10 @@
 
 package org.foxlabs.util;
 
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.NoSuchElementException;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -122,6 +125,65 @@ public abstract class Strings {
      */
     public static String upper(String value) {
         return value == null ? null : value.toUpperCase(Locale.ENGLISH);
+    }
+    
+    /**
+     * Returns a new string composed of copies of the specified array of elements
+     * joined together with a copy of the specified delimiter using the specified
+     * mapper function to convert elements to strings.
+     * 
+     * @param <T> The type of elements.
+     * @param delimiter A sequence of characters that is used to separate each
+     *        of the elements in the resulting string.
+     * @param elements An array of elements to join.
+     * @param mapper A function that converts array elements to string representation.
+     * @return A new string that is composed from the specified elements.
+     */
+    public static <T> String join(String delimiter, T[] elements, Function<T, String> mapper) {
+        return String.join(delimiter, new Iterable<CharSequence>() {
+            @Override public Iterator<CharSequence> iterator() {
+                return new Iterator<CharSequence>() {
+                    int index = 0;
+                    @Override public boolean hasNext() {
+                        return index < elements.length;
+                    }
+                    @Override public CharSequence next() {
+                        if (index >= elements.length) {
+                            throw new NoSuchElementException();
+                        }
+                        return mapper.apply(elements[index++]);
+                    }
+                };
+            }
+        });
+    }
+    
+    /**
+     * Returns a new string composed of copies of the specified elements joined
+     * together with a copy of the specified delimiter using the specified mapper
+     * function to convert elements to strings.
+     * 
+     * @param <T> The type of elements.
+     * @param delimiter A sequence of characters that is used to separate each
+     *        of the elements in the resulting string.
+     * @param elements An {@code Iterable} that will have its elements joined together.
+     * @param mapper A function that converts array elements to string representation.
+     * @return A new string that is composed from the specified elements.
+     */
+    public static <T> String join(String delimiter, Iterable<T> elements, Function<T, String> mapper) {
+        return String.join(delimiter, new Iterable<CharSequence>() {
+            @Override public Iterator<CharSequence> iterator() {
+                return new Iterator<CharSequence>() {
+                    final Iterator<T> itr = elements.iterator();
+                    @Override public boolean hasNext() {
+                        return itr.hasNext();
+                    }
+                    @Override public CharSequence next() {
+                        return mapper.apply(itr.next());
+                    }
+                };
+            }
+        });
     }
     
     /**
