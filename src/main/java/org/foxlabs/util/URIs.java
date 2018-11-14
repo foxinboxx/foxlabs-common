@@ -68,6 +68,31 @@ public abstract class URIs {
     }
     
     /**
+     * Returns last part of the path of the specified URI. For example, for the
+     * {@code http://example.com/path/to/resource} URI last path part is
+     * {@code resource}. Returns {@code null} if there is no path part at all.
+     * 
+     * @param uri URI reference.
+     * @return Last part of the path of the specified URI.
+     */
+    public static String getLastPathPart(URI uri) {
+        final String path = uri.getPath();
+        if (!(path == null || path.isEmpty())) {
+            int start = path.lastIndexOf('/');
+            if (start < path.length() - 1) {
+                return path.substring(start + 1);
+            } else if (start > 0) {
+                int end = start;
+                start = path.lastIndexOf('/', start - 1);
+                if (end - start > 1) {
+                    return path.substring(start + 1, end);
+                }
+            }
+        }
+        return null;
+    }
+    
+    /**
      * Returns last scheme from scheme part of the specified URI. For example,
      * for the {@code "zip:http://..."} URI last scheme is {@code "http"}.
      * Returns {@code null} if scheme part is not provided.
