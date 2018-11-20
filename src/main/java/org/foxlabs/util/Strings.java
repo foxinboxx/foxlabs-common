@@ -37,33 +37,6 @@ public abstract class Strings {
     }
     
     /**
-     * Returns {@code Object} instance with overridden {@code toString()} method
-     * that uses the specified formatter to generate resulting string. This
-     * method is useful for lazy message construction in Log4J logging.
-     * 
-     * <pre>
-     * // Instead of this
-     * if (log.isDebugEnabled()) {
-     *     log.debug("System properties:\n" + System.getProperties());
-     * }
-     * 
-     * // You can use this
-     * log.debug(Strings.message(() -> "System properties:\n" + System.getProperties()));
-     * </pre>
-     * 
-     * @param formatter {@code toString()} result formatter.
-     * @return {@code Object} instance with overridden {@code toString()} method
-     *         that uses the specified formatter to generate resulting string.
-     */
-    public static Object message(Supplier<String> formatter) {
-        return new Object() {
-            @Override public String toString() {
-                return formatter.get();
-            }
-        };
-    }
-    
-    /**
      * Returns trimmed copy of the specified string or {@code null} if the
      * specified string is empty or {@code null}.
      * 
@@ -108,6 +81,27 @@ public abstract class Strings {
     }
     
     /**
+     * Removes leading and trailing quotes and returns unquoted string or the
+     * specified value if there are no leading and trailing quotes found.
+     * Returns {@code null} if the specified value is {@code null}.
+     * 
+     * @param value String to unquote.
+     * @param quote Quote character.
+     * @return Unquoted string.
+     */
+    public static String unquote(String value, char quote) {
+        final int length = value == null ? 0 : value.length();
+        if (length > 1) {
+            if (value.charAt(0) == quote) {
+                if (value.charAt(length - 1) == quote) {
+                    return length == 2 ? "" : value.substring(1, length - 1);
+                }
+            }
+        }
+        return value;
+    }
+    
+    /**
      * Converts the specified string to lower case in locale insensitive way.
      * 
      * @param value String to be converted.
@@ -125,6 +119,56 @@ public abstract class Strings {
      */
     public static String upper(String value) {
         return value == null ? null : value.toUpperCase(Locale.ENGLISH);
+    }
+    
+    /**
+     * Determines if the specified string value contains any of the specified
+     * characters.
+     * 
+     * @param value String to test.
+     * @param chars Characters to search.
+     * @return {@code true} if the specified string value contains any of the
+     *         specified characters; {@code false} otherwise.
+     */
+    public static boolean containsChars(String value, String chars) {
+        final int length = value == null ? 0 : value.length();
+        if (length > 0) {
+            for (int i = 0; i < length; i++) {
+                if (chars.indexOf(value.charAt(i)) >= 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Replaces any of the specified characters in the specified value with the
+     * specified replacement character. If there are no characters replaced
+     * then original value will be returned.
+     * 
+     * @param value String to replace characters.
+     * @param chars Characters to replace.
+     * @param replacement Replacement character.
+     * @return String with replaced characters.
+     */
+    public static String replaceChars(String value, String chars, char replacement) {
+        final int length = value == null ? 0 : value.length();
+        if (length > 0) {
+            char[] buf = null;
+            for (int i = 0; i < length; i++) {
+                if (chars.indexOf(value.charAt(i)) >= 0) {
+                    if (buf == null) {
+                        buf = value.toCharArray();
+                    }
+                    buf[i] = replacement;
+                }
+            }
+            if (buf != null) {
+                return new String(buf);
+            }
+        }
+        return value;
     }
     
     /**
@@ -339,6 +383,33 @@ public abstract class Strings {
             }
         }
         return buf;
+    }
+    
+    /**
+     * Returns {@code Object} instance with overridden {@code toString()} method
+     * that uses the specified formatter to generate resulting string. This
+     * method is useful for lazy message construction in Log4J logging.
+     * 
+     * <pre>
+     * // Instead of this
+     * if (log.isDebugEnabled()) {
+     *     log.debug("System properties:\n" + System.getProperties());
+     * }
+     * 
+     * // You can use this
+     * log.debug(Strings.message(() -> "System properties:\n" + System.getProperties()));
+     * </pre>
+     * 
+     * @param formatter {@code toString()} result formatter.
+     * @return {@code Object} instance with overridden {@code toString()} method
+     *         that uses the specified formatter to generate resulting string.
+     */
+    public static Object message(Supplier<String> formatter) {
+        return new Object() {
+            @Override public String toString() {
+                return formatter.get();
+            }
+        };
     }
     
 }
