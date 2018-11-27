@@ -16,6 +16,11 @@
 
 package org.foxlabs.util;
 
+import java.net.URLEncoder;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -383,6 +388,40 @@ public abstract class Strings {
             }
         }
         return buf;
+    }
+    
+    /**
+     * Translates the specified value into {@code application/x-www-form-urlencoded}
+     * format using the {@code ISO-8859-1} encoding. Returns {@code null} if the
+     * specified value is {@code null}.
+     * 
+     * @param value The value to encode.
+     * @return The encoded value.
+     * @see #urlEncode(String, Charset)
+     */
+    public static String urlEncode(String value) {
+        return urlEncode(value, StandardCharsets.ISO_8859_1);
+    }
+    
+    /**
+     * Translates the specified value into {@code application/x-www-form-urlencoded}
+     * format using the specified encoding. Returns {@code null} if the specified
+     * value is {@code null}.
+     * 
+     * @param value The value to encode.
+     * @param charset The encoding to use.
+     * @return The encoded value.
+     */
+    public static String urlEncode(String value, Charset charset) {
+        if (!(value == null || value.isEmpty())) {
+            try {
+                return URLEncoder.encode(value, charset.name());
+            } catch (java.io.UnsupportedEncodingException e) {
+                // Should never happen
+                throw new IllegalStateException();
+            }
+        }
+        return value;
     }
     
     /**
