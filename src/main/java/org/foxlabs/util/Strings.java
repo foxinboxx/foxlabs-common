@@ -42,6 +42,18 @@ public abstract class Strings {
     }
     
     /**
+     * Returns empty string if the specified value is {@code null} or the value
+     * itself.
+     * 
+     * @param value String value.
+     * @return Empty string if the specified value is {@code null} or the value
+     *         itself.
+     */
+    public static String nullSafe(String value) {
+        return value == null ? "" : value;
+    }
+    
+    /**
      * Returns trimmed copy of the specified string or {@code null} if the
      * specified string is empty or {@code null}.
      * 
