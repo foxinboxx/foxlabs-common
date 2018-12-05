@@ -68,6 +68,16 @@ public abstract class URIs {
     }
     
     /**
+     * Returns path part of the specified URI reference as {@link Path}.
+     * 
+     * @param uri The URI reference.
+     * @return The path part of the specified URI reference as {@link Path}.
+     */
+    public static Path getPath(URI uri) {
+        return uri.getPath() != null ? Path.parse(uri.getPath()) : Path.ROOT;
+    }
+    
+    /**
      * Returns last segment of the path of the specified URI. For example, for
      * the {@code http://example.com/path/to/resource} URI last path segment is
      * {@code resource}. Returns {@code null} if there is no path part at all.
@@ -90,6 +100,29 @@ public abstract class URIs {
             }
         }
         return null;
+    }
+    
+    /**
+     * Adds the specified subpath to the specified URI reference and returns
+     * new URI reference.
+     * 
+     * @param uri The URI reference.
+     * @param subpath The subpath to add.
+     * @return A new URI reference with subpath added.
+     */
+    public static URI addPath(URI uri, Path subpath) {
+        final String scheme = uri.getScheme();
+        final String userInfo = uri.getUserInfo();
+        final String host = uri.getHost();
+        final int port = uri.getPort();
+        final String path = getPath(uri).append(subpath).getPathname();
+        final String query = uri.getQuery();
+        final String fragment = uri.getFragment();
+        try {
+            return new URI(scheme, userInfo, host, port, path, query, fragment);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
     
     /**
