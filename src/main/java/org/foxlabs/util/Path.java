@@ -16,6 +16,8 @@
 
 package org.foxlabs.util;
 
+import java.util.regex.Pattern;
+
 import java.io.File;
 
 /**
@@ -254,6 +256,7 @@ public final class Path implements Comparable<Path>, java.io.Serializable {
      *   <li>Pathname never ends with {@code '/'} character.</li>
      * </ul>
      * 
+     * @param pathname The pathname string.
      * @return Path instance for the specified pathname.
      * @throws IllegalArgumentException if the specified pathname is invalid.
      */
@@ -268,10 +271,15 @@ public final class Path implements Comparable<Path>, java.io.Serializable {
         if (pathname.charAt(pathname.length() - 1) == SEPARATOR) {
             pathname = pathname.substring(0, pathname.length() - 1);
         }
-        if (pathname.contains("//") || pathname.contains("/./") || pathname.contains("/../")) {
+        if (INVALID_PATHNAME.matcher(pathname).matches()) {
             throw new IllegalArgumentException("Invalid pathname: \"" + pathname + "\"");
         }
         return new Path(pathname);
     }
+    
+    /**
+     * Pattern for invalid pathnames.
+     */
+    private static final Pattern INVALID_PATHNAME = Pattern.compile("(//)|(/\\.{1,2}/)|(/\\.{1,2}$)");
     
 }
