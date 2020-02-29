@@ -321,8 +321,7 @@ public abstract class Counters {
 
   }
 
-  // ----- LatencyCounter
-  // -----------------------------------------------------------------------
+  // ----- LatencyCounter -----------------------------------------------------
 
   /**
    * Thread-safe stub implementation of the {@link LatencyCounter}.

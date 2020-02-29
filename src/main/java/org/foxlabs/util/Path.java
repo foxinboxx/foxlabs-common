@@ -261,7 +261,7 @@ public final class Path implements Comparable<Path>, java.io.Serializable {
      * @throws IllegalArgumentException if the specified pathname is invalid.
      */
     public static Path parse(String pathname) {
-        if (pathname.isEmpty() || pathname.equals(ROOT.pathname) || pathname.equals('\\')) {
+        if (pathname.isEmpty() || pathname.equals(ROOT.pathname) || pathname.equals("\\")) {
             return ROOT;
         }
         pathname = pathname.replace('\\', SEPARATOR);

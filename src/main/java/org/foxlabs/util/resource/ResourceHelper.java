@@ -17,13 +17,16 @@
 package org.foxlabs.util.resource;
 
 import java.net.URL;
+
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
-import java.util.Enumeration;
+
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Enumeration;
+
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
@@ -55,8 +58,8 @@ public abstract class ResourceHelper {
      *   <li>Class loader of this class.</li>
      *   <li>System class loader.</li>
      * </ul>
-     * If all attempts above return <code>null</code> then this method returns
-     * <code>null</code>.
+     * If all attempts above return {@code null} then this method returns
+     * {@code null}.
      * 
      * @return Class loader.
      */
@@ -73,11 +76,11 @@ public abstract class ResourceHelper {
     
     /**
      * Returns {@link #getClassLoader()} if the specified class loader is
-     * <code>null</code>; returns the specified class loader otherwise.
+     * {@code null}; returns the specified class loader otherwise.
      * 
      * @param cl Class loader.
      * @return {@link #getClassLoader()} if the specified class loader is
-     *         <code>null</code>; returns the specified class loader otherwise.
+     *         {@code null}; returns the specified class loader otherwise.
      */
     public static ClassLoader getClassLoader(ClassLoader cl) {
         return cl == null ? getClassLoader() : cl;
@@ -303,11 +306,11 @@ public abstract class ResourceHelper {
     
     /**
      * Searches for attribute with the specified name in all META-INF/MANIFEST.MF
-     * resources and returns attribute value or <code>null</code> if attribute
+     * resources and returns attribute value or {@code null} if attribute
      * with the specified name is not found.
      * 
      * @param name Attribute name to search.
-     * @return Attribute value or <code>null</code> if attribute with the
+     * @return Attribute value or {@code null} if attribute with the
      *         specified name is not found.
      */
     public static String readManifestAttribute(String name) {
@@ -333,7 +336,7 @@ public abstract class ResourceHelper {
      * Searches for attributes with the specified names in all META-INF/MANIFEST.MF
      * resources and returns array of attribute values. If attribute with
      * specified name is not found then correponding array element will contain
-     * <code>null</code> value.
+     * {@code null} value.
      * 
      * @param names Array of attribute names to search.
      * @return Array of attribute values.
