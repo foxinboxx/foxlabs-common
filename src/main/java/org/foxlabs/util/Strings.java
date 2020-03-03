@@ -54,6 +54,27 @@ public abstract class Strings {
     }
 
     /**
+     * Determines if the specified string value is {@code null} or empty string.
+     *
+     * @param value String value to test.
+     * @return {@code true} if the specified string value is empty.
+     */
+    public static boolean isEmpty(String value) {
+      return value == null || value.length() == 0;
+    }
+
+    /**
+     * Determines if the specified string value is not {@code null} or empty
+     * string.
+     *
+     * @param value String value to test.
+     * @return {@code true} if the specified string value is not empty.
+     */
+    public static boolean isNonEmpty(String value) {
+      return value != null && value.length() > 0;
+    }
+
+    /**
      * Determines if the specified string value is {@code null}, empty or
      * blank (consists of only whitespaces according to the
      * {@code Character.isWhitespace()} method).
@@ -63,11 +84,9 @@ public abstract class Strings {
      */
     public static boolean isBlank(String value) {
       final int length = value == null ? 0 : value.length();
-      if (length > 0) {
-        for (int i = 0; i < length; i++) {
-          if (!Character.isWhitespace(value.charAt(i))) {
-            return false;
-          }
+      for (int i = 0; i < length; i++) {
+        if (!Character.isWhitespace(value.charAt(i))) {
+          return false;
         }
       }
       return true;
