@@ -22,92 +22,142 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.NoSuchElementException;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Implemention of commonly used string operations.
+ * Implementation of commonly used string operations.
  *
  * @author Fox Mulder
  */
 public abstract class Strings {
 
-    /**
-     * It is utility class, don't allow instantiation.
-     */
-    private Strings() {
-        throw new IllegalAccessError();
-    }
+  /**
+   * It is utility class, don't allow instantiation.
+   */
+  private Strings() {
+    throw new IllegalAccessError();
+  }
 
-    /**
-     * Returns empty string if the specified value is {@code null} or the value
-     * itself.
-     *
-     * @param value String value.
-     * @return Empty string if the specified value is {@code null} or the value
-     *         itself.
-     */
-    public static String nullSafe(String value) {
-        return value == null ? "" : value;
-    }
+  /**
+   * Returns an empty string if the specified one is {@code null}, otherwise
+   * returns the specified string itself.
+   *
+   * @param string The string to test.
+   * @return Null-safe string.
+   */
+  public static String nullSafe(String string) {
+    return string == null ? "" : string;
+  }
 
-    /**
-     * Determines if the specified string value is {@code null} or empty string.
-     *
-     * @param value String value to test.
-     * @return {@code true} if the specified string value is empty.
-     */
-    public static boolean isEmpty(String value) {
-      return value == null || value.length() == 0;
-    }
+  // Validations
 
-    /**
-     * Determines if the specified string value is not {@code null} or empty
-     * string.
-     *
-     * @param value String value to test.
-     * @return {@code true} if the specified string value is not empty.
-     */
-    public static boolean isNonEmpty(String value) {
-      return value != null && value.length() > 0;
-    }
+  /**
+   * Determines if the specified string is not {@code null}, but an empty
+   * string (i.e. {@code ""}).
+   *
+   * @param string The string to test.
+   * @return {@code true} if the specified string is an empty string.
+   */
+  public static boolean isEmpty(String string) {
+    return string != null && string.length() == 0;
+  }
 
-    /**
-     * Determines if the specified string value is {@code null}, empty or
-     * blank (consists of only whitespaces according to the
-     * {@code Character.isWhitespace()} method).
-     *
-     * @param value String value to test.
-     * @return {@code true} if the specified string value is blank.
-     */
-    public static boolean isBlank(String value) {
-      final int length = value == null ? 0 : value.length();
+  /**
+   * Determines if the specified string is not {@code null} and not an empty
+   * string (i.e. {@code ""}).
+   *
+   * @param string The string to test.
+   * @return {@code true} if the specified string is not an empty string.
+   */
+  public static boolean isNonEmpty(String string) {
+    return string != null && string.length() > 0;
+  }
+
+  /**
+   * Determines if the specified string is not {@code null}, but an empty
+   * string (i.e. {@code ""}) or consists of whitespace characters only
+   * according to the {@link Character#isWhitespace(char)} method.
+   *
+   * @param string The string to test.
+   * @return {@code true} if the specified string is a blank string.
+   */
+  public static boolean isBlank(String string) {
+    if (string != null) {
+      final int length = string.length();
       for (int i = 0; i < length; i++) {
-        if (!Character.isWhitespace(value.charAt(i))) {
+        if (!Character.isWhitespace(string.charAt(i))) {
           return false;
         }
       }
       return true;
     }
+    return false;
+  }
 
-    /**
-     * Checks that the specified string value is not blank according to the
-     * {@link #isBlank(String)} method.
-     *
-     * @param valie String value to check.
-     * @throws NullPointerException if the specified string value is {@code null}.
-     * @throws IllegalArgumentException if the specified string value is blank.
-     */
-    public static String requireNonBlank(String value) {
-      if (value == null) {
-        throw new NullPointerException();
-      } else if (isBlank(value)) {
-        throw new IllegalArgumentException();
+  /**
+   * Determines if the specified string is not {@code null}, not an empty
+   * string (i.e. {@code ""}) and contains at least one non-whitespace charater
+   * only according to the {@link Character#isWhitespace(char)} method.
+   *
+   * @param string The string to test.
+   * @return {@code true} if the specified string not a blank string.
+   */
+  public static boolean isNonBlank(String string) {
+    final int length = string == null ? 0 : string.length();
+    for (int i = 0; i < length; i++) {
+      if (!Character.isWhitespace(string.charAt(i))) {
+        return true;
       }
-      return value;
     }
+    return false;
+  }
+
+  /**
+   * Determines if the specified string is not {@code null}, but an empty
+   * string (i.e. {@code ""}) or contains at least one whitespace character
+   * according to the {@link Character#isWhitespace(char)} method.
+   *
+   * @param string The string to test.
+   * @return {@code true} if the specified string is a whitespaced string.
+   */
+  public static boolean isWhitespaced(String string) {
+    if (string != null) {
+      final int length = string.length();
+      for (int i = 0; i < length; i++) {
+        if (Character.isWhitespace(string.charAt(i))) {
+          return true;
+        }
+      }
+      return length == 0;
+    }
+    return false;
+  }
+
+  /**
+   * Determines if the specified string is not {@code null}, not an empty
+   * string (i.e. {@code ""}) and does not contain whitespace characters at all
+   * according to the {@link Character#isWhitespace(char)} method.
+   *
+   * @param string The string to test.
+   * @return {@code true} if the specified string is not a whitespaced string.
+   */
+  public static boolean isNonWhitespaced(String string) {
+    if (string != null) {
+      final int length = string.length();
+      for (int i = 0; i < length; i++) {
+        if (Character.isWhitespace(string.charAt(i))) {
+          return false;
+        }
+      }
+      return length > 0;
+    }
+    return false;
+  }
+
+    // Modifications
 
     /**
      * Returns trimmed copy of the specified string or {@code null} if the
