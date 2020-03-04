@@ -18,6 +18,8 @@ package org.foxlabs.util;
 
 import java.util.Arrays;
 
+import org.foxlabs.common.Strings;
+
 /**
  * This class represents a set of unicode characters and provides operations
  * on it.

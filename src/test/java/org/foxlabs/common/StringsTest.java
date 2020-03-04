@@ -16,10 +16,10 @@
 
 package org.foxlabs.common;
 
+import java.util.function.IntUnaryOperator;
+
 import org.junit.Test;
 import org.junit.Assert;
-
-import org.foxlabs.util.Strings;
 
 /**
  * Tests for the {@link Strings} class.
@@ -28,6 +28,9 @@ import org.foxlabs.util.Strings;
  */
 public class StringsTest {
 
+  /**
+   * The original string to reference comparison ({@code ==}) in tests.
+   */
   private String original;
 
   /**
@@ -165,6 +168,18 @@ public class StringsTest {
   }
 
   /**
+   * Tests the {@link Strings#forEachChar(String, IntUnaryOperator)} method.
+   */
+  @Test
+  public void testForEachChar() {
+    Assert.assertEquals(null, Strings.forEachChar(null, IntUnaryOperator.identity()));
+    Assert.assertTrue(Strings.forEachChar(original = "", IntUnaryOperator.identity()) == original);
+    Assert.assertTrue(Strings.forEachChar(original = "TEST", IntUnaryOperator.identity()) == original);
+    Assert.assertEquals("23456789", Strings.forEachChar("12345678", (ch) -> ch + 1));
+    Assert.assertEquals("12356789", Strings.forEachChar("12345678", (ch) -> ch > '3' ? ch + 1 : ch));
+  }
+
+  /**
    * Tests the {@link Strings#trim(String)} method.
    */
   @Test
@@ -174,7 +189,7 @@ public class StringsTest {
     Assert.assertEquals(null, Strings.trim(" "));
     Assert.assertEquals(null, Strings.trim("  "));
     Assert.assertEquals(null, Strings.trim("\n\r\t"));
-    Assert.assertEquals("TEST", Strings.trim("TEST"));
+    Assert.assertTrue(Strings.trim(original = "TEST") == original);
     Assert.assertEquals("TEST", Strings.trim(" TEST"));
     Assert.assertEquals("TEST", Strings.trim("TEST "));
     Assert.assertEquals("TEST", Strings.trim(" TEST "));
@@ -192,7 +207,7 @@ public class StringsTest {
     Assert.assertEquals("", Strings.trimNullSafe(" "));
     Assert.assertEquals("", Strings.trimNullSafe("  "));
     Assert.assertEquals("", Strings.trimNullSafe("\n\r\t"));
-    Assert.assertEquals("TEST", Strings.trimNullSafe("TEST"));
+    Assert.assertTrue(Strings.trimNullSafe(original = "TEST") == original);
     Assert.assertEquals("TEST", Strings.trimNullSafe(" TEST"));
     Assert.assertEquals("TEST", Strings.trimNullSafe("TEST "));
     Assert.assertEquals("TEST", Strings.trimNullSafe(" TEST "));
@@ -205,7 +220,7 @@ public class StringsTest {
    */
   @Test
   public void testToLowerCase() {
-    Assert.assertTrue(Strings.toLowerCase(original = null) == original);
+    Assert.assertEquals(null, Strings.toLowerCase(null));
     Assert.assertTrue(Strings.toLowerCase(original = "") == original);
     Assert.assertTrue(Strings.toLowerCase(original = "test") == original);
     Assert.assertEquals("test", Strings.toLowerCase("TesT"));
@@ -235,7 +250,7 @@ public class StringsTest {
    */
   @Test
   public void testToUpperCase() {
-    Assert.assertTrue(Strings.toUpperCase(original = null) == original);
+    Assert.assertEquals(null, Strings.toUpperCase(null));
     Assert.assertTrue(Strings.toUpperCase(original = "") == original);
     Assert.assertTrue(Strings.toUpperCase(original = "TEST") == original);
     Assert.assertEquals("TEST", Strings.toUpperCase("TesT"));

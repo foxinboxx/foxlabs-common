@@ -1,12 +1,12 @@
-/* 
+/*
  * Copyright (C) 2018 FoxLabs
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,50 +21,50 @@ import java.util.Objects;
 /**
  * Holds version value. The main goal of this class is to provide proper
  * comparison of versions taking into account integer parts.
- * 
+ *
  * @author Fox Mulder
  */
 public final class Version implements Comparable<Version>, java.io.Serializable {
     private static final long serialVersionUID = -3188109965410924967L;
-    
+
     /**
      * This version value.
      */
     private final String value;
-    
+
     /**
      * Constructs a new version with the specified value.
-     * 
-     * @param version This version value.
+     *
+     * @param value This version value.
      * @throws NullPointerException if this specified value is <code>null</code>.
      */
     public Version(String value) {
         this.value = Objects.requireNonNull(value);
     }
-    
+
     /**
      * Returns this version value.
-     * 
+     *
      * @return This version value.
      */
     public String getValue() {
         return value;
     }
-    
+
     /**
      * Returns hash code of this version.
-     * 
+     *
      * @return Hash code of this version.
      */
     @Override
     public int hashCode() {
         return value.hashCode();
     }
-    
+
     /**
      * Determines if this version is the same as the specified one. Two versions
      * are equal if their values are equal.
-     * 
+     *
      * @param obj Version to be compared with this version.
      * @return <code>true</code> if this version is the same as the specified
      *         one; <code>false</code> otherwise.
@@ -73,10 +73,10 @@ public final class Version implements Comparable<Version>, java.io.Serializable 
     public boolean equals(Object obj) {
         return obj instanceof Version && value.equals(((Version) obj).value);
     }
-    
+
     /**
      * Compares this version with the specified one taking into account integer parts.
-     * 
+     *
      * @param that Version to be compared with this version.
      * @return A negative integer, zero, or a positive integer as this version
      *         is less than, equal to, or greater than the specified one.
@@ -122,15 +122,15 @@ public final class Version implements Comparable<Version>, java.io.Serializable 
         }
         return v1.length() - v2.length(); // Common part is the same, longer string is greater
     }
-    
+
     /**
      * Returns this version value.
-     * 
+     *
      * @return This version value.
      */
     @Override
     public String toString() {
         return value;
     }
-    
+
 }

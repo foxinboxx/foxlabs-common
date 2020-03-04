@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.foxlabs.util;
+package org.foxlabs.common;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;

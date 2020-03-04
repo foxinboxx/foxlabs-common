@@ -14,56 +14,56 @@
  * limitations under the License.
  */
 
-package org.foxlabs.util.function;
+package org.foxlabs.common.function;
 
 /**
  *
  * @param <T> The type of the target object.
- * @param <V> The type of the value to set on the target object.
+ * @param <V> The type of the value to get from the target object.
  * @param <E> The type of the exception.
  *
  * @author Fox Mulder
  */
 @FunctionalInterface
-public interface Setter<T, V, E extends Throwable> {
+public interface Getter<T, V, E extends Throwable> {
 
   /**
-   * Sets the specified value on the specified target object.
+   * Gets a value from the specified target object.
    *
    * @param target The target object.
-   * @param value The value to set on the target object.
+   * @return A value got from the target object.
    * @throws E if operation failed.
    */
-  void set(T target, V value) throws E;
+  V get(T target) throws E;
 
   /**
-   * The same as the {@link Setter} but does not throw checked exception.
+   * The same as the {@link Getter} but does not throw checked exception.
    *
    * @param <T> The type of the target object.
-   * @param <V> The type of the value to set on the target object.
+   * @param <V> The type of the value to get from the target object.
    *
    * @author Fox Mulder
    */
   @FunctionalInterface
-  interface Unchecked<T, V> extends Setter<T, V, RuntimeException> {
+  interface Unchecked<T, V> extends Getter<T, V, RuntimeException> {
 
     /**
-     * Sets the specified value on the specified target object.
+     * Gets a value from the specified target object.
      *
      * @param target The target object.
-     * @param value The value to set on the target object.
+     * @return A value got from the target object.
      * @throws RuntimeException if operation failed.
      */
-    @Override void set(T target, V value);
+    @Override V get(T target);
 
   }
 
   /**
-   * The auxiliary setter that does nothing.
+   * The auxiliary getter that returns {@code null}.
    */
-  Setter.Unchecked<?, ?> STUB = new Setter.Unchecked<Object, Object>() {
-    @Override public void set(Object target, Object value) {
-      // Nothing to do
+  Getter.Unchecked<?, ?> STUB = new Getter.Unchecked<Object, Object>() {
+    @Override public Object get(Object target) {
+      return null;
     }
   };
 
