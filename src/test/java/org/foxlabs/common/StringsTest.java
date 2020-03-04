@@ -16,6 +16,7 @@
 
 package org.foxlabs.common;
 
+import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 
 import org.junit.Test;
@@ -180,39 +181,27 @@ public class StringsTest {
   }
 
   /**
-   * Tests the {@link Strings#trim(String)} method.
+   * Tests the {@link Strings#replace(String, int, IntPredicate)} method.
    */
   @Test
-  public void testTrim() {
-    Assert.assertEquals(null, Strings.trim(null));
-    Assert.assertEquals(null, Strings.trim(""));
-    Assert.assertEquals(null, Strings.trim(" "));
-    Assert.assertEquals(null, Strings.trim("  "));
-    Assert.assertEquals(null, Strings.trim("\n\r\t"));
-    Assert.assertTrue(Strings.trim(original = "TEST") == original);
-    Assert.assertEquals("TEST", Strings.trim(" TEST"));
-    Assert.assertEquals("TEST", Strings.trim("TEST "));
-    Assert.assertEquals("TEST", Strings.trim(" TEST "));
-    Assert.assertEquals("T E S T", Strings.trim("T E S T"));
-    Assert.assertEquals("T E S T", Strings.trim(" T E S T "));
+  public void testReplace() {
+    Assert.assertEquals(null, Strings.replace(null, 'X', (ch) -> true));
+    Assert.assertTrue(Strings.replace(original = "", 'X', (ch) -> true) == original);
+    Assert.assertTrue(Strings.replace(original = "TEST", 'X', (ch) -> false) == original);
+    Assert.assertTrue(Strings.replace(original = "TEST", 'T', (ch) -> false) == original);
+    Assert.assertEquals("_ES_", Strings.replace("TEST", '_', (ch) -> ch == 'T'));
   }
 
   /**
-   * Tests the {@link Strings#trimNullSafe(String)} method.
+   * Tests the {@link Strings#replaceNullSafe(String, int, IntPredicate)} method.
    */
   @Test
-  public void testTrimNullSafe() {
-    Assert.assertEquals("", Strings.trimNullSafe(null));
-    Assert.assertEquals("", Strings.trimNullSafe(""));
-    Assert.assertEquals("", Strings.trimNullSafe(" "));
-    Assert.assertEquals("", Strings.trimNullSafe("  "));
-    Assert.assertEquals("", Strings.trimNullSafe("\n\r\t"));
-    Assert.assertTrue(Strings.trimNullSafe(original = "TEST") == original);
-    Assert.assertEquals("TEST", Strings.trimNullSafe(" TEST"));
-    Assert.assertEquals("TEST", Strings.trimNullSafe("TEST "));
-    Assert.assertEquals("TEST", Strings.trimNullSafe(" TEST "));
-    Assert.assertEquals("T E S T", Strings.trimNullSafe("T E S T"));
-    Assert.assertEquals("T E S T", Strings.trimNullSafe(" T E S T "));
+  public void testReplaceNullSafe() {
+    Assert.assertEquals("", Strings.replaceNullSafe(null, 'X', (ch) -> true));
+    Assert.assertEquals("", Strings.replaceNullSafe("", 'X', (ch) -> true));
+    Assert.assertTrue(Strings.replaceNullSafe(original = "TEST", 'X', (ch) -> false) == original);
+    Assert.assertTrue(Strings.replaceNullSafe(original = "TEST", 'T', (ch) -> false) == original);
+    Assert.assertEquals("_ES_", Strings.replaceNullSafe("TEST", '_', (ch) -> ch == 'T'));
   }
 
   /**
@@ -271,6 +260,42 @@ public class StringsTest {
     Assert.assertEquals(" TEST", Strings.toUpperCaseNullSafe(" test"));
     Assert.assertEquals("TEST ", Strings.toUpperCaseNullSafe("test "));
     Assert.assertEquals(" TEST ", Strings.toUpperCaseNullSafe(" test "));
+  }
+
+  /**
+   * Tests the {@link Strings#trim(String)} method.
+   */
+  @Test
+  public void testTrim() {
+    Assert.assertEquals(null, Strings.trim(null));
+    Assert.assertEquals(null, Strings.trim(""));
+    Assert.assertEquals(null, Strings.trim(" "));
+    Assert.assertEquals(null, Strings.trim("  "));
+    Assert.assertEquals(null, Strings.trim("\n\r\t"));
+    Assert.assertTrue(Strings.trim(original = "TEST") == original);
+    Assert.assertEquals("TEST", Strings.trim(" TEST"));
+    Assert.assertEquals("TEST", Strings.trim("TEST "));
+    Assert.assertEquals("TEST", Strings.trim(" TEST "));
+    Assert.assertEquals("T E S T", Strings.trim("T E S T"));
+    Assert.assertEquals("T E S T", Strings.trim(" T E S T "));
+  }
+
+  /**
+   * Tests the {@link Strings#trimNullSafe(String)} method.
+   */
+  @Test
+  public void testTrimNullSafe() {
+    Assert.assertEquals("", Strings.trimNullSafe(null));
+    Assert.assertEquals("", Strings.trimNullSafe(""));
+    Assert.assertEquals("", Strings.trimNullSafe(" "));
+    Assert.assertEquals("", Strings.trimNullSafe("  "));
+    Assert.assertEquals("", Strings.trimNullSafe("\n\r\t"));
+    Assert.assertTrue(Strings.trimNullSafe(original = "TEST") == original);
+    Assert.assertEquals("TEST", Strings.trimNullSafe(" TEST"));
+    Assert.assertEquals("TEST", Strings.trimNullSafe("TEST "));
+    Assert.assertEquals("TEST", Strings.trimNullSafe(" TEST "));
+    Assert.assertEquals("T E S T", Strings.trimNullSafe("T E S T"));
+    Assert.assertEquals("T E S T", Strings.trimNullSafe(" T E S T "));
   }
 
 }

@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 
 /**
@@ -227,6 +228,7 @@ public final class Strings {
       cc0 = Character.charCount(ch0);
       if (ch0 != ch1) {
         // x2 length in case of growing
+        // XXX: ArrayIndexOutOfBoundsException may occur when x2 length > 2G
         final int length1 = (int) Math.min(length0 * 2L, Integer.MAX_VALUE);
         final char[] value = new char[length1];
         string.getChars(0, i, value, 0);
@@ -246,48 +248,38 @@ public final class Strings {
   }
 
   /**
-   * Removes all of the leading and trailing whitespace characters in the
-   * specified string according to the {@link Character#isWhitespace(int)}
-   * method. Returns {@code null} if the resulting string is an empty string
-   * (i.e. {@code ""}). This method does not take locale into account.
+   * Replaces all of the characters in the specified string for which the
+   * specified predicate returns {@code true} with the specified replacement
+   * character. The resulting string may be a different length than the original
+   * one.
    *
-   * @param string The string to be trimmed.
-   * @return A trimmed copy of the specified string or the original one if none
-   *         of the characters have been removed.
+   * @param string The string to be modified.
+   * @param replacement The replacement character.
+   * @param predicate The predicate to be applied for each character of the string.
+   * @return A resulting string or the original one if none of the characters
+   *         have been replaced.
+   * @throws NullPointerException if the specified predicate is {@code null}.
+   * @see #forEachChar(String, IntUnaryOperator)
    */
-  public static String trim(String string) {
-    final int length = string == null ? 0 : string.length();
-    int start = 0, end = length, cc = 0;
-    // need to scan the entire string because code points of characters
-    // may differ in length
-    for (int i = 0, n; i < length; i += n) {
-      int ch = string.codePointAt(i);
-      n = Character.charCount(ch);
-      if (!Character.isWhitespace(ch)) {
-        start = cc == 0 ? i : start;
-        end = i;
-        cc = n;
-      }
-    }
-    // analyze scan results
-    return cc > 0
-      ? end + cc - start < length
-        ? string.substring(start, end + cc) // trimmed
-        : string // original string has no leading and trailing whitespaces
-      : null; // original string is null, empty or blank
+  public static String replace(String string, int replacement, IntPredicate predicate) {
+    Objects.require(predicate);
+    return forEachChar(string, (ch) -> predicate.test(ch) ? replacement : ch);
   }
 
   /**
-   * The same as the {@link #trim(String)} but never returns {@code null}.
-   * This is a shortcut for the {@code nullSafe(trim(string))}.
+   * The same as the {@link #replace(String, int, IntPredicate)} but never
+   * returns {@code null}. This is a shortcut for the
+   * {@code nullSafe(replace(string, replacement, predicate))}.
    *
-   * @param string The string to be trimmed.
-   * @return A {@code null}-safe trimmed copy of the specified string.
+   * @param string The string to be modified.
+   * @param replacement The replacement character.
+   * @param predicate The predicate to be applied for each character of the string.
+   * @return The {@code null}-safe resulting string.
    * @see #nullSafe(String)
-   * @see #trim(String)
+   * @see #replace(String, int, IntPredicate)
    */
-  public static String trimNullSafe(String string) {
-    return nullSafe(trim(string));
+  public static String replaceNullSafe(String string, int replacement, IntPredicate predicate) {
+    return nullSafe(replace(string, replacement, predicate));
   }
 
   /**
@@ -346,6 +338,54 @@ public final class Strings {
     return nullSafe(toUpperCase(string));
   }
 
+  /**
+   * Removes all of the leading and trailing whitespace characters in the
+   * specified string according to the {@link Character#isWhitespace(int)}
+   * method. Returns {@code null} if the resulting string is an empty string
+   * (i.e. {@code ""}). This method does not take locale into account.
+   *
+   * @param string The string to be trimmed.
+   * @return A trimmed copy of the specified string or the original one if none
+   *         of the characters have been removed.
+   */
+  public static String trim(String string) {
+    final int length = string == null ? 0 : string.length();
+    int start = 0, end = length, cc = 0;
+    // need to scan the entire string because code points of characters
+    // may differ in length
+    for (int i = 0, n; i < length; i += n) {
+      int ch = string.codePointAt(i);
+      n = Character.charCount(ch);
+      if (!Character.isWhitespace(ch)) {
+        start = cc == 0 ? i : start;
+        end = i;
+        cc = n;
+      }
+    }
+    // analyze scan results
+    return cc > 0
+      ? end + cc - start < length
+        ? string.substring(start, end + cc) // trimmed
+        : string // original string has no leading and trailing whitespaces
+      : null; // original string is null, empty or blank
+  }
+
+  /**
+   * The same as the {@link #trim(String)} but never returns {@code null}.
+   * This is a shortcut for the {@code nullSafe(trim(string))}.
+   *
+   * @param string The string to be trimmed.
+   * @return A {@code null}-safe trimmed copy of the specified string.
+   * @see #nullSafe(String)
+   * @see #trim(String)
+   */
+  public static String trimNullSafe(String string) {
+    return nullSafe(trim(string));
+  }
+
+
+
+
 
 
     /**
@@ -396,35 +436,6 @@ public final class Strings {
                 if (value.charAt(length - 1) == quote) {
                     return length == 2 ? "" : value.substring(1, length - 1);
                 }
-            }
-        }
-        return value;
-    }
-
-    /**
-     * Replaces any of the specified characters in the specified value with the
-     * specified replacement character. If there are no characters replaced
-     * then original value will be returned.
-     *
-     * @param value String to replace characters.
-     * @param chars Characters to replace.
-     * @param replacement Replacement character.
-     * @return String with replaced characters.
-     */
-    public static String replaceChars(String value, String chars, char replacement) {
-        final int length = value == null ? 0 : value.length();
-        if (length > 0) {
-            char[] buf = null;
-            for (int i = 0; i < length; i++) {
-                if (chars.indexOf(value.charAt(i)) >= 0) {
-                    if (buf == null) {
-                        buf = value.toCharArray();
-                    }
-                    buf[i] = replacement;
-                }
-            }
-            if (buf != null) {
-                return new String(buf);
             }
         }
         return value;
