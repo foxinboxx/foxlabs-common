@@ -16,11 +16,6 @@
 
 package org.foxlabs.common;
 
-import java.net.URLEncoder;
-
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
@@ -114,8 +109,8 @@ public final class Strings {
   }
 
   /**
-   * The same as the {@link #isBlank(String)} but also returns {@code true} if
-   * the specified string is {@code null}. This is a shortcut for the
+   * Does the same as the {@link #isBlank(String)}, but also returns {@code true}
+   * if the specified string is {@code null}. This is a shortcut for the
    * {@code string == null || isBlank(string)}.
    *
    * @param string The string to test.
@@ -177,7 +172,7 @@ public final class Strings {
   }
 
   /**
-   * The same as the {@link #isWhitespaced(String)} but also returns
+   * Does the same as the {@link #isWhitespaced(String)}, but also returns
    * {@code true} if the specified string is {@code null}. This is a shortcut
    * for the {@code string == null || isWhitespaced(string)}.
    *
@@ -227,21 +222,21 @@ public final class Strings {
       int ch1 = operator.applyAsInt(ch0);
       cc0 = Character.charCount(ch0);
       if (ch0 != ch1) {
-        // x2 length in case of growing
-        // XXX: ArrayIndexOutOfBoundsException may occur when x2 length > 2G
-        final int length1 = (int) Math.min(length0 * 2L, Integer.MAX_VALUE);
-        final char[] value = new char[length1];
-        string.getChars(0, i, value, 0);
-        Character.toChars(ch1, value, i);
+        // +x2 remaining length in case of growing
+        // XXX: ArrayIndexOutOfBoundsException may occur when actual result length > 2G
+        final long length1 = (long) length0 + (length0 - i);
+        final char[] result = new char[(int) Math.min(length1, Integer.MAX_VALUE)];
+        string.getChars(0, i, result, 0);
+        Character.toChars(ch1, result, i);
         cc1 = Character.charCount(ch1);
         for (j = i + cc1, i += cc0; i < length0; i += cc0, j += cc1) {
           ch0 = string.codePointAt(i);
           ch1 = operator.applyAsInt(ch0);
           cc0 = Character.charCount(ch0);
           cc1 = Character.charCount(ch1);
-          Character.toChars(ch1, value, j);
+          Character.toChars(ch1, result, j);
         }
-        return new String(value, 0, j);
+        return new String(result, 0, j);
       }
     }
     return string;
@@ -267,7 +262,7 @@ public final class Strings {
   }
 
   /**
-   * The same as the {@link #replace(String, int, IntPredicate)} but never
+   * Does the same as the {@link #replace(String, int, IntPredicate)}, but never
    * returns {@code null}. This is a shortcut for the
    * {@code nullSafe(replace(string, replacement, predicate))}.
    *
@@ -298,7 +293,7 @@ public final class Strings {
   }
 
   /**
-   * The same as the {@link #toLowerCase(String)} but never returns {@code null}.
+   * Does the same as the {@link #toLowerCase(String)}, but never returns {@code null}.
    * This is a shortcut for the {@code nullSafe(toLowerCase(string))}.
    *
    * @param string The string to be converted to lower case.
@@ -326,7 +321,7 @@ public final class Strings {
   }
 
   /**
-   * The same as the {@link #toUpperCase(String)} but never returns {@code null}.
+   * Does the same as the {@link #toUpperCase(String)}, but never returns {@code null}.
    * This is a shortcut for the {@code nullSafe(toUpperCase(string))}.
    *
    * @param string The string to be converted to upper case.
@@ -371,7 +366,7 @@ public final class Strings {
   }
 
   /**
-   * The same as the {@link #trim(String)} but never returns {@code null}.
+   * The same as the {@link #trim(String)}, but never returns {@code null}.
    * This is a shortcut for the {@code nullSafe(trim(string))}.
    *
    * @param string The string to be trimmed.
@@ -386,59 +381,51 @@ public final class Strings {
 
 
 
+  /**
+   * Does the same as the {@link #cut(String, int)}, but adds {@code ...} at the
+   * end of the cutted string if cut operation was applied.
+   *
+   * @param string The string to be cutted.
+   * @param max The maximum number of allowed characters for the specified string.
+   * @return A cutted string with {@code ...} at the end or the original string
+   *         if cut operation was not applied.
+   * @see #cut(String, int)
+   */
+  public static String ellipsis(String string, int max) {
+    final String result = cut(string, max);
+    return result != string ? result + "..." : result;
+  }
+
+  /**
+   * The same as the {@link #ellipsis(String, int)}, but never returns {@code null}.
+   * This is a shortcut for the {@code nullSafe(ellipsis(string, max))}.
+   *
+   * @param string The string to be cutted.
+   * @param max The maximum number of allowed characters for the specified string.
+   * @return A cutted string with {@code ...} at the end or the original string
+   *         if cut operation was not applied.
+   * @see #nullSafe(String)
+   * @see #ellipsis(String, int)
+   */
+  public static String ellipsisNullSafe(String string, int max) {
+    return nullSafe(ellipsis(string, max));
+  }
 
 
     /**
      * Cuts length of the specified string to the specified maximum length.
      *
      * @param value String to cut.
-     * @param maxlength Maximum allowed length for the specified string.
+     * @param max Maximum allowed length for the specified string.
      * @return Cutted string or the specified one if its length less or equal
      *         than maximum length.
      */
-    public static String cut(String value, int maxlength) {
+    public static String cut(String value, int max) {
         return value == null
             ? null
-            : value.length() > maxlength
-                ? value.substring(0, Math.max(maxlength, 0))
+            : value.length() > max
+                ? value.substring(0, Math.max(max, 0))
                 : value;
-    }
-
-    /**
-     * Does the same as {@link #cut(String, int)} but adds {@code "..."} at the
-     * end of cutted string if cut operation has been applied.
-     *
-     * @param value String to cut.
-     * @param maxlength Maximum allowed length for the specified string.
-     * @return Cutted string with {@code "..."} at the end.
-     */
-    public static String ellipsis(String value, int maxlength) {
-        return value == null
-            ? null
-            : value.length() > maxlength
-                ? value.substring(0, Math.max(maxlength, 0)) + "..."
-                : value;
-    }
-
-    /**
-     * Removes leading and trailing quotes and returns unquoted string or the
-     * specified value if there are no leading and trailing quotes found.
-     * Returns {@code null} if the specified value is {@code null}.
-     *
-     * @param value String to unquote.
-     * @param quote Quote character.
-     * @return Unquoted string.
-     */
-    public static String unquote(String value, char quote) {
-        final int length = value == null ? 0 : value.length();
-        if (length > 1) {
-            if (value.charAt(0) == quote) {
-                if (value.charAt(length - 1) == quote) {
-                    return length == 2 ? "" : value.substring(1, length - 1);
-                }
-            }
-        }
-        return value;
     }
 
     /**
@@ -653,40 +640,6 @@ public final class Strings {
             }
         }
         return buf;
-    }
-
-    /**
-     * Translates the specified value into {@code application/x-www-form-urlencoded}
-     * format using the {@code ISO-8859-1} encoding. Returns {@code null} if the
-     * specified value is {@code null}.
-     *
-     * @param value The value to encode.
-     * @return The encoded value.
-     * @see #urlEncode(String, Charset)
-     */
-    public static String urlEncode(String value) {
-        return urlEncode(value, StandardCharsets.ISO_8859_1);
-    }
-
-    /**
-     * Translates the specified value into {@code application/x-www-form-urlencoded}
-     * format using the specified encoding. Returns {@code null} if the specified
-     * value is {@code null}.
-     *
-     * @param value The value to encode.
-     * @param charset The encoding to use.
-     * @return The encoded value.
-     */
-    public static String urlEncode(String value, Charset charset) {
-        if (!(value == null || value.isEmpty())) {
-            try {
-                return URLEncoder.encode(value, charset.name());
-            } catch (java.io.UnsupportedEncodingException e) {
-                // Should never happen
-                throw new IllegalStateException();
-            }
-        }
-        return value;
     }
 
     /**
