@@ -58,4 +58,13 @@ public interface Setter<T, V, E extends Throwable> {
 
   }
 
+  /**
+   * The auxiliary setter that does nothing.
+   */
+  Setter.Unchecked<?, ?> STUB = new Setter.Unchecked<Object, Object>() {
+    @Override public void set(Object target, Object value) {
+      // Nothing to do
+    }
+  };
+
 }

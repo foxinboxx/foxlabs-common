@@ -58,4 +58,13 @@ public interface Getter<T, V, E extends Throwable> {
 
   }
 
+  /**
+   * The auxiliary getter that returns {@code null}.
+   */
+  Getter.Unchecked<?, ?> STUB = new Getter.Unchecked<Object, Object>() {
+    @Override public Object get(Object target) {
+      return null;
+    }
+  };
+
 }

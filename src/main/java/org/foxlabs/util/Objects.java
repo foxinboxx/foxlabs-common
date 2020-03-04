@@ -19,7 +19,12 @@ package org.foxlabs.util;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public abstract class Objects {
+public final class Objects {
+
+  // Instantiation is not possible
+  private Objects() {
+    throw new IllegalAccessError();
+  }
 
   public static <T> T require(T object) {
     return require(object, java.util.Objects::nonNull, NullPointerException::new);

@@ -239,7 +239,7 @@ public final class Strings {
           cc1 = Character.charCount(ch1);
           Character.toChars(ch1, value, j);
         }
-        return new String(value, 0, j - cc1);
+        return new String(value, 0, j);
       }
     }
     return string;
