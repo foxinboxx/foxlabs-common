@@ -23,30 +23,28 @@ import java.nio.charset.StandardCharsets;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.IntUnaryOperator;
 
 /**
  * Implementation of commonly used string operations.
  *
  * @author Fox Mulder
  */
-public abstract class Strings {
+public final class Strings {
 
-  /**
-   * It is utility class, don't allow instantiation.
-   */
+  // Instantiation is not possible
   private Strings() {
     throw new IllegalAccessError();
   }
 
   /**
-   * Returns an empty string if the specified one is {@code null}, otherwise
-   * returns the specified string itself.
+   * Returns an empty string (i.e. {@code ""}) if the specified one is
+   * {@code null}, otherwise returns the specified string itself.
    *
    * @param string The string to test.
-   * @return Null-safe string.
+   * @return {@code null}-safe string.
    */
   public static String nullSafe(String string) {
     return string == null ? "" : string;
@@ -66,11 +64,24 @@ public abstract class Strings {
   }
 
   /**
+   * Determines if the specified string is {@code null} or an empty string
+   * (i.e. {@code ""}).
+   *
+   * @param string The string to test.
+   * @return {@code true} if the specified string is {@code null} or an empty
+   *         string.
+   */
+  public static boolean isEmptyOrNull(String string) {
+    return string == null || string.length() == 0;
+  }
+
+  /**
    * Determines if the specified string is not {@code null} and not an empty
    * string (i.e. {@code ""}).
    *
    * @param string The string to test.
-   * @return {@code true} if the specified string is not an empty string.
+   * @return {@code true} if the specified string is not {@code null} and not
+   *         an empty string.
    */
   public static boolean isNonEmpty(String string) {
     return string != null && string.length() > 0;
@@ -79,7 +90,8 @@ public abstract class Strings {
   /**
    * Determines if the specified string is not {@code null}, but an empty
    * string (i.e. {@code ""}) or consists of whitespace characters only
-   * according to the {@link Character#isWhitespace(char)} method.
+   * according to the {@link Character#isWhitespace(int)} method. This method
+   * does not take locale into account.
    *
    * @param string The string to test.
    * @return {@code true} if the specified string is a blank string.
@@ -87,8 +99,11 @@ public abstract class Strings {
   public static boolean isBlank(String string) {
     if (string != null) {
       final int length = string.length();
-      for (int i = 0; i < length; i++) {
-        if (!Character.isWhitespace(string.charAt(i))) {
+      for (int i = 0; i < length;) {
+        final int ch = string.codePointAt(i);
+        if (Character.isWhitespace(ch)) {
+          i += Character.charCount(ch);
+        } else {
           return false;
         }
       }
@@ -98,17 +113,36 @@ public abstract class Strings {
   }
 
   /**
-   * Determines if the specified string is not {@code null}, not an empty
-   * string (i.e. {@code ""}) and contains at least one non-whitespace charater
-   * only according to the {@link Character#isWhitespace(char)} method.
+   * The same as the {@link #isBlank(String)} but also returns {@code true} if
+   * the specified string is {@code null}. This is a shortcut for the
+   * {@code string == null || isBlank(string)}.
    *
    * @param string The string to test.
-   * @return {@code true} if the specified string not a blank string.
+   * @return {@code true} if the specified string is {@code null} or a blank
+   *         string.
+   * @see #isBlank(String)
+   */
+  public static boolean isBlankOrNull(String string) {
+    return string == null || isBlank(string);
+  }
+
+  /**
+   * Determines if the specified string is not {@code null}, not an empty
+   * string (i.e. {@code ""}) and contains at least one non-whitespace character
+   * according to the {@link Character#isWhitespace(int)} method. This method
+   * does not take locale into account.
+   *
+   * @param string The string to test.
+   * @return {@code true} if the specified string is not a blank string.
    */
   public static boolean isNonBlank(String string) {
+    // !isBlankOrNull() has the same effect but scans the entire string
     final int length = string == null ? 0 : string.length();
-    for (int i = 0; i < length; i++) {
-      if (!Character.isWhitespace(string.charAt(i))) {
+    for (int i = 0; i < length;) {
+      final int ch = string.codePointAt(i);
+      if (Character.isWhitespace(ch)) {
+        i += Character.charCount(ch);
+      } else {
         return true;
       }
     }
@@ -118,17 +152,22 @@ public abstract class Strings {
   /**
    * Determines if the specified string is not {@code null}, but an empty
    * string (i.e. {@code ""}) or contains at least one whitespace character
-   * according to the {@link Character#isWhitespace(char)} method.
+   * according to the {@link Character#isWhitespace(int)} method. This method
+   * does not take locale into account.
    *
    * @param string The string to test.
-   * @return {@code true} if the specified string is a whitespaced string.
+   * @return {@code true} if the specified string contains at least one
+   *         whitespace character.
    */
   public static boolean isWhitespaced(String string) {
     if (string != null) {
       final int length = string.length();
-      for (int i = 0; i < length; i++) {
-        if (Character.isWhitespace(string.charAt(i))) {
+      for (int i = 0; i < length;) {
+        final int ch = string.codePointAt(i);
+        if (Character.isWhitespace(ch)) {
           return true;
+        } else {
+          i += Character.charCount(ch);
         }
       }
       return length == 0;
@@ -137,39 +176,177 @@ public abstract class Strings {
   }
 
   /**
-   * Determines if the specified string is not {@code null}, not an empty
-   * string (i.e. {@code ""}) and does not contain whitespace characters at all
-   * according to the {@link Character#isWhitespace(char)} method.
+   * The same as the {@link #isWhitespaced(String)} but also returns
+   * {@code true} if the specified string is {@code null}. This is a shortcut
+   * for the {@code string == null || isWhitespaced(string)}.
    *
    * @param string The string to test.
-   * @return {@code true} if the specified string is not a whitespaced string.
+   * @return {@code true} if the specified string is {@code null} or contains
+   *         at least one whitespace character.
+   * @see #isWhitespaced(String)
    */
-  public static boolean isNonWhitespaced(String string) {
-    if (string != null) {
-      final int length = string.length();
-      for (int i = 0; i < length; i++) {
-        if (Character.isWhitespace(string.charAt(i))) {
-          return false;
-        }
-      }
-      return length > 0;
-    }
-    return false;
+  public static boolean isWhitespacedOrNull(String string) {
+    return string == null || isWhitespaced(string);
   }
 
-    // Modifications
+  /**
+   * Determines if the specified string is not {@code null}, not an empty
+   * string (i.e. {@code ""}) and does not contain whitespace characters at all
+   * according to the {@link Character#isWhitespace(int)} method. This method
+   * does not take locale into account. This is a shortcut for the
+   * {@code !isWhitespacedOrNull(string)}.
+   *
+   * @param string The string to test.
+   * @return {@code true} if the specified string does not contain whitespace
+   *         characters.
+   * @see #isWhitespacedOrNull(String)
+   */
+  public static boolean isNonWhitespaced(String string) {
+    return !isWhitespacedOrNull(string);
+  }
 
-    /**
-     * Returns trimmed copy of the specified string or {@code null} if the
-     * specified string is empty or {@code null}.
-     *
-     * @param value String value.
-     * @return Trimmed copy of the specified string or {@code null} if the
-     *         specified string is empty or {@code null}.
-     */
-    public static String trim(String value) {
-        return value == null || (value = value.trim()).isEmpty() ? null : value;
+  // Modifications
+
+  /**
+   * Applies the specified operator for each character of the specified string
+   * and returns the resulting string which may be a different length than the
+   * original one because Unicode mappings are not always 1:1.
+   *
+   * @param string The string to be modified.
+   * @param operator The operator to be applied for each character of the string.
+   * @return A resulting string or the original one if none of the characters
+   *         have been modified.
+   * @throws NullPointerException if the specified operator is {@code null}.
+   */
+  public static String forEachChar(String string, IntUnaryOperator operator) {
+    Objects.require(operator);
+    final int length0 = string == null ? 0 : string.length();
+    for (int i = 0, j, cc0, cc1; i < length0; i += cc0) {
+      int ch0 = string.codePointAt(i);
+      int ch1 = operator.applyAsInt(ch0);
+      cc0 = Character.charCount(ch0);
+      if (ch0 != ch1) {
+        // x2 length in case of growing
+        final int length1 = (int) Math.min(length0 * 2L, Integer.MAX_VALUE);
+        final char[] value = new char[length1];
+        string.getChars(0, i, value, 0);
+        Character.toChars(ch1, value, i);
+        cc1 = Character.charCount(ch1);
+        for (j = i + cc1, i += cc0; i < length0; i += cc0, j += cc1) {
+          ch0 = string.codePointAt(i);
+          ch1 = operator.applyAsInt(ch0);
+          cc0 = Character.charCount(ch0);
+          cc1 = Character.charCount(ch1);
+          Character.toChars(ch1, value, j);
+        }
+        return new String(value, 0, j - cc1);
+      }
     }
+    return string;
+  }
+
+  /**
+   * Removes all of the leading and trailing whitespace characters in the
+   * specified string according to the {@link Character#isWhitespace(int)}
+   * method. Returns {@code null} if the resulting string is an empty string
+   * (i.e. {@code ""}). This method does not take locale into account.
+   *
+   * @param string The string to be trimmed.
+   * @return A trimmed copy of the specified string or the original one if none
+   *         of the characters have been removed.
+   */
+  public static String trim(String string) {
+    final int length = string == null ? 0 : string.length();
+    int start = 0, end = length, cc = 0;
+    // need to scan the entire string because code points of characters
+    // may differ in length
+    for (int i = 0, n; i < length; i += n) {
+      int ch = string.codePointAt(i);
+      n = Character.charCount(ch);
+      if (!Character.isWhitespace(ch)) {
+        start = cc == 0 ? i : start;
+        end = i;
+        cc = n;
+      }
+    }
+    // analyze scan results
+    return cc > 0
+      ? end + cc - start < length
+        ? string.substring(start, end + cc) // trimmed
+        : string // original string has no leading and trailing whitespaces
+      : null; // original string is null, empty or blank
+  }
+
+  /**
+   * The same as the {@link #trim(String)} but never returns {@code null}.
+   * This is a shortcut for the {@code nullSafe(trim(string))}.
+   *
+   * @param string The string to be trimmed.
+   * @return A {@code null}-safe trimmed copy of the specified string.
+   * @see #nullSafe(String)
+   * @see #trim(String)
+   */
+  public static String trimNullSafe(String string) {
+    return nullSafe(trim(string));
+  }
+
+  /**
+   * Converts all of the characters in the specified string to lower case using
+   * the {@link Character#toLowerCase(int)} method. The resulting string may be
+   * a different length than the original one. This method does not take locale
+   * into account.
+   *
+   * @param string The string to be converted to lower case.
+   * @return The string converted to lower case or the original one if none of
+   *         the characters have been converted.
+   * @see #forEachChar(String, IntUnaryOperator)
+   */
+  public static String toLowerCase(String string) {
+    return forEachChar(string, Character::toLowerCase);
+  }
+
+  /**
+   * The same as the {@link #toLowerCase(String)} but never returns {@code null}.
+   * This is a shortcut for the {@code nullSafe(toLowerCase(string))}.
+   *
+   * @param string The string to be converted to lower case.
+   * @return The {@code null}-safe string converted to lower case.
+   * @see #nullSafe(String)
+   * @see #toLowerCase(String)
+   */
+  public static String toLowerCaseNullSafe(String string) {
+    return nullSafe(toLowerCase(string));
+  }
+
+  /**
+   * Converts all of the characters in the specified string to upper case using
+   * the {@link Character#toUpperCase(int)} method. The resulting string may be
+   * a different length than the original one. This method does not take locale
+   * into account.
+   *
+   * @param string The string to be converted to upper case.
+   * @return The string converted to upper case or the original one if none of
+   *         the characters have been converted.
+   * @see #forEachChar(String, IntUnaryOperator)
+   */
+  public static String toUpperCase(String string) {
+    return forEachChar(string, Character::toUpperCase);
+  }
+
+  /**
+   * The same as the {@link #toUpperCase(String)} but never returns {@code null}.
+   * This is a shortcut for the {@code nullSafe(toUpperCase(string))}.
+   *
+   * @param string The string to be converted to upper case.
+   * @return The {@code null}-safe string converted to upper case.
+   * @see #nullSafe(String)
+   * @see #toUpperCase(String)
+   */
+  public static String toUpperCaseNullSafe(String string) {
+    return nullSafe(toUpperCase(string));
+  }
+
+
 
     /**
      * Cuts length of the specified string to the specified maximum length.
@@ -222,47 +399,6 @@ public abstract class Strings {
             }
         }
         return value;
-    }
-
-    /**
-     * Converts the specified string to lower case in locale insensitive way.
-     *
-     * @param value String to be converted.
-     * @return The specified string in lower case.
-     */
-    public static String lower(String value) {
-        return value == null ? null : value.toLowerCase(Locale.ENGLISH);
-    }
-
-    /**
-     * Converts the specified string to upper case in locale insensitive way.
-     *
-     * @param value String to be converted.
-     * @return The specified string in upper case.
-     */
-    public static String upper(String value) {
-        return value == null ? null : value.toUpperCase(Locale.ENGLISH);
-    }
-
-    /**
-     * Determines if the specified string value contains any of the specified
-     * characters.
-     *
-     * @param value String to test.
-     * @param chars Characters to search.
-     * @return {@code true} if the specified string value contains any of the
-     *         specified characters; {@code false} otherwise.
-     */
-    public static boolean containsChars(String value, String chars) {
-        final int length = value == null ? 0 : value.length();
-        if (length > 0) {
-            for (int i = 0; i < length; i++) {
-                if (chars.indexOf(value.charAt(i)) >= 0) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     /**
