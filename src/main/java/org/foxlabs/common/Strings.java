@@ -28,6 +28,9 @@ import java.util.function.IntUnaryOperator;
 /**
  * Implementation of commonly used string operations.
  *
+ * <p>Methods of this class does not take default locale into account and
+ * perform Unicode operations using methods of the {@link Character} class.</p>
+ *
  * @author Fox Mulder
  */
 public final class Strings {
@@ -88,8 +91,7 @@ public final class Strings {
   /**
    * Determines if the specified string is not {@code null}, but an empty
    * string (i.e. {@code ""}) or consists of whitespace characters only
-   * according to the {@link Character#isWhitespace(int)} method. This method
-   * does not take locale into account.
+   * according to the {@link Character#isWhitespace(int)} method.
    *
    * @param string The string to test.
    * @return {@code true} if the specified string is a blank string.
@@ -98,7 +100,11 @@ public final class Strings {
     if (string == null) {
       return false;
     }
-    return iterator(string).tryEachRemaining(WHITESPACE) == string.length();
+    if (string.isEmpty()) {
+      return true;
+    }
+    return new CodePointIterator(string)
+        .tryEachRemaining(Predicates.CHAR_WHITESPACE) == string.length();
   }
 
   /**
@@ -118,8 +124,7 @@ public final class Strings {
   /**
    * Determines if the specified string is not {@code null}, not an empty
    * string (i.e. {@code ""}) and contains at least one non-whitespace character
-   * according to the {@link Character#isWhitespace(int)} method. This method
-   * does not take locale into account.
+   * according to the {@link Character#isWhitespace(int)} method.
    *
    * @param string The string to test.
    * @return {@code true} if the specified string is not a blank string.
@@ -128,14 +133,14 @@ public final class Strings {
     if (string == null || string.isEmpty()) {
       return false;
     }
-    return iterator(string).tryEachRemaining(NON_WHITESPACE) == string.length();
+    return new CodePointIterator(string)
+        .tryEachRemaining(Predicates.CHAR_NON_WHITESPACE) == string.length();
   }
 
   /**
    * Determines if the specified string is not {@code null}, but an empty
    * string (i.e. {@code ""}) or contains at least one whitespace character
-   * according to the {@link Character#isWhitespace(int)} method. This method
-   * does not take locale into account.
+   * according to the {@link Character#isWhitespace(int)} method.
    *
    * @param string The string to test.
    * @return {@code true} if the specified string contains at least one
@@ -146,8 +151,8 @@ public final class Strings {
       if (string.isEmpty()) {
         return true;
       } else {
-        for (CodePointIterator itr = iterator(string); itr.hasNext();) {
-          if (WHITESPACE.test(itr.nextInt())) {
+        for (CodePointIterator itr = new CodePointIterator(string); itr.hasNext();) {
+          if (Predicates.CHAR_WHITESPACE.test(itr.nextInt())) {
             return true;
           }
         }
@@ -173,9 +178,8 @@ public final class Strings {
   /**
    * Determines if the specified string is not {@code null}, not an empty
    * string (i.e. {@code ""}) and does not contain whitespace characters at all
-   * according to the {@link Character#isWhitespace(int)} method. This method
-   * does not take locale into account. This is a shortcut for the
-   * {@code !isWhitespacedOrNull(string)}.
+   * according to the {@link Character#isWhitespace(int)} method. This is a
+   * shortcut for the {@code !isWhitespacedOrNull(string)}.
    *
    * @param string The string to test.
    * @return {@code true} if the specified string does not contain whitespace
@@ -200,7 +204,7 @@ public final class Strings {
    * @throws NullPointerException if the specified operator is {@code null}.
    */
   public static String forEachChar(String string, IntUnaryOperator operator) {
-    Objects.require(operator);
+    Objects.requireNonNull(operator);
     final int length0 = string == null ? 0 : string.length();
     for (int i = 0, j, cc0, cc1; i < length0; i += cc0) {
       int ch0 = string.codePointAt(i);
@@ -242,7 +246,7 @@ public final class Strings {
    * @see #forEachChar(String, IntUnaryOperator)
    */
   public static String replace(String string, int replacement, IntPredicate predicate) {
-    Objects.require(predicate);
+    Objects.requireNonNull(predicate);
     return forEachChar(string, (ch) -> predicate.test(ch) ? replacement : ch);
   }
 
@@ -265,8 +269,7 @@ public final class Strings {
   /**
    * Converts all of the characters in the specified string to lower case using
    * the {@link Character#toLowerCase(int)} method. The resulting string may be
-   * a different length than the original one. This method does not take locale
-   * into account.
+   * a different length than the original one.
    *
    * @param string The string to be converted to lower case.
    * @return The string converted to lower case or the original one if none of
@@ -293,8 +296,7 @@ public final class Strings {
   /**
    * Converts all of the characters in the specified string to upper case using
    * the {@link Character#toUpperCase(int)} method. The resulting string may be
-   * a different length than the original one. This method does not take locale
-   * into account.
+   * a different length than the original one.
    *
    * @param string The string to be converted to upper case.
    * @return The string converted to upper case or the original one if none of
@@ -322,7 +324,7 @@ public final class Strings {
    * Removes all of the leading and trailing whitespace characters in the
    * specified string according to the {@link Character#isWhitespace(int)}
    * method. Returns {@code null} if the resulting string is an empty string
-   * (i.e. {@code ""}). This method does not take locale into account.
+   * (i.e. {@code ""}).
    *
    * @param string The string to be trimmed.
    * @return A trimmed copy of the specified string or the original one if none
@@ -714,7 +716,7 @@ public final class Strings {
      * @return The current position in the string.
      */
     public int tryEachRemaining(IntPredicate action) {
-      Objects.require(action);
+      Objects.requireNonNull(action);
       while (hasNext()) {
         final int ch = nextInt();
         if (!action.test(ch)) {
@@ -730,15 +732,10 @@ public final class Strings {
   static final CodePointIterator EMPTY_ITERATOR = new CodePointIterator("") {
     @Override public boolean hasNext() { return false; }
     @Override public int nextInt() { throw new NoSuchElementException(); }
-    @Override public void forEachRemaining(IntConsumer action) { Objects.require(action); }
-    @Override public void forEachRemaining(Consumer<? super Integer> action) { Objects.require(action); }
-    @Override public int tryEachRemaining(IntPredicate action) { Objects.require(action); return 0; }
+    @Override public void forEachRemaining(IntConsumer action) { Objects.requireNonNull(action); }
+    @Override public void forEachRemaining(Consumer<? super Integer> action) { Objects.requireNonNull(action); }
+    @Override public int tryEachRemaining(IntPredicate action) { Objects.requireNonNull(action); return 0; }
   };
-
-  // Predicates
-  static final IntPredicate WHITESPACE = Character::isWhitespace;
-  static final IntPredicate NON_WHITESPACE = (ch) -> !Character.isWhitespace(ch);
-  static final IntPredicate ISO_CONTROL = Character::isISOControl;
 
   // Operators
   static final IntUnaryOperator LOWERCASE = Character::toLowerCase;
