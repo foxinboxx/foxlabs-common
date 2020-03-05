@@ -62,6 +62,9 @@ public class ObjectsTest {
     Assert.assertEquals("TEST",
         Assert.assertThrows(NullPointerException.class,
             () -> Objects.require(null, "TEST")).getMessage());
+    Assert.assertEquals("TEST",
+        Assert.assertThrows(NullPointerException.class,
+            () -> Objects.require(null, Objects.message(() -> "TEST"))).getMessage());
     // Objects.require(Object, Predicate)
     Assert.assertTrue(Objects.require(reference = new Object(), (o) -> true) == reference);
     Assert.assertEquals(null,
@@ -72,6 +75,9 @@ public class ObjectsTest {
     Assert.assertEquals("TEST",
         Assert.assertThrows(IllegalArgumentException.class,
             () -> Objects.require(null, (o) -> false, "TEST")).getMessage());
+    Assert.assertEquals("TEST",
+        Assert.assertThrows(IllegalArgumentException.class,
+            () -> Objects.require(null, (o) -> false, Objects.message(() -> "TEST"))).getMessage());
     // Objects.require(Object, Predicate, Supplier)
     Assert.assertTrue(Objects.require(reference = new Object(), (o) -> true, RuntimeException::new) == reference);
     Assert.assertEquals("TEST",

@@ -51,17 +51,19 @@ public final class Objects {
 
   /**
    * Checks that the specified object reference is not {@code null} and throws
-   * {@link NullPointerException} with the specified detail message if it is.
+   * {@link NullPointerException} with the specified detail message built as
+   * {@code String.valueOf(message)} if it is.
    *
    * @param <T> The type of the object.
    * @param object The object reference to check.
-   * @param message The detail message of the {@link NullPointerException}.
+   * @param message The detail message provider for the {@link NullPointerException}.
    * @return The specified object reference.
    * @throws NullPointerException if the specified object reference is {@code null}.
+   * @see #message(Supplier)
    */
-  public static <T> T require(T object, String message) {
+  public static <T> T require(T object, Object message) {
     if (object == null) {
-      throw new NullPointerException(message);
+      throw new NullPointerException(String.valueOf(message));
     }
     return object;
   }
@@ -87,21 +89,22 @@ public final class Objects {
   /**
    * Checks that the specified object satisfies the specified condition and
    * throws {@link IllegalArgumentException} with the specified detail message
-   * if it is not.
+   * built as {@code String.valueOf(message)} if it is not.
    *
    * @param <T> The type of the object.
    * @param object The object reference to check.
    * @param condition The predicate to be applied to object.
-   * @param message The detail message of the {@link IllegalArgumentException}.
+   * @param message The detail message provider for the {@link IllegalArgumentException}.
    * @return The specified object reference.
    * @throws IllegalArgumentException if the specified object does not satisfy
    *         the specified condition.
+   * @see #message(Supplier)
    */
-  public static <T> T require(T object, Predicate<T> condition, String message) {
+  public static <T> T require(T object, Predicate<T> condition, Object message) {
     if (condition.test(object)) {
       return object;
     }
-    throw new IllegalArgumentException(message);
+    throw new IllegalArgumentException(String.valueOf(message));
   }
 
   /**
@@ -144,19 +147,19 @@ public final class Objects {
   /**
    * Returns a new object with the overridden {@link Object#toString()} method
    * that uses the specified formatter to generate the resulting string. This
-   * method is useful for lazy message construction (e.g. in Log4j loggers).
+   * method is useful for lazy message construction and might be used as the
+   * {@code message} argument of the {@link #require(Object, Object)} and
+   * {@link #require(Object, Predicate, Object)} methods.
    *
    * <p>
-   * For example, instead of this:
+   * For example, instead of:
    * <pre>
-   * if (log.isDebugEnabled()) {
-   *   log.debug("System properties:\n" + System.getProperties());
-   * }
+   * Objects.require(object, LocalDateTime.now() + ": object is null");
    * </pre>
    *
-   * You may use this:
+   * You may use:
    * <pre>
-   * log.debug(message(() -> "System properties:\n" + System.getProperties()));
+   * Objects.require(object, Objects.message(() -> LocalDateTime.now() + ": object is null"));
    * </pre>
    * </p>
    *

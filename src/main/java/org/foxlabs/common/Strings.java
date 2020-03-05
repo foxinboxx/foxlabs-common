@@ -45,7 +45,7 @@ public final class Strings {
     return string == null ? "" : string;
   }
 
-  // Validations
+  // Checks
 
   /**
    * Determines if the specified string is not {@code null}, but an empty
