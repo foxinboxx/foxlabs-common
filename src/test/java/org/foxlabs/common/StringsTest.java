@@ -30,9 +30,9 @@ import org.junit.Assert;
 public class StringsTest {
 
   /**
-   * The original string to reference comparison ({@code ==}) in tests.
+   * The reference to original string for {@code ==} comparisons in tests.
    */
-  private String original;
+  private String reference;
 
   /**
    * Tests the {@link Strings#nullSafe(String)} method.
@@ -174,8 +174,8 @@ public class StringsTest {
   @Test
   public void testForEachChar() {
     Assert.assertEquals(null, Strings.forEachChar(null, IntUnaryOperator.identity()));
-    Assert.assertTrue(Strings.forEachChar(original = "", IntUnaryOperator.identity()) == original);
-    Assert.assertTrue(Strings.forEachChar(original = "TEST", IntUnaryOperator.identity()) == original);
+    Assert.assertTrue(Strings.forEachChar(reference = "", IntUnaryOperator.identity()) == reference);
+    Assert.assertTrue(Strings.forEachChar(reference = "TEST", IntUnaryOperator.identity()) == reference);
     Assert.assertEquals("23456789", Strings.forEachChar("12345678", (ch) -> ch + 1));
     Assert.assertEquals("12356789", Strings.forEachChar("12345678", (ch) -> ch > '3' ? ch + 1 : ch));
   }
@@ -186,9 +186,9 @@ public class StringsTest {
   @Test
   public void testReplace() {
     Assert.assertEquals(null, Strings.replace(null, 'X', (ch) -> true));
-    Assert.assertTrue(Strings.replace(original = "", 'X', (ch) -> true) == original);
-    Assert.assertTrue(Strings.replace(original = "TEST", 'X', (ch) -> false) == original);
-    Assert.assertTrue(Strings.replace(original = "TEST", 'T', (ch) -> false) == original);
+    Assert.assertTrue(Strings.replace(reference = "", 'X', (ch) -> true) == reference);
+    Assert.assertTrue(Strings.replace(reference = "TEST", 'X', (ch) -> false) == reference);
+    Assert.assertTrue(Strings.replace(reference = "TEST", 'T', (ch) -> false) == reference);
     Assert.assertEquals("_ES_", Strings.replace("TEST", '_', (ch) -> ch == 'T'));
   }
 
@@ -199,8 +199,8 @@ public class StringsTest {
   public void testReplaceNullSafe() {
     Assert.assertEquals("", Strings.replaceNullSafe(null, 'X', (ch) -> true));
     Assert.assertEquals("", Strings.replaceNullSafe("", 'X', (ch) -> true));
-    Assert.assertTrue(Strings.replaceNullSafe(original = "TEST", 'X', (ch) -> false) == original);
-    Assert.assertTrue(Strings.replaceNullSafe(original = "TEST", 'T', (ch) -> false) == original);
+    Assert.assertTrue(Strings.replaceNullSafe(reference = "TEST", 'X', (ch) -> false) == reference);
+    Assert.assertTrue(Strings.replaceNullSafe(reference = "TEST", 'T', (ch) -> false) == reference);
     Assert.assertEquals("_ES_", Strings.replaceNullSafe("TEST", '_', (ch) -> ch == 'T'));
   }
 
@@ -210,8 +210,8 @@ public class StringsTest {
   @Test
   public void testToLowerCase() {
     Assert.assertEquals(null, Strings.toLowerCase(null));
-    Assert.assertTrue(Strings.toLowerCase(original = "") == original);
-    Assert.assertTrue(Strings.toLowerCase(original = "test") == original);
+    Assert.assertTrue(Strings.toLowerCase(reference = "") == reference);
+    Assert.assertTrue(Strings.toLowerCase(reference = "test") == reference);
     Assert.assertEquals("test", Strings.toLowerCase("TesT"));
     Assert.assertEquals("test", Strings.toLowerCase("TEST"));
     Assert.assertEquals(" test", Strings.toLowerCase(" TEST"));
@@ -225,8 +225,8 @@ public class StringsTest {
   @Test
   public void testToLowerCaseNullSafe() {
     Assert.assertEquals("", Strings.toLowerCaseNullSafe(null));
-    Assert.assertTrue(Strings.toLowerCaseNullSafe(original = "") == original);
-    Assert.assertTrue(Strings.toLowerCaseNullSafe(original = "test") == original);
+    Assert.assertTrue(Strings.toLowerCaseNullSafe(reference = "") == reference);
+    Assert.assertTrue(Strings.toLowerCaseNullSafe(reference = "test") == reference);
     Assert.assertEquals("test", Strings.toLowerCaseNullSafe("TesT"));
     Assert.assertEquals("test", Strings.toLowerCaseNullSafe("TEST"));
     Assert.assertEquals(" test", Strings.toLowerCaseNullSafe(" TEST"));
@@ -240,8 +240,8 @@ public class StringsTest {
   @Test
   public void testToUpperCase() {
     Assert.assertEquals(null, Strings.toUpperCase(null));
-    Assert.assertTrue(Strings.toUpperCase(original = "") == original);
-    Assert.assertTrue(Strings.toUpperCase(original = "TEST") == original);
+    Assert.assertTrue(Strings.toUpperCase(reference = "") == reference);
+    Assert.assertTrue(Strings.toUpperCase(reference = "TEST") == reference);
     Assert.assertEquals("TEST", Strings.toUpperCase("TesT"));
     Assert.assertEquals(" TEST", Strings.toUpperCase(" test"));
     Assert.assertEquals("TEST ", Strings.toUpperCase("test "));
@@ -254,8 +254,8 @@ public class StringsTest {
   @Test
   public void testToUpperCaseNullSafe() {
     Assert.assertEquals("", Strings.toUpperCaseNullSafe(null));
-    Assert.assertTrue(Strings.toUpperCaseNullSafe(original = "") == original);
-    Assert.assertTrue(Strings.toUpperCaseNullSafe(original = "TEST") == original);
+    Assert.assertTrue(Strings.toUpperCaseNullSafe(reference = "") == reference);
+    Assert.assertTrue(Strings.toUpperCaseNullSafe(reference = "TEST") == reference);
     Assert.assertEquals("TEST", Strings.toUpperCaseNullSafe("TesT"));
     Assert.assertEquals(" TEST", Strings.toUpperCaseNullSafe(" test"));
     Assert.assertEquals("TEST ", Strings.toUpperCaseNullSafe("test "));
@@ -272,7 +272,7 @@ public class StringsTest {
     Assert.assertEquals(null, Strings.trim(" "));
     Assert.assertEquals(null, Strings.trim("  "));
     Assert.assertEquals(null, Strings.trim("\n\r\t"));
-    Assert.assertTrue(Strings.trim(original = "TEST") == original);
+    Assert.assertTrue(Strings.trim(reference = "TEST") == reference);
     Assert.assertEquals("TEST", Strings.trim(" TEST"));
     Assert.assertEquals("TEST", Strings.trim("TEST "));
     Assert.assertEquals("TEST", Strings.trim(" TEST "));
@@ -290,7 +290,7 @@ public class StringsTest {
     Assert.assertEquals("", Strings.trimNullSafe(" "));
     Assert.assertEquals("", Strings.trimNullSafe("  "));
     Assert.assertEquals("", Strings.trimNullSafe("\n\r\t"));
-    Assert.assertTrue(Strings.trimNullSafe(original = "TEST") == original);
+    Assert.assertTrue(Strings.trimNullSafe(reference = "TEST") == reference);
     Assert.assertEquals("TEST", Strings.trimNullSafe(" TEST"));
     Assert.assertEquals("TEST", Strings.trimNullSafe("TEST "));
     Assert.assertEquals("TEST", Strings.trimNullSafe(" TEST "));

@@ -127,6 +127,21 @@ public final class Objects {
   // Miscellaneous
 
   /**
+   * Casts the specified object reference to a custom target type. This method
+   * just provides a way to avoid declaration of the {@link SuppressWarnings}
+   * annotation.
+   *
+   * @param <T> The target reference type.
+   * @param object The object reference to cast.
+   * @return The specified object reference casted to the target type.
+   * @throws ClassCastException if cast operation failed.
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> T cast(Object object) {
+    return (T) object;
+  }
+
+  /**
    * Returns a new object with the overridden {@link Object#toString()} method
    * that uses the specified formatter to generate the resulting string. This
    * method is useful for lazy message construction (e.g. in Log4j loggers).

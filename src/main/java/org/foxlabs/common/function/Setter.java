@@ -59,12 +59,32 @@ public interface Setter<T, V, E extends Throwable> {
   }
 
   /**
-   * The auxiliary setter that does nothing.
+   * The auxiliary {@link Setter} that does nothing.
    */
-  Setter.Unchecked<?, ?> STUB = new Setter.Unchecked<Object, Object>() {
+  Setter<?, ?, RuntimeException> STUB = new Setter.Unchecked<Object, Object>() {
     @Override public void set(Object target, Object value) {
       // Nothing to do
     }
   };
+
+  /**
+   * Returns an auxiliary {@link Setter} instance.
+   *
+   * @return An auxiliary {@link Setter} instance.
+   */
+  @SuppressWarnings("unchecked")
+  static <T, V, E extends Throwable> Setter<T, V, E> stub() {
+    return (Setter<T, V, E>) STUB;
+  }
+
+  /**
+   * Returns an auxiliary {@link Setter.Unchecked} instance.
+   *
+   * @return An auxiliary {@link Setter} instance.
+   */
+  @SuppressWarnings("unchecked")
+  static <T, V> Setter.Unchecked<T, V> uncheckedStub() {
+    return (Setter.Unchecked<T, V>) STUB;
+  }
 
 }

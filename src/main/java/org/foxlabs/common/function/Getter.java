@@ -59,12 +59,33 @@ public interface Getter<T, V, E extends Throwable> {
   }
 
   /**
-   * The auxiliary getter that returns {@code null}.
+   * The auxiliary {@link Getter} that returns {@code null}.
    */
-  Getter.Unchecked<?, ?> STUB = new Getter.Unchecked<Object, Object>() {
+  Getter<?, ?, RuntimeException> STUB = new Getter.Unchecked<Object, Object>() {
     @Override public Object get(Object target) {
       return null;
     }
   };
+
+  /**
+   * Returns an auxiliary {@link Getter} instance.
+   *
+   * @return An auxiliary {@link Getter} instance.
+   */
+  @SuppressWarnings("unchecked")
+  static <T, V, E extends Throwable> Getter<T, V, E> stub() {
+    return (Getter<T, V, E>) STUB;
+  }
+
+  /**
+   * Returns an auxiliary {@link Getter.Unchecked} instance. Unlike the
+   * like-named field, this method is parameterized.
+   *
+   * @return An auxiliary {@link Getter} instance.
+   */
+  @SuppressWarnings("unchecked")
+  static <T, V> Getter.Unchecked<T, V> uncheckedStub() {
+    return (Getter.Unchecked<T, V>) STUB;
+  }
 
 }
