@@ -19,7 +19,7 @@ package org.foxlabs.util.counter;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.foxlabs.util.ToString;
+import org.foxlabs.common.function.ToString;
 
 /**
  * Factory class for all counters.

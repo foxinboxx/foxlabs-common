@@ -16,6 +16,8 @@
 
 package org.foxlabs.util;
 
+import org.foxlabs.common.function.ToString;
+
 /**
  * This class represents text position in some abstract resource.
  * 

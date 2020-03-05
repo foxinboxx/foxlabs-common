@@ -17,10 +17,12 @@
 package org.foxlabs.common.function;
 
 /**
+ * Defines the {@link #set(Object, Object)} method which allows to assign a
+ * value to some property of the target object.
  *
  * @param <T> The type of the target object.
  * @param <V> The type of the value to set on the target object.
- * @param <E> The type of the exception.
+ * @param <E> The type of the exception thrown if operation failed.
  *
  * @author Fox Mulder
  */
@@ -35,6 +37,8 @@ public interface Setter<T, V, E extends Throwable> {
    * @throws E if operation failed.
    */
   void set(T target, V value) throws E;
+
+  // Setter.Unchecked
 
   /**
    * The same as the {@link Setter} but does not throw checked exception.
@@ -58,33 +62,64 @@ public interface Setter<T, V, E extends Throwable> {
 
   }
 
+  // Stubs
+
   /**
-   * The auxiliary {@link Setter} that does nothing.
+   * The auxiliary {@link Setter} stub that does nothing.
    */
-  Setter<?, ?, RuntimeException> STUB = new Setter.Unchecked<Object, Object>() {
+  Setter<?, ?, RuntimeException> NULL = new Setter.Unchecked<Object, Object>() {
     @Override public void set(Object target, Object value) {
       // Nothing to do
     }
   };
 
   /**
-   * Returns an auxiliary {@link Setter} instance.
+   * Returns reference to the {@link #NULL} stub instance as a {@link Setter}.
    *
-   * @return An auxiliary {@link Setter} instance.
+   * @return A reference to the {@link #NULL} stub instance.
    */
   @SuppressWarnings("unchecked")
-  static <T, V, E extends Throwable> Setter<T, V, E> stub() {
-    return (Setter<T, V, E>) STUB;
+  static <T, V, E extends Throwable> Setter<T, V, E> nullStub() {
+    return (Setter<T, V, E>) NULL;
   }
 
   /**
-   * Returns an auxiliary {@link Setter.Unchecked} instance.
+   * Returns reference to the {@link #NULL} stub instance as a {@link Setter.Unchecked}.
    *
-   * @return An auxiliary {@link Setter} instance.
+   * @return A reference to the {@link #NULL} stub instance.
    */
   @SuppressWarnings("unchecked")
-  static <T, V> Setter.Unchecked<T, V> uncheckedStub() {
-    return (Setter.Unchecked<T, V>) STUB;
+  static <T, V> Setter.Unchecked<T, V> nullUncheckedStub() {
+    return (Setter.Unchecked<T, V>) NULL;
+  }
+
+  /**
+   * The auxiliary {@link Setter} stub that throws {@link UnsupportedOperationException}.
+   */
+  Setter<?, ?, RuntimeException> UNSUPPORTED = new Setter.Unchecked<Object, Object>() {
+    @Override public void set(Object target, Object value) {
+      throw new UnsupportedOperationException();
+    }
+  };
+
+  /**
+   * Returns reference to the {@link #UNSUPPORTED} stub instance as a {@link Setter}.
+   *
+   * @return A reference to the {@link #UNSUPPORTED} stub instance.
+   */
+  @SuppressWarnings("unchecked")
+  static <T, V, E extends Throwable> Setter<T, V, E> unsupportedStub() {
+    return (Setter<T, V, E>) UNSUPPORTED;
+  }
+
+  /**
+   * Returns reference to the {@link #UNSUPPORTED} stub instance as a {@link Setter.Unchecked}.
+   *
+   * @return A reference to the {@link #UNSUPPORTED} stub instance.
+   */
+  @SuppressWarnings("unchecked")
+  static <T, V> Setter.Unchecked<T, V> unsupportedUncheckedStub() {
+    return (Setter.Unchecked<T, V>) UNSUPPORTED;
   }
 
 }

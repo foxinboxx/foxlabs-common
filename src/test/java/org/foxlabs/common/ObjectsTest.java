@@ -30,12 +30,12 @@ import org.junit.Assert;
 public class ObjectsTest {
 
   /**
-   * The reference to original object for {@code ==} comparisons in tests.
+   * The reference to an original object for {@code ==} comparisons in tests.
    */
   private Object reference;
 
   /**
-   * The reference to {@link Number} for cast operations in tests.
+   * The reference to a {@link Number} for cast operations in tests.
    */
   @SuppressWarnings("unused")
   private Number number;

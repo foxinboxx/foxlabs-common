@@ -30,7 +30,7 @@ import org.junit.Assert;
 public class StringsTest {
 
   /**
-   * The reference to original string for {@code ==} comparisons in tests.
+   * The reference to an original string for {@code ==} comparisons in tests.
    */
   private String reference;
 

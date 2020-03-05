@@ -16,7 +16,7 @@
 
 package org.foxlabs.util.counter;
 
-import org.foxlabs.util.ToString;
+import org.foxlabs.common.function.ToString;
 
 /**
  * Counter that allows to gather hits/misses statistics.

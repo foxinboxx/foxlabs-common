@@ -17,14 +17,22 @@
 package org.foxlabs.common.function;
 
 /**
+ * Defines the {@link #build()} method which could be implemented by classes
+ * that follow the <a href="https://en.wikipedia.org/wiki/Builder_pattern">Builder</a>
+ * pattern.
  *
- * @param <R> The type of the result.
+ * @param <R> The type of the resulting assembly object.
  *
  * @author Fox Mulder
  */
 @FunctionalInterface
 public interface Buildable<R> {
 
+  /**
+   * Returns resulting assembly object.
+   *
+   * @return A resulting assembly object.
+   */
   R build();
 
 }

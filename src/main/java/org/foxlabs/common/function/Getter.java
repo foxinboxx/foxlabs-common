@@ -17,10 +17,12 @@
 package org.foxlabs.common.function;
 
 /**
+ * Defines the {@link #get(Object)} method which allows to retrieve a value of
+ * some property from the target object.
  *
  * @param <T> The type of the target object.
  * @param <V> The type of the value to get from the target object.
- * @param <E> The type of the exception.
+ * @param <E> The type of the exception thrown if operation failed.
  *
  * @author Fox Mulder
  */
@@ -35,6 +37,8 @@ public interface Getter<T, V, E extends Throwable> {
    * @throws E if operation failed.
    */
   V get(T target) throws E;
+
+  // Getter.Unchecked
 
   /**
    * The same as the {@link Getter} but does not throw checked exception.
@@ -58,34 +62,64 @@ public interface Getter<T, V, E extends Throwable> {
 
   }
 
+  // Stubs
+
   /**
-   * The auxiliary {@link Getter} that returns {@code null}.
+   * The auxiliary {@link Getter} stub that returns {@code null}.
    */
-  Getter<?, ?, RuntimeException> STUB = new Getter.Unchecked<Object, Object>() {
+  Getter<?, ?, RuntimeException> NULL = new Getter.Unchecked<Object, Object>() {
     @Override public Object get(Object target) {
       return null;
     }
   };
 
   /**
-   * Returns an auxiliary {@link Getter} instance.
+   * Returns reference to the {@link #NULL} stub instance as a {@link Getter}.
    *
-   * @return An auxiliary {@link Getter} instance.
+   * @return A reference to the {@link #NULL} stub instance.
    */
   @SuppressWarnings("unchecked")
-  static <T, V, E extends Throwable> Getter<T, V, E> stub() {
-    return (Getter<T, V, E>) STUB;
+  static <T, V, E extends Throwable> Getter<T, V, E> nullStub() {
+    return (Getter<T, V, E>) NULL;
   }
 
   /**
-   * Returns an auxiliary {@link Getter.Unchecked} instance. Unlike the
-   * like-named field, this method is parameterized.
+   * Returns reference to the {@link #NULL} stub instance as a {@link Getter.Unchecked}.
    *
-   * @return An auxiliary {@link Getter} instance.
+   * @return A reference to the {@link #NULL} stub instance.
    */
   @SuppressWarnings("unchecked")
-  static <T, V> Getter.Unchecked<T, V> uncheckedStub() {
-    return (Getter.Unchecked<T, V>) STUB;
+  static <T, V> Getter.Unchecked<T, V> nullUncheckedStub() {
+    return (Getter.Unchecked<T, V>) NULL;
+  }
+
+  /**
+   * The auxiliary {@link Getter} stub that throws {@link UnsupportedOperationException}.
+   */
+  Getter<?, ?, RuntimeException> UNSUPPORTED = new Getter.Unchecked<Object, Object>() {
+    @Override public Object get(Object target) {
+      throw new UnsupportedOperationException();
+    }
+  };
+
+  /**
+   * Returns reference to the {@link #UNSUPPORTED} stub instance as a {@link Getter}.
+   *
+   * @return A reference to the {@link #UNSUPPORTED} stub instance.
+   */
+  @SuppressWarnings("unchecked")
+  static <T, V, E extends Throwable> Getter<T, V, E> unsupportedStub() {
+    return (Getter<T, V, E>) UNSUPPORTED;
+  }
+
+  /**
+   * Returns reference to the {@link #UNSUPPORTED} stub instance as a {@link Getter.Unchecked}.
+   *
+   * @return A reference to the {@link #UNSUPPORTED} stub instance.
+   */
+  @SuppressWarnings("unchecked")
+  static <T, V> Getter.Unchecked<T, V> unsupportedUncheckedStub() {
+    return (Getter.Unchecked<T, V>) UNSUPPORTED;
   }
 
 }
