@@ -26,6 +26,8 @@ public final class Objects {
     throw new IllegalAccessError();
   }
 
+  // Validations
+
   public static <T> T require(T object) {
     return require(object, java.util.Objects::nonNull, NullPointerException::new);
   }
@@ -41,6 +43,39 @@ public final class Objects {
     } else {
       throw exception.get();
     }
+  }
+
+  // Miscellaneous
+
+  /**
+   * Returns a new object with the overridden {@link Object#toString()} method
+   * that uses the specified formatter to generate the resulting string. This
+   * method is useful for lazy message construction (e.g. in Log4j loggers).
+   *
+   * <p>
+   * For example, instead of this:
+   * <pre>
+   * if (log.isDebugEnabled()) {
+   *   log.debug("System properties:\n" + System.getProperties());
+   * }
+   * </pre>
+   *
+   * You may use this:
+   * <pre>
+   * log.debug(message(() -> "System properties:\n" + System.getProperties()));
+   * </pre>
+   * </p>
+   *
+   * @param formatter The {@link Object#toString()} result formatter.
+   * @return A new object instance with the overridden {@link Object#toString()}
+   *         method.
+   */
+  public static Object message(Supplier<String> formatter) {
+    return new Object() {
+      @Override public String toString() {
+        return formatter.get();
+      }
+    };
   }
 
 }

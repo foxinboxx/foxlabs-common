@@ -19,7 +19,6 @@ package org.foxlabs.common;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 
@@ -640,33 +639,6 @@ public final class Strings {
             }
         }
         return buf;
-    }
-
-    /**
-     * Returns {@code Object} instance with overridden {@code toString()} method
-     * that uses the specified formatter to generate resulting string. This
-     * method is useful for lazy message construction in Log4J logging.
-     *
-     * <pre>
-     * // Instead of this
-     * if (log.isDebugEnabled()) {
-     *     log.debug("System properties:\n" + System.getProperties());
-     * }
-     *
-     * // You can use this
-     * log.debug(Strings.message(() -> "System properties:\n" + System.getProperties()));
-     * </pre>
-     *
-     * @param formatter {@code toString()} result formatter.
-     * @return {@code Object} instance with overridden {@code toString()} method
-     *         that uses the specified formatter to generate resulting string.
-     */
-    public static Object message(Supplier<String> formatter) {
-        return new Object() {
-            @Override public String toString() {
-                return formatter.get();
-            }
-        };
     }
 
 }
