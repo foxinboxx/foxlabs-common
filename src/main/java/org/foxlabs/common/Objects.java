@@ -19,6 +19,11 @@ package org.foxlabs.common;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+/**
+ * The commonly used operations on objects.
+ *
+ * @author Fox Mulder
+ */
 public final class Objects {
 
   // Instantiation is not possible
@@ -28,21 +33,95 @@ public final class Objects {
 
   // Validations
 
+  /**
+   * Checks that the specified object reference is not {@code null} and throws
+   * {@link NullPointerException} without detail message if it is.
+   *
+   * @param <T> The type of the object.
+   * @param object The object reference to check.
+   * @return The specified object reference.
+   * @throws NullPointerException if the specified object reference is {@code null}.
+   */
   public static <T> T require(T object) {
-    return require(object, java.util.Objects::nonNull, NullPointerException::new);
+    if (object == null) {
+      throw new NullPointerException();
+    }
+    return object;
   }
 
+  /**
+   * Checks that the specified object reference is not {@code null} and throws
+   * {@link NullPointerException} with the specified detail message if it is.
+   *
+   * @param <T> The type of the object.
+   * @param object The object reference to check.
+   * @param message The detail message of the {@link NullPointerException}.
+   * @return The specified object reference.
+   * @throws NullPointerException if the specified object reference is {@code null}.
+   */
+  public static <T> T require(T object, String message) {
+    if (object == null) {
+      throw new NullPointerException(message);
+    }
+    return object;
+  }
+
+  /**
+   * Checks that the specified object satisfies the specified condition and
+   * throws {@link IllegalArgumentException} without detail message if it is not.
+   *
+   * @param <T> The type of the object.
+   * @param object The object reference to check.
+   * @param condition The predicate to be applied to object.
+   * @return The specified object reference.
+   * @throws IllegalArgumentException if the specified object does not satisfy
+   *         the specified condition.
+   */
   public static <T> T require(T object, Predicate<T> condition) {
-    return require(object, condition, IllegalArgumentException::new);
+    if (condition.test(object)) {
+      return object;
+    }
+    throw new IllegalArgumentException();
   }
 
+  /**
+   * Checks that the specified object satisfies the specified condition and
+   * throws {@link IllegalArgumentException} with the specified detail message
+   * if it is not.
+   *
+   * @param <T> The type of the object.
+   * @param object The object reference to check.
+   * @param condition The predicate to be applied to object.
+   * @param message The detail message of the {@link IllegalArgumentException}.
+   * @return The specified object reference.
+   * @throws IllegalArgumentException if the specified object does not satisfy
+   *         the specified condition.
+   */
+  public static <T> T require(T object, Predicate<T> condition, String message) {
+    if (condition.test(object)) {
+      return object;
+    }
+    throw new IllegalArgumentException(message);
+  }
+
+  /**
+   * Checks that the specified object satisfies the specified condition and
+   * throws custom exception if it is not.
+   *
+   * @param <T> The type of the object.
+   * @param <E> The type of the exception to throw.
+   * @param object The object reference to check.
+   * @param condition The predicate to be applied to object.
+   * @param exception The provider of the exception.
+   * @return The specified object reference.
+   * @throws E if the specified object does not satisfy the specified condition.
+   */
   public static <T, E extends Throwable> T require(T object, Predicate<T> condition,
       Supplier<? extends E> exception) throws E {
     if (condition.test(object)) {
       return object;
-    } else {
-      throw exception.get();
     }
+    throw exception.get();
   }
 
   // Miscellaneous
