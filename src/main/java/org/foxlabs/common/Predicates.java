@@ -22,7 +22,7 @@ import java.util.function.LongPredicate;
 import java.util.function.DoublePredicate;
 
 /**
- * A collection of reusable and complex predicates.
+ * A collection of reusable predicates.
  *
  * @author Fox Mulder
  */
@@ -193,25 +193,66 @@ public final class Predicates {
   /** !Character.isISOControl(c) */
   public static final IntPredicate CHAR_NON_ISO_CONTROL = (c) -> !Character.isISOControl(c);
 
+  // String predicates
+
+  /** Strings.isEmpty(s) */
+  public static final Predicate<String> STRING_EMPTY = Strings::isEmpty;
+  /** Strings.isEmptyOrNull(s) */
+  public static final Predicate<String> STRING_EMPTY_OR_NULL = Strings::isEmptyOrNull;
+  /** Strings.isNonEmpty(s) */
+  public static final Predicate<String> STRING_NON_EMPTY = Strings::isNonEmpty;
+  /** Strings.isBlank(s) */
+  public static final Predicate<String> STRING_BLANK = Strings::isBlank;
+  /** Strings.isBlankOrNull(s) */
+  public static final Predicate<String> STRING_BLANK_OR_NULL = Strings::isBlankOrNull;
+  /** Strings.isNonBlank(s) */
+  public static final Predicate<String> STRING_NON_BLANK = Strings::isNonBlank;
+  /** Strings.isWhitespaced(s) */
+  public static final Predicate<String> STRING_WHITESPACED = Strings::isWhitespaced;
+  /** Strings.isWhitespacedOrNull(s) */
+  public static final Predicate<String> STRING_WHITESPACED_OR_NULL = Strings::isWhitespacedOrNull;
+  /** Strings.isNonWhitespaced(s) */
+  public static final Predicate<String> STRING_NON_WHITESPACED = Strings::isNonWhitespaced;
+
   // Array predicates
 
+  /** {@code a != null && a.length == 0} */
+  public static final Predicate<byte[]> BYTE_ARRAY_EMPTY = (a) -> a != null && a.length == 0;
   /** {@code a != null && a.length > 0} */
   public static final Predicate<byte[]> BYTE_ARRAY_NON_EMPTY = (a) -> a != null && a.length > 0;
+  /** {@code a != null && a.length == 0} */
+  public static final Predicate<short[]> SHORT_ARRAY_EMPTY = (a) -> a != null && a.length == 0;
   /** {@code a != null && a.length > 0} */
   public static final Predicate<short[]> SHORT_ARRAY_NON_EMPTY = (a) -> a != null && a.length > 0;
+  /** {@code a != null && a.length == 0} */
+  public static final Predicate<int[]> INT_ARRAY_EMPTY = (a) -> a != null && a.length == 0;
   /** {@code a != null && a.length > 0} */
   public static final Predicate<int[]> INT_ARRAY_NON_EMPTY = (a) -> a != null && a.length > 0;
+  /** {@code a != null && a.length == 0} */
+  public static final Predicate<long[]> LONG_ARRAY_EMPTY = (a) -> a != null && a.length == 0;
   /** {@code a != null && a.length > 0} */
   public static final Predicate<long[]> LONG_ARRAY_NON_EMPTY = (a) -> a != null && a.length > 0;
+  /** {@code a != null && a.length == 0} */
+  public static final Predicate<float[]> FLOAT_ARRAY_EMPTY = (a) -> a != null && a.length == 0;
   /** {@code a != null && a.length > 0} */
   public static final Predicate<float[]> FLOAT_ARRAY_NON_EMPTY = (a) -> a != null && a.length > 0;
+  /** {@code a != null && a.length == 0} */
+  public static final Predicate<double[]> DOUBLE_ARRAY_EMPTY = (a) -> a != null && a.length == 0;
   /** {@code a != null && a.length > 0} */
   public static final Predicate<double[]> DOUBLE_ARRAY_NON_EMPTY = (a) -> a != null && a.length > 0;
+  /** {@code a != null && a.length == 0} */
+  public static final Predicate<char[]> CHAR_ARRAY_EMPTY = (a) -> a != null && a.length == 0;
   /** {@code a != null && a.length > 0} */
   public static final Predicate<char[]> CHAR_ARRAY_NON_EMPTY = (a) -> a != null && a.length > 0;
+  /** {@code a != null && a.length == 0} */
+  public static final Predicate<boolean[]> BOOLEAN_ARRAY_EMPTY = (a) -> a != null && a.length == 0;
   /** {@code a != null && a.length > 0} */
   public static final Predicate<boolean[]> BOOLEAN_ARRAY_NON_EMPTY = (a) -> a != null && a.length > 0;
+  /** {@code a != null && a.length == 0} */
+  public static final Predicate<Object[]> OBJECT_ARRAY_EMPTY = (a) -> a != null && a.length == 0;
   /** {@code a != null && a.length > 0} */
   public static final Predicate<Object[]> OBJECT_ARRAY_NON_EMPTY = (a) -> a != null && a.length > 0;
+
+  // Miscellaneous predicates
 
 }

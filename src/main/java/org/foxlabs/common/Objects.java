@@ -54,12 +54,11 @@ public final class Objects {
 
   /**
    * Checks that the specified object reference is not {@code null} and throws
-   * {@link NullPointerException} with the specified detail message built as
-   * {@code String.valueOf(message)} if it is.
+   * {@link NullPointerException} with the specified detail message if it is.
    *
    * @param <T> The type of the object.
    * @param object The object reference to check.
-   * @param message The detail message provider for the {@link NullPointerException}.
+   * @param message The provider of the {@link NullPointerException} detail message.
    * @return The specified object reference.
    * @throws NullPointerException if the specified object reference is {@code null}.
    * @see #message(Supplier)

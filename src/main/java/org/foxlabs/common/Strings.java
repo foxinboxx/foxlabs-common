@@ -16,12 +16,7 @@
 
 package org.foxlabs.common;
 
-import java.util.Iterator;
-import java.util.PrimitiveIterator;
-import java.util.NoSuchElementException;
 import java.util.function.Function;
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 
@@ -103,7 +98,7 @@ public final class Strings {
     if (string.isEmpty()) {
       return true;
     }
-    return new CodePointIterator(string)
+    return new Iterators.CodePointIterator(string)
         .tryEachRemaining(Predicates.CHAR_WHITESPACE) == string.length();
   }
 
@@ -133,7 +128,7 @@ public final class Strings {
     if (string == null || string.isEmpty()) {
       return false;
     }
-    return new CodePointIterator(string)
+    return new Iterators.CodePointIterator(string)
         .tryEachRemaining(Predicates.CHAR_NON_WHITESPACE) == string.length();
   }
 
@@ -151,7 +146,8 @@ public final class Strings {
       if (string.isEmpty()) {
         return true;
       } else {
-        for (CodePointIterator itr = new CodePointIterator(string); itr.hasNext();) {
+        final Iterators.CodePointIterator itr = new Iterators.CodePointIterator(string);
+        while (itr.hasNext()) {
           if (Predicates.CHAR_WHITESPACE.test(itr.nextInt())) {
             return true;
           }
@@ -353,7 +349,7 @@ public final class Strings {
   }
 
   /**
-   * The same as the {@link #trim(String)}, but never returns {@code null}.
+   * Does the same as the {@link #trim(String)}, but never returns {@code null}.
    * This is a shortcut for the {@code nullSafe(trim(string))}.
    *
    * @param string The string to be trimmed.
@@ -365,114 +361,66 @@ public final class Strings {
     return nullSafe(trim(string));
   }
 
+  /**
+   * Cuts length of the specified string up to the specified limit. If the
+   * resulting string is an empty string (i.e. {@code ""}) then returns {@code null}.
+   *
+   * @param string The string to be cutted.
+   * @param limit The maximum number of allowed characters for the specified string.
+   * @return A cutted string or the original one if its length is less or equal
+   *         than the specified limit.
+   */
+  public static String cut(String string, int limit) {
+    if (string != null) {
 
+    }
+    return string;
+  }
 
+  /**
+   * Does the same as the {@link #cut(String, int)}, but never returns {@code null}.
+   * This is a shortcut for the {@code nullSafe(cut(string, limit))}.
+   *
+   * @param string The string to be cutted.
+   * @param limit The maximum number of allowed characters for the specified string.
+   * @return A {@code null}-safe cutted string.
+   * @see #nullSafe(String)
+   * @see #cut(String, int)
+   */
+  public static String cutNullSafe(String string, int limit) {
+    return nullSafe(cut(string, limit));
+  }
 
   /**
    * Does the same as the {@link #cut(String, int)}, but adds {@code ...} at the
    * end of the cutted string if cut operation was applied.
    *
    * @param string The string to be cutted.
-   * @param max The maximum number of allowed characters for the specified string.
+   * @param limit The maximum number of allowed characters for the specified string.
    * @return A cutted string with {@code ...} at the end or the original string
    *         if cut operation was not applied.
    * @see #cut(String, int)
    */
-  public static String ellipsis(String string, int max) {
-    final String result = cut(string, max);
+  public static String ellipsis(String string, int limit) {
+    final String result = cut(string, limit);
     return result != string ? result + "..." : result;
   }
 
   /**
-   * The same as the {@link #ellipsis(String, int)}, but never returns {@code null}.
-   * This is a shortcut for the {@code nullSafe(ellipsis(string, max))}.
+   * Does the same as the {@link #ellipsis(String, int)}, but never returns {@code null}.
+   * This is a shortcut for the {@code nullSafe(ellipsis(string, limit))}.
    *
    * @param string The string to be cutted.
-   * @param max The maximum number of allowed characters for the specified string.
-   * @return A cutted string with {@code ...} at the end or the original string
-   *         if cut operation was not applied.
+   * @param limit The maximum number of allowed characters for the specified string.
+   * @return A cutted {@code null}-safe string with {@code ...} at the end.
    * @see #nullSafe(String)
    * @see #ellipsis(String, int)
    */
-  public static String ellipsisNullSafe(String string, int max) {
-    return nullSafe(ellipsis(string, max));
+  public static String ellipsisNullSafe(String string, int limit) {
+    return nullSafe(ellipsis(string, limit));
   }
 
-
-    /**
-     * Cuts length of the specified string to the specified maximum length.
-     *
-     * @param value String to cut.
-     * @param max Maximum allowed length for the specified string.
-     * @return Cutted string or the specified one if its length less or equal
-     *         than maximum length.
-     */
-    public static String cut(String value, int max) {
-        return value == null
-            ? null
-            : value.length() > max
-                ? value.substring(0, Math.max(max, 0))
-                : value;
-    }
-
-    /**
-     * Returns a new string composed of copies of the specified array of elements
-     * joined together with a copy of the specified delimiter using the specified
-     * mapper function to convert elements to strings.
-     *
-     * @param <T> The type of elements.
-     * @param delimiter A sequence of characters that is used to separate each
-     *        of the elements in the resulting string.
-     * @param elements An array of elements to join.
-     * @param mapper A function that converts array elements to string representation.
-     * @return A new string that is composed from the specified elements.
-     */
-    public static <T> String join(String delimiter, T[] elements, Function<T, String> mapper) {
-        return String.join(delimiter, new Iterable<CharSequence>() {
-            @Override public Iterator<CharSequence> iterator() {
-                return new Iterator<CharSequence>() {
-                    int index = 0;
-                    @Override public boolean hasNext() {
-                        return index < elements.length;
-                    }
-                    @Override public CharSequence next() {
-                        if (index >= elements.length) {
-                            throw new NoSuchElementException();
-                        }
-                        return mapper.apply(elements[index++]);
-                    }
-                };
-            }
-        });
-    }
-
-    /**
-     * Returns a new string composed of copies of the specified elements joined
-     * together with a copy of the specified delimiter using the specified mapper
-     * function to convert elements to strings.
-     *
-     * @param <T> The type of elements.
-     * @param delimiter A sequence of characters that is used to separate each
-     *        of the elements in the resulting string.
-     * @param elements An {@code Iterable} that will have its elements joined together.
-     * @param mapper A function that converts array elements to string representation.
-     * @return A new string that is composed from the specified elements.
-     */
-    public static <T> String join(String delimiter, Iterable<T> elements, Function<T, String> mapper) {
-        return String.join(delimiter, new Iterable<CharSequence>() {
-            @Override public Iterator<CharSequence> iterator() {
-                return new Iterator<CharSequence>() {
-                    final Iterator<T> itr = elements.iterator();
-                    @Override public boolean hasNext() {
-                        return itr.hasNext();
-                    }
-                    @Override public CharSequence next() {
-                        return mapper.apply(itr.next());
-                    }
-                };
-            }
-        });
-    }
+  // ----- TO BE REFACTORED START ---------------------------------------------
 
     /**
      * Adds escape ({@code \}) character to the specified one if needed.
@@ -629,116 +577,46 @@ public final class Strings {
         return buf;
     }
 
+  // ----- TO BE REFACTORED END -----------------------------------------------
+
   // Miscellaneous
 
   /**
-   * Returns an iterator over code points of the specified string. Note that this
-   * method returns an empty iterator if the specified string is {@code null} or
-   * an empty string (i.e. {@code ""}).
+   * Returns a new string composed of copies of the specified array of elements
+   * joined together with a copy of the specified delimiter using the specified
+   * mapper function to convert elements to strings.
    *
-   * @param string The string to iterate over.
-   * @return The {@link CodePointIterator} over code points of the specified string.
+   * @param <T> The type of the elements to join.
+   * @param delimiter A sequence of characters that is used to separate each
+   *        of the elements in the resulting string.
+   * @param mapper A function that converts elements to strings.
+   * @param elements An array that will have its elements joined together.
+   * @return A new string that is composed from the specified elements.
+   * @see String#join(CharSequence, Iterable)
+   * @see Iterators#toIterable(Object...)
+   * @see Iterators#withMapper(Function, Iterable)
    */
-  public static CodePointIterator iterator(String string) {
-    return string == null || string.isEmpty() ? EMPTY_ITERATOR : new CodePointIterator(string);
+  @SafeVarargs
+  public static <T> String join(String delimiter, Function<T, String> mapper, T... elements) {
+      return String.join(delimiter, Iterators.withMapper(mapper, Iterators.toIterable(elements)));
   }
-
-  // CodePointIterator
 
   /**
-   * The iterator over code points of a string.
+   * Returns a new string composed of copies of the specified elements joined
+   * together with a copy of the specified delimiter using the specified mapper
+   * function to convert elements to strings.
    *
-   * <p>
-   * In addition to the {@link PrimitiveIterator.OfInt} methods, this iterator
-   * defines the {@link #tryEachRemaining(IntPredicate)) method, which allows
-   * to immediately exit the iteration loop depending on the result of predicate.
-   * </p>
-   *
-   * @author Fox Mulder
+   * @param <E> The type of the elements to join.
+   * @param delimiter A sequence of characters that is used to separate each
+   *        of the elements in the resulting string.
+   * @param mapper A function that converts elements to strings.
+   * @param elements An {@code Iterable} that will have its elements joined together.
+   * @return A new string that is composed from the specified elements.
+   * @see String#join(CharSequence, Iterable)
+   * @see Iterators#withMapper(Function, Iterable)
    */
-  public static class CodePointIterator implements PrimitiveIterator.OfInt {
-
-    /**
-     * The iterable string.
-     */
-    private final CharSequence string;
-
-    /**
-     * The current position in the string.
-     */
-    private int index;
-
-    /**
-     * Constructs a new code point iterator for the specified string.
-     *
-     * @param string The iterable string.
-     */
-    private CodePointIterator(CharSequence string) {
-      this.string = string;
-    }
-
-    /**
-     * Determines if the iteration has more code points.
-     *
-     * @return {@code true} if the iteration has more code points.
-     */
-    @Override public boolean hasNext() {
-      return index < string.length();
-    }
-
-    /**
-     * Returns next code point in the iteration.
-     *
-     * @return The next code point in the iteration.
-     * @throws NoSuchElementException if the iteration has no more code points.
-     */
-    @Override public int nextInt() {
-      if (index < string.length()) {
-        final char ch1 = string.charAt(index++);
-        if (Character.isHighSurrogate(ch1) && index < string.length()) {
-          final char ch2 = string.charAt(index);
-          if (Character.isLowSurrogate(ch2)) {
-            index++;
-            return Character.toCodePoint(ch1, ch2);
-          }
-        }
-        return ch1;
-      }
-      throw new NoSuchElementException();
-    }
-
-    /**
-     * Performs the specified action for each remaining code point until the end
-     * of the string has been reached or the action returns {@code false} or
-     * throws an exception.
-     *
-     * @param action The predicate to be performed for each code point in the string.
-     * @return The current position in the string.
-     */
-    public int tryEachRemaining(IntPredicate action) {
-      Objects.requireNonNull(action);
-      while (hasNext()) {
-        final int ch = nextInt();
-        if (!action.test(ch)) {
-          return index -= Character.charCount(ch);
-        }
-      }
-      return index;
-    }
-
+  public static <E> String join(String delimiter, Function<E, String> mapper, Iterable<E> elements) {
+    return String.join(delimiter, Iterators.withMapper(mapper, elements));
   }
-
-  // Empty code point iterator
-  static final CodePointIterator EMPTY_ITERATOR = new CodePointIterator("") {
-    @Override public boolean hasNext() { return false; }
-    @Override public int nextInt() { throw new NoSuchElementException(); }
-    @Override public void forEachRemaining(IntConsumer action) { Objects.requireNonNull(action); }
-    @Override public void forEachRemaining(Consumer<? super Integer> action) { Objects.requireNonNull(action); }
-    @Override public int tryEachRemaining(IntPredicate action) { Objects.requireNonNull(action); return 0; }
-  };
-
-  // Operators
-  static final IntUnaryOperator LOWERCASE = Character::toLowerCase;
-  static final IntUnaryOperator UPPERCASE = Character::toUpperCase;
 
 }
