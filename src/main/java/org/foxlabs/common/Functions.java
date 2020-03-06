@@ -16,6 +16,7 @@
 
 package org.foxlabs.common;
 
+import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
 
 /**
@@ -30,11 +31,17 @@ public class Functions {
     throw new IllegalAccessError();
   }
 
+  // Object functions
+
+  public static final Function<Object, String> OBJECT_TO_STRING = Object::toString;
+
   // Character code point functions
 
   /** Character.toLowerCase(c) */
   public static final IntUnaryOperator CHAR_TO_LOWER_CASE = Character::toLowerCase;
   /** Character.toUpperCase(c) */
   public static final IntUnaryOperator CHAR_TO_UPPER_CASE = Character::toUpperCase;
+  /** Character.toTitleCase(c) */
+  public static final IntUnaryOperator CHAR_TO_TITLE_CASE = Character::toTitleCase;
 
 }
