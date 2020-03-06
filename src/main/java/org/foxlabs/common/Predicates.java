@@ -33,122 +33,129 @@ public final class Predicates {
     throw new IllegalAccessError();
   }
 
+  // Object predicates
+
+  /** {@code o == null} */
+  public static final Predicate<Object> OBJECT_NULL = (o) -> o == null;
+  /** {@code o != null} */
+  public static final Predicate<Object> OBJECT_NOT_NULL = (o) -> o != null;
+
   // Integer predicates
 
-  /** {@code x == 0} */
-  public static final IntPredicate INT_EQ_ZERO = (x) -> x == 0;
-  /** {@code x != 0} */
-  public static final IntPredicate INT_NE_ZERO = (x) -> x != 0;
-  /** {@code x > 0} */
-  public static final IntPredicate INT_POSITIVE = (x) -> x > 0;
-  /** {@code x >= 0} */
-  public static final IntPredicate INT_POSITIVE_OR_ZERO = (x) -> x >= 0;
-  /** {@code x < 0} */
-  public static final IntPredicate INT_NEGATIVE = (x) -> x < 0;
-  /** {@code x <= 0} */
-  public static final IntPredicate INT_NEGATIVE_OR_ZERO = (x) -> x <= 0;
+  /** {@code n == 0} */
+  public static final IntPredicate INT_EQ_ZERO = (n) -> n == 0;
+  /** {@code n != 0} */
+  public static final IntPredicate INT_NE_ZERO = (n) -> n != 0;
+  /** {@code n > 0} */
+  public static final IntPredicate INT_POSITIVE = (n) -> n > 0;
+  /** {@code n >= 0} */
+  public static final IntPredicate INT_POSITIVE_OR_ZERO = (n) -> n >= 0;
+  /** {@code n < 0} */
+  public static final IntPredicate INT_NEGATIVE = (n) -> n < 0;
+  /** {@code n <= 0} */
+  public static final IntPredicate INT_NEGATIVE_OR_ZERO = (n) -> n <= 0;
 
-  /** {@code x != null && x.intValue() == 0} */
-  public static final Predicate<Integer> OBJECT_INT_EQ_ZERO = (x) -> x != null && x.intValue() == 0;
-  /** {@code x != null && x.intValue() != 0} */
-  public static final Predicate<Integer> OBJECT_INT_NE_ZERO = (x) -> x != null && x.intValue() != 0;
-  /** {@code x != null && x.intValue() > 0} */
-  public static final Predicate<Integer> OBJECT_INT_POSITIVE = (x) -> x != null && x.intValue() > 0;
-  /** {@code x != null && x.intValue() >= 0} */
-  public static final Predicate<Integer> OBJECT_INT_POSITIVE_OR_ZERO = (x) -> x != null && x.intValue() >= 0;
-  /** {@code x != null && x.intValue() < 0} */
-  public static final Predicate<Integer> OBJECT_INT_NEGATIVE = (x) -> x != null && x.intValue() < 0;
-  /** {@code x != null && x.intValue() <= 0} */
-  public static final Predicate<Integer> OBJECT_INT_NEGATIVE_OR_ZERO = (x) -> x != null && x.intValue() <= 0;
+  /** {@code n != null && n.intValue() == 0} */
+  public static final Predicate<Integer> OBJECT_INT_EQ_ZERO = (n) -> n != null && n.intValue() == 0;
+  /** {@code n != null && n.intValue() != 0} */
+  public static final Predicate<Integer> OBJECT_INT_NE_ZERO = (n) -> n != null && n.intValue() != 0;
+  /** {@code n != null && n.intValue() > 0} */
+  public static final Predicate<Integer> OBJECT_INT_POSITIVE = (n) -> n != null && n.intValue() > 0;
+  /** {@code n != null && n.intValue() >= 0} */
+  public static final Predicate<Integer> OBJECT_INT_POSITIVE_OR_ZERO = (n) -> n != null && n.intValue() >= 0;
+  /** {@code n != null && n.intValue() < 0} */
+  public static final Predicate<Integer> OBJECT_INT_NEGATIVE = (n) -> n != null && n.intValue() < 0;
+  /** {@code n != null && n.intValue() <= 0} */
+  public static final Predicate<Integer> OBJECT_INT_NEGATIVE_OR_ZERO = (n) -> n != null && n.intValue() <= 0;
 
   // Long predicates
 
-  /** {@code x == 0L} */
-  public static final LongPredicate LONG_EQ_ZERO = (x) -> x == 0L;
-  /** {@code x != 0L} */
-  public static final LongPredicate LONG_NE_ZERO = (x) -> x != 0L;
-  /** {@code x > 0L} */
-  public static final LongPredicate LONG_POSITIVE = (x) -> x > 0L;
-  /** {@code x >= 0L} */
-  public static final LongPredicate LONG_POSITIVE_OR_ZERO = (x) -> x >= 0L;
-  /** {@code x < 0L} */
-  public static final LongPredicate LONG_NEGATIVE = (x) -> x < 0L;
-  /** {@code x <= 0L} */
-  public static final LongPredicate LONG_NEGATIVE_OR_ZERO = (x) -> x <= 0L;
+  /** {@code n == 0L} */
+  public static final LongPredicate LONG_EQ_ZERO = (n) -> n == 0L;
+  /** {@code n != 0L} */
+  public static final LongPredicate LONG_NE_ZERO = (n) -> n != 0L;
+  /** {@code n > 0L} */
+  public static final LongPredicate LONG_POSITIVE = (n) -> n > 0L;
+  /** {@code n >= 0L} */
+  public static final LongPredicate LONG_POSITIVE_OR_ZERO = (n) -> n >= 0L;
+  /** {@code n < 0L} */
+  public static final LongPredicate LONG_NEGATIVE = (n) -> n < 0L;
+  /** {@code n <= 0L} */
+  public static final LongPredicate LONG_NEGATIVE_OR_ZERO = (n) -> n <= 0L;
 
-  /** {@code x != null && x.longValue() == 0L} */
-  public static final Predicate<Long> OBJECT_LONG_EQ_ZERO = (x) -> x != null && x.longValue() == 0L;
-  /** {@code x != null && x.longValue() != 0L} */
-  public static final Predicate<Long> OBJECT_LONG_NE_ZERO = (x) -> x != null && x.longValue() != 0L;
-  /** {@code x != null && x.longValue() > 0L} */
-  public static final Predicate<Long> OBJECT_LONG_POSITIVE = (x) -> x != null && x.longValue() > 0L;
-  /** {@code x != null && x.longValue() >= 0L} */
-  public static final Predicate<Long> OBJECT_LONG_POSITIVE_OR_ZERO = (x) -> x != null && x.longValue() >= 0L;
-  /** {@code x != null && x.longValue() < 0L} */
-  public static final Predicate<Long> OBJECT_LONG_NEGATIVE = (x) -> x != null && x.longValue() < 0L;
-  /** {@code x != null && x.longValue() <= 0L} */
-  public static final Predicate<Long> OBJECT_LONG_NEGATIVE_OR_ZERO = (x) -> x != null && x.longValue() <= 0L;
+  /** {@code n != null && n.longValue() == 0L} */
+  public static final Predicate<Long> OBJECT_LONG_EQ_ZERO = (n) -> n != null && n.longValue() == 0L;
+  /** {@code n != null && n.longValue() != 0L} */
+  public static final Predicate<Long> OBJECT_LONG_NE_ZERO = (n) -> n != null && n.longValue() != 0L;
+  /** {@code n != null && n.longValue() > 0L} */
+  public static final Predicate<Long> OBJECT_LONG_POSITIVE = (n) -> n != null && n.longValue() > 0L;
+  /** {@code n != null && n.longValue() >= 0L} */
+  public static final Predicate<Long> OBJECT_LONG_POSITIVE_OR_ZERO = (n) -> n != null && n.longValue() >= 0L;
+  /** {@code n != null && n.longValue() < 0L} */
+  public static final Predicate<Long> OBJECT_LONG_NEGATIVE = (n) -> n != null && n.longValue() < 0L;
+  /** {@code n != null && n.longValue() <= 0L} */
+  public static final Predicate<Long> OBJECT_LONG_NEGATIVE_OR_ZERO = (n) -> n != null && n.longValue() <= 0L;
 
   // Float predicates
 
-  /** {@code x != null && x.floatValue() == .0f} */
-  public static final Predicate<Float> OBJECT_FLOAT_EQ_ZERO = (x) -> x != null && x.floatValue() == .0f;
-  /** {@code x != null && x.floatValue() != .0f} */
-  public static final Predicate<Float> OBJECT_FLOAT_NE_ZERO = (x) -> x != null && x.floatValue() != .0f;
-  /** {@code x != null && x.floatValue() > .0f} */
-  public static final Predicate<Float> OBJECT_FLOAT_POSITIVE = (x) -> x != null && x.floatValue() > .0f;
-  /** {@code x != null && x.floatValue() >= .0f} */
-  public static final Predicate<Float> OBJECT_FLOAT_POSITIVE_OR_ZERO = (x) -> x != null && x.floatValue() >= .0f;
-  /** {@code x != null && x.floatValue() < .0f} */
-  public static final Predicate<Float> OBJECT_FLOAT_NEGATIVE = (x) -> x != null && x.floatValue() < .0f;
-  /** {@code x != null && x.floatValue() <= .0f} */
-  public static final Predicate<Float> OBJECT_FLOAT_NEGATIVE_OR_ZERO = (x) -> x != null && x.floatValue() <= .0f;
-  /** {@code x != null && x.isNaN() } */
-  public static final Predicate<Float> OBJECT_FLOAT_NAN = (x) -> x != null && x.isNaN();
-  /** {@code x != null && x.isFinite() } */
-  public static final Predicate<Float> OBJECT_FLOAT_FINITE = (x) -> x != null && x.isInfinite();
-  /** {@code x != null && x.isInfinite() } */
-  public static final Predicate<Float> OBJECT_FLOAT_INFINITE = (x) -> x != null && x.isInfinite();
+  /** {@code n != null && n.floatValue() == .0f} */
+  public static final Predicate<Float> OBJECT_FLOAT_EQ_ZERO = (n) -> n != null && n.floatValue() == .0f;
+  /** {@code n != null && n.floatValue() != .0f} */
+  public static final Predicate<Float> OBJECT_FLOAT_NE_ZERO = (n) -> n != null && n.floatValue() != .0f;
+  /** {@code n != null && n.floatValue() > .0f} */
+  public static final Predicate<Float> OBJECT_FLOAT_POSITIVE = (n) -> n != null && n.floatValue() > .0f;
+  /** {@code n != null && n.floatValue() >= .0f} */
+  public static final Predicate<Float> OBJECT_FLOAT_POSITIVE_OR_ZERO = (n) -> n != null && n.floatValue() >= .0f;
+  /** {@code n != null && n.floatValue() < .0f} */
+  public static final Predicate<Float> OBJECT_FLOAT_NEGATIVE = (n) -> n != null && n.floatValue() < .0f;
+  /** {@code n != null && n.floatValue() <= .0f} */
+  public static final Predicate<Float> OBJECT_FLOAT_NEGATIVE_OR_ZERO = (n) -> n != null && n.floatValue() <= .0f;
+  /** {@code n != null && n.isNaN() } */
+  public static final Predicate<Float> OBJECT_FLOAT_NAN = (n) -> n != null && n.isNaN();
+  /** {@code n != null && n.isFinite() } */
+  public static final Predicate<Float> OBJECT_FLOAT_FINITE = (n) -> n != null && n.isInfinite();
+  /** {@code n != null && n.isInfinite() } */
+  public static final Predicate<Float> OBJECT_FLOAT_INFINITE = (n) -> n != null && n.isInfinite();
 
   // Double predicates
 
-  /** {@code x == .0d} */
-  public static final DoublePredicate DOUBLE_EQ_ZERO = (x) -> x == .0d;
-  /** {@code x != .0d} */
-  public static final DoublePredicate DOUBLE_NE_ZERO = (x) -> x != .0d;
-  /** {@code x > .0d} */
-  public static final DoublePredicate DOUBLE_POSITIVE = (x) -> x > .0d;
-  /** {@code x >= .0d} */
-  public static final DoublePredicate DOUBLE_POSITIVE_OR_ZERO = (x) -> x >= .0d;
-  /** {@code x < .0d} */
-  public static final DoublePredicate DOUBLE_NEGATIVE = (x) -> x < .0d;
-  /** {@code x <= .0d} */
-  public static final DoublePredicate DOUBLE_NEGATIVE_OR_ZERO = (x) -> x <= .0d;
-  /** {@code Double.isNaN(x) } */
+  /** {@code n == .0d} */
+  public static final DoublePredicate DOUBLE_EQ_ZERO = (n) -> n == .0d;
+  /** {@code n != .0d} */
+  public static final DoublePredicate DOUBLE_NE_ZERO = (n) -> n != .0d;
+  /** {@code n > .0d} */
+  public static final DoublePredicate DOUBLE_POSITIVE = (n) -> n > .0d;
+  /** {@code n >= .0d} */
+  public static final DoublePredicate DOUBLE_POSITIVE_OR_ZERO = (n) -> n >= .0d;
+  /** {@code n < .0d} */
+  public static final DoublePredicate DOUBLE_NEGATIVE = (n) -> n < .0d;
+  /** {@code n <= .0d} */
+  public static final DoublePredicate DOUBLE_NEGATIVE_OR_ZERO = (n) -> n <= .0d;
+  /** {@code Double.isNaN(n) } */
   public static final DoublePredicate DOUBLE_NAN = Double::isNaN;
-  /** {@code Double.isFinite(x) } */
+  /** {@code Double.isFinite(n) } */
   public static final DoublePredicate DOUBLE_FINITE = Double::isFinite;
-  /** {@code Double.isInfinite(x) } */
+  /** {@code Double.isInfinite(n) } */
   public static final DoublePredicate DOUBLE_INFINITE = Double::isInfinite;
 
-  /** {@code x != null && x.doubleValue() == .0d} */
-  public static final Predicate<Double> OBJECT_DOUBLE_EQ_ZERO = (x) -> x != null && x.doubleValue() == .0d;
-  /** {@code x != null && x.doubleValue() != .0d} */
-  public static final Predicate<Double> OBJECT_DOUBLE_NE_ZERO = (x) -> x != null && x.doubleValue() != .0d;
-  /** {@code x != null && x.doubleValue() > .0d} */
-  public static final Predicate<Double> OBJECT_DOUBLE_POSITIVE = (x) -> x != null && x.doubleValue() > .0d;
-  /** {@code x != null && x.doubleValue() >= .0d} */
-  public static final Predicate<Double> OBJECT_DOUBLE_POSITIVE_OR_ZERO = (x) -> x != null && x.doubleValue() >= .0d;
-  /** {@code x != null && x.doubleValue() < .0d} */
-  public static final Predicate<Double> OBJECT_DOUBLE_NEGATIVE = (x) -> x != null && x.doubleValue() < .0d;
-  /** {@code x != null && x.doubleValue() <= .0d} */
-  public static final Predicate<Double> OBJECT_DOUBLE_NEGATIVE_OR_ZERO = (x) -> x != null && x.doubleValue() <= .0d;
-  /** {@code x != null && x.isNaN() } */
-  public static final Predicate<Double> OBJECT_DOUBLE_NAN = (x) -> x != null && x.isNaN();
-  /** {@code x != null && x.isFinite() } */
-  public static final Predicate<Double> OBJECT_DOUBLE_FINITE = (x) -> x != null && x.isInfinite();
-  /** {@code x != null && x.isInfinite() } */
-  public static final Predicate<Double> OBJECT_DOUBLE_INFINITE = (x) -> x != null && x.isInfinite();
+  /** {@code n != null && n.doubleValue() == .0d} */
+  public static final Predicate<Double> OBJECT_DOUBLE_EQ_ZERO = (n) -> n != null && n.doubleValue() == .0d;
+  /** {@code n != null && n.doubleValue() != .0d} */
+  public static final Predicate<Double> OBJECT_DOUBLE_NE_ZERO = (n) -> n != null && n.doubleValue() != .0d;
+  /** {@code n != null && n.doubleValue() > .0d} */
+  public static final Predicate<Double> OBJECT_DOUBLE_POSITIVE = (n) -> n != null && n.doubleValue() > .0d;
+  /** {@code n != null && n.doubleValue() >= .0d} */
+  public static final Predicate<Double> OBJECT_DOUBLE_POSITIVE_OR_ZERO = (n) -> n != null && n.doubleValue() >= .0d;
+  /** {@code n != null && n.doubleValue() < .0d} */
+  public static final Predicate<Double> OBJECT_DOUBLE_NEGATIVE = (n) -> n != null && n.doubleValue() < .0d;
+  /** {@code n != null && n.doubleValue() <= .0d} */
+  public static final Predicate<Double> OBJECT_DOUBLE_NEGATIVE_OR_ZERO = (n) -> n != null && n.doubleValue() <= .0d;
+  /** {@code n != null && n.isNaN() } */
+  public static final Predicate<Double> OBJECT_DOUBLE_NAN = (n) -> n != null && n.isNaN();
+  /** {@code n != null && n.isFinite() } */
+  public static final Predicate<Double> OBJECT_DOUBLE_FINITE = (n) -> n != null && n.isInfinite();
+  /** {@code n != null && n.isInfinite() } */
+  public static final Predicate<Double> OBJECT_DOUBLE_INFINITE = (n) -> n != null && n.isInfinite();
 
   // Character code point predicates
 

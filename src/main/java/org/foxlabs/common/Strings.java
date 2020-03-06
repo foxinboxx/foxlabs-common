@@ -26,6 +26,11 @@ import java.util.function.IntUnaryOperator;
  * <p>Methods of this class does not take default locale into account and
  * perform Unicode operations using methods of the {@link Character} class.</p>
  *
+ * <p>All the methods accept {@code null} strings normally and do not throw
+ * {@code NullPointerException}. Modification methods return {@code null} if
+ * the resulting string is an empty string (i.e. {@code ""}). Use corresponding
+ * {@code xxxNullSafe()} methods if {@code null} results are not desired.</p>
+ *
  * @author Fox Mulder
  */
 public final class Strings {
@@ -363,16 +368,26 @@ public final class Strings {
 
   /**
    * Cuts length of the specified string up to the specified limit. If the
-   * resulting string is an empty string (i.e. {@code ""}) then returns {@code null}.
+   * specified string is an empty string (i.e. {@code ""}) then returns {@code null}.
    *
    * @param string The string to be cutted.
-   * @param limit The maximum number of allowed characters for the specified string.
-   * @return A cutted string or the original one if its length is less or equal
-   *         than the specified limit.
+   * @param limit The maximum number of allowed characters in the string.
+   * @return A cutted string or the original one if its length is less than or
+   *         equal to the specified limit.
+   * @throws IllegalArgumentException if the specified limit is negative.
    */
   public static String cut(String string, int limit) {
-    if (string != null) {
-
+    Objects.require(limit, Predicates.INT_POSITIVE_OR_ZERO);
+    if (limit == 0 || string == null || string.isEmpty()) {
+      return null;
+    }
+    if (string.length() > limit) { // fast length check
+      // need to scan the string because Unicode mappings are not 1:1
+      final Iterators.CodePointIterator itr = new Iterators.CodePointIterator(string);
+      for (int i = 0; i < limit && itr.hasNext(); i++, itr.nextInt());
+      if (itr.position() < string.length()) {
+        return string.substring(0, itr.position());
+      }
     }
     return string;
   }
@@ -382,7 +397,7 @@ public final class Strings {
    * This is a shortcut for the {@code nullSafe(cut(string, limit))}.
    *
    * @param string The string to be cutted.
-   * @param limit The maximum number of allowed characters for the specified string.
+   * @param limit The maximum number of allowed characters in the string.
    * @return A {@code null}-safe cutted string.
    * @see #nullSafe(String)
    * @see #cut(String, int)
@@ -396,14 +411,14 @@ public final class Strings {
    * end of the cutted string if cut operation was applied.
    *
    * @param string The string to be cutted.
-   * @param limit The maximum number of allowed characters for the specified string.
+   * @param limit The maximum number of allowed characters in the string.
    * @return A cutted string with {@code ...} at the end or the original string
    *         if cut operation was not applied.
    * @see #cut(String, int)
    */
   public static String ellipsis(String string, int limit) {
     final String result = cut(string, limit);
-    return result != string ? result + "..." : result;
+    return result == string || result == null ? result : result + "...";
   }
 
   /**
@@ -411,7 +426,7 @@ public final class Strings {
    * This is a shortcut for the {@code nullSafe(ellipsis(string, limit))}.
    *
    * @param string The string to be cutted.
-   * @param limit The maximum number of allowed characters for the specified string.
+   * @param limit The maximum number of allowed characters in the string.
    * @return A cutted {@code null}-safe string with {@code ...} at the end.
    * @see #nullSafe(String)
    * @see #ellipsis(String, int)
@@ -586,7 +601,7 @@ public final class Strings {
    * joined together with a copy of the specified delimiter using the specified
    * mapper function to convert elements to strings.
    *
-   * @param <T> The type of the elements to join.
+   * @param <E> The type of elements to join.
    * @param delimiter A sequence of characters that is used to separate each
    *        of the elements in the resulting string.
    * @param mapper A function that converts elements to strings.
@@ -597,8 +612,8 @@ public final class Strings {
    * @see Iterators#withMapper(Function, Iterable)
    */
   @SafeVarargs
-  public static <T> String join(String delimiter, Function<T, String> mapper, T... elements) {
-      return String.join(delimiter, Iterators.withMapper(mapper, Iterators.toIterable(elements)));
+  public static <E> String join(String delimiter, Function<E, String> mapper, E... elements) {
+    return String.join(delimiter, Iterators.withMapper(mapper, Iterators.toIterable(elements)));
   }
 
   /**
@@ -606,7 +621,7 @@ public final class Strings {
    * together with a copy of the specified delimiter using the specified mapper
    * function to convert elements to strings.
    *
-   * @param <E> The type of the elements to join.
+   * @param <E> The type of elements to join.
    * @param delimiter A sequence of characters that is used to separate each
    *        of the elements in the resulting string.
    * @param mapper A function that converts elements to strings.

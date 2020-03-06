@@ -17,7 +17,6 @@
 package org.foxlabs.common;
 
 import java.util.function.IntPredicate;
-import java.util.function.IntUnaryOperator;
 
 import org.junit.Test;
 import org.junit.Assert;
@@ -169,18 +168,6 @@ public class StringsTest {
   }
 
   /**
-   * Tests the {@link Strings#forEachChar(String, IntUnaryOperator)} method.
-   */
-  @Test
-  public void testForEachChar() {
-    Assert.assertEquals(null, Strings.forEachChar(null, IntUnaryOperator.identity()));
-    Assert.assertTrue(Strings.forEachChar(reference = "", IntUnaryOperator.identity()) == reference);
-    Assert.assertTrue(Strings.forEachChar(reference = "TEST", IntUnaryOperator.identity()) == reference);
-    Assert.assertEquals("23456789", Strings.forEachChar("12345678", (ch) -> ch + 1));
-    Assert.assertEquals("12356789", Strings.forEachChar("12345678", (ch) -> ch > '3' ? ch + 1 : ch));
-  }
-
-  /**
    * Tests the {@link Strings#replace(String, int, IntPredicate)} method.
    */
   @Test
@@ -296,6 +283,62 @@ public class StringsTest {
     Assert.assertEquals("TEST", Strings.trimNullSafe(" TEST "));
     Assert.assertEquals("T E S T", Strings.trimNullSafe("T E S T"));
     Assert.assertEquals("T E S T", Strings.trimNullSafe(" T E S T "));
+  }
+
+  /**
+   * Tests the {@link Strings#cut(String, int)} method.
+   */
+  @Test
+  public void testCut() {
+    Assert.assertThrows(IllegalArgumentException.class, () -> Strings.cut(null, -1));
+    Assert.assertEquals(null, Strings.cut(null, 10));
+    Assert.assertEquals(null, Strings.cut("", 0));
+    Assert.assertEquals(null, Strings.cut("", 10));
+    Assert.assertEquals(null, Strings.cut("TEST", 0));
+    Assert.assertTrue(Strings.cut(reference = "TEST", 4) == reference);
+    Assert.assertEquals("T", Strings.cut("TEST", 1));
+  }
+
+  /**
+   * Tests the {@link Strings#cutNullSafe(String, int)} method.
+   */
+  @Test
+  public void testCutNullSafe() {
+    Assert.assertThrows(IllegalArgumentException.class, () -> Strings.cutNullSafe(null, -1));
+    Assert.assertEquals("", Strings.cutNullSafe(null, 10));
+    Assert.assertTrue(Strings.cutNullSafe(reference = "", 0) == reference);
+    Assert.assertTrue(Strings.cutNullSafe(reference = "", 10) == reference);
+    Assert.assertEquals("", Strings.cutNullSafe("TEST", 0));
+    Assert.assertTrue(Strings.cutNullSafe(reference = "TEST", 4) == reference);
+    Assert.assertEquals("T", Strings.cutNullSafe("TEST", 1));
+  }
+
+  /**
+   * Tests the {@link Strings#ellipsis(String, int)} method.
+   */
+  @Test
+  public void testEllipsis() {
+    Assert.assertThrows(IllegalArgumentException.class, () -> Strings.ellipsis(null, -1));
+    Assert.assertEquals(null, Strings.ellipsis(null, 10));
+    Assert.assertEquals(null, Strings.ellipsis("", 0));
+    Assert.assertEquals(null, Strings.ellipsis("", 10));
+    Assert.assertEquals(null, Strings.ellipsis("TEST", 0));
+    Assert.assertTrue(Strings.ellipsis(reference = "TEST", 4) == reference);
+    Assert.assertEquals("T...", Strings.ellipsis("TEST", 1));
+  }
+
+  /**
+   * Tests the {@link Strings#ellipsisNullSafe(String, int)} method.
+   */
+  @Test
+  public void testEllipsisNullSafe() {
+    Assert.assertThrows(IllegalArgumentException.class, () -> Strings.ellipsisNullSafe(null, -1));
+    Assert.assertEquals("", Strings.ellipsisNullSafe(null, 10));
+    Assert.assertTrue(Strings.ellipsisNullSafe(reference = "", 0) == reference);
+    Assert.assertTrue(Strings.ellipsisNullSafe(reference = "", 10) == reference);
+    Assert.assertEquals("", Strings.ellipsisNullSafe("TEST", 0));
+    Assert.assertTrue(Strings.ellipsisNullSafe(reference = "TEST", 4) == reference);
+    Assert.assertEquals("T...", Strings.ellipsisNullSafe("TEST", 1));
   }
 
 }
