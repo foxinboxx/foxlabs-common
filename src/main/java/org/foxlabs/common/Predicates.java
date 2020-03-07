@@ -490,7 +490,7 @@ public final class Predicates {
     for (int i = 0; i < length; i++) {
       if (!condition.test(array[i])) {
         throw new IllegalArgumentException(
-            "[" + i + "] = " + String.valueOf(array[i]));
+            "[" + i + "] = " + Byte.toString(array[i]));
       }
     }
     return array;
@@ -567,7 +567,7 @@ public final class Predicates {
     for (int i = 0; i < length; i++) {
       if (!condition.test(array[i])) {
         throw new IllegalArgumentException(
-            "[" + i + "] = " + String.valueOf(array[i]));
+            "[" + i + "] = " + Short.toString(array[i]));
       }
     }
     return array;
@@ -644,7 +644,7 @@ public final class Predicates {
     for (int i = 0; i < length; i++) {
       if (!condition.test(array[i])) {
         throw new IllegalArgumentException(
-            "[" + i + "] = " + String.valueOf(array[i]));
+            "[" + i + "] = " + Integer.toString(array[i]));
       }
     }
     return array;
@@ -721,7 +721,7 @@ public final class Predicates {
     for (int i = 0; i < length; i++) {
       if (!condition.test(array[i])) {
         throw new IllegalArgumentException(
-            "[" + i + "] = " + String.valueOf(array[i]));
+            "[" + i + "] = " + Long.toString(array[i]));
       }
     }
     return array;
@@ -798,7 +798,7 @@ public final class Predicates {
     for (int i = 0; i < length; i++) {
       if (!condition.test(array[i])) {
         throw new IllegalArgumentException(
-            "[" + i + "] = " + String.valueOf(array[i]));
+            "[" + i + "] = " + Float.toString(array[i]));
       }
     }
     return array;
@@ -875,7 +875,7 @@ public final class Predicates {
     for (int i = 0; i < length; i++) {
       if (!condition.test(array[i])) {
         throw new IllegalArgumentException(
-            "[" + i + "] = " + String.valueOf(array[i]));
+            "[" + i + "] = " + Double.toString(array[i]));
       }
     }
     return array;
@@ -952,7 +952,7 @@ public final class Predicates {
     for (int i = 0; i < length; i++) {
       if (!condition.test(array[i])) {
         throw new IllegalArgumentException(
-            "[" + i + "] = " + String.valueOf(array[i]));
+            "[" + i + "] = " + Character.toString(array[i]));
       }
     }
     return array;
