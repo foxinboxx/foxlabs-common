@@ -16,6 +16,8 @@
 
 package org.foxlabs.common;
 
+import java.util.Arrays;
+import java.util.function.Function;
 import java.util.function.IntPredicate;
 
 import org.junit.Test;
@@ -339,6 +341,28 @@ public class StringsTest {
     Assert.assertEquals("", Strings.ellipsisNullSafe("TEST", 0));
     Assert.assertTrue(Strings.ellipsisNullSafe(reference = "TEST", 4) == reference);
     Assert.assertEquals("T...", Strings.ellipsisNullSafe("TEST", 1));
+  }
+
+  /**
+   * Tests the {@link Strings#join(String, Function, Object...)} and
+   * {@link Strings#join(String, Function, Iterable) methods.
+   */
+  @Test
+  public void testJoin() {
+    // Strings.join(String, Function, Object...)
+    Assert.assertThrows(NullPointerException.class, () -> Strings.join(null, Function.identity()));
+    Assert.assertThrows(NullPointerException.class, () -> Strings.join(",", null));
+    Assert.assertThrows(NullPointerException.class, () -> Strings.join(",", Object::toString, (Object[]) null));
+    Assert.assertEquals("", Strings.join(",", Function.identity()));
+    Assert.assertEquals("a,b", Strings.join(",", Function.identity(), "a", "b"));
+    Assert.assertEquals("1,2", Strings.join(",", Object::toString, 1, 2));
+    // Strings#join(String, Function, Iterable)
+    Assert.assertThrows(NullPointerException.class, () -> Strings.join(null, Function.identity(), Arrays.asList()));
+    Assert.assertThrows(NullPointerException.class, () -> Strings.join(",", null, Arrays.asList()));
+    Assert.assertThrows(NullPointerException.class, () -> Strings.join(",", Object::toString, (Object[]) null));
+    Assert.assertEquals("", Strings.join(",", Function.identity(), Arrays.asList()));
+    Assert.assertEquals("a,b", Strings.join(",", Function.identity(), Arrays.asList("a", "b")));
+    Assert.assertEquals("1,2", Strings.join(",", Object::toString, Arrays.asList(1, 2)));
   }
 
 }
