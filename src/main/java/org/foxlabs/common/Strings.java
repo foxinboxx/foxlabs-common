@@ -205,7 +205,7 @@ public final class Strings {
    * @throws NullPointerException if the specified operator is {@code null}.
    */
   public static String forEachChar(String string, IntUnaryOperator operator) {
-    Objects.requireNonNull(operator);
+    Predicates.requireNonNull(operator);
     final int length0 = string == null ? 0 : string.length();
     for (int i = 0, j, cc0, cc1; i < length0; i += cc0) {
       int ch0 = string.codePointAt(i);
@@ -247,7 +247,7 @@ public final class Strings {
    * @see #forEachChar(String, IntUnaryOperator)
    */
   public static String replace(String string, int replacement, IntPredicate predicate) {
-    Objects.requireNonNull(predicate);
+    Predicates.requireNonNull(predicate);
     return forEachChar(string, (ch) -> predicate.test(ch) ? replacement : ch);
   }
 
@@ -377,7 +377,7 @@ public final class Strings {
    * @throws IllegalArgumentException if the specified limit is negative.
    */
   public static String cut(String string, int limit) {
-    Objects.require(limit, Predicates.INT_POSITIVE_OR_ZERO);
+    Predicates.require(limit, Predicates.INT_POSITIVE_OR_ZERO);
     if (limit == 0 || string == null || string.isEmpty()) {
       return null;
     }

@@ -106,8 +106,8 @@ public final class Iterators {
    * @see #withMapper(Function, Iterator)
    */
   public static <S, T> Iterable<T> withMapper(Function<S, T> mapper, Iterable<S> iterable) {
-    Objects.requireNonNull(mapper);
-    Objects.requireNonNull(iterable);
+    Predicates.requireNonNull(mapper);
+    Predicates.requireNonNull(iterable);
     return new Iterable<T>() {
       @Override public Iterator<T> iterator() {
         return withMapper(mapper, iterable.iterator());
@@ -128,8 +128,8 @@ public final class Iterators {
    *         instance is {@code null}.
    */
   public static <S, T> Iterator<T> withMapper(Function<S, T> mapper, Iterator<S> iterator) {
-    Objects.requireNonNull(mapper);
-    Objects.requireNonNull(iterator);
+    Predicates.requireNonNull(mapper);
+    Predicates.requireNonNull(iterator);
     return new Iterator<T>() {
       @Override public boolean hasNext() {
         return iterator.hasNext();
@@ -155,7 +155,7 @@ public final class Iterators {
    * @throws NullPointerException if the specified character sequence is {@code null}.
    */
   public static CodePointIterator codePoints(CharSequence cs) {
-    return new CodePointIterator(Objects.requireNonNull(cs));
+    return new CodePointIterator(Predicates.requireNonNull(cs));
   }
 
   /**
@@ -254,7 +254,7 @@ public final class Iterators {
      * @return The current position in the character sequence.
      */
     public int tryEachRemaining(IntPredicate action) {
-      Objects.requireNonNull(action);
+      Predicates.requireNonNull(action);
       while (hasNext()) {
         final int ch = nextInt();
         if (!action.test(ch)) {

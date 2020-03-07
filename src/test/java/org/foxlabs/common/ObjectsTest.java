@@ -16,7 +16,6 @@
 
 package org.foxlabs.common;
 
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.junit.Test;
@@ -39,60 +38,6 @@ public class ObjectsTest {
    */
   @SuppressWarnings("unused")
   private Number number;
-
-  /**
-   * Tests the following methods:
-   * <ul>
-   *  <li>{@link Objects#requireNonNull(Object)}</li>
-   *  <li>{@link Objects#requireNonNull(Object, Object)}</li>
-   * </ul>
-   */
-  @Test
-  public void testRequireNonNull() {
-    // Objects.requireNonNull(Object)
-    Assert.assertTrue(Objects.requireNonNull(reference = new Object()) == reference);
-    Assert.assertEquals(null,
-        Assert.assertThrows(NullPointerException.class,
-            () -> Objects.requireNonNull(null)).getMessage());
-    // Objects.requireNonNull(Object, Object)
-    Assert.assertTrue(Objects.requireNonNull(reference = new Object(), "TEST") == reference);
-    Assert.assertEquals("TEST",
-        Assert.assertThrows(NullPointerException.class,
-            () -> Objects.requireNonNull(null, "TEST")).getMessage());
-    Assert.assertEquals("TEST",
-        Assert.assertThrows(NullPointerException.class,
-            () -> Objects.requireNonNull(null, Objects.message(() -> "TEST"))).getMessage());
-  }
-
-  /**
-   * Tests the following methods:
-   * <ul>
-   *  <li>{@link Objects#require(Object, Predicate)}</li>
-   *  <li>{@link Objects#require(Object, Predicate, Object)}</li>
-   *  <li>{@link Objects#require(Object, Predicate, Supplier)}</li>
-   * </ul>
-   */
-  @Test
-  public void testRequire() {
-    // Objects.require(Object, Predicate)
-    Assert.assertTrue(Objects.require(reference = new Object(), (o) -> true) == reference);
-    Assert.assertEquals(null,
-        Assert.assertThrows(IllegalArgumentException.class,
-            () -> Objects.require(null, (o) -> false)).getMessage());
-    // Objects.require(Object, Predicate, Object)
-    Assert.assertTrue(Objects.require(reference = new Object(), (o) -> true, "TEST") == reference);
-    Assert.assertEquals("TEST",
-        Assert.assertThrows(IllegalArgumentException.class,
-            () -> Objects.require(null, (o) -> false, "TEST")).getMessage());
-    Assert.assertEquals("TEST",
-        Assert.assertThrows(IllegalArgumentException.class,
-            () -> Objects.require(null, (o) -> false, Objects.message(() -> "TEST"))).getMessage());
-    // Objects.require(Object, Predicate, Supplier)
-    Assert.assertTrue(Objects.require(reference = new Object(), (o) -> true, RuntimeException::new) == reference);
-    Assert.assertEquals("TEST",
-        Assert.assertThrows(RuntimeException.class,
-            () -> Objects.require(null, (o) -> false, () -> new RuntimeException("TEST"))).getMessage());
-  }
 
   /**
    * Tests the {@link Objects#cast(Object)} method.
