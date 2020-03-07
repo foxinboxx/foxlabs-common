@@ -16,7 +16,6 @@
 
 package org.foxlabs.common;
 
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -52,23 +51,24 @@ public final class Objects {
    * Returns a new object with the overridden {@link Object#toString()} method
    * that uses the specified formatter to generate the resulting string. This
    * method is useful for lazy message construction and might be used as the
-   * {@code message} argument of the {@link #requireNonNull(Object, Object)} and
-   * {@link #require(Object, Predicate, Object)} methods.
+   * {@code message} argument of the {@link Predicates} methods.
    *
    * <p>
    * For example, instead of:
    * <pre>
-   * Objects.require(object, LocalDateTime.now() + ": object is null");
+   * Predicates.requireNonNull(object,
+   *     java.time.LocalDateTime.now() + ": object is null");
    * </pre>
    *
    * You may use:
    * <pre>
-   * Objects.require(object, Objects.message(() -> LocalDateTime.now() + ": object is null"));
+   * Predicates.requireNonNull(object,
+   *     message(() -> java.time.LocalDateTime.now() + ": object is null"));
    * </pre>
    * </p>
    *
-   * @param formatter The {@link Object#toString()} result formatter.
-   * @return A new object instance with the overridden {@link Object#toString()}
+   * @param formatter The {@code Object.toString()} result formatter.
+   * @return A new object instance with the overridden {@code Object.toString()}
    *         method.
    */
   public static Object message(Supplier<String> formatter) {

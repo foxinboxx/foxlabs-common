@@ -18,12 +18,12 @@ package org.foxlabs.common;
 
 import java.util.Map;
 import java.util.Collection;
-
 import java.util.function.Supplier;
 import java.util.function.Predicate;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
 import java.util.function.DoublePredicate;
+import java.util.function.IntFunction;
 
 /**
  * A collection of reusable predicates and {@code requireXXX()} methods that
@@ -36,6 +36,30 @@ public final class Predicates {
   // Instantiation is not possible
   private Predicates() {
     throw new IllegalAccessError();
+  }
+
+  // Helpers
+
+  public static Supplier<String> defer(Supplier<String> message) {
+    return message;
+  }
+
+  private static String toExceptionMessage(Object message) {
+    if (message instanceof Supplier) {
+      message = ((Supplier<?>) message).get();
+    }
+    return String.valueOf(message);
+  }
+
+  public static IntFunction<String> defer(IntFunction<String> message) {
+    return message;
+  }
+
+  private static String toExceptionMessage(Object message, int index) {
+    if (message instanceof IntFunction) {
+      return String.valueOf(((IntFunction<?>) message).apply(index));
+    }
+    return toExceptionMessage(message);
   }
 
   // Single value validations
@@ -85,11 +109,11 @@ public final class Predicates {
    * @return The reference to the specified object.
    * @throws NullPointerException if the specified object reference is
    *         {@code null}.
+   * @see #defer(Supplier)
    */
   public static <T> T requireNonNull(T object, Object message) {
     if (object == null) {
-      throw new NullPointerException(String.valueOf(
-          message instanceof Supplier ? ((Supplier<?>) message).get() : message));
+      throw new NullPointerException(toExceptionMessage(message));
     }
     return object;
   }
@@ -124,13 +148,13 @@ public final class Predicates {
    * @return The reference to the specified object.
    * @throws IllegalArgumentException if the specified object does not satisfy
    *         the specified condition.
+   * @see #defer(Supplier)
    */
   public static <T> T require(T object, Predicate<? super T> condition, Object message) {
     if (condition.test(object)) {
       return object;
     }
-    throw new IllegalArgumentException(String.valueOf(
-        message instanceof Supplier ? ((Supplier<?>) message).get() : message));
+    throw new IllegalArgumentException(toExceptionMessage(message));
 
   }
 
@@ -146,8 +170,8 @@ public final class Predicates {
    * @return The reference to the specified object.
    * @throws E if the specified object does not satisfy the specified condition.
    */
-  public static <T, E extends Throwable> T require(T object,
-      Predicate<? super T> condition, Supplier<? extends E> exception) throws E {
+  public static <T, E extends Throwable> T require(T object, Predicate<? super T> condition,
+      Supplier<E> exception) throws E {
     if (condition.test(object)) {
       return object;
     }
@@ -184,13 +208,13 @@ public final class Predicates {
    * @return The specified {@code int} number.
    * @throws IllegalArgumentException if the specified {@code int} number does
    *         not satisfy the specified condition.
+   * @see #defer(Supplier)
    */
   public static int require(int number, IntPredicate condition, Object message) {
     if (condition.test(number)) {
       return number;
     }
-    throw new IllegalArgumentException(String.valueOf(
-        message instanceof Supplier ? ((Supplier<?>) message).get() : message));
+    throw new IllegalArgumentException(toExceptionMessage(message));
   }
 
   /**
@@ -206,7 +230,7 @@ public final class Predicates {
    *         specified condition.
    */
   public static <E extends Throwable> int require(int number,
-      IntPredicate condition, Supplier<? extends E> exception) throws E {
+      IntPredicate condition, Supplier<E> exception) throws E {
     if (condition.test(number)) {
       return number;
     }
@@ -243,13 +267,13 @@ public final class Predicates {
    * @return The specified {@code long} number.
    * @throws IllegalArgumentException if the specified {@code long} number does
    *         not satisfy the specified condition.
+   * @see #defer(Supplier)
    */
   public static long require(long number, LongPredicate condition, Object message) {
     if (condition.test(number)) {
       return number;
     }
-    throw new IllegalArgumentException(String.valueOf(
-        message instanceof Supplier ? ((Supplier<?>) message).get() : message));
+    throw new IllegalArgumentException(toExceptionMessage(message));
   }
 
   /**
@@ -264,8 +288,8 @@ public final class Predicates {
    * @throws E if the specified {@code long} number does not satisfy the
    *         specified condition.
    */
-  public static <E extends Throwable> long require(long number,
-      LongPredicate condition, Supplier<? extends E> exception) throws E {
+  public static <E extends Throwable> long require(long number, LongPredicate condition,
+      Supplier<E> exception) throws E {
     if (condition.test(number)) {
       return number;
     }
@@ -302,13 +326,13 @@ public final class Predicates {
    * @return The specified {@code double} number.
    * @throws IllegalArgumentException if the specified {@code double} number
    *         does not satisfy the specified condition.
+   * @see #defer(Supplier)
    */
   public static double require(double number, DoublePredicate condition, Object message) {
     if (condition.test(number)) {
       return number;
     }
-    throw new IllegalArgumentException(String.valueOf(
-        message instanceof Supplier ? ((Supplier<?>) message).get() : message));
+    throw new IllegalArgumentException(toExceptionMessage(message));
   }
 
   /**
@@ -323,8 +347,8 @@ public final class Predicates {
    * @throws E if the specified {@code double} number does not satisfy the
    *         specified condition.
    */
-  public static <E extends Throwable> double require(double number,
-      DoublePredicate condition, Supplier<? extends E> exception) throws E {
+  public static <E extends Throwable> double require(double number, DoublePredicate condition,
+      Supplier<E> exception) throws E {
     if (condition.test(number)) {
       return number;
     }
@@ -356,9 +380,9 @@ public final class Predicates {
    */
   public static <T> T[] requireElementsNonNull(T[] array) {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (array[i] == null) {
-        throw new IllegalArgumentException("[" + i + "] = null");
+    for (int index = 0; index < length; index++) {
+      if (array[index] == null) {
+        throw new IllegalArgumentException("[" + index + "] = null");
       }
     }
     return array;
@@ -384,13 +408,13 @@ public final class Predicates {
    * @return The reference to the specified array.
    * @throws NullPointerException if the specified array contains {@code null}
    *         elements.
+   * @see #defer(Supplier)
    */
   public static <T> T[] requireElementsNonNull(T[] array, Object message) {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (array[i] == null) {
-        throw new NullPointerException(String.valueOf(
-            message instanceof Supplier ? ((Supplier<?>) message).get() : message));
+    for (int index = 0; index < length; index++) {
+      if (array[index] == null) {
+        throw new NullPointerException(toExceptionMessage(message, index));
       }
     }
     return array;
@@ -411,10 +435,9 @@ public final class Predicates {
    */
   public static <T> T[] requireElements(T[] array, Predicate<? super T> condition) {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw new IllegalArgumentException(
-            "[" + i + "] = " + String.valueOf(array[i]));
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw new IllegalArgumentException("[" + index + "] = " + array[index]);
       }
     }
     return array;
@@ -433,14 +456,14 @@ public final class Predicates {
    * @return The reference to the specified array.
    * @throws IllegalArgumentException if at least one element of the specified
    *         array does not satisfy the specified condition.
+   * @see #defer(Supplier)
    */
   public static <T> T[] requireElements(T[] array, Predicate<? super T> condition,
       Object message) {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw new IllegalArgumentException(String.valueOf(
-            message instanceof Supplier ? ((Supplier<?>) message).get() : message));
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw new IllegalArgumentException(toExceptionMessage(message, index));
       }
     }
     return array;
@@ -459,12 +482,12 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified
    *         array does not satisfy the specified condition.
    */
-  public static <T, E extends Throwable> T[] requireElements(T[] array,
-      Predicate<? super T> condition, Supplier<? extends E> exception) throws E {
+  public static <T, E extends Throwable> T[] requireElements(T[] array, Predicate<? super T> condition,
+      IntFunction<E> exception) throws E {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw exception.get();
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw exception.apply(index);
       }
     }
     return array;
@@ -487,10 +510,9 @@ public final class Predicates {
    */
   public static byte[] requireElements(byte[] array, IntPredicate condition) {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw new IllegalArgumentException(
-            "[" + i + "] = " + Byte.toString(array[i]));
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw new IllegalArgumentException("[" + index + "] = " + array[index]);
       }
     }
     return array;
@@ -509,14 +531,13 @@ public final class Predicates {
    * @return The reference to the specified {@code byte[]} array.
    * @throws IllegalArgumentException if at least one element of the specified
    *         {@code byte[]} array does not satisfy the specified condition.
+   * @see #defer(Supplier)
    */
-  public static byte[] requireElements(byte[] array, IntPredicate condition,
-      Object message) {
+  public static byte[] requireElements(byte[] array, IntPredicate condition, Object message) {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw new IllegalArgumentException(String.valueOf(
-            message instanceof Supplier ? ((Supplier<?>) message).get() : message));
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw new IllegalArgumentException(toExceptionMessage(message, index));
       }
     }
     return array;
@@ -537,11 +558,11 @@ public final class Predicates {
    *         {@code byte[]} array does not satisfy the specified condition.
    */
   public static <E extends Throwable> byte[] requireElements(byte[] array,
-      IntPredicate condition, Supplier<? extends E> exception) throws E {
+      IntPredicate condition, IntFunction<E> exception) throws E {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw exception.get();
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw exception.apply(index);
       }
     }
     return array;
@@ -564,10 +585,9 @@ public final class Predicates {
    */
   public static short[] requireElements(short[] array, IntPredicate condition) {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw new IllegalArgumentException(
-            "[" + i + "] = " + Short.toString(array[i]));
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw new IllegalArgumentException("[" + index + "] = " + array[index]);
       }
     }
     return array;
@@ -586,14 +606,13 @@ public final class Predicates {
    * @return The reference to the specified {@code short[]} array.
    * @throws IllegalArgumentException if at least one element of the specified
    *         {@code short[]} array does not satisfy the specified condition.
+   * @see #defer(Supplier)
    */
-  public static short[] requireElements(short[] array, IntPredicate condition,
-      Object message) {
+  public static short[] requireElements(short[] array, IntPredicate condition, Object message) {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw new IllegalArgumentException(String.valueOf(
-            message instanceof Supplier ? ((Supplier<?>) message).get() : message));
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw new IllegalArgumentException(toExceptionMessage(message, index));
       }
     }
     return array;
@@ -614,11 +633,11 @@ public final class Predicates {
    *         {@code short[]} array does not satisfy the specified condition.
    */
   public static <E extends Throwable> short[] requireElements(short[] array,
-      IntPredicate condition, Supplier<? extends E> exception) throws E {
+      IntPredicate condition, IntFunction<E> exception) throws E {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw exception.get();
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw exception.apply(index);
       }
     }
     return array;
@@ -641,10 +660,9 @@ public final class Predicates {
    */
   public static int[] requireElements(int[] array, IntPredicate condition) {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw new IllegalArgumentException(
-            "[" + i + "] = " + Integer.toString(array[i]));
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw new IllegalArgumentException("[" + index + "] = " + array[index]);
       }
     }
     return array;
@@ -663,14 +681,13 @@ public final class Predicates {
    * @return The reference to the specified {@code int[]} array.
    * @throws IllegalArgumentException if at least one element of the specified
    *         {@code int[]} array does not satisfy the specified condition.
+   * @see #defer(Supplier)
    */
-  public static int[] requireElements(int[] array, IntPredicate condition,
-      Object message) {
+  public static int[] requireElements(int[] array, IntPredicate condition, Object message) {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw new IllegalArgumentException(String.valueOf(
-            message instanceof Supplier ? ((Supplier<?>) message).get() : message));
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw new IllegalArgumentException(toExceptionMessage(message, index));
       }
     }
     return array;
@@ -691,11 +708,11 @@ public final class Predicates {
    *         {@code int[]} array does not satisfy the specified condition.
    */
   public static <E extends Throwable> int[] requireElements(int[] array,
-      IntPredicate condition, Supplier<? extends E> exception) throws E {
+      IntPredicate condition, IntFunction<E> exception) throws E {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw exception.get();
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw exception.apply(index);
       }
     }
     return array;
@@ -717,11 +734,10 @@ public final class Predicates {
    *         {@code long[]} array does not satisfy the specified condition.
    */
   public static long[] requireElements(long[] array, LongPredicate condition) {
-    final long length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw new IllegalArgumentException(
-            "[" + i + "] = " + Long.toString(array[i]));
+    final int length = array == null ? 0 : array.length;
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw new IllegalArgumentException("[" + index + "] = " + array[index]);
       }
     }
     return array;
@@ -740,14 +756,13 @@ public final class Predicates {
    * @return The reference to the specified {@code long[]} array.
    * @throws IllegalArgumentException if at least one element of the specified
    *         {@code long[]} array does not satisfy the specified condition.
+   * @see #defer(Supplier)
    */
-  public static long[] requireElements(long[] array, LongPredicate condition,
-      Object message) {
-    final long length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw new IllegalArgumentException(String.valueOf(
-            message instanceof Supplier ? ((Supplier<?>) message).get() : message));
+  public static long[] requireElements(long[] array, LongPredicate condition, Object message) {
+    final int length = array == null ? 0 : array.length;
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw new IllegalArgumentException(toExceptionMessage(message, index));
       }
     }
     return array;
@@ -768,11 +783,11 @@ public final class Predicates {
    *         {@code long[]} array does not satisfy the specified condition.
    */
   public static <E extends Throwable> long[] requireElements(long[] array,
-      LongPredicate condition, Supplier<? extends E> exception) throws E {
-    final long length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw exception.get();
+      LongPredicate condition, IntFunction<E> exception) throws E {
+    final int length = array == null ? 0 : array.length;
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw exception.apply(index);
       }
     }
     return array;
@@ -794,11 +809,10 @@ public final class Predicates {
    *         {@code float[]} array does not satisfy the specified condition.
    */
   public static float[] requireElements(float[] array, DoublePredicate condition) {
-    final long length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw new IllegalArgumentException(
-            "[" + i + "] = " + Float.toString(array[i]));
+    final int length = array == null ? 0 : array.length;
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw new IllegalArgumentException("[" + index + "] = " + array[index]);
       }
     }
     return array;
@@ -817,14 +831,13 @@ public final class Predicates {
    * @return The reference to the specified {@code float[]} array.
    * @throws IllegalArgumentException if at least one element of the specified
    *         {@code float[]} array does not satisfy the specified condition.
+   * @see #defer(Supplier)
    */
-  public static float[] requireElements(float[] array, DoublePredicate condition,
-      Object message) {
-    final long length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw new IllegalArgumentException(String.valueOf(
-            message instanceof Supplier ? ((Supplier<?>) message).get() : message));
+  public static float[] requireElements(float[] array, DoublePredicate condition, Object message) {
+    final int length = array == null ? 0 : array.length;
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw new IllegalArgumentException(toExceptionMessage(message, index));
       }
     }
     return array;
@@ -845,11 +858,11 @@ public final class Predicates {
    *         {@code float[]} array does not satisfy the specified condition.
    */
   public static <E extends Throwable> float[] requireElements(float[] array,
-      DoublePredicate condition, Supplier<? extends E> exception) throws E {
-    final long length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw exception.get();
+      DoublePredicate condition, IntFunction<E> exception) throws E {
+    final int length = array == null ? 0 : array.length;
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw exception.apply(index);
       }
     }
     return array;
@@ -871,11 +884,10 @@ public final class Predicates {
    *         {@code double[]} array does not satisfy the specified condition.
    */
   public static double[] requireElements(double[] array, DoublePredicate condition) {
-    final long length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw new IllegalArgumentException(
-            "[" + i + "] = " + Double.toString(array[i]));
+    final int length = array == null ? 0 : array.length;
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw new IllegalArgumentException("[" + index + "] = " + array[index]);
       }
     }
     return array;
@@ -894,24 +906,23 @@ public final class Predicates {
    * @return The reference to the specified {@code double[]} array.
    * @throws IllegalArgumentException if at least one element of the specified
    *         {@code double[]} array does not satisfy the specified condition.
+   * @see #defer(Supplier)
    */
-  public static double[] requireElements(double[] array, DoublePredicate condition,
-      Object message) {
-    final long length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw new IllegalArgumentException(String.valueOf(
-            message instanceof Supplier ? ((Supplier<?>) message).get() : message));
+  public static double[] requireElements(double[] array, DoublePredicate condition, Object message) {
+    final int length = array == null ? 0 : array.length;
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw new IllegalArgumentException(toExceptionMessage(message, index));
       }
     }
     return array;
   }
 
   /**
-   * Checks that all the elements of the specified {@code double[]} array
-   * satisfy the specified condition and throws the specified exception if they
-   * are not. Note that if the specified array is {@code null} then no exception
-   * will be thrown.
+   * Checks that all the elements of the specified {@code double[]} array satisfy
+   * the specified condition and throws the specified exception if they are not.
+   * Note that if the specified array is {@code null} then no exception will be
+   * thrown.
    *
    * @param array The {@code double[]} array whose elements to check.
    * @param condition The predicate to apply for each element of the
@@ -922,11 +933,11 @@ public final class Predicates {
    *         {@code double[]} array does not satisfy the specified condition.
    */
   public static <E extends Throwable> double[] requireElements(double[] array,
-      DoublePredicate condition, Supplier<? extends E> exception) throws E {
-    final long length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw exception.get();
+      DoublePredicate condition, IntFunction<E> exception) throws E {
+    final int length = array == null ? 0 : array.length;
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw exception.apply(index);
       }
     }
     return array;
@@ -949,10 +960,9 @@ public final class Predicates {
    */
   public static char[] requireElements(char[] array, IntPredicate condition) {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw new IllegalArgumentException(
-            "[" + i + "] = " + Character.toString(array[i]));
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw new IllegalArgumentException("[" + index + "] = " + array[index]);
       }
     }
     return array;
@@ -971,14 +981,13 @@ public final class Predicates {
    * @return The reference to the specified {@code char[]} array.
    * @throws IllegalArgumentException if at least one element of the specified
    *         {@code char[]} array does not satisfy the specified condition.
+   * @see #defer(Supplier)
    */
-  public static char[] requireElements(char[] array, IntPredicate condition,
-      Object message) {
+  public static char[] requireElements(char[] array, IntPredicate condition, Object message) {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw new IllegalArgumentException(String.valueOf(
-            message instanceof Supplier ? ((Supplier<?>) message).get() : message));
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw new IllegalArgumentException(toExceptionMessage(message, index));
       }
     }
     return array;
@@ -998,12 +1007,12 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified
    *         {@code char[]} array does not satisfy the specified condition.
    */
-  public static <E extends Throwable> char[] requireElements(char[] array,
-      IntPredicate condition, Supplier<? extends E> exception) throws E {
+  public static <E extends Throwable> char[] requireElements(char[] array, IntPredicate condition,
+      IntFunction<E> exception) throws E {
     final int length = array == null ? 0 : array.length;
-    for (int i = 0; i < length; i++) {
-      if (!condition.test(array[i])) {
-        throw exception.get();
+    for (int index = 0; index < length; index++) {
+      if (!condition.test(array[index])) {
+        throw exception.apply(index);
       }
     }
     return array;
@@ -1012,6 +1021,9 @@ public final class Predicates {
   // Collection bulk validations
 
   public static <I extends Iterable<T>, T> I requireElementsNonNull(I iteration) {
+    require(null, OBJECT_NON_NULL, defer(() -> "asas"));
+    require(null, OBJECT_NON_NULL, NullPointerException::new);
+    requireElements(new char[2], (c) -> c > 0, defer(index -> "at index: " + index));
 
     return iteration;
   }
@@ -1020,17 +1032,18 @@ public final class Predicates {
     return iteration;
   }
 
-  public static <I extends Iterable<T>, T> I requireElements(I iteration, Predicate<? super T> condition) {
+  public static <I extends Iterable<T>, T> I requireElements(I iteration,
+      Predicate<? super T> condition) {
     return iteration;
   }
 
-  public static <I extends Iterable<T>, T> I requireElements(I iteration, Predicate<? super T> condition,
-      Object message) {
+  public static <I extends Iterable<T>, T> I requireElements(I iteration,
+      Predicate<? super T> condition, Object message) {
     return iteration;
   }
 
   public static <I extends Iterable<T>, T, E extends Throwable> I requireElements(I iteration,
-      Predicate<? super T> condition, Supplier<? extends T> exception) throws E {
+      Predicate<? super T> condition, IntFunction<E> exception) throws E {
     return iteration;
   }
 
