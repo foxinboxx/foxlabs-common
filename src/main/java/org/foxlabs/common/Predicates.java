@@ -19,13 +19,10 @@ package org.foxlabs.common;
 import java.util.Map;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.function.Supplier;
 import java.util.function.Predicate;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
 import java.util.function.DoublePredicate;
-import java.util.function.Function;
-import java.util.function.IntFunction;
 
 /**
  * A collection of reusable predicates and {@code requireXXX()} methods that check that a given
@@ -385,7 +382,7 @@ public final class Predicates {
    * @throws E if the specified object does not satisfy the specified condition.
    */
   public static <T, E extends Throwable> T require(T object, Predicate<? super T> condition,
-      Supplier<E> exception) throws E {
+      Provider<E> exception) throws E {
     if (condition.test(object)) {
       return object;
     }
@@ -442,7 +439,7 @@ public final class Predicates {
    * @throws E if the specified {@code int} number does not satisfy the specified condition.
    */
   public static <E extends Throwable> int require(int number,
-      IntPredicate condition, Supplier<E> exception) throws E {
+      IntPredicate condition, Provider<E> exception) throws E {
     if (condition.test(number)) {
       return number;
     }
@@ -499,7 +496,7 @@ public final class Predicates {
    * @throws E if the specified {@code long} number does not satisfy the specified condition.
    */
   public static <E extends Throwable> long require(long number, LongPredicate condition,
-      Supplier<E> exception) throws E {
+      Provider<E> exception) throws E {
     if (condition.test(number)) {
       return number;
     }
@@ -556,7 +553,7 @@ public final class Predicates {
    * @throws E if the specified {@code double} number does not satisfy the specified condition.
    */
   public static <E extends Throwable> double require(double number, DoublePredicate condition,
-      Supplier<E> exception) throws E {
+      Provider<E> exception) throws E {
     if (condition.test(number)) {
       return number;
     }
@@ -686,11 +683,11 @@ public final class Predicates {
    *         satisfy the specified condition.
    */
   public static <T, E extends Throwable> T[] requireElements(T[] array, Predicate<? super T> condition,
-      IntFunction<E> exception) throws E {
+      Provider.ForArray<E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (!condition.test(array[index])) {
-        throw exception.apply(index);
+        throw exception.get(index);
       }
     }
     return array;
@@ -757,11 +754,11 @@ public final class Predicates {
    *         does not satisfy the specified condition.
    */
   public static <E extends Throwable> byte[] requireElements(byte[] array, IntPredicate condition,
-      IntFunction<E> exception) throws E {
+      Provider.ForArray<E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (!condition.test(array[index])) {
-        throw exception.apply(index);
+        throw exception.get(index);
       }
     }
     return array;
@@ -828,11 +825,11 @@ public final class Predicates {
    *         array does not satisfy the specified condition.
    */
   public static <E extends Throwable> short[] requireElements(short[] array, IntPredicate condition,
-      IntFunction<E> exception) throws E {
+      Provider.ForArray<E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (!condition.test(array[index])) {
-        throw exception.apply(index);
+        throw exception.get(index);
       }
     }
     return array;
@@ -899,11 +896,11 @@ public final class Predicates {
    *         does not satisfy the specified condition.
    */
   public static <E extends Throwable> int[] requireElements(int[] array, IntPredicate condition,
-      IntFunction<E> exception) throws E {
+      Provider.ForArray<E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (!condition.test(array[index])) {
-        throw exception.apply(index);
+        throw exception.get(index);
       }
     }
     return array;
@@ -970,11 +967,11 @@ public final class Predicates {
    *         does not satisfy the specified condition.
    */
   public static <E extends Throwable> long[] requireElements(long[] array, LongPredicate condition,
-      IntFunction<E> exception) throws E {
+      Provider.ForArray<E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (!condition.test(array[index])) {
-        throw exception.apply(index);
+        throw exception.get(index);
       }
     }
     return array;
@@ -1041,11 +1038,11 @@ public final class Predicates {
    *         array does not satisfy the specified condition.
    */
   public static <E extends Throwable> float[] requireElements(float[] array,
-      DoublePredicate condition, IntFunction<E> exception) throws E {
+      DoublePredicate condition, Provider.ForArray<E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (!condition.test(array[index])) {
-        throw exception.apply(index);
+        throw exception.get(index);
       }
     }
     return array;
@@ -1112,11 +1109,11 @@ public final class Predicates {
    *         array does not satisfy the specified condition.
    */
   public static <E extends Throwable> double[] requireElements(double[] array, DoublePredicate condition,
-      IntFunction<E> exception) throws E {
+      Provider.ForArray<E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (!condition.test(array[index])) {
-        throw exception.apply(index);
+        throw exception.get(index);
       }
     }
     return array;
@@ -1183,11 +1180,11 @@ public final class Predicates {
    *         does not satisfy the specified condition.
    */
   public static <E extends Throwable> char[] requireElements(char[] array, IntPredicate condition,
-      IntFunction<E> exception) throws E {
+      Provider.ForArray<E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (!condition.test(array[index])) {
-        throw exception.apply(index);
+        throw exception.get(index);
       }
     }
     return array;
@@ -1333,13 +1330,13 @@ public final class Predicates {
    *         sequence does not satisfy the specified condition.
    */
   public static <T, I extends Iterable<T>, E extends Throwable> I requireElements(I iterable,
-      Predicate<? super T> condition, IntFunction<E> exception) throws E {
+      Predicate<? super T> condition, Provider.ForIterable<E, T> exception) throws E {
     if (iterable != null) {
       final Iterator<T> itr = iterable.iterator();
       for (int index = 0; itr.hasNext(); index++) {
         final T element = itr.next();
         if (!condition.test(element)) {
-          throw exception.apply(index);
+          throw exception.get(index, element);
         }
       }
     }
@@ -1352,9 +1349,10 @@ public final class Predicates {
 
   public static <K, V, M extends Map<K, V>> M requireKeysNonNull(M map) {
     if (map != null) {
-      for (K key : map.keySet()) {
-        if (key == null) {
-          throw new NullPointerException();
+      final Iterator<K> itr = map.keySet().iterator();
+      for (int index = 0; itr.hasNext(); index++) {
+        if (itr.next() == null) {
+          throw new NullPointerException(Integer.toString(index));
         }
       }
     }
@@ -1376,9 +1374,11 @@ public final class Predicates {
 
   public static <K, V, M extends Map<K, V>> M requireValuesNonNull(M map, Object message) {
     if (map != null) {
-      for (Map.Entry<K, V> entry : map.entrySet()) {
+      final Iterator<Map.Entry<K, V>> itr = map.entrySet().iterator();
+      for (int index = 0; itr.hasNext(); index++) {
+        final Map.Entry<K, V> entry = itr.next();
         if (entry.getValue() == null) {
-          throw new NullPointerException(toExceptionMessage(message, entry.getKey()));
+          throw new NullPointerException(toExceptionMessage(message, index, entry.getKey(), null));
         }
       }
     }
@@ -1390,16 +1390,16 @@ public final class Predicates {
   // Helpers
 
   /**
-   * Returns a reference to the specified {@code Supplier} provider of the exception detail
-   * message. In other words, simply returns its argument. This helper method just provides a way
-   * to avoid explicit casting to {@code Supplier<String>} in the {@code requireXXX()} calls that
-   * accept provider of the exception detail message as an {@code Object}.
+   * Returns a reference to the specified provider of the exception detail message. In other words,
+   * simply returns its argument. This helper method just provides a way to avoid explicit casting
+   * to {@code Provider<String>} in the {@code requireXXX()} calls that accept provider of the
+   * exception detail message as an {@code Object}.
    *
    * <p>
    * For example, statement:
    * <pre>
    * requireNonNull(object,
-   *     (Supplier&lt;String&gt;) () -> java.time.LocalDateTime.now() + ": object is null");
+   *     (Provider&lt;String&gt;) () -> java.time.LocalDateTime.now() + ": object is null");
    * </pre>
    * is equivalent to:
    * <pre>
@@ -1412,7 +1412,7 @@ public final class Predicates {
    * @return A reference to the specified provider of the exception detail message.
    * @see Predicates
    */
-  public static Supplier<String> defer(Supplier<String> formatter) {
+  public static Provider<String> defer(Provider<String> formatter) {
     return formatter;
   }
 
@@ -1424,8 +1424,8 @@ public final class Predicates {
    * @see Predicates
    */
   private static String toExceptionMessage(Object message) {
-    if (message instanceof Supplier) {
-      message = ((Supplier<?>) message).get();
+    if (message instanceof Provider) {
+      message = ((Provider<?>) message).get();
     }
     return String.valueOf(message);
   }
@@ -1453,7 +1453,7 @@ public final class Predicates {
    * @return A reference to the specified provider of the exception detail message.
    * @see Predicates
    */
-  public static IntFunction<String> defer(IntFunction<String> formatter) {
+  public static Provider.ForArray<String> defer(Provider.ForArray<String> formatter) {
     return formatter;
   }
 
@@ -1466,8 +1466,8 @@ public final class Predicates {
    * @see Predicates
    */
   private static String toExceptionMessage(Object message, int index) {
-    if (message instanceof IntFunction) {
-      return String.valueOf(((IntFunction<?>) message).apply(index));
+    if (message instanceof Provider.ForArray) {
+      return String.valueOf(((Provider.ForArray<?>) message).get(index));
     }
     return toExceptionMessage(message);
   }
@@ -1497,7 +1497,7 @@ public final class Predicates {
    * @return A reference to the specified provider of the exception detail message.
    * @see Predicates
    */
-  public static <T> Function<T, String> defer(Function<T, String> formatter) {
+  public static <K, V> Provider.ForMap<String, K, V> defer(Provider.ForMap<String, K, V> formatter) {
     return formatter;
   }
 
@@ -1509,11 +1509,48 @@ public final class Predicates {
    * @return An exception detail message obtained from the specified message provider.
    * @see Predicates
    */
-  private static String toExceptionMessage(Object message, Object key) {
-    if (message instanceof Function) {
-      return String.valueOf(Objects.<Function<Object, ?>>cast(message).apply(key));
+  private static String toExceptionMessage(Object message, int index, Object key, Object value) {
+    if (message instanceof Provider.ForMap) {
+      return String.valueOf(
+          Objects.<Provider.ForMap<String, Object, Object>>cast(message).get(index, key, value));
     }
     return toExceptionMessage(message);
+  }
+
+  // Functional interfaces
+
+  /**
+   * The container interface for providers of exceptions or exception detail messages used by the
+   * {@code requireXXX} methods.
+   *
+   * @author Fox Mulder
+   */
+  @FunctionalInterface
+  public static interface Provider<R> {
+
+    R get();
+
+    @FunctionalInterface
+    public static interface ForArray<R> {
+
+      R get(int index);
+
+    }
+
+    @FunctionalInterface
+    public static interface ForIterable<R, E> {
+
+      R get(int index, E element);
+
+    }
+
+    @FunctionalInterface
+    public static interface ForMap<R, K, V> {
+
+      R get(int index, K key, V value);
+
+    }
+
   }
 
 }
