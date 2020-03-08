@@ -677,6 +677,7 @@ public final class Predicates {
    * no exception will be thrown.
    *
    * @param <T> The type of elements of the array.
+   * @param <E> The type of the exception to throw.
    * @param array The array whose elements to check.
    * @param condition The predicate to apply for each element of the array.
    * @param exception The provider of the exception.
@@ -747,6 +748,7 @@ public final class Predicates {
    * condition and throws the specified exception if they are not. Note that if the specified array
    * is {@code null} then no exception will be thrown.
    *
+   * @param <E> The type of the exception to throw.
    * @param array The {@code byte[]} array whose elements to check.
    * @param condition The predicate to apply for each element of the {@code byte[]} array.
    * @param exception The provider of the exception.
@@ -817,6 +819,7 @@ public final class Predicates {
    * condition and throws the specified exception if they are not. Note that if the specified array
    * is {@code null} then no exception will be thrown.
    *
+   * @param <E> The type of the exception to throw.
    * @param array The {@code short[]} array whose elements to check.
    * @param condition The predicate to apply for each element of the {@code short[]} array.
    * @param exception The provider of the exception.
@@ -887,6 +890,7 @@ public final class Predicates {
    * condition and throws the specified exception if they are not. Note that if the specified array
    * is {@code null} then no exception will be thrown.
    *
+   * @param <E> The type of the exception to throw.
    * @param array The {@code int[]} array whose elements to check.
    * @param condition The predicate to apply for each element of the {@code int[]} array.
    * @param exception The provider of the exception.
@@ -957,6 +961,7 @@ public final class Predicates {
    * condition and throws the specified exception if they are not. Note that if the specified array
    * is {@code null} then no exception will be thrown.
    *
+   * @param <E> The type of the exception to throw.
    * @param array The {@code long[]} array whose elements to check.
    * @param condition The predicate to apply for each element of the {@code long[]} array.
    * @param exception The provider of the exception.
@@ -1027,6 +1032,7 @@ public final class Predicates {
    * condition and throws the specified exception if they are not. Note that if the specified array
    * is {@code null} then no exception will be thrown.
    *
+   * @param <E> The type of the exception to throw.
    * @param array The {@code float[]} array whose elements to check.
    * @param condition The predicate to apply for each element of the {@code float[]} array.
    * @param exception The provider of the exception.
@@ -1097,6 +1103,7 @@ public final class Predicates {
    * condition and throws the specified exception if they are not. Note that if the specified array
    * is {@code null} then no exception will be thrown.
    *
+   * @param <E> The type of the exception to throw.
    * @param array The {@code double[]} array whose elements to check.
    * @param condition The predicate to apply for each element of the {@code double[]} array.
    * @param exception The provider of the exception.
@@ -1167,6 +1174,7 @@ public final class Predicates {
    * condition and throws the specified exception if they are not. Note that if the specified array
    * is {@code null} then no exception will be thrown.
    *
+   * @param <E> The type of the exception to throw.
    * @param array The {@code char[]} array whose elements to check.
    * @param condition The predicate to apply for each element of the {@code char[]} array.
    * @param exception The provider of the exception.
@@ -1201,12 +1209,13 @@ public final class Predicates {
    * </p>
    *
    * @param <T> The type of elements of the {@code Iterable} sequence.
-   * @param array The {@code Iterable} sequence whose elements to check.
+   * @param <I> The type of the {@code Iterable} sequence.
+   * @param iterable The {@code Iterable} sequence whose elements to check.
    * @return The reference to the specified {@code Iterable} sequence.
    * @throws NullPointerException if the specified {@code Iterable} sequence contains {@code null}
    *         elements.
    */
-  public static <I extends Iterable<T>, T> I requireElementsNonNull(I iterable) {
+  public static <T, I extends Iterable<T>> I requireElementsNonNull(I iterable) {
     if (iterable != null) {
       final Iterator<T> itr = iterable.iterator();
       for (int index = 0; itr.hasNext(); index++) {
@@ -1232,14 +1241,15 @@ public final class Predicates {
    * </p>
    *
    * @param <T> The type of elements of the {@code Iterable} sequence.
-   * @param array The {@code Iterable} sequence whose elements to check.
+   * @param <I> The type of the {@code Iterable} sequence.
+   * @param iterable The {@code Iterable} sequence whose elements to check.
    * @param message The provider of the exception detail message.
    * @return The reference to the specified {@code Iterable} sequence.
    * @throws NullPointerException if the specified {@code Iterable} sequence contains {@code null}
    *         elements.
    * @see #defer(IntFunction)
    */
-  public static <I extends Iterable<T>, T> I requireElementsNonNull(I iterable, Object message) {
+  public static <T, I extends Iterable<T>> I requireElementsNonNull(I iterable, Object message) {
     if (iterable != null) {
       final Iterator<T> itr = iterable.iterator();
       for (int index = 0; itr.hasNext(); index++) {
@@ -1257,13 +1267,14 @@ public final class Predicates {
    * specified sequence is {@code null} then no exception will be thrown.
    *
    * @param <T> The type of elements of the {@code Iterable} sequence.
-   * @param array The {@code Iterable} sequence whose elements to check.
+   * @param <I> The type of the {@code Iterable} sequence.
+   * @param iterable The {@code Iterable} sequence whose elements to check.
    * @param condition The predicate to apply for each element of the {@code Iterable} sequence.
    * @return The reference to the specified {@code Iterable} sequence.
    * @throws IllegalArgumentException if at least one element of the specified {@code Iterable}
    *         sequence does not satisfy the specified condition.
    */
-  public static <I extends Iterable<T>, T> I requireElements(I iterable, Predicate<? super T> condition) {
+  public static <T, I extends Iterable<T>> I requireElements(I iterable, Predicate<? super T> condition) {
     if (iterable != null) {
       final Iterator<T> itr = iterable.iterator();
       for (int index = 0; itr.hasNext(); index++) {
@@ -1283,7 +1294,8 @@ public final class Predicates {
    * thrown.
    *
    * @param <T> The type of elements of the {@code Iterable} sequence.
-   * @param array The {@code Iterable} sequence whose elements to check.
+   * @param <I> The type of the {@code Iterable} sequence.
+   * @param iterable The {@code Iterable} sequence whose elements to check.
    * @param condition The predicate to apply for each element of the {@code Iterable} sequence.
    * @param message The provider of the exception detail message.
    * @return The reference to the specified {@code Iterable} sequence.
@@ -1291,7 +1303,7 @@ public final class Predicates {
    *         sequence does not satisfy the specified condition.
    * @see #defer(IntFunction)
    */
-  public static <I extends Iterable<T>, T> I requireElements(I iterable, Predicate<? super T> condition,
+  public static <T, I extends Iterable<T>> I requireElements(I iterable, Predicate<? super T> condition,
       Object message) {
     if (iterable != null) {
       final Iterator<T> itr = iterable.iterator();
@@ -1311,14 +1323,16 @@ public final class Predicates {
    * sequence is {@code null} then no exception will be thrown.
    *
    * @param <T> The type of elements of the {@code Iterable} sequence.
-   * @param array The {@code Iterable} sequence whose elements to check.
+   * @param <I> The type of the {@code Iterable} sequence.
+   * @param <E> The type of the exception to throw.
+   * @param iterable The {@code Iterable} sequence whose elements to check.
    * @param condition The predicate to apply for each element of the {@code Iterable} sequence.
    * @param exception The provider of the exception.
    * @return The reference to the specified {@code Iterable} sequence.
    * @throws IllegalArgumentException if at least one element of the specified {@code Iterable}
    *         sequence does not satisfy the specified condition.
    */
-  public static <I extends Iterable<T>, T, E extends Throwable> I requireElements(I iterable,
+  public static <T, I extends Iterable<T>, E extends Throwable> I requireElements(I iterable,
       Predicate<? super T> condition, IntFunction<E> exception) throws E {
     if (iterable != null) {
       final Iterator<T> itr = iterable.iterator();

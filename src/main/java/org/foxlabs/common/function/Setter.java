@@ -17,8 +17,8 @@
 package org.foxlabs.common.function;
 
 /**
- * Defines the {@link #set(Object, Object)} method which allows to assign a
- * value to some property of the target object.
+ * Defines the {@link #set(Object, Object)} method which allows to assign a value to some property
+ * of the target object.
  *
  * @param <T> The type of the target object.
  * @param <V> The type of the value to set on the target object.

@@ -17,9 +17,8 @@
 package org.foxlabs.common.function;
 
 /**
- * Defines the {@link #build()} method which could be implemented by classes
- * that follow the <a href="https://en.wikipedia.org/wiki/Builder_pattern">Builder</a>
- * pattern.
+ * Defines the {@link #build()} method which could be implemented by classes that follow the
+ * <a href="https://en.wikipedia.org/wiki/Builder_pattern">Builder</a> pattern.
  *
  * @param <R> The type of the resulting assembly object.
  *

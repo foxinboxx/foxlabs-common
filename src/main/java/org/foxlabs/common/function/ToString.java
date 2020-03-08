@@ -17,12 +17,12 @@
 package org.foxlabs.common.function;
 
 /**
- * An interface that allows to build a long sequence of text data avoiding string
- * concatenations (i.e. {@code String + String} or {@link String#concat(String)}).
+ * An interface that allows to build a long sequence of text data avoiding string concatenations
+ * (i.e. {@code String + String} or {@link String#concat(String)}).
  *
  * <p>
- * For example, it is efficient to build a resulting string from a collection
- * of objects which classes implement this interface.
+ * For example, it is efficient to build a resulting string from a collection of objects which
+ * classes implement this interface.
  * </p>
  *
  * So, instead of:
@@ -47,8 +47,7 @@ package org.foxlabs.common.function;
 public interface ToString {
 
   /**
-   * Appends some text data to the specified buffer and returns a reference to
-   * the same buffer.
+   * Appends some text data to the specified buffer and returns a reference to the same buffer.
    *
    * @param buffer The buffer to append to.
    * @return A reference to the specified buffer.
@@ -58,9 +57,9 @@ public interface ToString {
   // ToString.Adapter
 
   /**
-   * An abstract {@link ToString} implementation which overrides the
-   * {@link Object#toString()} method that calls {@link #toString(StringBuilder)}
-   * with an empty {@link StringBuilder} and returns the resulting string.
+   * An abstract {@link ToString} implementation which overrides the {@link Object#toString()}
+   * method that calls {@link #toString(StringBuilder)} with an empty {@link StringBuilder} and
+   * returns the resulting string.
    *
    * @author Fox Mulder
    */

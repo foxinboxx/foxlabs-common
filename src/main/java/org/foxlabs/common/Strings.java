@@ -23,13 +23,13 @@ import java.util.function.IntUnaryOperator;
 /**
  * Implementation of commonly used string operations.
  *
- * <p>Methods of this class does not take default locale into account and
- * perform Unicode operations using methods of the {@link Character} class.</p>
+ * <p>Methods of this class does not take default locale into account and perform Unicode
+ * operations using methods of the {@link Character} class.</p>
  *
  * <p>All the methods accept {@code null} strings normally and do not throw
- * {@code NullPointerException}. Modification methods return {@code null} if
- * the resulting string is an empty string (i.e. {@code ""}). Use corresponding
- * {@code xxxNullSafe()} methods if {@code null} results are not desired.</p>
+ * {@code NullPointerException}. Modification methods return {@code null} if the resulting string
+ * is an empty string (i.e. {@code ""}). Use corresponding {@code xxxNullSafe()} methods if
+ * {@code null} results are not desired.</p>
  *
  * @author Fox Mulder
  */
@@ -41,8 +41,8 @@ public final class Strings {
   }
 
   /**
-   * Returns an empty string (i.e. {@code ""}) if the specified one is
-   * {@code null}, otherwise returns the specified string itself.
+   * Returns an empty string (i.e. {@code ""}) if the specified one is {@code null}, otherwise
+   * returns the specified string itself.
    *
    * @param string The string to test.
    * @return {@code null}-safe string.
@@ -54,8 +54,7 @@ public final class Strings {
   // Checks
 
   /**
-   * Determines if the specified string is not {@code null}, but an empty
-   * string (i.e. {@code ""}).
+   * Determines if the specified string is not {@code null}, but an empty string (i.e. {@code ""}).
    *
    * @param string The string to test.
    * @return {@code true} if the specified string is an empty string.
@@ -65,33 +64,30 @@ public final class Strings {
   }
 
   /**
-   * Determines if the specified string is {@code null} or an empty string
-   * (i.e. {@code ""}).
+   * Determines if the specified string is {@code null} or an empty string (i.e. {@code ""}).
    *
    * @param string The string to test.
-   * @return {@code true} if the specified string is {@code null} or an empty
-   *         string.
+   * @return {@code true} if the specified string is {@code null} or an empty string.
    */
   public static boolean isEmptyOrNull(String string) {
     return string == null || string.length() == 0;
   }
 
   /**
-   * Determines if the specified string is not {@code null} and not an empty
-   * string (i.e. {@code ""}).
+   * Determines if the specified string is not {@code null} and not an empty string (i.e.
+   * {@code ""}).
    *
    * @param string The string to test.
-   * @return {@code true} if the specified string is not {@code null} and not
-   *         an empty string.
+   * @return {@code true} if the specified string is not {@code null} and not an empty string.
    */
   public static boolean isNonEmpty(String string) {
     return string != null && string.length() > 0;
   }
 
   /**
-   * Determines if the specified string is not {@code null}, but an empty
-   * string (i.e. {@code ""}) or consists of whitespace characters only
-   * according to the {@link Character#isWhitespace(int)} method.
+   * Determines if the specified string is not {@code null}, but an empty string (i.e. {@code ""})
+   * or consists of whitespace characters only according to the {@link Character#isWhitespace(int)}
+   * method.
    *
    * @param string The string to test.
    * @return {@code true} if the specified string is a blank string.
@@ -108,13 +104,11 @@ public final class Strings {
   }
 
   /**
-   * Does the same as the {@link #isBlank(String)}, but also returns {@code true}
-   * if the specified string is {@code null}. This is a shortcut for the
-   * {@code string == null || isBlank(string)}.
+   * Does the same as the {@link #isBlank(String)}, but also returns {@code true} if the specified
+   * string is {@code null}. This is a shortcut for the {@code string == null || isBlank(string)}.
    *
    * @param string The string to test.
-   * @return {@code true} if the specified string is {@code null} or a blank
-   *         string.
+   * @return {@code true} if the specified string is {@code null} or a blank string.
    * @see #isBlank(String)
    */
   public static boolean isBlankOrNull(String string) {
@@ -122,9 +116,9 @@ public final class Strings {
   }
 
   /**
-   * Determines if the specified string is not {@code null}, not an empty
-   * string (i.e. {@code ""}) and contains at least one non-whitespace character
-   * according to the {@link Character#isWhitespace(int)} method.
+   * Determines if the specified string is not {@code null}, not an empty string (i.e. {@code ""})
+   * and contains at least one non-whitespace character according to the
+   * {@link Character#isWhitespace(int)} method.
    *
    * @param string The string to test.
    * @return {@code true} if the specified string is not a blank string.
@@ -138,13 +132,12 @@ public final class Strings {
   }
 
   /**
-   * Determines if the specified string is not {@code null}, but an empty
-   * string (i.e. {@code ""}) or contains at least one whitespace character
-   * according to the {@link Character#isWhitespace(int)} method.
+   * Determines if the specified string is not {@code null}, but an empty string (i.e. {@code ""})
+   * or contains at least one whitespace character according to the
+   * {@link Character#isWhitespace(int)} method.
    *
    * @param string The string to test.
-   * @return {@code true} if the specified string contains at least one
-   *         whitespace character.
+   * @return {@code true} if the specified string contains at least one whitespace character.
    */
   public static boolean isWhitespaced(String string) {
     if (string != null) {
@@ -163,13 +156,13 @@ public final class Strings {
   }
 
   /**
-   * Does the same as the {@link #isWhitespaced(String)}, but also returns
-   * {@code true} if the specified string is {@code null}. This is a shortcut
-   * for the {@code string == null || isWhitespaced(string)}.
+   * Does the same as the {@link #isWhitespaced(String)}, but also returns {@code true} if the
+   * specified string is {@code null}. This is a shortcut for the
+   * {@code string == null || isWhitespaced(string)}.
    *
    * @param string The string to test.
-   * @return {@code true} if the specified string is {@code null} or contains
-   *         at least one whitespace character.
+   * @return {@code true} if the specified string is {@code null} or contains at least one
+   *         whitespace character.
    * @see #isWhitespaced(String)
    */
   public static boolean isWhitespacedOrNull(String string) {
@@ -177,14 +170,13 @@ public final class Strings {
   }
 
   /**
-   * Determines if the specified string is not {@code null}, not an empty
-   * string (i.e. {@code ""}) and does not contain whitespace characters at all
-   * according to the {@link Character#isWhitespace(int)} method. This is a
-   * shortcut for the {@code !isWhitespacedOrNull(string)}.
+   * Determines if the specified string is not {@code null}, not an empty string (i.e. {@code ""})
+   * and does not contain whitespace characters at all according to the
+   * {@link Character#isWhitespace(int)} method. This is a shortcut for the
+   * {@code !isWhitespacedOrNull(string)}.
    *
    * @param string The string to test.
-   * @return {@code true} if the specified string does not contain whitespace
-   *         characters.
+   * @return {@code true} if the specified string does not contain whitespace characters.
    * @see #isWhitespacedOrNull(String)
    */
   public static boolean isNonWhitespaced(String string) {
@@ -194,14 +186,13 @@ public final class Strings {
   // Modifications
 
   /**
-   * Applies the specified operator for each character of the specified string
-   * and returns the resulting string which may be a different length than the
-   * original one because Unicode mappings are not always 1:1.
+   * Applies the specified operator for each character of the specified string and returns the
+   * resulting string which may be a different length than the original one because Unicode
+   * mappings are not always 1:1.
    *
    * @param string The string to be modified.
    * @param operator The operator to be applied for each character of the string.
-   * @return A resulting string or the original one if none of the characters
-   *         have been modified.
+   * @return A resulting string or the original one if none of the characters have been modified.
    * @throws NullPointerException if the specified operator is {@code null}.
    */
   public static String forEachChar(String string, IntUnaryOperator operator) {
@@ -233,16 +224,14 @@ public final class Strings {
   }
 
   /**
-   * Replaces all of the characters in the specified string for which the
-   * specified predicate returns {@code true} with the specified replacement
-   * character. The resulting string may be a different length than the original
-   * one.
+   * Replaces all of the characters in the specified string for which the specified predicate
+   * returns {@code true} with the specified replacement character. The resulting string may be a
+   * different length than the original one.
    *
    * @param string The string to be modified.
    * @param replacement The replacement character.
    * @param predicate The predicate to be applied for each character of the string.
-   * @return A resulting string or the original one if none of the characters
-   *         have been replaced.
+   * @return A resulting string or the original one if none of the characters have been replaced.
    * @throws NullPointerException if the specified predicate is {@code null}.
    * @see #forEachChar(String, IntUnaryOperator)
    */
@@ -252,8 +241,8 @@ public final class Strings {
   }
 
   /**
-   * Does the same as the {@link #replace(String, int, IntPredicate)}, but never
-   * returns {@code null}. This is a shortcut for the
+   * Does the same as the {@link #replace(String, int, IntPredicate)}, but never returns
+   * {@code null}. This is a shortcut for the
    * {@code nullSafe(replace(string, replacement, predicate))}.
    *
    * @param string The string to be modified.
@@ -268,13 +257,13 @@ public final class Strings {
   }
 
   /**
-   * Converts all of the characters in the specified string to lower case using
-   * the {@link Character#toLowerCase(int)} method. The resulting string may be
-   * a different length than the original one.
+   * Converts all of the characters in the specified string to lower case using the
+   * {@link Character#toLowerCase(int)} method. The resulting string may be a different length than
+   * the original one.
    *
    * @param string The string to be converted to lower case.
-   * @return The string converted to lower case or the original one if none of
-   *         the characters have been converted.
+   * @return The string converted to lower case or the original one if none of the characters have
+   *         been converted.
    * @see #forEachChar(String, IntUnaryOperator)
    */
   public static String toLowerCase(String string) {
@@ -282,8 +271,8 @@ public final class Strings {
   }
 
   /**
-   * Does the same as the {@link #toLowerCase(String)}, but never returns {@code null}.
-   * This is a shortcut for the {@code nullSafe(toLowerCase(string))}.
+   * Does the same as the {@link #toLowerCase(String)}, but never returns {@code null}. This is a
+   * shortcut for the {@code nullSafe(toLowerCase(string))}.
    *
    * @param string The string to be converted to lower case.
    * @return The {@code null}-safe string converted to lower case.
@@ -295,13 +284,13 @@ public final class Strings {
   }
 
   /**
-   * Converts all of the characters in the specified string to upper case using
-   * the {@link Character#toUpperCase(int)} method. The resulting string may be
-   * a different length than the original one.
+   * Converts all of the characters in the specified string to upper case using the
+   * {@link Character#toUpperCase(int)} method. The resulting string may be a different length than
+   * the original one.
    *
    * @param string The string to be converted to upper case.
-   * @return The string converted to upper case or the original one if none of
-   *         the characters have been converted.
+   * @return The string converted to upper case or the original one if none of the characters have
+   *         been converted.
    * @see #forEachChar(String, IntUnaryOperator)
    */
   public static String toUpperCase(String string) {
@@ -309,8 +298,8 @@ public final class Strings {
   }
 
   /**
-   * Does the same as the {@link #toUpperCase(String)}, but never returns {@code null}.
-   * This is a shortcut for the {@code nullSafe(toUpperCase(string))}.
+   * Does the same as the {@link #toUpperCase(String)}, but never returns {@code null}. This is a
+   * shortcut for the {@code nullSafe(toUpperCase(string))}.
    *
    * @param string The string to be converted to upper case.
    * @return The {@code null}-safe string converted to upper case.
@@ -322,14 +311,13 @@ public final class Strings {
   }
 
   /**
-   * Removes all of the leading and trailing whitespace characters in the
-   * specified string according to the {@link Character#isWhitespace(int)}
-   * method. Returns {@code null} if the resulting string is an empty string
-   * (i.e. {@code ""}).
+   * Removes all of the leading and trailing whitespace characters in the specified string
+   * according to the {@link Character#isWhitespace(int)} method. Returns {@code null} if the
+   * resulting string is an empty string (i.e. {@code ""}).
    *
    * @param string The string to be trimmed.
-   * @return A trimmed copy of the specified string or the original one if none
-   *         of the characters have been removed.
+   * @return A trimmed copy of the specified string or the original one if none of the characters
+   *         have been removed.
    */
   public static String trim(String string) {
     final int length = string == null ? 0 : string.length();
@@ -354,8 +342,8 @@ public final class Strings {
   }
 
   /**
-   * Does the same as the {@link #trim(String)}, but never returns {@code null}.
-   * This is a shortcut for the {@code nullSafe(trim(string))}.
+   * Does the same as the {@link #trim(String)}, but never returns {@code null}. This is a shortcut
+   * for the {@code nullSafe(trim(string))}.
    *
    * @param string The string to be trimmed.
    * @return A {@code null}-safe trimmed copy of the specified string.
@@ -367,13 +355,13 @@ public final class Strings {
   }
 
   /**
-   * Cuts length of the specified string up to the specified limit. If the
-   * specified string is an empty string (i.e. {@code ""}) then returns {@code null}.
+   * Cuts length of the specified string up to the specified limit. If the specified string is an
+   * empty string (i.e. {@code ""}) then returns {@code null}.
    *
    * @param string The string to be cutted.
    * @param limit The maximum number of allowed characters in the string.
-   * @return A cutted string or the original one if its length is less than or
-   *         equal to the specified limit.
+   * @return A cutted string or the original one if its length is less than or equal to the
+   *         specified limit.
    * @throws IllegalArgumentException if the specified limit is negative.
    */
   public static String cut(String string, int limit) {
@@ -393,8 +381,8 @@ public final class Strings {
   }
 
   /**
-   * Does the same as the {@link #cut(String, int)}, but never returns {@code null}.
-   * This is a shortcut for the {@code nullSafe(cut(string, limit))}.
+   * Does the same as the {@link #cut(String, int)}, but never returns {@code null}. This is a
+   * shortcut for the {@code nullSafe(cut(string, limit))}.
    *
    * @param string The string to be cutted.
    * @param limit The maximum number of allowed characters in the string.
@@ -407,13 +395,13 @@ public final class Strings {
   }
 
   /**
-   * Does the same as the {@link #cut(String, int)}, but adds {@code ...} at the
-   * end of the cutted string if cut operation was applied.
+   * Does the same as the {@link #cut(String, int)}, but adds {@code ...} at the end of the cutted
+   * string if cut operation was applied.
    *
    * @param string The string to be cutted.
    * @param limit The maximum number of allowed characters in the string.
-   * @return A cutted string with {@code ...} at the end or the original string
-   *         if cut operation was not applied.
+   * @return A cutted string with {@code ...} at the end or the original string if cut operation
+   *         was not applied.
    * @see #cut(String, int)
    */
   public static String ellipsis(String string, int limit) {
@@ -422,8 +410,8 @@ public final class Strings {
   }
 
   /**
-   * Does the same as the {@link #ellipsis(String, int)}, but never returns {@code null}.
-   * This is a shortcut for the {@code nullSafe(ellipsis(string, limit))}.
+   * Does the same as the {@link #ellipsis(String, int)}, but never returns {@code null}. This is a
+   * shortcut for the {@code nullSafe(ellipsis(string, limit))}.
    *
    * @param string The string to be cutted.
    * @param limit The maximum number of allowed characters in the string.
@@ -597,13 +585,13 @@ public final class Strings {
   // Miscellaneous
 
   /**
-   * Returns a new string composed of copies of the specified array of elements
-   * joined together with a copy of the specified delimiter using the specified
-   * mapper function to convert elements to strings.
+   * Returns a new string composed of copies of the specified array of elements joined together
+   * with a copy of the specified delimiter using the specified mapper function to convert elements
+   * to strings.
    *
    * @param <E> The type of elements to join.
-   * @param delimiter A sequence of characters that is used to separate each
-   *        of the elements in the resulting string.
+   * @param delimiter A sequence of characters that is used to separate each of the elements in the
+   *        resulting string.
    * @param mapper A function that converts elements to strings.
    * @param elements An array that will have its elements joined together.
    * @return A new string that is composed from the specified elements.
@@ -617,13 +605,12 @@ public final class Strings {
   }
 
   /**
-   * Returns a new string composed of copies of the specified elements joined
-   * together with a copy of the specified delimiter using the specified mapper
-   * function to convert elements to strings.
+   * Returns a new string composed of copies of the specified elements joined together with a copy
+   * of the specified delimiter using the specified mapper function to convert elements to strings.
    *
    * @param <E> The type of elements to join.
-   * @param delimiter A sequence of characters that is used to separate each
-   *        of the elements in the resulting string.
+   * @param delimiter A sequence of characters that is used to separate each of the elements in the
+   *        resulting string.
    * @param mapper A function that converts elements to strings.
    * @param elements An {@code Iterable} that will have its elements joined together.
    * @return A new string that is composed from the specified elements.

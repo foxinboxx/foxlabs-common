@@ -33,9 +33,8 @@ public final class Objects {
   // Miscellaneous
 
   /**
-   * Casts the specified object reference to a custom target type. This method
-   * just provides a way to avoid declaration of the {@link SuppressWarnings}
-   * annotation.
+   * Casts the specified object reference to a custom target type. This method just provides a way
+   * to avoid declaration of the {@link SuppressWarnings} annotation.
    *
    * @param <T> The target reference type.
    * @param object The object reference to cast.
@@ -48,16 +47,15 @@ public final class Objects {
   }
 
   /**
-   * Returns a new object with the overridden {@link Object#toString()} method
-   * that uses the specified formatter to generate the resulting string. This
-   * method is useful for lazy message construction and might be used as the
-   * {@code message} argument of the {@link Predicates} methods.
+   * Returns a new object with the overridden {@link Object#toString()} method that uses the
+   * specified formatter to generate the resulting string. This method is useful for lazy message
+   * construction and might be used as the {@code message} argument of the {@link Predicates}
+   * methods.
    *
    * <p>
    * For example, instead of:
    * <pre>
-   * Predicates.requireNonNull(object,
-   *     java.time.LocalDateTime.now() + ": object is null");
+   * Predicates.requireNonNull(object, java.time.LocalDateTime.now() + ": object is null");
    * </pre>
    *
    * You may use:
@@ -68,8 +66,7 @@ public final class Objects {
    * </p>
    *
    * @param formatter The {@code Object.toString()} result formatter.
-   * @return A new object instance with the overridden {@code Object.toString()}
-   *         method.
+   * @return A new object instance with the overridden {@code Object.toString()} method.
    */
   public static Object message(Supplier<String> formatter) {
     return new Object() {

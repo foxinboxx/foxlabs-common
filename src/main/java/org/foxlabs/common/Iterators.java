@@ -24,8 +24,7 @@ import java.util.function.Function;
 import java.util.function.IntPredicate;
 
 /**
- * A collection of utility methods that deal with the {@link Iterable}s and
- * {@link Iterator}s.
+ * A collection of utility methods that deal with the {@link Iterable}s and {@link Iterator}s.
  *
  * @author Fox Mulder
  */
@@ -39,9 +38,9 @@ public final class Iterators {
   // Array iterators
 
   /**
-   * Returns an {@code Iterable} instance for the specified array of elements.
-   * Note that this method does not create a copy of the original array, so any
-   * modifications will be reflected to the results of iteration.
+   * Returns an {@code Iterable} instance for the specified array of elements. Note that this
+   * method does not create a copy of the original array, so any modifications will be reflected to
+   * the results of iteration.
    *
    * @param <E> The type of the array elements.
    * @param elements An array of elements to iterate over.
@@ -63,10 +62,9 @@ public final class Iterators {
   }
 
   /**
-   * Returns an {code Iterator} instance for the specified array of elements.
-   * Note that this method does not create a copy of the original array, so any
-   * modifications will be reflected to the results of iteration.
-   * The {@link Iterator#remove()} method is not supported.
+   * Returns an {code Iterator} instance for the specified array of elements. Note that this method
+   * does not create a copy of the original array, so any modifications will be reflected to the
+   * results of iteration. The {@link Iterator#remove()} method is not supported.
    *
    * @param <E> The type of the array elements.
    * @param elements An array of elements to iterate over.
@@ -93,16 +91,16 @@ public final class Iterators {
   // Mapping iterators
 
   /**
-   * Returns an {@code Iterable} instance that wraps the specified one and applies
-   * the specified mapper function for each element during iteration.
+   * Returns an {@code Iterable} instance that wraps the specified one and applies the specified
+   * mapper function for each element during iteration.
    *
    * @param <S> The type of elements of the original iteration.
    * @param <T> The type of elements of the resulting iteration.
    * @param mapper A mapper function to be applied for each element during iteration.
    * @param iterable The {@code Iterable} instance to be wrapped.
    * @return A new {@code Iterable} instance that wraps the specified one.
-   * @throws NullPointerException if the specified mapper function or {@code Iterable}
-   *         instance is {@code null}.
+   * @throws NullPointerException if the specified mapper function or {@code Iterable} instance is
+   *         {@code null}.
    * @see #withMapper(Function, Iterator)
    */
   public static <S, T> Iterable<T> withMapper(Function<S, T> mapper, Iterable<S> iterable) {
@@ -116,16 +114,16 @@ public final class Iterators {
   }
 
   /**
-   * Returns an {@code Iterator} instance that wraps the specified one and applies
-   * the specified mapper function for each element during iteration.
+   * Returns an {@code Iterator} instance that wraps the specified one and applies the specified
+   * mapper function for each element during iteration.
    *
    * @param <S> The type of elements of the original iteration.
    * @param <T> The type of elements of the resulting iteration.
    * @param mapper A mapper function to be applied for each element during iteration.
-   * @param iterable The {@code Iterator} instance to be wrapped.
+   * @param iterator The {@code Iterator} instance to be wrapped.
    * @return A new {@code Iterator} instance that wraps the specified one.
-   * @throws NullPointerException if the specified mapper function or {@code Iterator}
-   *         instance is {@code null}.
+   * @throws NullPointerException if the specified mapper function or {@code Iterator} instance is
+   *         {@code null}.
    */
   public static <S, T> Iterator<T> withMapper(Function<S, T> mapper, Iterator<S> iterator) {
     Predicates.requireNonNull(mapper);
@@ -146,12 +144,11 @@ public final class Iterators {
   // Miscellaneous
 
   /**
-   * Returns an {@code CodePointIterator} instance that provides iteration over
-   * code points of the specified character sequence.
+   * Returns an {@code CodePointIterator} instance that provides iteration over code points of the
+   * specified character sequence.
    *
    * @param cs The character sequence to iterate over.
-   * @return A new {@link CodePointIterator} instance for the specified character
-   *         sequence.
+   * @return A new {@link CodePointIterator} instance for the specified character sequence.
    * @throws NullPointerException if the specified character sequence is {@code null}.
    */
   public static CodePointIterator codePoints(CharSequence cs) {
@@ -159,18 +156,17 @@ public final class Iterators {
   }
 
   /**
-   * The {@code Iterator} over code points of a character sequence. This is an
-   * equivalent to the {@code CharSequence.codePoints().iterator()}, but defines
-   * a number of additional methods and does not create heavy-weight
-   * {@link java.util.stream.IntStream}.
+   * The {@code Iterator} over code points of a character sequence. This is an equivalent to the
+   * {@code CharSequence.codePoints().iterator()}, but defines a number of additional methods and
+   * does not create heavy-weight {@link java.util.stream.IntStream}.
    *
    * <p>
-   * In addition to methods of the {@code PrimitiveIterator.OfInt}, this class
-   * defines the following ones:
+   * In addition to methods of the {@code PrimitiveIterator.OfInt}, this class defines the
+   * following ones:
    * <ul>
    *   <li>{@link #position()} - returns current position of the iteration.</li>
-   *   <li>{@link #tryEachRemaining(IntPredicate)} - allows to immediately exit
-   *       the iteration loop depending on the result of a predicate.</li>
+   *   <li>{@link #tryEachRemaining(IntPredicate)} - allows to immediately exit the iteration loop
+   *       depending on the result of a predicate.</li>
    * </ul>
    * </p>
    *
@@ -245,12 +241,10 @@ public final class Iterators {
     }
 
     /**
-     * Performs the specified action for each remaining code point until the end
-     * of character sequence has been reached or the action returns {@code false}
-     * or throws an exception.
+     * Performs the specified action for each remaining code point until the end of character
+     * sequence has been reached or the action returns {@code false} or throws an exception.
      *
-     * @param action The predicate to be performed for each code point in the
-     *        remaining iteration.
+     * @param action The predicate to be performed for each code point in the remaining iteration.
      * @return The current position in the character sequence.
      */
     public int tryEachRemaining(IntPredicate action) {

@@ -17,8 +17,8 @@
 package org.foxlabs.common.function;
 
 /**
- * Defines the {@link #get(Object)} method which allows to retrieve a value of
- * some property from the target object.
+ * Defines the {@link #get(Object)} method which allows to retrieve a value of some property from
+ * the target object.
  *
  * @param <T> The type of the target object.
  * @param <V> The type of the value to get from the target object.
