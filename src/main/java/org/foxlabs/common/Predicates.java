@@ -39,245 +39,305 @@ public final class Predicates {
 
   // Object predicates
 
-  /** {@code o == null} */
+  /** {@code (o) -> o == null} */
   public static final Predicate<Object> OBJECT_NULL = (o) -> o == null;
-  /** {@code o != null} */
+  /** {@code (o) -> o != null} */
   public static final Predicate<Object> OBJECT_NON_NULL = (o) -> o != null;
 
   // Integer predicates
 
-  /** {@code n == 0} */
+  /** {@code (n) -> n == 0} */
   public static final IntPredicate INT_EQ_ZERO = (n) -> n == 0;
-  /** {@code n != 0} */
+  /** {@code (n) -> n != 0} */
   public static final IntPredicate INT_NE_ZERO = (n) -> n != 0;
-  /** {@code n > 0} */
+  /** {@code (n) -> n > 0} */
   public static final IntPredicate INT_POSITIVE = (n) -> n > 0;
-  /** {@code n >= 0} */
+  /** {@code (n) -> n >= 0} */
   public static final IntPredicate INT_POSITIVE_OR_ZERO = (n) -> n >= 0;
-  /** {@code n < 0} */
+  /** {@code (n) -> n < 0} */
   public static final IntPredicate INT_NEGATIVE = (n) -> n < 0;
-  /** {@code n <= 0} */
+  /** {@code (n) -> n <= 0} */
   public static final IntPredicate INT_NEGATIVE_OR_ZERO = (n) -> n <= 0;
 
-  /** {@code n != null && n.intValue() == 0} */
+  /** {@code (n) -> n != null && n.intValue() == 0} */
   public static final Predicate<Integer> OBJECT_INT_EQ_ZERO = (n) -> n != null && n.intValue() == 0;
-  /** {@code n != null && n.intValue() != 0} */
+  /** {@code (n) -> n == null || n.intValue() == 0} */
+  public static final Predicate<Integer> OBJECT_INT_EQ_ZERO_OR_NULL = (n) -> n == null || n.intValue() == 0;
+  /** {@code (n) -> n != null && n.intValue() != 0} */
   public static final Predicate<Integer> OBJECT_INT_NE_ZERO = (n) -> n != null && n.intValue() != 0;
-  /** {@code n != null && n.intValue() > 0} */
+  /** {@code (n) -> n == null || n.intValue() != 0} */
+  public static final Predicate<Integer> OBJECT_INT_NE_ZERO_OR_NULL = (n) -> n == null || n.intValue() != 0;
+  /** {@code (n) -> n != null && n.intValue() > 0} */
   public static final Predicate<Integer> OBJECT_INT_POSITIVE = (n) -> n != null && n.intValue() > 0;
-  /** {@code n != null && n.intValue() >= 0} */
+  /** {@code (n) -> n == null || n.intValue() > 0} */
+  public static final Predicate<Integer> OBJECT_INT_POSITIVE_OR_NULL = (n) -> n == null || n.intValue() > 0;
+  /** {@code (n) -> n != null && n.intValue() >= 0} */
   public static final Predicate<Integer> OBJECT_INT_POSITIVE_OR_ZERO = (n) -> n != null && n.intValue() >= 0;
-  /** {@code n != null && n.intValue() < 0} */
+  /** {@code (n) -> n == null || n.intValue() >= 0} */
+  public static final Predicate<Integer> OBJECT_INT_POSITIVE_OR_ZERO_OR_NULL = (n) -> n == null || n.intValue() >= 0;
+  /** {@code (n) -> n != null && n.intValue() < 0} */
   public static final Predicate<Integer> OBJECT_INT_NEGATIVE = (n) -> n != null && n.intValue() < 0;
-  /** {@code n != null && n.intValue() <= 0} */
+  /** {@code (n) -> n == null || n.intValue() < 0} */
+  public static final Predicate<Integer> OBJECT_INT_NEGATIVE_OR_NULL = (n) -> n == null || n.intValue() < 0;
+  /** {@code (n) -> n != null && n.intValue() <= 0} */
   public static final Predicate<Integer> OBJECT_INT_NEGATIVE_OR_ZERO = (n) -> n != null && n.intValue() <= 0;
+  /** {@code (n) -> n == null || n.intValue() <= 0} */
+  public static final Predicate<Integer> OBJECT_INT_NEGATIVE_OR_ZERO_OR_NULL = (n) -> n == null || n.intValue() <= 0;
 
   // Long predicates
 
-  /** {@code n == 0L} */
+  /** {@code (n) -> n == 0L} */
   public static final LongPredicate LONG_EQ_ZERO = (n) -> n == 0L;
-  /** {@code n != 0L} */
+  /** {@code (n) -> n != 0L} */
   public static final LongPredicate LONG_NE_ZERO = (n) -> n != 0L;
-  /** {@code n > 0L} */
+  /** {@code (n) -> n > 0L} */
   public static final LongPredicate LONG_POSITIVE = (n) -> n > 0L;
-  /** {@code n >= 0L} */
+  /** {@code (n) -> n >= 0L} */
   public static final LongPredicate LONG_POSITIVE_OR_ZERO = (n) -> n >= 0L;
-  /** {@code n < 0L} */
+  /** {@code (n) -> n < 0L} */
   public static final LongPredicate LONG_NEGATIVE = (n) -> n < 0L;
-  /** {@code n <= 0L} */
+  /** {@code (n) -> n <= 0L} */
   public static final LongPredicate LONG_NEGATIVE_OR_ZERO = (n) -> n <= 0L;
 
-  /** {@code n != null && n.longValue() == 0L} */
+  /** {@code (n) -> n != null && n.longValue() == 0L} */
   public static final Predicate<Long> OBJECT_LONG_EQ_ZERO = (n) -> n != null && n.longValue() == 0L;
-  /** {@code n != null && n.longValue() != 0L} */
+  /** {@code (n) -> n == null || n.longValue() == 0L} */
+  public static final Predicate<Long> OBJECT_LONG_EQ_ZERO_OR_NULL = (n) -> n == null || n.longValue() == 0L;
+  /** {@code (n) -> n != null && n.longValue() != 0L} */
   public static final Predicate<Long> OBJECT_LONG_NE_ZERO = (n) -> n != null && n.longValue() != 0L;
-  /** {@code n != null && n.longValue() > 0L} */
+  /** {@code (n) -> n == null || n.longValue() != 0L} */
+  public static final Predicate<Long> OBJECT_LONG_NE_ZERO_OR_NULL = (n) -> n == null || n.longValue() != 0L;
+  /** {@code (n) -> n != null && n.longValue() > 0L} */
   public static final Predicate<Long> OBJECT_LONG_POSITIVE = (n) -> n != null && n.longValue() > 0L;
-  /** {@code n != null && n.longValue() >= 0L} */
+  /** {@code (n) -> n == null || n.longValue() > 0L} */
+  public static final Predicate<Long> OBJECT_LONG_POSITIVE_OR_NULL = (n) -> n == null || n.longValue() > 0L;
+  /** {@code (n) -> n != null && n.longValue() >= 0L} */
   public static final Predicate<Long> OBJECT_LONG_POSITIVE_OR_ZERO = (n) -> n != null && n.longValue() >= 0L;
-  /** {@code n != null && n.longValue() < 0L} */
+  /** {@code (n) -> n == null || n.longValue() >= 0L} */
+  public static final Predicate<Long> OBJECT_LONG_POSITIVE_OR_ZERO_OR_NULL = (n) -> n == null || n.longValue() >= 0L;
+  /** {@code (n) -> n != null && n.longValue() < 0L} */
   public static final Predicate<Long> OBJECT_LONG_NEGATIVE = (n) -> n != null && n.longValue() < 0L;
-  /** {@code n != null && n.longValue() <= 0L} */
+  /** {@code (n) -> n == null || n.longValue() < 0L} */
+  public static final Predicate<Long> OBJECT_LONG_NEGATIVE_OR_NULL = (n) -> n == null || n.longValue() < 0L;
+  /** {@code (n) -> n != null && n.longValue() <= 0L} */
   public static final Predicate<Long> OBJECT_LONG_NEGATIVE_OR_ZERO = (n) -> n != null && n.longValue() <= 0L;
+  /** {@code (n) -> n == null || n.longValue() <= 0L} */
+  public static final Predicate<Long> OBJECT_LONG_NEGATIVE_OR_ZERO_OR_NULL = (n) -> n == null || n.longValue() <= 0L;
 
   // Float predicates
 
-  /** {@code n != null && n.floatValue() == .0f} */
+  /** {@code (n) -> n != null && n.floatValue() == .0f} */
   public static final Predicate<Float> OBJECT_FLOAT_EQ_ZERO = (n) -> n != null && n.floatValue() == .0f;
-  /** {@code n != null && n.floatValue() != .0f} */
+  /** {@code (n) -> n == null || n.floatValue() == .0f} */
+  public static final Predicate<Float> OBJECT_FLOAT_EQ_ZERO_OR_NULL = (n) -> n == null || n.floatValue() == .0f;
+  /** {@code (n) -> n != null && n.floatValue() != .0f} */
   public static final Predicate<Float> OBJECT_FLOAT_NE_ZERO = (n) -> n != null && n.floatValue() != .0f;
-  /** {@code n != null && n.floatValue() > .0f} */
+  /** {@code (n) -> n == null || n.floatValue() != .0f} */
+  public static final Predicate<Float> OBJECT_FLOAT_NE_ZERO_OR_NULL = (n) -> n == null || n.floatValue() != .0f;
+  /** {@code (n) -> n != null && n.floatValue() > .0f} */
   public static final Predicate<Float> OBJECT_FLOAT_POSITIVE = (n) -> n != null && n.floatValue() > .0f;
-  /** {@code n != null && n.floatValue() >= .0f} */
+  /** {@code (n) -> n == null || n.floatValue() > .0f} */
+  public static final Predicate<Float> OBJECT_FLOAT_POSITIVE_OR_NULL = (n) -> n == null || n.floatValue() > .0f;
+  /** {@code (n) -> n != null && n.floatValue() >= .0f} */
   public static final Predicate<Float> OBJECT_FLOAT_POSITIVE_OR_ZERO = (n) -> n != null && n.floatValue() >= .0f;
-  /** {@code n != null && n.floatValue() < .0f} */
+  /** {@code (n) -> n == null || n.floatValue() >= .0f} */
+  public static final Predicate<Float> OBJECT_FLOAT_POSITIVE_OR_ZERO_OR_NULL = (n) -> n == null || n.floatValue() >= .0f;
+  /** {@code (n) -> n != null && n.floatValue() < .0f} */
   public static final Predicate<Float> OBJECT_FLOAT_NEGATIVE = (n) -> n != null && n.floatValue() < .0f;
-  /** {@code n != null && n.floatValue() <= .0f} */
+  /** {@code (n) -> n == null || n.floatValue() < .0f} */
+  public static final Predicate<Float> OBJECT_FLOAT_NEGATIVE_OR_NULL = (n) -> n == null || n.floatValue() < .0f;
+  /** {@code (n) -> n != null && n.floatValue() <= .0f} */
   public static final Predicate<Float> OBJECT_FLOAT_NEGATIVE_OR_ZERO = (n) -> n != null && n.floatValue() <= .0f;
-  /** {@code n != null && n.isNaN() } */
+  /** {@code (n) -> n == null || n.floatValue() <= .0f} */
+  public static final Predicate<Float> OBJECT_FLOAT_NEGATIVE_OR_ZERO_OR_NULL = (n) -> n == null || n.floatValue() <= .0f;
+  /** {@code (n) -> n != null && n.isNaN() } */
   public static final Predicate<Float> OBJECT_FLOAT_NAN = (n) -> n != null && n.isNaN();
-  /** {@code n != null && n.isFinite() } */
+  /** {@code (n) -> n == null || n.isNaN() } */
+  public static final Predicate<Float> OBJECT_FLOAT_NAN_OR_NULL = (n) -> n == null || n.isNaN();
+  /** {@code (n) -> n != null && n.isFinite() } */
   public static final Predicate<Float> OBJECT_FLOAT_FINITE = (n) -> n != null && n.isInfinite();
-  /** {@code n != null && n.isInfinite() } */
+  /** {@code (n) -> n == null || n.isFinite() } */
+  public static final Predicate<Float> OBJECT_FLOAT_FINITE_OR_NULL = (n) -> n == null || n.isInfinite();
+  /** {@code (n) -> n != null && n.isInfinite() } */
   public static final Predicate<Float> OBJECT_FLOAT_INFINITE = (n) -> n != null && n.isInfinite();
+  /** {@code (n) -> n == null || n.isInfinite() } */
+  public static final Predicate<Float> OBJECT_FLOAT_INFINITE_OR_NULL = (n) -> n == null || n.isInfinite();
 
   // Double predicates
 
-  /** {@code n == .0d} */
+  /** {@code (n) -> n == .0d} */
   public static final DoublePredicate DOUBLE_EQ_ZERO = (n) -> n == .0d;
-  /** {@code n != .0d} */
+  /** {@code (n) -> n != .0d} */
   public static final DoublePredicate DOUBLE_NE_ZERO = (n) -> n != .0d;
-  /** {@code n > .0d} */
+  /** {@code (n) -> n > .0d} */
   public static final DoublePredicate DOUBLE_POSITIVE = (n) -> n > .0d;
-  /** {@code n >= .0d} */
+  /** {@code (n) -> n >= .0d} */
   public static final DoublePredicate DOUBLE_POSITIVE_OR_ZERO = (n) -> n >= .0d;
-  /** {@code n < .0d} */
+  /** {@code (n) -> n < .0d} */
   public static final DoublePredicate DOUBLE_NEGATIVE = (n) -> n < .0d;
-  /** {@code n <= .0d} */
+  /** {@code (n) -> n <= .0d} */
   public static final DoublePredicate DOUBLE_NEGATIVE_OR_ZERO = (n) -> n <= .0d;
-  /** {@code Double.isNaN(n) } */
+  /** {@code Double::isNaN } */
   public static final DoublePredicate DOUBLE_NAN = Double::isNaN;
-  /** {@code Double.isFinite(n) } */
+  /** {@code Double::isFinite } */
   public static final DoublePredicate DOUBLE_FINITE = Double::isFinite;
-  /** {@code Double.isInfinite(n) } */
+  /** {@code Double::isInfinite } */
   public static final DoublePredicate DOUBLE_INFINITE = Double::isInfinite;
 
-  /** {@code n != null && n.doubleValue() == .0d} */
+  /** {@code (n) -> n != null && n.doubleValue() == .0d} */
   public static final Predicate<Double> OBJECT_DOUBLE_EQ_ZERO = (n) -> n != null && n.doubleValue() == .0d;
-  /** {@code n != null && n.doubleValue() != .0d} */
+  /** {@code (n) -> n == null || n.doubleValue() == .0d} */
+  public static final Predicate<Double> OBJECT_DOUBLE_EQ_ZERO_OR_NULL = (n) -> n == null || n.doubleValue() == .0d;
+  /** {@code (n) -> n != null && n.doubleValue() != .0d} */
   public static final Predicate<Double> OBJECT_DOUBLE_NE_ZERO = (n) -> n != null && n.doubleValue() != .0d;
-  /** {@code n != null && n.doubleValue() > .0d} */
+  /** {@code (n) -> n == null || n.doubleValue() != .0d} */
+  public static final Predicate<Double> OBJECT_DOUBLE_NE_ZERO_OR_NULL = (n) -> n == null || n.doubleValue() != .0d;
+  /** {@code (n) -> n != null && n.doubleValue() > .0d} */
   public static final Predicate<Double> OBJECT_DOUBLE_POSITIVE = (n) -> n != null && n.doubleValue() > .0d;
-  /** {@code n != null && n.doubleValue() >= .0d} */
+  /** {@code (n) -> n == null || n.doubleValue() > .0d} */
+  public static final Predicate<Double> OBJECT_DOUBLE_POSITIVE_OR_NULL = (n) -> n == null || n.doubleValue() > .0d;
+  /** {@code (n) -> n != null && n.doubleValue() >= .0d} */
   public static final Predicate<Double> OBJECT_DOUBLE_POSITIVE_OR_ZERO = (n) -> n != null && n.doubleValue() >= .0d;
-  /** {@code n != null && n.doubleValue() < .0d} */
+  /** {@code (n) -> n == null || n.doubleValue() >= .0d} */
+  public static final Predicate<Double> OBJECT_DOUBLE_POSITIVE_OR_ZERO_OR_NULL = (n) -> n == null || n.doubleValue() >= .0d;
+  /** {@code (n) -> n != null && n.doubleValue() < .0d} */
   public static final Predicate<Double> OBJECT_DOUBLE_NEGATIVE = (n) -> n != null && n.doubleValue() < .0d;
-  /** {@code n != null && n.doubleValue() <= .0d} */
+  /** {@code (n) -> n == null || n.doubleValue() < .0d} */
+  public static final Predicate<Double> OBJECT_DOUBLE_NEGATIVE_OR_NULL = (n) -> n == null || n.doubleValue() < .0d;
+  /** {@code (n) -> n != null && n.doubleValue() <= .0d} */
   public static final Predicate<Double> OBJECT_DOUBLE_NEGATIVE_OR_ZERO = (n) -> n != null && n.doubleValue() <= .0d;
-  /** {@code n != null && n.isNaN() } */
+  /** {@code (n) -> n == null || n.doubleValue() <= .0d} */
+  public static final Predicate<Double> OBJECT_DOUBLE_NEGATIVE_OR_ZERO_OR_NULL = (n) -> n == null || n.doubleValue() <= .0d;
+  /** {@code (n) -> n != null && n.isNaN() } */
   public static final Predicate<Double> OBJECT_DOUBLE_NAN = (n) -> n != null && n.isNaN();
-  /** {@code n != null && n.isFinite() } */
+  /** {@code (n) -> n == null || n.isNaN() } */
+  public static final Predicate<Double> OBJECT_DOUBLE_NAN_OR_NULL = (n) -> n == null || n.isNaN();
+  /** {@code (n) -> n != null && n.isFinite() } */
   public static final Predicate<Double> OBJECT_DOUBLE_FINITE = (n) -> n != null && n.isInfinite();
-  /** {@code n != null && n.isInfinite() } */
+  /** {@code (n) -> n == null || n.isFinite() } */
+  public static final Predicate<Double> OBJECT_DOUBLE_FINITE_OR_NULL = (n) -> n == null || n.isInfinite();
+  /** {@code (n) -> n != null && n.isInfinite() } */
   public static final Predicate<Double> OBJECT_DOUBLE_INFINITE = (n) -> n != null && n.isInfinite();
+  /** {@code (n) -> n == null || n.isInfinite() } */
+  public static final Predicate<Double> OBJECT_DOUBLE_INFINITE_OR_NULL = (n) -> n == null || n.isInfinite();
 
   // Character code point predicates
 
-  /** Character.isSpace(c) */
+  /** Character::isSpaceChar */
   public static final IntPredicate CHAR_SPACE = Character::isSpaceChar;
-  /** !Character.isSpace(c) */
+  /** (c) -> !Character.isSpaceChar(c) */
   public static final IntPredicate CHAR_NON_SPACE = (c) -> !Character.isSpaceChar(c);
-  /** Character.isWhitespace(c) */
+  /** Character::isWhitespace */
   public static final IntPredicate CHAR_WHITESPACE = Character::isWhitespace;
-  /** !Character.isWhitespace(c) */
+  /** (c) -> !Character.isWhitespace(c) */
   public static final IntPredicate CHAR_NON_WHITESPACE = (c) -> !Character.isWhitespace(c);
-  /** Character.isDigit(c) */
+  /** Character::isDigit */
   public static final IntPredicate CHAR_DIGIT = Character::isDigit;
-  /** !Character.isDigit(c) */
+  /** (c) -> !Character.isDigit(c) */
   public static final IntPredicate CHAR_NON_DIGIT = (c) -> !Character.isDigit(c);
-  /** Character.isLetter(c) */
+  /** Character::isLetter */
   public static final IntPredicate CHAR_LETTER = Character::isLetter;
-  /** !Character.isLetter(c) */
+  /** (c) -> !Character.isLetter(c) */
   public static final IntPredicate CHAR_NON_LETTER = (c) -> !Character.isLetter(c);
-  /** Character.isLetterOrDigit(c) */
+  /** Character::isLetterOrDigit */
   public static final IntPredicate CHAR_LETTER_OR_DIGIT = Character::isLetterOrDigit;
-  /** !Character.isLetterOrDigit(c) */
+  /** (c) -> !Character.isLetterOrDigit(c) */
   public static final IntPredicate CHAR_NON_LETTER_OR_DIGIT = (c) -> !Character.isLetterOrDigit(c);
-  /** Character.isAlphabetic(c) */
+  /** Character::isAlphabetic */
   public static final IntPredicate CHAR_ALPHABETIC = Character::isAlphabetic;
-  /** !Character.isAlphabetic(c) */
+  /** (c) -> !Character.isAlphabetic(c) */
   public static final IntPredicate CHAR_NON_ALPHABETIC = (c) -> !Character.isAlphabetic(c);
-  /** Character.isLowerCase(c) */
+  /** Character::isLowerCase */
   public static final IntPredicate CHAR_LOWER_CASE = Character::isLowerCase;
-  /** !Character.isLowerCase(c) */
+  /** (c) -> !Character.isLowerCase(c) */
   public static final IntPredicate CHAR_NON_LOWER_CASE = (c) -> !Character.isLowerCase(c);
-  /** Character.isUpperCase(c) */
+  /** Character::isUpperCase */
   public static final IntPredicate CHAR_UPPER_CASE = Character::isUpperCase;
-  /** !Character.isUpperCase(c) */
+  /** (c) -> !Character.isUpperCase(c) */
   public static final IntPredicate CHAR_NON_UPPER_CASE = (c) -> !Character.isUpperCase(c);
-  /** Character.isTitleCase(c) */
+  /** Character::isTitleCase */
   public static final IntPredicate CHAR_TITLE_CASE = Character::isTitleCase;
-  /** !Character.isTitleCase(c) */
+  /** (c) -> !Character.isTitleCase(c) */
   public static final IntPredicate CHAR_NON_TITLE_CASE = (c) -> !Character.isTitleCase(c);
-  /** Character.isISOControl(c) */
+  /** Character::isISOControl */
   public static final IntPredicate CHAR_ISO_CONTROL = Character::isISOControl;
-  /** !Character.isISOControl(c) */
+  /** (c) -> !Character.isISOControl(c) */
   public static final IntPredicate CHAR_NON_ISO_CONTROL = (c) -> !Character.isISOControl(c);
 
   // String predicates
 
-  /** Strings.isEmpty(s) */
+  /** Strings::isEmpty */
   public static final Predicate<String> STRING_EMPTY = Strings::isEmpty;
-  /** Strings.isEmptyOrNull(s) */
+  /** Strings::isEmptyOrNull */
   public static final Predicate<String> STRING_EMPTY_OR_NULL = Strings::isEmptyOrNull;
-  /** Strings.isNonEmpty(s) */
+  /** Strings::isNonEmpty */
   public static final Predicate<String> STRING_NON_EMPTY = Strings::isNonEmpty;
-  /** Strings.isBlank(s) */
+  /** Strings::isBlank */
   public static final Predicate<String> STRING_BLANK = Strings::isBlank;
-  /** Strings.isBlankOrNull(s) */
+  /** Strings::isBlankOrNull */
   public static final Predicate<String> STRING_BLANK_OR_NULL = Strings::isBlankOrNull;
-  /** Strings.isNonBlank(s) */
+  /** Strings::isNonBlank */
   public static final Predicate<String> STRING_NON_BLANK = Strings::isNonBlank;
-  /** Strings.isWhitespaced(s) */
+  /** Strings::isWhitespaced */
   public static final Predicate<String> STRING_WHITESPACED = Strings::isWhitespaced;
-  /** Strings.isWhitespacedOrNull(s) */
+  /** Strings::isWhitespacedOrNull */
   public static final Predicate<String> STRING_WHITESPACED_OR_NULL = Strings::isWhitespacedOrNull;
-  /** Strings.isNonWhitespaced(s) */
+  /** Strings::isNonWhitespaced */
   public static final Predicate<String> STRING_NON_WHITESPACED = Strings::isNonWhitespaced;
 
   // Array predicates
 
-  /** {@code a == null || a.length > 0} */
+  /** {@code (a) -> a == null || a.length > 0} */
   public static final Predicate<byte[]> BYTE_ARRAY_NON_EMPTY = (a) -> a == null || a.length > 0;
-  /** {@code a != null && a.length > 0} */
+  /** {@code (a) -> a != null && a.length > 0} */
   public static final Predicate<byte[]> BYTE_ARRAY_NON_EMPTY_OR_NULL = (a) -> a != null && a.length > 0;
-  /** {@code a == null && a.length > 0} */
+  /** {@code (a) -> a == null && a.length > 0} */
   public static final Predicate<short[]> SHORT_ARRAY_NON_EMPTY = (a) -> a == null || a.length > 0;
-  /** {@code a != null && a.length > 0} */
+  /** {@code (a) -> a != null && a.length > 0} */
   public static final Predicate<short[]> SHORT_ARRAY_NON_EMPTY_OR_NULL = (a) -> a != null && a.length > 0;
-  /** {@code a == null || a.length > 0} */
+  /** {@code (a) -> a == null || a.length > 0} */
   public static final Predicate<int[]> INT_ARRAY_NON_EMPTY = (a) -> a == null || a.length > 0;
-  /** {@code a != null && a.length > 0} */
+  /** {@code (a) -> a != null && a.length > 0} */
   public static final Predicate<int[]> INT_ARRAY_NON_EMPTY_OR_NULL = (a) -> a != null && a.length > 0;
-  /** {@code a == null || a.length > 0} */
+  /** {@code (a) -> a == null || a.length > 0} */
   public static final Predicate<long[]> LONG_ARRAY_NON_EMPTY = (a) -> a == null || a.length > 0;
-  /** {@code a != null && a.length > 0} */
+  /** {@code (a) -> a != null && a.length > 0} */
   public static final Predicate<long[]> LONG_ARRAY_NON_EMPTY_OR_NULL = (a) -> a != null && a.length > 0;
-  /** {@code a == null || a.length > 0} */
+  /** {@code (a) -> a == null || a.length > 0} */
   public static final Predicate<float[]> FLOAT_ARRAY_NON_EMPTY = (a) -> a == null || a.length > 0;
-  /** {@code a != null && a.length > 0} */
+  /** {@code (a) -> a != null && a.length > 0} */
   public static final Predicate<float[]> FLOAT_ARRAY_NON_EMPTY_OR_NULL = (a) -> a != null && a.length > 0;
-  /** {@code a == null || a.length > 0} */
+  /** {@code (a) -> a == null || a.length > 0} */
   public static final Predicate<double[]> DOUBLE_ARRAY_NON_EMPTY = (a) -> a == null || a.length > 0;
-  /** {@code a != null && a.length > 0} */
+  /** {@code (a) -> a != null && a.length > 0} */
   public static final Predicate<double[]> DOUBLE_ARRAY_NON_EMPTY_OR_NULL = (a) -> a != null && a.length > 0;
-  /** {@code a == null || a.length > 0} */
+  /** {@code (a) -> a == null || a.length > 0} */
   public static final Predicate<char[]> CHAR_ARRAY_NON_EMPTY = (a) -> a == null || a.length > 0;
-  /** {@code a != null && a.length > 0} */
+  /** {@code (a) -> a != null && a.length > 0} */
   public static final Predicate<char[]> CHAR_ARRAY_NON_EMPTY_OR_NULL = (a) -> a != null && a.length > 0;
-  /** {@code a == null || a.length > 0} */
+  /** {@code (a) -> a == null || a.length > 0} */
   public static final Predicate<boolean[]> BOOLEAN_ARRAY_NON_EMPTY = (a) -> a == null || a.length > 0;
-  /** {@code a != null && a.length > 0} */
+  /** {@code (a) -> a != null && a.length > 0} */
   public static final Predicate<boolean[]> BOOLEAN_ARRAY_NON_EMPTY_OR_NULL = (a) -> a != null && a.length > 0;
-  /** {@code a == null || a.length > 0} */
+  /** {@code (a) -> a == null || a.length > 0} */
   public static final Predicate<Object[]> OBJECT_ARRAY_NON_EMPTY = (a) -> a == null || a.length > 0;
-  /** {@code a != null && a.length > 0} */
+  /** {@code (a) -> a != null && a.length > 0} */
   public static final Predicate<Object[]> OBJECT_ARRAY_NON_EMPTY_OR_NULL = (a) -> a != null && a.length > 0;
 
   // Collection and map predicates
 
-  /** {@code c == null || c.size() > 0} */
+  /** {@code (c) -> c == null || c.size() > 0} */
   public static final Predicate<Collection<?>> COLLECTION_NON_EMPTY = (c) -> c == null || c.size() > 0;
-  /** {@code c != null && c.size() > 0} */
+  /** {@code (c) -> c != null && c.size() > 0} */
   public static final Predicate<Collection<?>> COLLECTION_NON_EMPTY_OR_NULL = (c) -> c != null && c.size() > 0;
-  /** {@code m == null || m.size() > 0} */
+  /** {@code (m) -> m == null || m.size() > 0} */
   public static final Predicate<Map<?, ?>> MAP_NON_EMPTY = (m) -> m == null || m.size() > 0;
-  /** {@code m != null && m.size() > 0} */
+  /** {@code (m) -> m != null && m.size() > 0} */
   public static final Predicate<Map<?, ?>> MAP_NON_EMPTY_OR_NULL = (m) -> m != null && m.size() > 0;
 
   // Miscellaneous predicates
 
-  /** s != null && regex.matcher(s).matches() */
+  /** (s) -> s != null && regex.matcher(s).matches() */
   public static Predicate<String> match(java.util.regex.Pattern regex) {
     return (s) -> s != null && regex.matcher(s).matches();
   }
