@@ -273,9 +273,14 @@ public final class Predicates {
   /** {@code m == null || m.size() > 0} */
   public static final Predicate<Map<?, ?>> MAP_NON_EMPTY = (m) -> m == null || m.size() > 0;
   /** {@code m != null && m.size() > 0} */
-  public static final Predicate<Collection<?>> MAP_NON_EMPTY_OR_NULL = (m) -> m != null && m.size() > 0;
+  public static final Predicate<Map<?, ?>> MAP_NON_EMPTY_OR_NULL = (m) -> m != null && m.size() > 0;
 
   // Miscellaneous predicates
+
+  /** s != null && regex.matcher(s).matches() */
+  public static Predicate<String> match(java.util.regex.Pattern regex) {
+    return (s) -> s != null && regex.matcher(s).matches();
+  }
 
   // Value checks
 
@@ -1418,7 +1423,7 @@ public final class Predicates {
    * Returns an exception detail message obtained from the specified message provider.
    *
    * @param message The provider of the exception detail message.
-   * @param index The index in an array or {@code Iterable} sequence at which condition failed.
+   * @param index The index in an array at which condition failed.
    * @return An exception detail message obtained from the specified message provider.
    * @see Predicates
    */
@@ -1440,7 +1445,7 @@ public final class Predicates {
    * For example, statement:
    * <pre>
    * requireElementsNonNull(array,
-   *     (ExceptionProvider.ForIterable&lt;String&gt;) (index, element) -> "[" + index + "]: element is null");
+   *     (ExceptionProvider.ForIterable&lt;String, T&gt;) (index, element) -> "[" + index + "]: element is null");
    * </pre>
    * is equivalent to:
    * <pre>
@@ -1462,8 +1467,8 @@ public final class Predicates {
    * Returns an exception detail message obtained from the specified message provider.
    *
    * @param message The provider of the exception detail message.
-   * @param index The index a {@code Iterable} sequence at which condition failed.
-   * @param element The element of a {@code Iterable} sequence.
+   * @param index The index in an {@code Iterable} sequence at which condition failed.
+   * @param element The invalid element of an {@code Iterable} sequence.
    * @return An exception detail message obtained from the specified message provider.
    * @see Predicates
    */
@@ -1478,34 +1483,101 @@ public final class Predicates {
   // ExceptionProvider
 
   /**
-   * The functional interface for providers of exceptions or exception detail messages used by the
-   * {@code requireXXX} methods.
+     * The provider of an exception or exception detail message used by the following methods:
+     * <ul>
+     *   <li>{@link Predicates#requireNonNull(Object, Object)}</li>
+     *   <li>{@link Predicates#require(Object, Predicate, Object)}</li>
+     *   <li>{@link Predicates#require(Object, Predicate, ExceptionProvider)}</li>
+     *   <li>{@link Predicates#require(int, IntPredicate, Object)}</li>
+     *   <li>{@link Predicates#require(int, IntPredicate, ExceptionProvider)}</li>
+     *   <li>{@link Predicates#require(long, LongPredicate, Object)}</li>
+     *   <li>{@link Predicates#require(long, LongPredicate, ExceptionProvider)}</li>
+     *   <li>{@link Predicates#require(double, DoublePredicate, Object)}</li>
+     *   <li>{@link Predicates#require(double, DoublePredicate, ExceptionProvider)}</li>
+     * </ul>
    *
    * @param <R> Either {@code Throwable} or {@code String} type.
    *
    * @author Fox Mulder
+   * @see Predicates#defer(ExceptionProvider)
    */
   @FunctionalInterface
   public static interface ExceptionProvider<R> {
 
     /**
-     * Returns either {@code Throwable} instance or exception detail message.
+     * Returns either a {@code Throwable} instance or an exception detail message.
      *
-     * @return Either {@code Throwable} instance or exception detail message.
+     * @return Either a {@code Throwable} instance or an exception detail message.
      */
     R get();
 
+    /**
+     * The provider of an exception or exception detail message used by the following methods:
+     * <ul>
+     *   <li>{@link Predicates#requireElementsNonNull(Object[], Object)}</li>
+     *   <li>{@link Predicates#requireElements(Object[], Predicate, Object)}</li>
+     *   <li>{@link Predicates#requireElements(Object[], Predicate, ForArray)}</li>
+     *   <li>{@link Predicates#requireElements(byte[], IntPredicate, Object)}</li>
+     *   <li>{@link Predicates#requireElements(byte[], IntPredicate, ForArray)}</li>
+     *   <li>{@link Predicates#requireElements(short[], IntPredicate, Object)}</li>
+     *   <li>{@link Predicates#requireElements(short[], IntPredicate, ForArray)}</li>
+     *   <li>{@link Predicates#requireElements(int[], IntPredicate, Object)}</li>
+     *   <li>{@link Predicates#requireElements(int[], IntPredicate, ForArray)}</li>
+     *   <li>{@link Predicates#requireElements(long[], LongPredicate, Object)}</li>
+     *   <li>{@link Predicates#requireElements(long[], LongPredicate, ForArray)}</li>
+     *   <li>{@link Predicates#requireElements(float[], DoublePredicate, Object)}</li>
+     *   <li>{@link Predicates#requireElements(float[], DoublePredicate, ForArray)}</li>
+     *   <li>{@link Predicates#requireElements(double[], DoublePredicate, Object)}</li>
+     *   <li>{@link Predicates#requireElements(double[], DoublePredicate, ForArray)}</li>
+     *   <li>{@link Predicates#requireElements(char[], IntPredicate, Object)}</li>
+     *   <li>{@link Predicates#requireElements(char[], IntPredicate, ForArray)}</li>
+     * </ul>
+     *
+     * @param <R> Either {@code Throwable} or {@code String} type.
+     *
+     * @author Fox Mulder
+     * @see Predicates#defer(ForArray)
+     */
     @FunctionalInterface
     public static interface ForArray<R> {
 
+      /**
+       * Returns either a {@code Throwable} instance or an exception detail message for the
+       * specified index in an array.
+       *
+       * @param index The index in an array at which condition failed.
+       * @return Either a {@code Throwable} instance or an exception detail message.
+       */
       R get(int index);
 
     }
 
+    /**
+     * The provider of an exception or exception detail message used by the following methods:
+     * <ul>
+     *   <li>{@link Predicates#requireElementsNonNull(Iterable, Object)}</li>
+     *   <li>{@link Predicates#requireElements(Iterable, Predicate, Object)}</li>
+     *   <li>{@link Predicates#requireElements(Iterable, Predicate, ForIterable)}</li>
+     * </ul>
+     *
+     * @param <R> Either {@code Throwable} or {@code String} type.
+     * @param <T> The type of elements of the {@code Iterable} sequence.
+     *
+     * @author Fox Mulder
+     * @see Predicates#defer(ForIterable)
+     */
     @FunctionalInterface
-    public static interface ForIterable<R, E> {
+    public static interface ForIterable<R, T> {
 
-      R get(int index, E element);
+      /**
+       * Returns either a {@code Throwable} instance or an exception detail message for the
+       * specified index and element of an {@code Iterable} sequence.
+       *
+       * @param index The index in an {@code Iterable} sequence at which condition failed.
+       * @param element The invalid element of an {@code Iterable} sequence.
+       * @return Either a {@code Throwable} instance or an exception detail message.
+       */
+      R get(int index, T element);
 
     }
 
