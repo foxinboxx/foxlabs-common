@@ -25,8 +25,8 @@ import java.util.function.LongPredicate;
 import java.util.function.DoublePredicate;
 
 /**
- * A collection of reusable predicates and {@code requireNonNull()}, {@code require()},
- * {@code requireElementsNonNull()} and {@code requireElements()} methods that check that a given
+ * A collection of reusable predicates and the {@code requireNonNull()}, {@code require()},
+ * {@code requireElementsNonNull()}, {@code requireElements()} methods that check that a given
  * object satisfies a given condition.
  *
  * @author Fox Mulder
@@ -354,7 +354,7 @@ public final class Predicates {
    * <p>
    * This is an equivalent of the:
    * <pre>
-   * requireNonNull(object, ExceptionProvider.npe())
+   * requireNonNull(object, ExceptionProvider.ofNPE())
    * </pre>
    * </p>
    *
@@ -377,7 +377,7 @@ public final class Predicates {
    * <p>
    * This is an equivalent of the:
    * <pre>
-   * requireNonNull(object, ExceptionProvider.npe(message))
+   * requireNonNull(object, ExceptionProvider.ofNPE(message))
    * </pre>
    * </p>
    *
@@ -420,7 +420,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * require(object, condition, ExceptionProvider.iae())
+   * require(object, condition, ExceptionProvider.ofIAE())
    * </pre>
    * </p>
    *
@@ -432,7 +432,7 @@ public final class Predicates {
    *         condition.
    */
   public static <T> T require(T object, Predicate<? super T> condition) {
-    return require(object, condition, ExceptionProvider.iae());
+    return require(object, condition, ExceptionProvider.ofIAE());
   }
 
   /**
@@ -442,7 +442,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * require(object, condition, ExceptionProvider.iae(message))
+   * require(object, condition, ExceptionProvider.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -455,7 +455,7 @@ public final class Predicates {
    *         condition.
    */
   public static <T> T require(T object, Predicate<? super T> condition, String message) {
-    return require(object, condition, ExceptionProvider.iae(message));
+    return require(object, condition, ExceptionProvider.ofIAE(message));
   }
 
   /**
@@ -487,7 +487,7 @@ public final class Predicates {
    * <p>
    * This is an equivalent of the:
    * <pre>
-   * require(number, condition, ExceptionProvider.iae())
+   * require(number, condition, ExceptionProvider.ofIAE())
    * </pre>
    * </p>
    *
@@ -511,7 +511,7 @@ public final class Predicates {
    * <p>
    * This is an equivalent of the:
    * <pre>
-   * require(number, condition, ExceptionProvider.iae(message))
+   * require(number, condition, ExceptionProvider.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -557,7 +557,7 @@ public final class Predicates {
    * <p>
    * This is an equivalent of the:
    * <pre>
-   * require(number, condition, ExceptionProvider.iae())
+   * require(number, condition, ExceptionProvider.ofIAE())
    * </pre>
    * </p>
    *
@@ -581,7 +581,7 @@ public final class Predicates {
    * <p>
    * This is an equivalent of the:
    * <pre>
-   * require(number, condition, ExceptionProvider.iae(message))
+   * require(number, condition, ExceptionProvider.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -627,7 +627,7 @@ public final class Predicates {
    * <p>
    * This is an equivalent of the:
    * <pre>
-   * require(number, condition, ExceptionProvider.iae())
+   * require(number, condition, ExceptionProvider.ofIAE())
    * </pre>
    * </p>
    *
@@ -651,7 +651,7 @@ public final class Predicates {
    * <p>
    * This is an equivalent of the:
    * <pre>
-   * require(number, condition, ExceptionProvider.iae(message))
+   * require(number, condition, ExceptionProvider.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -700,7 +700,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElementsNonNull(array, ExceptionProvider.OfSequence.npe())
+   * requireElementsNonNull(array, ExceptionProvider.OfSequence.ofNPE())
    * </pre>
    * </p>
    *
@@ -710,7 +710,7 @@ public final class Predicates {
    * @throws NullPointerException if the specified array contains {@code null} elements.
    */
   public static <T> T[] requireElementsNonNull(T[] array) {
-    return requireElementsNonNull(array, ExceptionProvider.OfSequence.npe());
+    return requireElementsNonNull(array, ExceptionProvider.OfSequence.ofNPE());
   }
 
   /**
@@ -721,7 +721,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElementsNonNull(array, ExceptionProvider.OfSequence.npe(message))
+   * requireElementsNonNull(array, ExceptionProvider.OfSequence.ofNPE(message))
    * </pre>
    * </p>
    *
@@ -732,7 +732,7 @@ public final class Predicates {
    * @throws NullPointerException if the specified array contains {@code null} elements.
    */
   public static <T> T[] requireElementsNonNull(T[] array, String message) {
-    return requireElementsNonNull(array, ExceptionProvider.OfSequence.npe(message));
+    return requireElementsNonNull(array, ExceptionProvider.OfSequence.ofNPE(message));
   }
 
   /**
@@ -766,7 +766,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.iae())
+   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -778,7 +778,7 @@ public final class Predicates {
    *         satisfy the specified condition.
    */
   public static <T> T[] requireElements(T[] array, Predicate<? super T> condition) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.iae());
+    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -789,7 +789,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.iae(message))
+   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -802,7 +802,7 @@ public final class Predicates {
    *         satisfy the specified condition.
    */
   public static <T> T[] requireElements(T[] array, Predicate<? super T> condition, String message) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.iae(message));
+    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -840,7 +840,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.iae())
+   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -851,7 +851,7 @@ public final class Predicates {
    *         does not satisfy the specified condition.
    */
   public static byte[] requireElements(byte[] array, IntPredicate condition) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.iae());
+    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -863,7 +863,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.iae(message))
+   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -875,7 +875,7 @@ public final class Predicates {
    *         does not satisfy the specified condition.
    */
   public static byte[] requireElements(byte[] array, IntPredicate condition, String message) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.iae(message));
+    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -912,7 +912,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.iae())
+   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -923,7 +923,7 @@ public final class Predicates {
    *         array does not satisfy the specified condition.
    */
   public static short[] requireElements(short[] array, IntPredicate condition) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.iae());
+    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -935,7 +935,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.iae(message))
+   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -947,7 +947,7 @@ public final class Predicates {
    *         array does not satisfy the specified condition.
    */
   public static short[] requireElements(short[] array, IntPredicate condition, String message) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.iae(message));
+    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -984,7 +984,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.iae())
+   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -995,7 +995,7 @@ public final class Predicates {
    *         does not satisfy the specified condition.
    */
   public static int[] requireElements(int[] array, IntPredicate condition) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.iae());
+    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -1007,7 +1007,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.iae(message))
+   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -1019,7 +1019,7 @@ public final class Predicates {
    *         does not satisfy the specified condition.
    */
   public static int[] requireElements(int[] array, IntPredicate condition, String message) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.iae(message));
+    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -1056,7 +1056,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.iae())
+   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -1067,7 +1067,7 @@ public final class Predicates {
    *         does not satisfy the specified condition.
    */
   public static long[] requireElements(long[] array, LongPredicate condition) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.iae());
+    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -1079,7 +1079,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.iae(message))
+   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -1091,7 +1091,7 @@ public final class Predicates {
    *         does not satisfy the specified condition.
    */
   public static long[] requireElements(long[] array, LongPredicate condition, String message) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.iae(message));
+    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -1128,7 +1128,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.iae())
+   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -1139,7 +1139,7 @@ public final class Predicates {
    *         array does not satisfy the specified condition.
    */
   public static float[] requireElements(float[] array, DoublePredicate condition) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.iae());
+    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -1151,7 +1151,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.iae(message))
+   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -1163,7 +1163,7 @@ public final class Predicates {
    *         array does not satisfy the specified condition.
    */
   public static float[] requireElements(float[] array, DoublePredicate condition, String message) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.iae(message));
+    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -1200,7 +1200,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.iae())
+   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -1211,7 +1211,7 @@ public final class Predicates {
    *         array does not satisfy the specified condition.
    */
   public static double[] requireElements(double[] array, DoublePredicate condition) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.iae());
+    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -1223,7 +1223,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.iae(message))
+   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -1235,7 +1235,7 @@ public final class Predicates {
    *         array does not satisfy the specified condition.
    */
   public static double[] requireElements(double[] array, DoublePredicate condition, String message) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.iae(message));
+    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -1272,7 +1272,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.iae())
+   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -1283,7 +1283,7 @@ public final class Predicates {
    *         does not satisfy the specified condition.
    */
   public static char[] requireElements(char[] array, IntPredicate condition) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.iae());
+    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -1295,7 +1295,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.iae(message))
+   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -1307,7 +1307,7 @@ public final class Predicates {
    *         does not satisfy the specified condition.
    */
   public static char[] requireElements(char[] array, IntPredicate condition, String message) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.iae(message));
+    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -1344,7 +1344,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElementsNonNull(iterable, ExceptionProvider.OfSequence.npe())
+   * requireElementsNonNull(iterable, ExceptionProvider.OfSequence.ofNPE())
    * </pre>
    * </p>
    *
@@ -1356,7 +1356,7 @@ public final class Predicates {
    *         elements.
    */
   public static <T, I extends Iterable<T>> I requireElementsNonNull(I iterable) {
-    return requireElementsNonNull(iterable, ExceptionProvider.OfSequence.npe());
+    return requireElementsNonNull(iterable, ExceptionProvider.OfSequence.ofNPE());
   }
 
   /**
@@ -1367,7 +1367,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElementsNonNull(iterable, ExceptionProvider.OfSequence.npe(message))
+   * requireElementsNonNull(iterable, ExceptionProvider.OfSequence.ofNPE(message))
    * </pre>
    * </p>
    *
@@ -1380,7 +1380,7 @@ public final class Predicates {
    *         elements.
    */
   public static <T, I extends Iterable<T>> I requireElementsNonNull(I iterable, String message) {
-    return requireElementsNonNull(iterable, ExceptionProvider.OfSequence.npe(message));
+    return requireElementsNonNull(iterable, ExceptionProvider.OfSequence.ofNPE(message));
   }
 
   /**
@@ -1417,7 +1417,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(iterable, condition, ExceptionProvider.OfSequence.iae())
+   * requireElements(iterable, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -1430,7 +1430,7 @@ public final class Predicates {
    *         sequence does not satisfy the specified condition.
    */
   public static <T, I extends Iterable<T>> I requireElements(I iterable, Predicate<? super T> condition) {
-    return requireElements(iterable, condition, ExceptionProvider.OfSequence.iae());
+    return requireElements(iterable, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -1442,7 +1442,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(iterable, condition, ExceptionProvider.OfSequence.iae(message))
+   * requireElements(iterable, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -1457,7 +1457,7 @@ public final class Predicates {
    */
   public static <T, I extends Iterable<T>> I requireElements(I iterable, Predicate<? super T> condition,
       String message) {
-    return requireElements(iterable, condition, ExceptionProvider.OfSequence.iae(message));
+    return requireElements(iterable, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -1489,41 +1489,6 @@ public final class Predicates {
     return iterable;
   }
 
-  // Helpers
-
-  /**
-   * The maximum length of an exception detail message used by default exception providers.
-   */
-  public static final int EXCEPTION_MESSAGE_MAX_LENGTH = 1000;
-
-  public static String format(String identifier, Object object) {
-    return identifier != null ? identifier + " = " + Objects.toString(object) : Objects.toString(object);
-  }
-
-  public static <T> ExceptionProvider<T, NullPointerException> npe(String identifier) {
-    return (object) ->
-        new NullPointerException(identifier);
-  }
-
-  public static <T> ExceptionProvider<T, IllegalArgumentException> iae(String identifier) {
-    return (object) ->
-        new IllegalArgumentException(format(identifier, object));
-  }
-
-  public static String formatElement(String identifier, int index, Object element) {
-    return (identifier != null ? identifier : "") + "[" + index + "] = " + Objects.toString(element);
-  }
-
-  public static <S, T> ExceptionProvider.OfSequence<S, T, NullPointerException> npeElement(String identifier) {
-    return (__, index, element) ->
-        new NullPointerException(formatElement(identifier, index, null));
-  }
-
-  public static <S, T> ExceptionProvider.OfSequence<S, T, IllegalArgumentException> iaeElement(String identifier) {
-    return (__, index, element) ->
-        new IllegalArgumentException(formatElement(identifier, index, element));
-  }
-
   // ExceptionProvider
 
   /**
@@ -1549,58 +1514,67 @@ public final class Predicates {
 
     /**
      * A shortcut for the:
-     * <pre>
+     * <code>
      * (o) -> new NullPointerException()
-     * </pre>
-     *
-     * @param <T> The type of the object.
-     * @return A reference to the {@code NullPointerException} provider.
+     * </code>
      */
-    static <T> ExceptionProvider<T, NullPointerException> npe() {
+    static <T> ExceptionProvider<T, NullPointerException> ofNPE() {
       return (o) -> new NullPointerException();
     }
 
     /**
      * A shortcut for the:
-     * <pre>
+     * <code>
      * (o) -> new NullPointerException(message)
-     * </pre>
-     *
-     * @param <T> The type of the object.
-     * @param message The {@code NullPointerException} detail message.
-     * @return A reference to the {@code NullPointerException} provider.
+     * </code>
      */
-    static <T> ExceptionProvider<T, NullPointerException> npe(String message) {
+    static <T> ExceptionProvider<T, NullPointerException> ofNPE(String message) {
       return (o) -> new NullPointerException(message);
     }
 
     /**
      * A shortcut for the:
-     * <pre>
-     * (o) -> new IllegalArgumentException(
-     *     Strings.ellipsis(Objects.toString(o), EXCEPTION_MESSAGE_MAX_LENGTH))
-     * </pre>
-     *
-     * @param <T> The type of the object.
-     * @return A reference to the {@code IllegalArgumentException} provider.
+     * <code>
+     * (o) -> new NullPointerException(message + ": " + identifier)
+     * </code>
      */
-    static <T> ExceptionProvider<T, IllegalArgumentException> iae() {
-      return (o) -> new IllegalArgumentException(
-          Strings.ellipsis(Objects.toString(o), EXCEPTION_MESSAGE_MAX_LENGTH));
+    static <T> ExceptionProvider<T, NullPointerException> ofNPE(String identifier, String message) {
+      return (o) -> new NullPointerException(message + ": " + identifier);
     }
 
     /**
      * A shortcut for the:
-     * <pre>
+     * <code>
+     * (o) -> new IllegalArgumentException(Objects.toString(o))
+     * </code>
+     */
+    static <T> ExceptionProvider<T, IllegalArgumentException> ofIAE() {
+      return (o) -> new IllegalArgumentException(Objects.toString(o));
+    }
+
+    /**
+     * A shortcut for the:
+     * <code>
      * (o) -> new IllegalArgumentException(message)
-     * </pre>
+     * </code>
      *
      * @param <T> The type of the object.
      * @param message The {@code IllegalArgumentException} detail message.
      * @return A reference to the {@code IllegalArgumentException} provider.
      */
-    static <T> ExceptionProvider<T, IllegalArgumentException> iae(String message) {
+    static <T> ExceptionProvider<T, IllegalArgumentException> ofIAE(String message) {
       return (o) -> new IllegalArgumentException(message);
+    }
+
+    /**
+     * A shortcut for the:
+     * <code>
+     * (o) -> new IllegalArgumentException(
+     *     message + ": " + identifier + " = " + Objects.toString(o))
+     * </code>
+     */
+    static <T> ExceptionProvider<T, IllegalArgumentException> ofIAE(String identifier, String message) {
+      return (o) -> new IllegalArgumentException(message + ": " + identifier + " = " + Objects.toString(o));
     }
 
     // ExceptionProvider.OfSequence
@@ -1632,62 +1606,64 @@ public final class Predicates {
 
       /**
        * A shortcut for the:
-       * <pre>
+       * <code>
        * (s, i, e) -> new NullPointerException("[" + i + "]")
-       * </pre>
-       *
-       * @param <S> The type of the sequence (either array or {@code Iterable}).
-       * @param <T> The type of elements of the sequence.
-       * @return A reference to the {@code NullPointerException} provider.
+       * </code>
        */
-      static <S, T> OfSequence<S, T, NullPointerException> npe() {
+      static <S, T> OfSequence<S, T, NullPointerException> ofNPE() {
         return (s, i, e) -> new NullPointerException("[" + i + "]");
       }
 
       /**
        * A shortcut for the:
-       * <pre>
+       * <code>
        * (s, i, e) -> new NullPointerException(message)
-       * </pre>
-       *
-       * @param <S> The type of the sequence (either array or {@code Iterable}).
-       * @param <T> The type of elements of the sequence.
-       * @param message The {@code NullPointerException} detail message.
-       * @return A reference to the {@code NullPointerException} provider.
+       * </code>
        */
-      static <S, T> OfSequence<S, T, NullPointerException> npe(String message) {
+      static <S, T> OfSequence<S, T, NullPointerException> ofNPE(String message) {
         return (s, i, e) -> new NullPointerException(message);
       }
 
       /**
        * A shortcut for the:
-       * <pre>
-       * (s, i, e) -> new IllegalArgumentException(
-       *     Strings.ellipsis("[" + i + "] = " + Objects.toString(e), EXCEPTION_MESSAGE_MAX_LENGTH))
-       * </pre>
-       *
-       * @param <S> The type of the sequence (either array or {@code Iterable}).
-       * @param <T> The type of elements of the sequence.
-       * @return A reference to the {@code IllegalArgumentException} provider.
+       * <code>
+       * (s, i, e) -> new NullPointerException(message + ": " + identifier + "[" + i + "]")
+       * </code>
        */
-      static <S, T> OfSequence<S, T, IllegalArgumentException> iae() {
-        return (s, i, e) -> new IllegalArgumentException(
-            Strings.ellipsis("[" + i + "] = " + Objects.toString(e), EXCEPTION_MESSAGE_MAX_LENGTH));
+      static <S, T> OfSequence<S, T, NullPointerException> ofNPE(String identifier, String message) {
+        return (s, i, e) -> new NullPointerException(message + ": " + identifier + "[" + i + "]");
       }
 
       /**
        * A shortcut for the:
-       * <pre>
-       * (s, i, e) -> new IllegalArgumentException(message)
-       * </pre>
-       *
-       * @param <S> The type of the sequence (either array or {@code Iterable}).
-       * @param <T> The type of elements of the sequence.
-       * @param message The {@code IllegalArgumentException} detail message.
-       * @return A reference to the {@code IllegalArgumentException} provider.
+       * <code>
+       * (s, i, e) -> new IllegalArgumentException("[" + i + "] = " + Objects.toString(e))
+       * </code>
        */
-      static <S, T> OfSequence<S, T, IllegalArgumentException> iae(String message) {
+      static <S, T> OfSequence<S, T, IllegalArgumentException> ofIAE() {
+        return (s, i, e) -> new IllegalArgumentException("[" + i + "] = " + Objects.toString(e));
+      }
+
+      /**
+       * A shortcut for the:
+       * <code>
+       * (s, i, e) -> new IllegalArgumentException(message)
+       * </code>
+       */
+      static <S, T> OfSequence<S, T, IllegalArgumentException> ofIAE(String message) {
         return (s, i, e) -> new IllegalArgumentException(message);
+      }
+
+      /**
+       * A shortcut for the:
+       * <code>
+       * (s, i, e) -> new IllegalArgumentException(message + ": " + identifier + "[" + i + "] = " +
+       *     Objects.toString(e))
+       * </code>
+       */
+      static <S, T> OfSequence<S, T, IllegalArgumentException> ofIAE(String identifier, String message) {
+        return (s, i, e) -> new IllegalArgumentException(message + ": " + identifier + "[" + i + "] = " +
+            Objects.toString(e));
       }
 
     }

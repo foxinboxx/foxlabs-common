@@ -41,6 +41,11 @@ public final class Strings {
   }
 
   /**
+   * The ellipsis string (i.e. {@code ...}).
+   */
+  public static final String ELLIPSIS = "...";
+
+  /**
    * Returns an empty string (i.e. {@code ""}) if the specified one is {@code null}, otherwise
    * returns the specified string itself.
    *
@@ -406,7 +411,7 @@ public final class Strings {
    */
   public static String ellipsis(String string, int limit) {
     final String result = cut(string, limit);
-    return result == string || result == null ? result : result + "...";
+    return result == string || result == null ? result : result + ELLIPSIS;
   }
 
   /**
@@ -469,7 +474,7 @@ public final class Strings {
      * @return String with added escape characters.
      * @see #escape(String, StringBuilder)
      */
-    public static CharSequence escape(CharSequence value) {
+    public static String escape(String value) {
         if (value == null || value.length() == 0) {
             return value;
         }

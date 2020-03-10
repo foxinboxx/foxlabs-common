@@ -16,10 +16,12 @@
 
 package org.foxlabs.common;
 
-import java.util.function.Supplier;
+import java.util.function.Predicate;
 
 import org.junit.Test;
 import org.junit.Assert;
+
+import static org.foxlabs.common.Predicates.*;
 
 /**
  * Tests for the {@link Predicates} class.
@@ -29,65 +31,53 @@ import org.junit.Assert;
 public class PredicatesTest {
 
   /**
-   * The reference to an original object for {@code ==} comparisons in tests.
-   */
-  private Object reference;
-
-  /**
    * Tests the following methods:
    * <ul>
-   *  <li>{@link Predicates#requireNonNull(Object)}</li>
-   *  <li>{@link Predicates#requireNonNull(Object, Object)}</li>
+   *   <li>{@link Predicates#requireNonNull(Object)}</li>
+   *   <li>{@link Predicates#requireNonNull(Object, String)}</li>
+   *   <li>{@link Predicates#requireNonNull(Object, ExceptionProvider)}</li>
    * </ul>
    */
   @Test
   public void testRequireNonNull() {
-    // Predicates.requireNonNull(Object)
-    Assert.assertTrue(Predicates.requireNonNull(reference = new Object()) == reference);
-    Assert.assertEquals(null,
-        Assert.assertThrows(NullPointerException.class,
-            () -> Predicates.requireNonNull(null)).getMessage());
-    // Predicates.requireNonNull(Object, Object)
-    Assert.assertTrue(Predicates.requireNonNull(reference = new Object(), null) == reference);
-    Assert.assertEquals("TEST",
-        Assert.assertThrows(NullPointerException.class,
-            () -> Predicates.requireNonNull(null, "TEST")).getMessage());
-    Assert.assertEquals("10",
-        Assert.assertThrows(NullPointerException.class,
-            () -> Predicates.requireNonNull(null, Integer.valueOf(10))).getMessage());
-    Assert.assertEquals("TEST",
-        Assert.assertThrows(NullPointerException.class,
-            () -> Predicates.requireNonNull(null, (Supplier<String>) () -> "TEST")).getMessage());
+    final Object reference = new Object();
+    // requireNonNull(Object)
+    Assert.assertTrue(requireNonNull(reference) == reference);
+    Assert.assertEquals(null, Assert.assertThrows(NullPointerException.class,
+        () -> requireNonNull(null)).getMessage());
+    // requireNonNull(Object, String)
+    Assert.assertTrue(requireNonNull(reference, "TEST") == reference);
+    Assert.assertEquals("TEST", Assert.assertThrows(NullPointerException.class,
+        () -> requireNonNull(null, "TEST")).getMessage());
+    // requireNonNull(Object, ExceptionProvider)
+    Assert.assertTrue(requireNonNull(reference, ExceptionProvider.ofNPE()) == reference);
+    Assert.assertEquals("TEST", Assert.assertThrows(NullPointerException.class,
+            () -> requireNonNull(null, ExceptionProvider.ofNPE("TEST"))).getMessage());
   }
 
   /**
    * Tests the following methods:
    * <ul>
-   *  <li>{@link Predicates#require(Object, Predicate)}</li>
-   *  <li>{@link Predicates#require(Object, Predicate, Object)}</li>
-   *  <li>{@link Predicates#require(Object, Predicate, Supplier)}</li>
+   *   <li>{@link Predicates#require(Object, Predicate)}</li>
+   *   <li>{@link Predicates#require(Object, Predicate, String)}</li>
+   *   <li>{@link Predicates#require(Object, Predicate, ExceptionProvider)}</li>
    * </ul>
    */
   @Test
   public void testRequire() {
-    // Predicates.require(Object, Predicate)
-    Assert.assertTrue(Predicates.require(reference = new Object(), (o) -> true) == reference);
-    Assert.assertEquals("null",
-        Assert.assertThrows(IllegalArgumentException.class,
-            () -> Predicates.require(null, (o) -> false)).getMessage());
-    // Predicates.require(Object, Predicate, Object)
-    Assert.assertTrue(Predicates.require(reference = new Object(), (o) -> true, "TEST") == reference);
-    Assert.assertEquals("TEST",
-        Assert.assertThrows(IllegalArgumentException.class,
-            () -> Predicates.require(null, (o) -> false, "TEST")).getMessage());
-    Assert.assertEquals("TEST",
-        Assert.assertThrows(IllegalArgumentException.class,
-            () -> Predicates.require(null, (o) -> false, Objects.message(() -> "TEST"))).getMessage());
-    // Predicates.require(Object, Predicate, Supplier)
-    Assert.assertTrue(Predicates.require(reference = new Object(), (o) -> true, RuntimeException::new) == reference);
-    Assert.assertEquals("TEST",
-        Assert.assertThrows(RuntimeException.class,
-            () -> Predicates.require(null, (o) -> false, () -> new RuntimeException("TEST"))).getMessage());
+    final Object reference = new Object();
+    // require(Object, Predicate)
+    Assert.assertTrue(require(reference, (o) -> true) == reference);
+    Assert.assertEquals("null", Assert.assertThrows(IllegalArgumentException.class,
+        () -> require(null, (o) -> false)).getMessage());
+    // require(Object, Predicate, String)
+    Assert.assertTrue(require(reference, (o) -> true, "TEST") == reference);
+    Assert.assertEquals("TEST", Assert.assertThrows(IllegalArgumentException.class,
+        () -> require(null, (o) -> false, "TEST")).getMessage());
+    // require(Object, Predicate, ExceptionProvider)
+    Assert.assertTrue(require(reference, (o) -> true, ExceptionProvider.ofIAE()) == reference);
+    Assert.assertEquals("TEST", Assert.assertThrows(IllegalArgumentException.class,
+        () -> require(null, (o) -> false, ExceptionProvider.ofIAE("TEST"))).getMessage());
   }
 
 }

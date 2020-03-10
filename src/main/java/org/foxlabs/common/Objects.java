@@ -31,7 +31,30 @@ public final class Objects {
     throw new IllegalAccessError();
   }
 
-  // To string
+  // toString
+
+  /**
+   * The maximum default length that may produce the {@link #toString(Object)} method.
+   */
+  public static final int DEFAULT_TO_STRING_MAX_LENGTH = 1000;
+
+  /**
+   * Converts the specified object to a string representation.
+   *
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * toString(object, DEFAULT_TO_STRING_MAX_LENGTH)
+   * </pre>
+   * </p>
+   *
+   * @param object The reference to an object to be converted to a string representation.
+   * @return A string representation of the specified object.
+   * @see #toString(Object, int)
+   */
+  public static String toString(Object object) {
+    return toString(object, DEFAULT_TO_STRING_MAX_LENGTH);
+  }
 
   /**
    * Converts the specified object to a string representation.
@@ -55,11 +78,11 @@ public final class Objects {
    */
   // FIXME Need totally own implementation because Arrays.toString() does not take into account
   // special case for CharSequence
-  public static String toString(Object object) {
+  public static String toString(Object object, int limit) {
     if (object == null) {
       return "null";
-    } else if (object instanceof CharSequence) {
-      return Strings.escape((CharSequence) object).toString();
+    } else if (object instanceof String) {
+      return Strings.escape((String) object);
     } else if (object.getClass().isArray()) {
       if (object instanceof boolean[]) {
         return Arrays.toString((boolean[]) object);
