@@ -27,7 +27,84 @@ import java.util.function.DoublePredicate;
 /**
  * A collection of reusable predicates and the {@code requireNonNull()}, {@code require()},
  * {@code requireElementsNonNull()}, {@code requireElements()} methods that check that a given
- * object satisfies a given condition.
+ * object satisfies a given condition. The primary goal of this utility class is parameter
+ * validation in methods and constructors.
+ *
+ * <p>
+ * {@code NullPointerException} examples:
+ * <pre>
+ * // Returns "success"
+ * String result = requireNonNull("success");
+ *
+ * // Throws NPE without detail message
+ * String result = requireNonNull(null);
+ *
+ * // Throws NPE with detail message: "cannot be null"
+ * String result = requireNonNull(null, "cannot be null");
+ *
+ * // Throws NPE with detail message: "cannot be null: result"
+ * String result = requireNonNull(null,
+ *     ExceptionProvider.ofNPE("cannot be null", "result"));
+ *
+ * // Throws NPE with detail message: "[1]"
+ * String[] items = requireElementsNonNull(new String[]{"one", null, "three"});
+ *
+ * // Throws NPE with detail message: "cannot be null: [1]"
+ * String[] items = requireElementsNonNull(new String[]{"one", null, "three"},
+ *     "cannot be null");
+ *
+ * // Throws NPE with detail message: "cannot be null: items[1]"
+ * String[] items = requireElementsNonNull(new String[]{"one", null, "three"},
+ *     ExceptionProvider.OfSequence.ofNPE("cannot be null", "items"));
+ * </pre>
+ * </p>
+ *
+ * <p>
+ * {@code IllegalArgumentException} examples:
+ * <pre>
+ * // Returns 10
+ * int index = require(10, INT_POSITIVE_OR_ZERO);
+ *
+ * // Throws IAE with detail message: "-5"
+ * int index = require(-5, INT_POSITIVE_OR_ZERO);
+ *
+ * // Throws IAE with detail message: "should be >= 0: -5"
+ * int index = require(-5, INT_POSITIVE_OR_ZERO, "should be >= 0");
+ *
+ * // Throws IAE with detail message: "should be >= 0: index = -5"
+ * int index = require(-5, INT_POSITIVE_OR_ZERO,
+ *     ExceptionProvider.ofIAE("should be >= 0", "index"));
+ *
+ * // Throws IAE with detail message: "[2] = three"
+ * List&lt;String&gt; items = requireElements(Arrays.asList("one", "two", "three"),
+ *     (s) -> s != null && s.length() <= 3);
+ *
+ * // Throws IAE with detail message: "length should be <= 3: [2] = three"
+ * List&lt;String&gt; items = requireElements(Arrays.asList("one", "two", "three"),
+ *     (s) -> s != null && s.length() <= 3,
+ *     "length should be <= 3");
+ *
+ * // Throws IAE with detail message: "length should be <= 3: items[2] = three"
+ * List&lt;String&gt; items = requireElements(Arrays.asList("one", "two", "three"),
+ *     (s) -> s != null && s.length() <= 3,
+ *     ExceptionProvider.OfSequence.ofIAE("length should be <= 3", "items"));
+ * </pre>
+ * </p>
+ *
+ * <p>
+ * More complex examples:
+ * <pre>
+ * // Throws IndexOutOfBoundsException with detail message: "index should be > 10 and < 100: -5"
+ * int index = require(-5, (int i) -> i > 10 && i < 100,
+ *     (i) -> new IndexOutOfBoundsException("index should be > 10 and < 100: " + i));
+ *
+ * // Throws NPE with detail message: "item cannot be null: items[2]"
+ * List&lt;String&gt; items = requireElementsNonNull(
+ *     require(Arrays.asList("one", null, "three"), COLLECTION_NON_EMPTY_OR_NULL,
+ *         "items cannot be null or empty"),
+ *     ExceptionProvider.OfSequence.ofNPE("item cannot be null", "items"));
+ * </pre>
+ * </p>
  *
  * @author Fox Mulder
  */
@@ -485,7 +562,7 @@ public final class Predicates {
    * {@code IllegalArgumentException} if it is not.
    *
    * <p>
-   * This is an equivalent of the:
+   * This is a shortcut for the:
    * <pre>
    * require(number, condition, ExceptionProvider.ofIAE())
    * </pre>
@@ -498,10 +575,7 @@ public final class Predicates {
    *         specified condition.
    */
   public static int require(int number, IntPredicate condition) {
-    if (condition.test(number)) {
-      return number;
-    }
-    throw new IllegalArgumentException(Integer.toString(number));
+    return require(number, condition, ExceptionProvider.ofIAE());
   }
 
   /**
@@ -509,7 +583,7 @@ public final class Predicates {
    * {@code IllegalArgumentException} with the specified detail message if it is not.
    *
    * <p>
-   * This is an equivalent of the:
+   * This is a shortcut for the:
    * <pre>
    * require(number, condition, ExceptionProvider.ofIAE(message))
    * </pre>
@@ -523,10 +597,7 @@ public final class Predicates {
    *         specified condition.
    */
   public static int require(int number, IntPredicate condition, String message) {
-    if (condition.test(number)) {
-      return number;
-    }
-    throw new IllegalArgumentException(message);
+    return require(number, condition, ExceptionProvider.ofIAE(message));
   }
 
   /**
@@ -555,7 +626,7 @@ public final class Predicates {
    * {@code IllegalArgumentException} if it is not.
    *
    * <p>
-   * This is an equivalent of the:
+   * This is a shortcut for the:
    * <pre>
    * require(number, condition, ExceptionProvider.ofIAE())
    * </pre>
@@ -568,10 +639,7 @@ public final class Predicates {
    *         specified condition.
    */
   public static long require(long number, LongPredicate condition) {
-    if (condition.test(number)) {
-      return number;
-    }
-    throw new IllegalArgumentException(Long.toString(number));
+    return require(number, condition, ExceptionProvider.ofIAE());
   }
 
   /**
@@ -579,7 +647,7 @@ public final class Predicates {
    * {@code IllegalArgumentException} with the specified detail message if it is not.
    *
    * <p>
-   * This is an equivalent of the:
+   * This is a shortcut for the:
    * <pre>
    * require(number, condition, ExceptionProvider.ofIAE(message))
    * </pre>
@@ -593,10 +661,7 @@ public final class Predicates {
    *         specified condition.
    */
   public static long require(long number, LongPredicate condition, String message) {
-    if (condition.test(number)) {
-      return number;
-    }
-    throw new IllegalArgumentException(message);
+    return require(number, condition, ExceptionProvider.ofIAE(message));
   }
 
   /**
@@ -625,7 +690,7 @@ public final class Predicates {
    * {@code IllegalArgumentException} if it is not.
    *
    * <p>
-   * This is an equivalent of the:
+   * This is a shortcut for the:
    * <pre>
    * require(number, condition, ExceptionProvider.ofIAE())
    * </pre>
@@ -638,10 +703,7 @@ public final class Predicates {
    *         specified condition.
    */
   public static double require(double number, DoublePredicate condition) {
-    if (condition.test(number)) {
-      return number;
-    }
-    throw new IllegalArgumentException(Double.toString(number));
+    return require(number, condition, ExceptionProvider.ofIAE());
   }
 
   /**
@@ -649,7 +711,7 @@ public final class Predicates {
    * {@code IllegalArgumentException} with the specified detail message if it is not.
    *
    * <p>
-   * This is an equivalent of the:
+   * This is a shortcut for the:
    * <pre>
    * require(number, condition, ExceptionProvider.ofIAE(message))
    * </pre>
@@ -663,10 +725,7 @@ public final class Predicates {
    *         specified condition.
    */
   public static double require(double number, DoublePredicate condition, String message) {
-    if (condition.test(number)) {
-      return number;
-    }
-    throw new IllegalArgumentException(message);
+    return require(number, condition, ExceptionProvider.ofIAE(message));
   }
 
   /**
@@ -1512,6 +1571,8 @@ public final class Predicates {
      */
     E create(T object);
 
+    // NullPointerException
+
     /**
      * A shortcut for the:
      * <code>
@@ -1538,24 +1599,29 @@ public final class Predicates {
      * (o) -> new NullPointerException(message + ": " + identifier)
      * </code>
      */
-    static <T> ExceptionProvider<T, NullPointerException> ofNPE(String identifier, String message) {
+    static <T> ExceptionProvider<T, NullPointerException> ofNPE(String message, String identifier) {
       return (o) -> new NullPointerException(message + ": " + identifier);
     }
 
+    // IllegalArgumentException
+
     /**
      * A shortcut for the:
      * <code>
-     * (o) -> new IllegalArgumentException(Objects.toString(o))
+     * (o) -> new IllegalArgumentException(
+     *     Objects.toString(o))
      * </code>
      */
     static <T> ExceptionProvider<T, IllegalArgumentException> ofIAE() {
-      return (o) -> new IllegalArgumentException(Objects.toString(o));
+      return (o) -> new IllegalArgumentException(
+          Objects.toString(o));
     }
 
     /**
      * A shortcut for the:
      * <code>
-     * (o) -> new IllegalArgumentException(message)
+     * (o) -> new IllegalArgumentException(message + ": " +
+     *     Objects.toString(o))
      * </code>
      *
      * @param <T> The type of the object.
@@ -1563,18 +1629,20 @@ public final class Predicates {
      * @return A reference to the {@code IllegalArgumentException} provider.
      */
     static <T> ExceptionProvider<T, IllegalArgumentException> ofIAE(String message) {
-      return (o) -> new IllegalArgumentException(message);
+      return (o) -> new IllegalArgumentException(message + ": " +
+          Objects.toString(o));
     }
 
     /**
      * A shortcut for the:
      * <code>
-     * (o) -> new IllegalArgumentException(
-     *     message + ": " + identifier + " = " + Objects.toString(o))
+     * (o) -> new IllegalArgumentException(message + ": " + identifier + " = " +
+     *     Objects.toString(o))
      * </code>
      */
-    static <T> ExceptionProvider<T, IllegalArgumentException> ofIAE(String identifier, String message) {
-      return (o) -> new IllegalArgumentException(message + ": " + identifier + " = " + Objects.toString(o));
+    static <T> ExceptionProvider<T, IllegalArgumentException> ofIAE(String message, String identifier) {
+      return (o) -> new IllegalArgumentException(message + ": " + identifier + " = " +
+          Objects.toString(o));
     }
 
     // ExceptionProvider.OfSequence
@@ -1604,6 +1672,8 @@ public final class Predicates {
        */
       E create(S sequence, int index, T element);
 
+      // NullPointerException
+
       /**
        * A shortcut for the:
        * <code>
@@ -1617,11 +1687,11 @@ public final class Predicates {
       /**
        * A shortcut for the:
        * <code>
-       * (s, i, e) -> new NullPointerException(message)
+       * (s, i, e) -> new NullPointerException(message + ": [" + i + "]")
        * </code>
        */
       static <S, T> OfSequence<S, T, NullPointerException> ofNPE(String message) {
-        return (s, i, e) -> new NullPointerException(message);
+        return (s, i, e) -> new NullPointerException(message + ": [" + i + "]");
       }
 
       /**
@@ -1630,28 +1700,34 @@ public final class Predicates {
        * (s, i, e) -> new NullPointerException(message + ": " + identifier + "[" + i + "]")
        * </code>
        */
-      static <S, T> OfSequence<S, T, NullPointerException> ofNPE(String identifier, String message) {
+      static <S, T> OfSequence<S, T, NullPointerException> ofNPE(String message, String identifier) {
         return (s, i, e) -> new NullPointerException(message + ": " + identifier + "[" + i + "]");
       }
 
+      // IllegalArgumentException
+
       /**
        * A shortcut for the:
        * <code>
-       * (s, i, e) -> new IllegalArgumentException("[" + i + "] = " + Objects.toString(e))
+       * (s, i, e) -> new IllegalArgumentException("[" + i + "] = " +
+       *     Objects.toString(e))
        * </code>
        */
       static <S, T> OfSequence<S, T, IllegalArgumentException> ofIAE() {
-        return (s, i, e) -> new IllegalArgumentException("[" + i + "] = " + Objects.toString(e));
+        return (s, i, e) -> new IllegalArgumentException("[" + i + "] = " +
+            Objects.toString(e));
       }
 
       /**
        * A shortcut for the:
        * <code>
-       * (s, i, e) -> new IllegalArgumentException(message)
+       * (s, i, e) -> new IllegalArgumentException(message + ": [" + i + "] = " +
+       *     Objects.toString(e))
        * </code>
        */
       static <S, T> OfSequence<S, T, IllegalArgumentException> ofIAE(String message) {
-        return (s, i, e) -> new IllegalArgumentException(message);
+        return (s, i, e) -> new IllegalArgumentException(message + ": [" + i + "] = " +
+            Objects.toString(e));
       }
 
       /**
@@ -1661,7 +1737,7 @@ public final class Predicates {
        *     Objects.toString(e))
        * </code>
        */
-      static <S, T> OfSequence<S, T, IllegalArgumentException> ofIAE(String identifier, String message) {
+      static <S, T> OfSequence<S, T, IllegalArgumentException> ofIAE(String message, String identifier) {
         return (s, i, e) -> new IllegalArgumentException(message + ": " + identifier + "[" + i + "] = " +
             Objects.toString(e));
       }

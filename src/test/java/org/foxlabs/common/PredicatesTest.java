@@ -71,13 +71,13 @@ public class PredicatesTest {
     Assert.assertEquals("null", Assert.assertThrows(IllegalArgumentException.class,
         () -> require(null, (o) -> false)).getMessage());
     // require(Object, Predicate, String)
-    Assert.assertTrue(require(reference, (o) -> true, "TEST") == reference);
-    Assert.assertEquals("TEST", Assert.assertThrows(IllegalArgumentException.class,
-        () -> require(null, (o) -> false, "TEST")).getMessage());
+    Assert.assertTrue(require(reference, (o) -> true, "test") == reference);
+    Assert.assertEquals("test: null", Assert.assertThrows(IllegalArgumentException.class,
+        () -> require(null, (o) -> false, "test")).getMessage());
     // require(Object, Predicate, ExceptionProvider)
     Assert.assertTrue(require(reference, (o) -> true, ExceptionProvider.ofIAE()) == reference);
-    Assert.assertEquals("TEST", Assert.assertThrows(IllegalArgumentException.class,
-        () -> require(null, (o) -> false, ExceptionProvider.ofIAE("TEST"))).getMessage());
+    Assert.assertEquals("test: object = null", Assert.assertThrows(IllegalArgumentException.class,
+        () -> require(null, (o) -> false, ExceptionProvider.ofIAE("test", "object"))).getMessage());
   }
 
 }
