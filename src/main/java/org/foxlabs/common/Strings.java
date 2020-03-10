@@ -469,7 +469,7 @@ public final class Strings {
      * @return String with added escape characters.
      * @see #escape(String, StringBuilder)
      */
-    public static String escape(String value) {
+    public static CharSequence escape(CharSequence value) {
         if (value == null || value.length() == 0) {
             return value;
         }
@@ -485,7 +485,7 @@ public final class Strings {
      * @return The specified buffer.
      * @see #escape(char)
      */
-    public static StringBuilder escape(String value, StringBuilder buf) {
+    public static StringBuilder escape(CharSequence value, StringBuilder buf) {
         int length = value == null ? 0 : value.length();
         for (int i = 0; i < length; i++) {
             buf.append(escape(value.charAt(i)));

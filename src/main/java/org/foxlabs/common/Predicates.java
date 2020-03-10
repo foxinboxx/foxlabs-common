@@ -25,8 +25,9 @@ import java.util.function.LongPredicate;
 import java.util.function.DoublePredicate;
 
 /**
- * A collection of reusable predicates and {@code requireXXX()} methods that check that a given
- * value satisfies a given condition.
+ * A collection of reusable predicates and {@code requireNonNull()}, {@code require()},
+ * {@code requireElementsNonNull()} and {@code requireElements()} methods that check that a given
+ * object satisfies a given condition.
  *
  * @author Fox Mulder
  */
@@ -342,7 +343,7 @@ public final class Predicates {
     return (s) -> s != null && regex.matcher(s).matches();
   }
 
-  // Value checks
+  // Simple checks
 
   // Object
 
@@ -353,14 +354,13 @@ public final class Predicates {
    * <p>
    * This is an equivalent of the:
    * <pre>
-   * require(object, Predicates.OBJECT_NON_NULL)
+   * requireNonNull(object, ExceptionProvider.npe())
    * </pre>
-   * but throws {@code NullPointerException}.
    * </p>
    *
    * @param <T> The type of the object.
-   * @param object The object reference to check.
-   * @return The reference to the specified object.
+   * @param object The object reference to check for {@code null}.
+   * @return A reference to the specified object.
    * @throws NullPointerException if the specified object reference is {@code null}.
    */
   public static <T> T requireNonNull(T object) {
@@ -377,21 +377,38 @@ public final class Predicates {
    * <p>
    * This is an equivalent of the:
    * <pre>
-   * require(object, Predicates.OBJECT_NON_NULL, message)
+   * requireNonNull(object, ExceptionProvider.npe(message))
    * </pre>
-   * but throws {@code NullPointerException}.
    * </p>
    *
    * @param <T> The type of the object.
-   * @param object The object reference to check.
-   * @param message The provider of the exception detail message.
-   * @return The reference to the specified object.
+   * @param object The object reference to check for {@code null}.
+   * @param message The exception detail message.
+   * @return A reference to the specified object.
    * @throws NullPointerException if the specified object reference is {@code null}.
-   * @see #defer(ExceptionProvider)
    */
-  public static <T> T requireNonNull(T object, Object message) {
+  public static <T> T requireNonNull(T object, String message) {
     if (object == null) {
-      throw new NullPointerException(toExceptionMessage(message));
+      throw new NullPointerException(message);
+    }
+    return object;
+  }
+
+  /**
+   * Checks that the specified object reference is not {@code null} and throws an exception
+   * created by the specified exception provider if it is.
+   *
+   * @param <T> The type of the object.
+   * @param <E> The type of the exception to throw.
+   * @param object The object reference to check for {@code null}.
+   * @param exception The provider of the exception to throw.
+   * @return A reference to the specified object.
+   * @throws E if the specified object reference is {@code null}.
+   */
+  public static <T, E extends Throwable> T requireNonNull(T object,
+      ExceptionProvider<T, E> exception) throws E {
+    if (object == null) {
+      throw exception.create(null);
     }
     return object;
   }
@@ -400,58 +417,65 @@ public final class Predicates {
    * Checks that the specified object satisfies the specified condition and throws
    * {@code IllegalArgumentException} if it is not.
    *
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * require(object, condition, ExceptionProvider.iae())
+   * </pre>
+   * </p>
+   *
    * @param <T> The type of the object.
-   * @param object The object reference to check.
+   * @param object The object reference to check against condition.
    * @param condition The predicate to apply to the object.
-   * @return The reference to the specified object.
+   * @return A reference to the specified object.
    * @throws IllegalArgumentException if the specified object does not satisfy the specified
    *         condition.
    */
   public static <T> T require(T object, Predicate<? super T> condition) {
-    if (condition.test(object)) {
-      return object;
-    }
-    throw new IllegalArgumentException(String.valueOf(object));
+    return require(object, condition, ExceptionProvider.iae());
   }
 
   /**
    * Checks that the specified object satisfies the specified condition and throws
    * {@code IllegalArgumentException} with the specified detail message if it is not.
    *
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * require(object, condition, ExceptionProvider.iae(message))
+   * </pre>
+   * </p>
+   *
    * @param <T> The type of the object.
-   * @param object The object reference to check.
+   * @param object The object reference to check against condition.
    * @param condition The predicate to apply to the object.
-   * @param message The provider of the exception detail message.
-   * @return The reference to the specified object.
+   * @param message The exception detail message.
+   * @return A reference to the specified object.
    * @throws IllegalArgumentException if the specified object does not satisfy the specified
    *         condition.
-   * @see #defer(ExceptionProvider)
    */
-  public static <T> T require(T object, Predicate<? super T> condition, Object message) {
-    if (condition.test(object)) {
-      return object;
-    }
-    throw new IllegalArgumentException(toExceptionMessage(message));
+  public static <T> T require(T object, Predicate<? super T> condition, String message) {
+    return require(object, condition, ExceptionProvider.iae(message));
   }
 
   /**
-   * Checks that the specified object satisfies the specified condition and throws the specified
-   * exception if it is not.
+   * Checks that the specified object satisfies the specified condition and throws an exception
+   * created by the specified exception provider if it is not.
    *
    * @param <T> The type of the object.
    * @param <E> The type of the exception to throw.
-   * @param object The object reference to check.
+   * @param object The object reference to check against condition.
    * @param condition The predicate to apply to the object.
    * @param exception The provider of the exception.
-   * @return The reference to the specified object.
+   * @return A reference to the specified object.
    * @throws E if the specified object does not satisfy the specified condition.
    */
   public static <T, E extends Throwable> T require(T object, Predicate<? super T> condition,
-      ExceptionProvider<E> exception) throws E {
+      ExceptionProvider<T, E> exception) throws E {
     if (condition.test(object)) {
       return object;
     }
-    throw exception.get();
+    throw exception.create(object);
   }
 
   // int
@@ -460,7 +484,14 @@ public final class Predicates {
    * Checks that the specified {@code int} number satisfies the specified condition and throws
    * {@code IllegalArgumentException} if it is not.
    *
-   * @param number The {@code int} number to check.
+   * <p>
+   * This is an equivalent of the:
+   * <pre>
+   * require(number, condition, ExceptionProvider.iae())
+   * </pre>
+   * </p>
+   *
+   * @param number The {@code int} number to check against condition.
    * @param condition The predicate to apply to the {@code int} number.
    * @return The specified {@code int} number.
    * @throws IllegalArgumentException if the specified {@code int} number does not satisfy the
@@ -477,38 +508,44 @@ public final class Predicates {
    * Checks that the specified {@code int} number satisfies the specified condition and throws
    * {@code IllegalArgumentException} with the specified detail message if it is not.
    *
-   * @param number The {@code int} number to check.
+   * <p>
+   * This is an equivalent of the:
+   * <pre>
+   * require(number, condition, ExceptionProvider.iae(message))
+   * </pre>
+   * </p>
+   *
+   * @param number The {@code int} number to check against condition.
    * @param condition The predicate to apply to the {@code int} number.
-   * @param message The provider of the exception detail message.
+   * @param message The exception detail message.
    * @return The specified {@code int} number.
    * @throws IllegalArgumentException if the specified {@code int} number does not satisfy the
    *         specified condition.
-   * @see #defer(ExceptionProvider)
    */
-  public static int require(int number, IntPredicate condition, Object message) {
+  public static int require(int number, IntPredicate condition, String message) {
     if (condition.test(number)) {
       return number;
     }
-    throw new IllegalArgumentException(toExceptionMessage(message));
+    throw new IllegalArgumentException(message);
   }
 
   /**
-   * Checks that the specified {@code int} number satisfies the specified condition and throws the
-   * specified exception if it is not.
+   * Checks that the specified {@code int} number satisfies the specified condition and throws an
+   * exception created by the specified exception provider if it is not.
    *
    * @param <E> The type of the exception to throw.
-   * @param number The {@code int} number to check.
+   * @param number The {@code int} number to check against condition.
    * @param condition The predicate to apply to the {@code int} number.
    * @param exception The provider of the exception.
    * @return The specified {@code int} number.
    * @throws E if the specified {@code int} number does not satisfy the specified condition.
    */
-  public static <E extends Throwable> int require(int number,
-      IntPredicate condition, ExceptionProvider<E> exception) throws E {
+  public static <E extends Throwable> int require(int number, IntPredicate condition,
+      ExceptionProvider<Integer, E> exception) throws E {
     if (condition.test(number)) {
       return number;
     }
-    throw exception.get();
+    throw exception.create(Integer.valueOf(number));
   }
 
   // long
@@ -517,7 +554,14 @@ public final class Predicates {
    * Checks that the specified {@code long} number satisfies the specified condition and throws
    * {@code IllegalArgumentException} if it is not.
    *
-   * @param number The {@code long} number to check.
+   * <p>
+   * This is an equivalent of the:
+   * <pre>
+   * require(number, condition, ExceptionProvider.iae())
+   * </pre>
+   * </p>
+   *
+   * @param number The {@code long} number to check against condition.
    * @param condition The predicate to apply to the {@code long} number.
    * @return The specified {@code long} number.
    * @throws IllegalArgumentException if the specified {@code long} number does not satisfy the
@@ -534,38 +578,44 @@ public final class Predicates {
    * Checks that the specified {@code long} number satisfies the specified condition and throws
    * {@code IllegalArgumentException} with the specified detail message if it is not.
    *
-   * @param number The {@code long} number to check.
+   * <p>
+   * This is an equivalent of the:
+   * <pre>
+   * require(number, condition, ExceptionProvider.iae(message))
+   * </pre>
+   * </p>
+   *
+   * @param number The {@code long} number to check against condition.
    * @param condition The predicate to apply to the {@code long} number.
-   * @param message The provider of the exception detail message.
+   * @param message The exception detail message.
    * @return The specified {@code long} number.
    * @throws IllegalArgumentException if the specified {@code long} number does not satisfy the
    *         specified condition.
-   * @see #defer(ExceptionProvider)
    */
-  public static long require(long number, LongPredicate condition, Object message) {
+  public static long require(long number, LongPredicate condition, String message) {
     if (condition.test(number)) {
       return number;
     }
-    throw new IllegalArgumentException(toExceptionMessage(message));
+    throw new IllegalArgumentException(message);
   }
 
   /**
-   * Checks that the specified {@code long} number satisfies the specified condition and throws the
-   * specified exception if it is not.
+   * Checks that the specified {@code long} number satisfies the specified condition and throws an
+   * exception created by the specified exception provider if it is not.
    *
    * @param <E> The type of the exception to throw.
-   * @param number The {@code long} number to check.
+   * @param number The {@code long} number to check against condition.
    * @param condition The predicate to apply to the {@code long} number.
    * @param exception The provider of the exception.
    * @return The specified {@code long} number.
    * @throws E if the specified {@code long} number does not satisfy the specified condition.
    */
   public static <E extends Throwable> long require(long number, LongPredicate condition,
-      ExceptionProvider<E> exception) throws E {
+      ExceptionProvider<Long, E> exception) throws E {
     if (condition.test(number)) {
       return number;
     }
-    throw exception.get();
+    throw exception.create(Long.valueOf(number));
   }
 
   // double
@@ -574,7 +624,14 @@ public final class Predicates {
    * Checks that the specified {@code double} number satisfies the specified condition and throws
    * {@code IllegalArgumentException} if it is not.
    *
-   * @param number The {@code double} number to check.
+   * <p>
+   * This is an equivalent of the:
+   * <pre>
+   * require(number, condition, ExceptionProvider.iae())
+   * </pre>
+   * </p>
+   *
+   * @param number The {@code double} number to check against condition.
    * @param condition The predicate to apply to the {@code double} number.
    * @return The specified {@code double} number.
    * @throws IllegalArgumentException if the specified {@code double} number does not satisfy the
@@ -591,38 +648,44 @@ public final class Predicates {
    * Checks that the specified {@code double} number satisfies the specified condition and throws
    * {@code IllegalArgumentException} with the specified detail message if it is not.
    *
-   * @param number The {@code double} number to check.
+   * <p>
+   * This is an equivalent of the:
+   * <pre>
+   * require(number, condition, ExceptionProvider.iae(message))
+   * </pre>
+   * </p>
+   *
+   * @param number The {@code double} number to check against condition.
    * @param condition The predicate to apply to the {@code double} number.
-   * @param message The provider of the exception detail message.
+   * @param message The exception detail message.
    * @return The specified {@code double} number.
    * @throws IllegalArgumentException if the specified {@code double} number does not satisfy the
    *         specified condition.
-   * @see #defer(ExceptionProvider)
    */
-  public static double require(double number, DoublePredicate condition, Object message) {
+  public static double require(double number, DoublePredicate condition, String message) {
     if (condition.test(number)) {
       return number;
     }
-    throw new IllegalArgumentException(toExceptionMessage(message));
+    throw new IllegalArgumentException(message);
   }
 
   /**
    * Checks that the specified {@code double} number satisfies the specified condition and throws
-   * the specified exception if it is not.
+   * an exception created by the specified exception provider if it is not.
    *
    * @param <E> The type of the exception to throw.
-   * @param number The {@code double} number to check.
+   * @param number The {@code double} number to check against condition.
    * @param condition The predicate to apply to the {@code double} number.
    * @param exception The provider of the exception.
    * @return The specified {@code double} number.
    * @throws E if the specified {@code double} number does not satisfy the specified condition.
    */
   public static <E extends Throwable> double require(double number, DoublePredicate condition,
-      ExceptionProvider<E> exception) throws E {
+      ExceptionProvider<Double, E> exception) throws E {
     if (condition.test(number)) {
       return number;
     }
-    throw exception.get();
+    throw exception.create(Double.valueOf(number));
   }
 
   // Array checks
@@ -635,26 +698,19 @@ public final class Predicates {
    * no exception will be thrown.
    *
    * <p>
-   * This is an equivalent of the:
+   * This is a shortcut for the:
    * <pre>
-   * requireElements(array, Predicates.OBJECT_NON_NULL)
+   * requireElementsNonNull(array, ExceptionProvider.OfSequence.npe())
    * </pre>
-   * but throws {@code NullPointerException}.
    * </p>
    *
    * @param <T> The type of elements of the array.
-   * @param array The array whose elements to check.
-   * @return The reference to the specified array.
+   * @param array The array whose elements to check for {@code null}.
+   * @return A reference to the specified array.
    * @throws NullPointerException if the specified array contains {@code null} elements.
    */
   public static <T> T[] requireElementsNonNull(T[] array) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (array[index] == null) {
-        throw new IllegalArgumentException("[" + index + "] = null");
-      }
-    }
-    return array;
+    return requireElementsNonNull(array, ExceptionProvider.OfSequence.npe());
   }
 
   /**
@@ -663,25 +719,40 @@ public final class Predicates {
    * specified array is {@code null} then no exception will be thrown.
    *
    * <p>
-   * This is an equivalent of the:
+   * This is a shortcut for the:
    * <pre>
-   * requireElements(array, Predicates.OBJECT_NON_NULL, message)
+   * requireElementsNonNull(array, ExceptionProvider.OfSequence.npe(message))
    * </pre>
-   * but throws {@code NullPointerException}.
    * </p>
    *
    * @param <T> The type of elements of the array.
-   * @param array The array whose elements to check.
-   * @param message The provider of the exception detail message.
-   * @return The reference to the specified array.
+   * @param array The array whose elements to check for {@code null}.
+   * @param message The exception detail message.
+   * @return A reference to the specified array.
    * @throws NullPointerException if the specified array contains {@code null} elements.
-   * @see #defer(ExceptionProvider.ForArray)
    */
-  public static <T> T[] requireElementsNonNull(T[] array, Object message) {
+  public static <T> T[] requireElementsNonNull(T[] array, String message) {
+    return requireElementsNonNull(array, ExceptionProvider.OfSequence.npe(message));
+  }
+
+  /**
+   * Checks that the specified array does not contain {@code null} elements and throws an exception
+   * created by the specified exception provider if it does. Note that if the specified array is
+   * {@code null} then no exception will be thrown.
+   *
+   * @param <T> The type of elements of the array.
+   * @param <E> The type of the exception to throw.
+   * @param array The array whose elements to check for {@code null}.
+   * @param exception The provider of the exception.
+   * @return A reference to the specified array.
+   * @throws E if the specified array contains {@code null} elements.
+   */
+  public static <T, E extends Throwable> T[] requireElementsNonNull(T[] array,
+      ExceptionProvider.OfSequence<T[], T, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (array[index] == null) {
-        throw new NullPointerException(toExceptionMessage(message, index));
+        throw exception.create(array, index, null);
       }
     }
     return array;
@@ -692,21 +763,22 @@ public final class Predicates {
    * {@code IllegalArgumentException} if they are not. Note that if the specified array is
    * {@code null} then no exception will be thrown.
    *
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(array, condition, ExceptionProvider.OfSequence.iae())
+   * </pre>
+   * </p>
+   *
    * @param <T> The type of elements of the array.
-   * @param array The array whose elements to check.
+   * @param array The array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the array.
-   * @return The reference to the specified array.
+   * @return A reference to the specified array.
    * @throws IllegalArgumentException if at least one element of the specified array does not
    *         satisfy the specified condition.
    */
   public static <T> T[] requireElements(T[] array, Predicate<? super T> condition) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (!condition.test(array[index])) {
-        throw new IllegalArgumentException("[" + index + "] = " + array[index]);
-      }
-    }
-    return array;
+    return requireElements(array, condition, ExceptionProvider.OfSequence.iae());
   }
 
   /**
@@ -714,45 +786,45 @@ public final class Predicates {
    * {@code IllegalArgumentException} with the specified detail message if they are not. Note that
    * if the specified array is {@code null} then no exception will be thrown.
    *
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(array, condition, ExceptionProvider.OfSequence.iae(message))
+   * </pre>
+   * </p>
+   *
    * @param <T> The type of elements of the array.
-   * @param array The array whose elements to check.
+   * @param array The array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the array.
-   * @param message The provider of the exception detail message.
-   * @return The reference to the specified array.
+   * @param message The exception detail message.
+   * @return A reference to the specified array.
    * @throws IllegalArgumentException if at least one element of the specified array does not
    *         satisfy the specified condition.
-   * @see #defer(ExceptionProvider.ForArray)
    */
-  public static <T> T[] requireElements(T[] array, Predicate<? super T> condition, Object message) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (!condition.test(array[index])) {
-        throw new IllegalArgumentException(toExceptionMessage(message, index));
-      }
-    }
-    return array;
+  public static <T> T[] requireElements(T[] array, Predicate<? super T> condition, String message) {
+    return requireElements(array, condition, ExceptionProvider.OfSequence.iae(message));
   }
 
   /**
    * Checks that all the elements of the specified array satisfy the specified condition and throws
-   * the specified exception if they are not. Note that if the specified array is {@code null} then
-   * no exception will be thrown.
+   * throws an exception created by the specified exception provider if they are not. Note that if
+   * the specified array is {@code null} then no exception will be thrown.
    *
    * @param <T> The type of elements of the array.
    * @param <E> The type of the exception to throw.
-   * @param array The array whose elements to check.
+   * @param array The array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the array.
    * @param exception The provider of the exception.
-   * @return The reference to the specified array.
-   * @throws IllegalArgumentException if at least one element of the specified array does not
-   *         satisfy the specified condition.
+   * @return A reference to the specified array.
+   * @throws E if at least one element of the specified array does not satisfy the specified
+   *         condition.
    */
   public static <T, E extends Throwable> T[] requireElements(T[] array, Predicate<? super T> condition,
-      ExceptionProvider.ForArray<E> exception) throws E {
+      ExceptionProvider.OfSequence<T[], T, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (!condition.test(array[index])) {
-        throw exception.get(index);
+        throw exception.create(array, index, array[index]);
       }
     }
     return array;
@@ -765,20 +837,21 @@ public final class Predicates {
    * condition and throws {@code IllegalArgumentException} if they are not. Note that if the
    * specified array is {@code null} then no exception will be thrown.
    *
-   * @param array The {@code byte[]} array whose elements to check.
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(array, condition, ExceptionProvider.OfSequence.iae())
+   * </pre>
+   * </p>
+   *
+   * @param array The {@code byte[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code byte[]} array.
-   * @return The reference to the specified {@code byte[]} array.
+   * @return A reference to the specified {@code byte[]} array.
    * @throws IllegalArgumentException if at least one element of the specified {@code byte[]} array
    *         does not satisfy the specified condition.
    */
   public static byte[] requireElements(byte[] array, IntPredicate condition) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (!condition.test(array[index])) {
-        throw new IllegalArgumentException("[" + index + "] = " + array[index]);
-      }
-    }
-    return array;
+    return requireElements(array, condition, ExceptionProvider.OfSequence.iae());
   }
 
   /**
@@ -787,43 +860,43 @@ public final class Predicates {
    * they are not. Note that if the specified array is {@code null} then no exception will be
    * thrown.
    *
-   * @param array The {@code byte[]} array whose elements to check.
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(array, condition, ExceptionProvider.OfSequence.iae(message))
+   * </pre>
+   * </p>
+   *
+   * @param array The {@code byte[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code byte[]} array.
-   * @param message The provider of the exception detail message.
-   * @return The reference to the specified {@code byte[]} array.
+   * @param message The exception detail message.
+   * @return A reference to the specified {@code byte[]} array.
    * @throws IllegalArgumentException if at least one element of the specified {@code byte[]} array
    *         does not satisfy the specified condition.
-   * @see #defer(ExceptionProvider.ForArray)
    */
-  public static byte[] requireElements(byte[] array, IntPredicate condition, Object message) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (!condition.test(array[index])) {
-        throw new IllegalArgumentException(toExceptionMessage(message, index));
-      }
-    }
-    return array;
+  public static byte[] requireElements(byte[] array, IntPredicate condition, String message) {
+    return requireElements(array, condition, ExceptionProvider.OfSequence.iae(message));
   }
 
   /**
    * Checks that all the elements of the specified {@code byte[]} array satisfy the specified
-   * condition and throws the specified exception if they are not. Note that if the specified array
-   * is {@code null} then no exception will be thrown.
+   * condition and throws an exception created by the specified exception provider if they are not.
+   * Note that if the specified array is {@code null} then no exception will be thrown.
    *
    * @param <E> The type of the exception to throw.
-   * @param array The {@code byte[]} array whose elements to check.
+   * @param array The {@code byte[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code byte[]} array.
    * @param exception The provider of the exception.
-   * @return The reference to the specified {@code byte[]} array.
-   * @throws IllegalArgumentException if at least one element of the specified {@code byte[]} array
-   *         does not satisfy the specified condition.
+   * @return A reference to the specified {@code byte[]} array.
+   * @throws E if at least one element of the specified {@code byte[]} array does not satisfy the
+   *         specified condition.
    */
   public static <E extends Throwable> byte[] requireElements(byte[] array, IntPredicate condition,
-      ExceptionProvider.ForArray<E> exception) throws E {
+      ExceptionProvider.OfSequence<byte[], Byte, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (!condition.test(array[index])) {
-        throw exception.get(index);
+        throw exception.create(array, index, Byte.valueOf(array[index]));
       }
     }
     return array;
@@ -836,20 +909,21 @@ public final class Predicates {
    * condition and throws {@code IllegalArgumentException} if they are not. Note that if the
    * specified array is {@code null} then no exception will be thrown.
    *
-   * @param array The {@code short[]} array whose elements to check.
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(array, condition, ExceptionProvider.OfSequence.iae())
+   * </pre>
+   * </p>
+   *
+   * @param array The {@code short[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code short[]} array.
-   * @return The reference to the specified {@code short[]} array.
+   * @return A reference to the specified {@code short[]} array.
    * @throws IllegalArgumentException if at least one element of the specified {@code short[]}
    *         array does not satisfy the specified condition.
    */
   public static short[] requireElements(short[] array, IntPredicate condition) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (!condition.test(array[index])) {
-        throw new IllegalArgumentException("[" + index + "] = " + array[index]);
-      }
-    }
-    return array;
+    return requireElements(array, condition, ExceptionProvider.OfSequence.iae());
   }
 
   /**
@@ -858,43 +932,43 @@ public final class Predicates {
    * they are not. Note that if the specified array is {@code null} then no exception will be
    * thrown.
    *
-   * @param array The {@code short[]} array whose elements to check.
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(array, condition, ExceptionProvider.OfSequence.iae(message))
+   * </pre>
+   * </p>
+   *
+   * @param array The {@code short[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code short[]} array.
-   * @param message The provider of the exception detail message.
-   * @return The reference to the specified {@code short[]} array.
+   * @param message The exception detail message.
+   * @return A reference to the specified {@code short[]} array.
    * @throws IllegalArgumentException if at least one element of the specified {@code short[]}
    *         array does not satisfy the specified condition.
-   * @see #defer(ExceptionProvider.ForArray)
    */
-  public static short[] requireElements(short[] array, IntPredicate condition, Object message) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (!condition.test(array[index])) {
-        throw new IllegalArgumentException(toExceptionMessage(message, index));
-      }
-    }
-    return array;
+  public static short[] requireElements(short[] array, IntPredicate condition, String message) {
+    return requireElements(array, condition, ExceptionProvider.OfSequence.iae(message));
   }
 
   /**
    * Checks that all the elements of the specified {@code short[]} array satisfy the specified
-   * condition and throws the specified exception if they are not. Note that if the specified array
-   * is {@code null} then no exception will be thrown.
+   * condition and throws an exception created by the specified exception provider if they are not.
+   * Note that if the specified array is {@code null} then no exception will be thrown.
    *
    * @param <E> The type of the exception to throw.
-   * @param array The {@code short[]} array whose elements to check.
+   * @param array The {@code short[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code short[]} array.
    * @param exception The provider of the exception.
-   * @return The reference to the specified {@code short[]} array.
-   * @throws IllegalArgumentException if at least one element of the specified {@code short[]}
-   *         array does not satisfy the specified condition.
+   * @return A reference to the specified {@code short[]} array.
+   * @throws E if at least one element of the specified {@code short[]} array does not satisfy the
+   *         specified condition.
    */
   public static <E extends Throwable> short[] requireElements(short[] array, IntPredicate condition,
-      ExceptionProvider.ForArray<E> exception) throws E {
+      ExceptionProvider.OfSequence<short[], Short, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (!condition.test(array[index])) {
-        throw exception.get(index);
+        throw exception.create(array, index, Short.valueOf(array[index]));
       }
     }
     return array;
@@ -907,20 +981,21 @@ public final class Predicates {
    * condition and throws {@code IllegalArgumentException} if they are not. Note that if the
    * specified array is {@code null} then no exception will be thrown.
    *
-   * @param array The {@code int[]} array whose elements to check.
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(array, condition, ExceptionProvider.OfSequence.iae())
+   * </pre>
+   * </p>
+   *
+   * @param array The {@code int[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code int[]} array.
-   * @return The reference to the specified {@code int[]} array.
+   * @return A reference to the specified {@code int[]} array.
    * @throws IllegalArgumentException if at least one element of the specified {@code int[]} array
    *         does not satisfy the specified condition.
    */
   public static int[] requireElements(int[] array, IntPredicate condition) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (!condition.test(array[index])) {
-        throw new IllegalArgumentException("[" + index + "] = " + array[index]);
-      }
-    }
-    return array;
+    return requireElements(array, condition, ExceptionProvider.OfSequence.iae());
   }
 
   /**
@@ -929,43 +1004,43 @@ public final class Predicates {
    * they are not. Note that if the specified array is {@code null} then no exception will be
    * thrown.
    *
-   * @param array The {@code int[]} array whose elements to check.
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(array, condition, ExceptionProvider.OfSequence.iae(message))
+   * </pre>
+   * </p>
+   *
+   * @param array The {@code int[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code int[]} array.
-   * @param message The provider of the exception detail message.
-   * @return The reference to the specified {@code int[]} array.
+   * @param message The exception detail message.
+   * @return A reference to the specified {@code int[]} array.
    * @throws IllegalArgumentException if at least one element of the specified {@code int[]} array
    *         does not satisfy the specified condition.
-   * @see #defer(ExceptionProvider.ForArray)
    */
-  public static int[] requireElements(int[] array, IntPredicate condition, Object message) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (!condition.test(array[index])) {
-        throw new IllegalArgumentException(toExceptionMessage(message, index));
-      }
-    }
-    return array;
+  public static int[] requireElements(int[] array, IntPredicate condition, String message) {
+    return requireElements(array, condition, ExceptionProvider.OfSequence.iae(message));
   }
 
   /**
    * Checks that all the elements of the specified {@code int[]} array satisfy the specified
-   * condition and throws the specified exception if they are not. Note that if the specified array
-   * is {@code null} then no exception will be thrown.
+   * condition and throws an exception created by the specified exception provider if they are not.
+   * Note that if the specified array is {@code null} then no exception will be thrown.
    *
    * @param <E> The type of the exception to throw.
-   * @param array The {@code int[]} array whose elements to check.
+   * @param array The {@code int[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code int[]} array.
    * @param exception The provider of the exception.
-   * @return The reference to the specified {@code int[]} array.
-   * @throws IllegalArgumentException if at least one element of the specified {@code int[]} array
-   *         does not satisfy the specified condition.
+   * @return A reference to the specified {@code int[]} array.
+   * @throws E if at least one element of the specified {@code int[]} array does not satisfy the
+   *         specified condition.
    */
   public static <E extends Throwable> int[] requireElements(int[] array, IntPredicate condition,
-      ExceptionProvider.ForArray<E> exception) throws E {
+      ExceptionProvider.OfSequence<int[], Integer, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (!condition.test(array[index])) {
-        throw exception.get(index);
+        throw exception.create(array, index, Integer.valueOf(array[index]));
       }
     }
     return array;
@@ -978,20 +1053,21 @@ public final class Predicates {
    * condition and throws {@code IllegalArgumentException} if they are not. Note that if the
    * specified array is {@code null} then no exception will be thrown.
    *
-   * @param array The {@code long[]} array whose elements to check.
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(array, condition, ExceptionProvider.OfSequence.iae())
+   * </pre>
+   * </p>
+   *
+   * @param array The {@code long[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code long[]} array.
-   * @return The reference to the specified {@code long[]} array.
+   * @return A reference to the specified {@code long[]} array.
    * @throws IllegalArgumentException if at least one element of the specified {@code long[]} array
    *         does not satisfy the specified condition.
    */
   public static long[] requireElements(long[] array, LongPredicate condition) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (!condition.test(array[index])) {
-        throw new IllegalArgumentException("[" + index + "] = " + array[index]);
-      }
-    }
-    return array;
+    return requireElements(array, condition, ExceptionProvider.OfSequence.iae());
   }
 
   /**
@@ -1000,43 +1076,43 @@ public final class Predicates {
    * they are not. Note that if the specified array is {@code null} then no exception will be
    * thrown.
    *
-   * @param array The {@code long[]} array whose elements to check.
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(array, condition, ExceptionProvider.OfSequence.iae(message))
+   * </pre>
+   * </p>
+   *
+   * @param array The {@code long[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code long[]} array.
-   * @param message The provider of the exception detail message.
-   * @return The reference to the specified {@code long[]} array.
+   * @param message The exception detail message.
+   * @return A reference to the specified {@code long[]} array.
    * @throws IllegalArgumentException if at least one element of the specified {@code long[]} array
    *         does not satisfy the specified condition.
-   * @see #defer(ExceptionProvider.ForArray)
    */
-  public static long[] requireElements(long[] array, LongPredicate condition, Object message) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (!condition.test(array[index])) {
-        throw new IllegalArgumentException(toExceptionMessage(message, index));
-      }
-    }
-    return array;
+  public static long[] requireElements(long[] array, LongPredicate condition, String message) {
+    return requireElements(array, condition, ExceptionProvider.OfSequence.iae(message));
   }
 
   /**
    * Checks that all the elements of the specified {@code long[]} array satisfy the specified
-   * condition and throws the specified exception if they are not. Note that if the specified array
-   * is {@code null} then no exception will be thrown.
+   * condition and throws an exception created by the specified exception provider if they are not.
+   * Note that if the specified array is {@code null} then no exception will be thrown.
    *
    * @param <E> The type of the exception to throw.
-   * @param array The {@code long[]} array whose elements to check.
+   * @param array The {@code long[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code long[]} array.
    * @param exception The provider of the exception.
-   * @return The reference to the specified {@code long[]} array.
-   * @throws IllegalArgumentException if at least one element of the specified {@code long[]} array
-   *         does not satisfy the specified condition.
+   * @return A reference to the specified {@code long[]} array.
+   * @throws E if at least one element of the specified {@code long[]} array does not satisfy the
+   *         specified condition.
    */
   public static <E extends Throwable> long[] requireElements(long[] array, LongPredicate condition,
-      ExceptionProvider.ForArray<E> exception) throws E {
+      ExceptionProvider.OfSequence<long[], Long, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (!condition.test(array[index])) {
-        throw exception.get(index);
+        throw exception.create(array, index, Long.valueOf(array[index]));
       }
     }
     return array;
@@ -1049,20 +1125,21 @@ public final class Predicates {
    * condition and throws {@code IllegalArgumentException} if they are not. Note that if the
    * specified array is {@code null} then no exception will be thrown.
    *
-   * @param array The {@code float[]} array whose elements to check.
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(array, condition, ExceptionProvider.OfSequence.iae())
+   * </pre>
+   * </p>
+   *
+   * @param array The {@code float[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code float[]} array.
-   * @return The reference to the specified {@code float[]} array.
+   * @return A reference to the specified {@code float[]} array.
    * @throws IllegalArgumentException if at least one element of the specified {@code float[]}
    *         array does not satisfy the specified condition.
    */
   public static float[] requireElements(float[] array, DoublePredicate condition) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (!condition.test(array[index])) {
-        throw new IllegalArgumentException("[" + index + "] = " + array[index]);
-      }
-    }
-    return array;
+    return requireElements(array, condition, ExceptionProvider.OfSequence.iae());
   }
 
   /**
@@ -1071,43 +1148,43 @@ public final class Predicates {
    * they are not. Note that if the specified array is {@code null} then no exception will be
    * thrown.
    *
-   * @param array The {@code float[]} array whose elements to check.
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(array, condition, ExceptionProvider.OfSequence.iae(message))
+   * </pre>
+   * </p>
+   *
+   * @param array The {@code float[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code float[]} array.
-   * @param message The provider of the exception detail message.
-   * @return The reference to the specified {@code float[]} array.
+   * @param message The exception detail message.
+   * @return A reference to the specified {@code float[]} array.
    * @throws IllegalArgumentException if at least one element of the specified {@code float[]}
    *         array does not satisfy the specified condition.
-   * @see #defer(ExceptionProvider.ForArray)
    */
-  public static float[] requireElements(float[] array, DoublePredicate condition, Object message) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (!condition.test(array[index])) {
-        throw new IllegalArgumentException(toExceptionMessage(message, index));
-      }
-    }
-    return array;
+  public static float[] requireElements(float[] array, DoublePredicate condition, String message) {
+    return requireElements(array, condition, ExceptionProvider.OfSequence.iae(message));
   }
 
   /**
    * Checks that all the elements of the specified {@code float[]} array satisfy the specified
-   * condition and throws the specified exception if they are not. Note that if the specified array
-   * is {@code null} then no exception will be thrown.
+   * condition and throws an exception created by the specified exception provider if they are not.
+   * Note that if the specified array is {@code null} then no exception will be thrown.
    *
    * @param <E> The type of the exception to throw.
-   * @param array The {@code float[]} array whose elements to check.
+   * @param array The {@code float[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code float[]} array.
    * @param exception The provider of the exception.
-   * @return The reference to the specified {@code float[]} array.
-   * @throws IllegalArgumentException if at least one element of the specified {@code float[]}
-   *         array does not satisfy the specified condition.
+   * @return A reference to the specified {@code float[]} array.
+   * @throws E if at least one element of the specified {@code float[]} array does not satisfy the
+   *         specified condition.
    */
-  public static <E extends Throwable> float[] requireElements(float[] array,
-      DoublePredicate condition, ExceptionProvider.ForArray<E> exception) throws E {
+  public static <E extends Throwable> float[] requireElements(float[] array, DoublePredicate condition,
+      ExceptionProvider.OfSequence<float[], Float, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (!condition.test(array[index])) {
-        throw exception.get(index);
+        throw exception.create(array, index, Float.valueOf(array[index]));
       }
     }
     return array;
@@ -1120,20 +1197,21 @@ public final class Predicates {
    * condition and throws {@code IllegalArgumentException} if they are not. Note that if the
    * specified array is {@code null} then no exception will be thrown.
    *
-   * @param array The {@code double[]} array whose elements to check.
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(array, condition, ExceptionProvider.OfSequence.iae())
+   * </pre>
+   * </p>
+   *
+   * @param array The {@code double[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code double[]} array.
-   * @return The reference to the specified {@code double[]} array.
+   * @return A reference to the specified {@code double[]} array.
    * @throws IllegalArgumentException if at least one element of the specified {@code double[]}
    *         array does not satisfy the specified condition.
    */
   public static double[] requireElements(double[] array, DoublePredicate condition) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (!condition.test(array[index])) {
-        throw new IllegalArgumentException("[" + index + "] = " + array[index]);
-      }
-    }
-    return array;
+    return requireElements(array, condition, ExceptionProvider.OfSequence.iae());
   }
 
   /**
@@ -1142,43 +1220,43 @@ public final class Predicates {
    * they are not. Note that if the specified array is {@code null} then no exception will be
    * thrown.
    *
-   * @param array The {@code double[]} array whose elements to check.
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(array, condition, ExceptionProvider.OfSequence.iae(message))
+   * </pre>
+   * </p>
+   *
+   * @param array The {@code double[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code double[]} array.
-   * @param message The provider of the exception detail message.
-   * @return The reference to the specified {@code double[]} array.
+   * @param message The exception detail message.
+   * @return A reference to the specified {@code double[]} array.
    * @throws IllegalArgumentException if at least one element of the specified {@code double[]}
    *         array does not satisfy the specified condition.
-   * @see #defer(ExceptionProvider.ForArray)
    */
-  public static double[] requireElements(double[] array, DoublePredicate condition, Object message) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (!condition.test(array[index])) {
-        throw new IllegalArgumentException(toExceptionMessage(message, index));
-      }
-    }
-    return array;
+  public static double[] requireElements(double[] array, DoublePredicate condition, String message) {
+    return requireElements(array, condition, ExceptionProvider.OfSequence.iae(message));
   }
 
   /**
    * Checks that all the elements of the specified {@code double[]} array satisfy the specified
-   * condition and throws the specified exception if they are not. Note that if the specified array
-   * is {@code null} then no exception will be thrown.
+   * condition and throws an exception created by the specified exception provider if they are not.
+   * Note that if the specified array is {@code null} then no exception will be thrown.
    *
    * @param <E> The type of the exception to throw.
-   * @param array The {@code double[]} array whose elements to check.
+   * @param array The {@code double[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code double[]} array.
    * @param exception The provider of the exception.
-   * @return The reference to the specified {@code double[]} array.
-   * @throws IllegalArgumentException if at least one element of the specified {@code double[]}
-   *         array does not satisfy the specified condition.
+   * @return A reference to the specified {@code double[]} array.
+   * @throws E if at least one element of the specified {@code double[]} array does not satisfy the
+   *         specified condition.
    */
   public static <E extends Throwable> double[] requireElements(double[] array, DoublePredicate condition,
-      ExceptionProvider.ForArray<E> exception) throws E {
+      ExceptionProvider.OfSequence<double[], Double, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (!condition.test(array[index])) {
-        throw exception.get(index);
+        throw exception.create(array, index, Double.valueOf(array[index]));
       }
     }
     return array;
@@ -1191,20 +1269,21 @@ public final class Predicates {
    * condition and throws {@code IllegalArgumentException} if they are not. Note that if the
    * specified array is {@code null} then no exception will be thrown.
    *
-   * @param array The {@code char[]} array whose elements to check.
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(array, condition, ExceptionProvider.OfSequence.iae())
+   * </pre>
+   * </p>
+   *
+   * @param array The {@code char[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code char[]} array.
-   * @return The reference to the specified {@code char[]} array.
+   * @return A reference to the specified {@code char[]} array.
    * @throws IllegalArgumentException if at least one element of the specified {@code char[]} array
    *         does not satisfy the specified condition.
    */
   public static char[] requireElements(char[] array, IntPredicate condition) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (!condition.test(array[index])) {
-        throw new IllegalArgumentException("[" + index + "] = " + array[index]);
-      }
-    }
-    return array;
+    return requireElements(array, condition, ExceptionProvider.OfSequence.iae());
   }
 
   /**
@@ -1213,43 +1292,43 @@ public final class Predicates {
    * they are not. Note that if the specified array is {@code null} then no exception will be
    * thrown.
    *
-   * @param array The {@code char[]} array whose elements to check.
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(array, condition, ExceptionProvider.OfSequence.iae(message))
+   * </pre>
+   * </p>
+   *
+   * @param array The {@code char[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code char[]} array.
-   * @param message The provider of the exception detail message.
-   * @return The reference to the specified {@code char[]} array.
+   * @param message The exception detail message.
+   * @return A reference to the specified {@code char[]} array.
    * @throws IllegalArgumentException if at least one element of the specified {@code char[]} array
    *         does not satisfy the specified condition.
-   * @see #defer(ExceptionProvider.ForArray)
    */
-  public static char[] requireElements(char[] array, IntPredicate condition, Object message) {
-    final int length = array == null ? 0 : array.length;
-    for (int index = 0; index < length; index++) {
-      if (!condition.test(array[index])) {
-        throw new IllegalArgumentException(toExceptionMessage(message, index));
-      }
-    }
-    return array;
+  public static char[] requireElements(char[] array, IntPredicate condition, String message) {
+    return requireElements(array, condition, ExceptionProvider.OfSequence.iae(message));
   }
 
   /**
    * Checks that all the elements of the specified {@code char[]} array satisfy the specified
-   * condition and throws the specified exception if they are not. Note that if the specified array
-   * is {@code null} then no exception will be thrown.
+   * condition and throws an exception created by the specified exception provider if they are not.
+   * Note that if the specified array is {@code null} then no exception will be thrown.
    *
    * @param <E> The type of the exception to throw.
-   * @param array The {@code char[]} array whose elements to check.
+   * @param array The {@code char[]} array whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code char[]} array.
    * @param exception The provider of the exception.
-   * @return The reference to the specified {@code char[]} array.
-   * @throws IllegalArgumentException if at least one element of the specified {@code char[]} array
-   *         does not satisfy the specified condition.
+   * @return A reference to the specified {@code char[]} array.
+   * @throws E if at least one element of the specified {@code char[]} array does not satisfy the
+   *         specified condition.
    */
   public static <E extends Throwable> char[] requireElements(char[] array, IntPredicate condition,
-      ExceptionProvider.ForArray<E> exception) throws E {
+      ExceptionProvider.OfSequence<char[], Character, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
       if (!condition.test(array[index])) {
-        throw exception.get(index);
+        throw exception.create(array, index, Character.valueOf(array[index]));
       }
     }
     return array;
@@ -1263,30 +1342,21 @@ public final class Predicates {
    * {@code null} then no exception will be thrown.
    *
    * <p>
-   * This is an equivalent of the:
+   * This is a shortcut for the:
    * <pre>
-   * requireElements(iterable, Predicates.OBJECT_NON_NULL)
+   * requireElementsNonNull(iterable, ExceptionProvider.OfSequence.npe())
    * </pre>
-   * but throws {@code NullPointerException}.
    * </p>
    *
    * @param <T> The type of elements of the {@code Iterable} sequence.
    * @param <I> The type of the {@code Iterable} sequence.
-   * @param iterable The {@code Iterable} sequence whose elements to check.
-   * @return The reference to the specified {@code Iterable} sequence.
+   * @param iterable The {@code Iterable} sequence whose elements to check for {@code null}.
+   * @return A reference to the specified {@code Iterable} sequence.
    * @throws NullPointerException if the specified {@code Iterable} sequence contains {@code null}
    *         elements.
    */
   public static <T, I extends Iterable<T>> I requireElementsNonNull(I iterable) {
-    if (iterable != null) {
-      final Iterator<T> itr = iterable.iterator();
-      for (int index = 0; itr.hasNext(); index++) {
-        if (itr.next() == null) {
-          throw new NullPointerException("[" + index + "] = null");
-        }
-      }
-    }
-    return iterable;
+    return requireElementsNonNull(iterable, ExceptionProvider.OfSequence.npe());
   }
 
   /**
@@ -1295,28 +1365,44 @@ public final class Predicates {
    * the specified sequence is {@code null} then no exception will be thrown.
    *
    * <p>
-   * This is an equivalent of the:
+   * This is a shortcut for the:
    * <pre>
-   * requireElements(iterable, Predicates.OBJECT_NON_NULL, message)
+   * requireElementsNonNull(iterable, ExceptionProvider.OfSequence.npe(message))
    * </pre>
-   * but throws {@code NullPointerException}.
    * </p>
    *
    * @param <T> The type of elements of the {@code Iterable} sequence.
    * @param <I> The type of the {@code Iterable} sequence.
-   * @param iterable The {@code Iterable} sequence whose elements to check.
-   * @param message The provider of the exception detail message.
-   * @return The reference to the specified {@code Iterable} sequence.
+   * @param iterable The {@code Iterable} sequence whose elements to check for {@code null}.
+   * @param message The exception detail message.
+   * @return A reference to the specified {@code Iterable} sequence.
    * @throws NullPointerException if the specified {@code Iterable} sequence contains {@code null}
    *         elements.
-   * @see #defer(ExceptionProvider.ForIterable)
    */
-  public static <T, I extends Iterable<T>> I requireElementsNonNull(I iterable, Object message) {
+  public static <T, I extends Iterable<T>> I requireElementsNonNull(I iterable, String message) {
+    return requireElementsNonNull(iterable, ExceptionProvider.OfSequence.npe(message));
+  }
+
+  /**
+   * Checks that the specified {@code Iterable} sequence does not contain {@code null} elements and
+   * throws an exception created by the specified exception provider if it does. Note that if the
+   * specified sequence is {@code null} then no exception will be thrown.
+   *
+   * @param <T> The type of elements of the {@code Iterable} sequence.
+   * @param <I> The type of the {@code Iterable} sequence.
+   * @param <E> The type of the exception to throw.
+   * @param iterable The {@code Iterable} sequence whose elements to check for {@code null}.
+   * @param exception The provider of the exception.
+   * @return A reference to the specified {@code Iterable} sequence.
+   * @throws E if the specified {@code Iterable} sequence contains {@code null} elements.
+   */
+  public static <T, I extends Iterable<T>, E extends Throwable> I requireElementsNonNull(I iterable,
+      ExceptionProvider.OfSequence<I, T, E> exception) throws E {
     if (iterable != null) {
       final Iterator<T> itr = iterable.iterator();
       for (int index = 0; itr.hasNext(); index++) {
         if (itr.next() == null) {
-          throw new NullPointerException(toExceptionMessage(message, index, null));
+          throw exception.create(iterable, index, null);
         }
       }
     }
@@ -1328,25 +1414,23 @@ public final class Predicates {
    * condition and throws {@code IllegalArgumentException} if they are not. Note that if the
    * specified sequence is {@code null} then no exception will be thrown.
    *
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(iterable, condition, ExceptionProvider.OfSequence.iae())
+   * </pre>
+   * </p>
+   *
    * @param <T> The type of elements of the {@code Iterable} sequence.
    * @param <I> The type of the {@code Iterable} sequence.
-   * @param iterable The {@code Iterable} sequence whose elements to check.
+   * @param iterable The {@code Iterable} sequence whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code Iterable} sequence.
-   * @return The reference to the specified {@code Iterable} sequence.
+   * @return A reference to the specified {@code Iterable} sequence.
    * @throws IllegalArgumentException if at least one element of the specified {@code Iterable}
    *         sequence does not satisfy the specified condition.
    */
   public static <T, I extends Iterable<T>> I requireElements(I iterable, Predicate<? super T> condition) {
-    if (iterable != null) {
-      final Iterator<T> itr = iterable.iterator();
-      for (int index = 0; itr.hasNext(); index++) {
-        final T element = itr.next();
-        if (!condition.test(element)) {
-          throw new IllegalArgumentException("[" + index + "] = " + element);
-        }
-      }
-    }
-    return iterable;
+    return requireElements(iterable, condition, ExceptionProvider.OfSequence.iae());
   }
 
   /**
@@ -1355,53 +1439,50 @@ public final class Predicates {
    * they are not. Note that if the specified sequence is {@code null} then no exception will be
    * thrown.
    *
+   * <p>
+   * This is a shortcut for the:
+   * <pre>
+   * requireElements(iterable, condition, ExceptionProvider.OfSequence.iae(message))
+   * </pre>
+   * </p>
+   *
    * @param <T> The type of elements of the {@code Iterable} sequence.
    * @param <I> The type of the {@code Iterable} sequence.
-   * @param iterable The {@code Iterable} sequence whose elements to check.
+   * @param iterable The {@code Iterable} sequence whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code Iterable} sequence.
-   * @param message The provider of the exception detail message.
-   * @return The reference to the specified {@code Iterable} sequence.
+   * @param message The exception detail message.
+   * @return A reference to the specified {@code Iterable} sequence.
    * @throws IllegalArgumentException if at least one element of the specified {@code Iterable}
    *         sequence does not satisfy the specified condition.
-   * @see #defer(ExceptionProvider.ForIterable)
    */
   public static <T, I extends Iterable<T>> I requireElements(I iterable, Predicate<? super T> condition,
-      Object message) {
-    if (iterable != null) {
-      final Iterator<T> itr = iterable.iterator();
-      for (int index = 0; itr.hasNext(); index++) {
-        final T element = itr.next();
-        if (!condition.test(element)) {
-          throw new IllegalArgumentException(toExceptionMessage(message, index, element));
-        }
-      }
-    }
-    return iterable;
+      String message) {
+    return requireElements(iterable, condition, ExceptionProvider.OfSequence.iae(message));
   }
 
   /**
    * Checks that all the elements of the specified {@code Iterable} sequence satisfy the specified
-   * condition and throws the specified exception if they are not. Note that if the specified
-   * sequence is {@code null} then no exception will be thrown.
+   * condition and throws an exception created by the specified exception provider if they are not.
+   * Note that if the specified sequence is {@code null} then no exception will be thrown.
    *
    * @param <T> The type of elements of the {@code Iterable} sequence.
    * @param <I> The type of the {@code Iterable} sequence.
    * @param <E> The type of the exception to throw.
-   * @param iterable The {@code Iterable} sequence whose elements to check.
+   * @param iterable The {@code Iterable} sequence whose elements to check against condition.
    * @param condition The predicate to apply for each element of the {@code Iterable} sequence.
    * @param exception The provider of the exception.
-   * @return The reference to the specified {@code Iterable} sequence.
-   * @throws IllegalArgumentException if at least one element of the specified {@code Iterable}
-   *         sequence does not satisfy the specified condition.
+   * @return A reference to the specified {@code Iterable} sequence.
+   * @throws E if at least one element of the specified {@code Iterable} sequence does not satisfy
+   *         the specified condition.
    */
   public static <T, I extends Iterable<T>, E extends Throwable> I requireElements(I iterable,
-      Predicate<? super T> condition, ExceptionProvider.ForIterable<E, T> exception) throws E {
+      Predicate<? super T> condition, ExceptionProvider.OfSequence<I, T, E> exception) throws E {
     if (iterable != null) {
       final Iterator<T> itr = iterable.iterator();
       for (int index = 0; itr.hasNext(); index++) {
         final T element = itr.next();
         if (!condition.test(element)) {
-          throw exception.get(index, element);
+          throw exception.create(iterable, index, element);
         }
       }
     }
@@ -1411,233 +1492,203 @@ public final class Predicates {
   // Helpers
 
   /**
-   * Returns a reference to the specified provider of the exception detail message. In other words,
-   * simply returns its argument. This helper method just provides a way to avoid explicit casting
-   * to {@code ExceptionProvider<String>} in the {@code requireXXX()} calls that accept provider of
-   * the exception detail message as an {@code Object}.
-   *
-   * <p>
-   * For example, statement:
-   * <pre>
-   * requireNonNull(object,
-   *     (ExceptionProvider&lt;String&gt;) () -> java.time.LocalDateTime.now() + ": object is null");
-   * </pre>
-   * is equivalent to:
-   * <pre>
-   * requireNonNull(object, defer(() -> java.time.LocalDateTime.now() + ": object is null"));
-   * </pre>
-   * but a bit shorter.
-   * </p>
-   *
-   * @param formatter The provider of the exception detail message.
-   * @return A reference to the specified provider of the exception detail message.
-   * @see Predicates
+   * The maximum length of an exception detail message used by default exception providers.
    */
-  public static ExceptionProvider<String> defer(ExceptionProvider<String> formatter) {
-    return formatter;
+  public static final int EXCEPTION_MESSAGE_MAX_LENGTH = 1000;
+
+  public static String format(String identifier, Object object) {
+    return identifier != null ? identifier + " = " + Objects.toString(object) : Objects.toString(object);
   }
 
-  /**
-   * Returns an exception detail message obtained from the specified message provider.
-   *
-   * @param message The provider of the exception detail message.
-   * @return An exception detail message obtained from the specified message provider.
-   * @see Predicates
-   */
-  private static String toExceptionMessage(Object message) {
-    if (message instanceof ExceptionProvider) {
-      message = ((ExceptionProvider<?>) message).get();
-    }
-    return String.valueOf(message);
+  public static <T> ExceptionProvider<T, NullPointerException> npe(String identifier) {
+    return (object) ->
+        new NullPointerException(identifier);
   }
 
-  /**
-   * Returns a reference to the specified {@code ExceptionProvider.ForArray<String>} provider of
-   * the exception detail message. In other words, simply returns its argument. This helper method
-   * just provides a way to avoid explicit casting to {@code ExceptionProvider.ForArray<String>} in
-   * the {@code requireElementsXXX()} calls that accept provider of the exception detail message as
-   * an {@code Object}.
-   *
-   * <p>
-   * For example, statement:
-   * <pre>
-   * requireElementsNonNull(array,
-   *     (ExceptionProvider.ForArray&lt;String&gt;) (index) -> "[" + index + "]: element is null");
-   * </pre>
-   * is equivalent to:
-   * <pre>
-   * requireElementsNonNull(array, defer((index) -> "[" + index + "]: element is null"));
-   * </pre>
-   * but a bit shorter.
-   * </p>
-   *
-   * @param formatter The provider of the exception detail message.
-   * @return A reference to the specified provider of the exception detail message.
-   * @see Predicates
-   */
-  public static ExceptionProvider.ForArray<String> defer(ExceptionProvider.ForArray<String> formatter) {
-    return formatter;
+  public static <T> ExceptionProvider<T, IllegalArgumentException> iae(String identifier) {
+    return (object) ->
+        new IllegalArgumentException(format(identifier, object));
   }
 
-  /**
-   * Returns an exception detail message obtained from the specified message provider.
-   *
-   * @param message The provider of the exception detail message.
-   * @param index The index in an array at which condition failed.
-   * @return An exception detail message obtained from the specified message provider.
-   * @see Predicates
-   */
-  private static String toExceptionMessage(Object message, int index) {
-    if (message instanceof ExceptionProvider.ForArray) {
-      return String.valueOf(((ExceptionProvider.ForArray<?>) message).get(index));
-    }
-    return toExceptionMessage(message);
+  public static String formatElement(String identifier, int index, Object element) {
+    return (identifier != null ? identifier : "") + "[" + index + "] = " + Objects.toString(element);
   }
 
-  /**
-   * Returns a reference to the specified {@code ExceptionProvider.ForIterable} provider of the
-   * exception detail message. In other words, simply returns its argument. This helper method just
-   * provides a way to avoid explicit casting to the {@code ExceptionProvider.ForIterable} in the
-   * {@code requireElementsXXX()} calls that accept provider of the exception detail message as an
-   * {@code Object}.
-   *
-   * <p>
-   * For example, statement:
-   * <pre>
-   * requireElementsNonNull(array,
-   *     (ExceptionProvider.ForIterable&lt;String, T&gt;) (index, element) -> "[" + index + "]: element is null");
-   * </pre>
-   * is equivalent to:
-   * <pre>
-   * requireElementsNonNull(array, defer((index) -> "[" + index + "]: element is null"));
-   * </pre>
-   * but a bit shorter.
-   * </p>
-   *
-   * @param formatter The provider of the exception detail message.
-   * @return A reference to the specified provider of the exception detail message.
-   * @see Predicates
-   */
-  public static <T> ExceptionProvider.ForIterable<String, T> defer(
-      ExceptionProvider.ForIterable<String, T> formatter) {
-    return formatter;
+  public static <S, T> ExceptionProvider.OfSequence<S, T, NullPointerException> npeElement(String identifier) {
+    return (__, index, element) ->
+        new NullPointerException(formatElement(identifier, index, null));
   }
 
-  /**
-   * Returns an exception detail message obtained from the specified message provider.
-   *
-   * @param message The provider of the exception detail message.
-   * @param index The index in an {@code Iterable} sequence at which condition failed.
-   * @param element The invalid element of an {@code Iterable} sequence.
-   * @return An exception detail message obtained from the specified message provider.
-   * @see Predicates
-   */
-  private static String toExceptionMessage(Object message, int index, Object element) {
-    if (message instanceof ExceptionProvider.ForIterable) {
-      return String.valueOf(
-          Objects.<ExceptionProvider.ForIterable<?, Object>>cast(message).get(index, element));
-    }
-    return toExceptionMessage(message, index);
+  public static <S, T> ExceptionProvider.OfSequence<S, T, IllegalArgumentException> iaeElement(String identifier) {
+    return (__, index, element) ->
+        new IllegalArgumentException(formatElement(identifier, index, element));
   }
 
   // ExceptionProvider
 
   /**
-     * The provider of an exception or exception detail message used by the following methods:
-     * <ul>
-     *   <li>{@link Predicates#requireNonNull(Object, Object)}</li>
-     *   <li>{@link Predicates#require(Object, Predicate, Object)}</li>
-     *   <li>{@link Predicates#require(Object, Predicate, ExceptionProvider)}</li>
-     *   <li>{@link Predicates#require(int, IntPredicate, Object)}</li>
-     *   <li>{@link Predicates#require(int, IntPredicate, ExceptionProvider)}</li>
-     *   <li>{@link Predicates#require(long, LongPredicate, Object)}</li>
-     *   <li>{@link Predicates#require(long, LongPredicate, ExceptionProvider)}</li>
-     *   <li>{@link Predicates#require(double, DoublePredicate, Object)}</li>
-     *   <li>{@link Predicates#require(double, DoublePredicate, ExceptionProvider)}</li>
-     * </ul>
+   * A provider of exceptions that will be thrown by the {@code requireNonNull()} and
+   * {@code require()} methods to indicate that an object does not satisfy the required condition.
    *
-   * @param <R> Either {@code Throwable} or {@code String} type.
+   * @param <T> The type of the object.
+   * @param <E> The type of the exception to be thrown.
    *
    * @author Fox Mulder
-   * @see Predicates#defer(ExceptionProvider)
    */
   @FunctionalInterface
-  public static interface ExceptionProvider<R> {
+  public static interface ExceptionProvider<T, E extends Throwable> {
 
     /**
-     * Returns either a {@code Throwable} instance or an exception detail message.
+     * Returns a {@code Throwable} instance to be thrown for the specified reference to an invalid
+     * object.
      *
-     * @return Either a {@code Throwable} instance or an exception detail message.
+     * @param object The reference to an invalid object.
+     * @return A {@code Throwable} instance to be thrown.
      */
-    R get();
+    E create(T object);
 
     /**
-     * The provider of an exception or exception detail message used by the following methods:
-     * <ul>
-     *   <li>{@link Predicates#requireElementsNonNull(Object[], Object)}</li>
-     *   <li>{@link Predicates#requireElements(Object[], Predicate, Object)}</li>
-     *   <li>{@link Predicates#requireElements(Object[], Predicate, ForArray)}</li>
-     *   <li>{@link Predicates#requireElements(byte[], IntPredicate, Object)}</li>
-     *   <li>{@link Predicates#requireElements(byte[], IntPredicate, ForArray)}</li>
-     *   <li>{@link Predicates#requireElements(short[], IntPredicate, Object)}</li>
-     *   <li>{@link Predicates#requireElements(short[], IntPredicate, ForArray)}</li>
-     *   <li>{@link Predicates#requireElements(int[], IntPredicate, Object)}</li>
-     *   <li>{@link Predicates#requireElements(int[], IntPredicate, ForArray)}</li>
-     *   <li>{@link Predicates#requireElements(long[], LongPredicate, Object)}</li>
-     *   <li>{@link Predicates#requireElements(long[], LongPredicate, ForArray)}</li>
-     *   <li>{@link Predicates#requireElements(float[], DoublePredicate, Object)}</li>
-     *   <li>{@link Predicates#requireElements(float[], DoublePredicate, ForArray)}</li>
-     *   <li>{@link Predicates#requireElements(double[], DoublePredicate, Object)}</li>
-     *   <li>{@link Predicates#requireElements(double[], DoublePredicate, ForArray)}</li>
-     *   <li>{@link Predicates#requireElements(char[], IntPredicate, Object)}</li>
-     *   <li>{@link Predicates#requireElements(char[], IntPredicate, ForArray)}</li>
-     * </ul>
+     * A shortcut for the:
+     * <pre>
+     * (o) -> new NullPointerException()
+     * </pre>
      *
-     * @param <R> Either {@code Throwable} or {@code String} type.
-     *
-     * @author Fox Mulder
-     * @see Predicates#defer(ForArray)
+     * @param <T> The type of the object.
+     * @return A reference to the {@code NullPointerException} provider.
      */
-    @FunctionalInterface
-    public static interface ForArray<R> {
-
-      /**
-       * Returns either a {@code Throwable} instance or an exception detail message for the
-       * specified index in an array.
-       *
-       * @param index The index in an array at which condition failed.
-       * @return Either a {@code Throwable} instance or an exception detail message.
-       */
-      R get(int index);
-
+    static <T> ExceptionProvider<T, NullPointerException> npe() {
+      return (o) -> new NullPointerException();
     }
 
     /**
-     * The provider of an exception or exception detail message used by the following methods:
-     * <ul>
-     *   <li>{@link Predicates#requireElementsNonNull(Iterable, Object)}</li>
-     *   <li>{@link Predicates#requireElements(Iterable, Predicate, Object)}</li>
-     *   <li>{@link Predicates#requireElements(Iterable, Predicate, ForIterable)}</li>
-     * </ul>
+     * A shortcut for the:
+     * <pre>
+     * (o) -> new NullPointerException(message)
+     * </pre>
      *
-     * @param <R> Either {@code Throwable} or {@code String} type.
-     * @param <T> The type of elements of the {@code Iterable} sequence.
+     * @param <T> The type of the object.
+     * @param message The {@code NullPointerException} detail message.
+     * @return A reference to the {@code NullPointerException} provider.
+     */
+    static <T> ExceptionProvider<T, NullPointerException> npe(String message) {
+      return (o) -> new NullPointerException(message);
+    }
+
+    /**
+     * A shortcut for the:
+     * <pre>
+     * (o) -> new IllegalArgumentException(
+     *     Strings.ellipsis(Objects.toString(o), EXCEPTION_MESSAGE_MAX_LENGTH))
+     * </pre>
+     *
+     * @param <T> The type of the object.
+     * @return A reference to the {@code IllegalArgumentException} provider.
+     */
+    static <T> ExceptionProvider<T, IllegalArgumentException> iae() {
+      return (o) -> new IllegalArgumentException(
+          Strings.ellipsis(Objects.toString(o), EXCEPTION_MESSAGE_MAX_LENGTH));
+    }
+
+    /**
+     * A shortcut for the:
+     * <pre>
+     * (o) -> new IllegalArgumentException(message)
+     * </pre>
+     *
+     * @param <T> The type of the object.
+     * @param message The {@code IllegalArgumentException} detail message.
+     * @return A reference to the {@code IllegalArgumentException} provider.
+     */
+    static <T> ExceptionProvider<T, IllegalArgumentException> iae(String message) {
+      return (o) -> new IllegalArgumentException(message);
+    }
+
+    // ExceptionProvider.OfSequence
+
+    /**
+     * A provider of exceptions that will be thrown by the {@code requireElementsNonNull()} and
+     * {@code requireElements()} methods to indicate that an element of the sequence does not
+     * satisfy the required condition.
+     *
+     * @param <S> The type of the sequence (either array or {@code Iterable}).
+     * @param <T> The type of elements of the sequence.
+     * @param <E> The type of the exception to be thrown.
      *
      * @author Fox Mulder
-     * @see Predicates#defer(ForIterable)
      */
     @FunctionalInterface
-    public static interface ForIterable<R, T> {
+    public static interface OfSequence<S, T, E extends Throwable> {
 
       /**
-       * Returns either a {@code Throwable} instance or an exception detail message for the
-       * specified index and element of an {@code Iterable} sequence.
+       * Returns a {@code Throwable} instance to be thrown for the specified sequence, index of an
+       * invalid element, and reference to it.
        *
-       * @param index The index in an {@code Iterable} sequence at which condition failed.
-       * @param element The invalid element of an {@code Iterable} sequence.
-       * @return Either a {@code Throwable} instance or an exception detail message.
+       * @param sequence The sequence that contains an invalid element.
+       * @param index The index of an invalid element in the sequence.
+       * @param element The reference to an invalid element of the sequence.
+       * @return A {@code Throwable} instance to be thrown.
        */
-      R get(int index, T element);
+      E create(S sequence, int index, T element);
+
+      /**
+       * A shortcut for the:
+       * <pre>
+       * (s, i, e) -> new NullPointerException("[" + i + "]")
+       * </pre>
+       *
+       * @param <S> The type of the sequence (either array or {@code Iterable}).
+       * @param <T> The type of elements of the sequence.
+       * @return A reference to the {@code NullPointerException} provider.
+       */
+      static <S, T> OfSequence<S, T, NullPointerException> npe() {
+        return (s, i, e) -> new NullPointerException("[" + i + "]");
+      }
+
+      /**
+       * A shortcut for the:
+       * <pre>
+       * (s, i, e) -> new NullPointerException(message)
+       * </pre>
+       *
+       * @param <S> The type of the sequence (either array or {@code Iterable}).
+       * @param <T> The type of elements of the sequence.
+       * @param message The {@code NullPointerException} detail message.
+       * @return A reference to the {@code NullPointerException} provider.
+       */
+      static <S, T> OfSequence<S, T, NullPointerException> npe(String message) {
+        return (s, i, e) -> new NullPointerException(message);
+      }
+
+      /**
+       * A shortcut for the:
+       * <pre>
+       * (s, i, e) -> new IllegalArgumentException(
+       *     Strings.ellipsis("[" + i + "] = " + Objects.toString(e), EXCEPTION_MESSAGE_MAX_LENGTH))
+       * </pre>
+       *
+       * @param <S> The type of the sequence (either array or {@code Iterable}).
+       * @param <T> The type of elements of the sequence.
+       * @return A reference to the {@code IllegalArgumentException} provider.
+       */
+      static <S, T> OfSequence<S, T, IllegalArgumentException> iae() {
+        return (s, i, e) -> new IllegalArgumentException(
+            Strings.ellipsis("[" + i + "] = " + Objects.toString(e), EXCEPTION_MESSAGE_MAX_LENGTH));
+      }
+
+      /**
+       * A shortcut for the:
+       * <pre>
+       * (s, i, e) -> new IllegalArgumentException(message)
+       * </pre>
+       *
+       * @param <S> The type of the sequence (either array or {@code Iterable}).
+       * @param <T> The type of elements of the sequence.
+       * @param message The {@code IllegalArgumentException} detail message.
+       * @return A reference to the {@code IllegalArgumentException} provider.
+       */
+      static <S, T> OfSequence<S, T, IllegalArgumentException> iae(String message) {
+        return (s, i, e) -> new IllegalArgumentException(message);
+      }
 
     }
 

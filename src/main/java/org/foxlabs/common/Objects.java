@@ -16,6 +16,7 @@
 
 package org.foxlabs.common;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 /**
@@ -28,6 +29,72 @@ public final class Objects {
   // Instantiation is not possible
   private Objects() {
     throw new IllegalAccessError();
+  }
+
+  // To string
+
+  /**
+   * Converts the specified object to a string representation.
+   *
+   * <p>
+   * The algorithm is:
+   * <ul>
+   *   <li>If the specified object reference is {@code null} then return {@code "null"}.</li>
+   *   <li>If the specified object reference is of {@code String} type then return
+   *       {@link Strings#escape(String)}.</li>
+   *   <li>If the specified object reference is of array type then return corresponding
+   *       {@code Arrays.toString()}.</li>
+   *   <li>If the specified object reference is of {@code Object} array type then return
+   *       {@link Arrays#deepToString(Object[])}.</li>
+   *   <li>Return {@code object.toString()} otherwise.</li>
+   * </ul>
+   * </p>
+   *
+   * @param object The reference to an object to be converted to a string representation.
+   * @return A string representation of the specified object.
+   */
+  // FIXME Need totally own implementation because Arrays.toString() does not take into account
+  // special case for CharSequence
+  public static String toString(Object object) {
+    if (object == null) {
+      return "null";
+    } else if (object instanceof CharSequence) {
+      return Strings.escape((CharSequence) object).toString();
+    } else if (object.getClass().isArray()) {
+      if (object instanceof boolean[]) {
+        return Arrays.toString((boolean[]) object);
+      } else if (object instanceof char[]) {
+        return Arrays.toString((char[]) object);
+      } else if (object instanceof byte[]) {
+        return Arrays.toString((byte[]) object);
+      } else if (object instanceof short[]) {
+        return Arrays.toString((short[]) object);
+      } else if (object instanceof int[]) {
+        return Arrays.toString((int[]) object);
+      } else if (object instanceof long[]) {
+        return Arrays.toString((long[]) object);
+      } else if (object instanceof float[]) {
+        return Arrays.toString((float[]) object);
+      } else if (object instanceof double[]) {
+        return Arrays.toString((double[]) object);
+      } else {
+        return Arrays.deepToString((Object[]) object);
+      }
+    }
+    return object.toString();
+  }
+
+  public static StringBuilder toString(boolean[] array, StringBuilder buffer) {
+    if (array == null) {
+      return buffer.append("null");
+    }
+    buffer.append('[');
+    if (array.length > 0) {
+      for (int index = 1; index < array.length; index++) {
+
+      }
+    }
+    return buffer.append(']');
   }
 
   // Miscellaneous
