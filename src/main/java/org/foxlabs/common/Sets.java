@@ -191,6 +191,8 @@ public final class Sets {
     return addAll0(set, elements);
   }
 
+  // Utilities
+  
   /* Adds all the specified elements to the specified set */
   @SafeVarargs
   private static <E, S extends Set<E>> S addAll0(S set, E... elements) {
