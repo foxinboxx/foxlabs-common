@@ -31,144 +31,167 @@ import static org.junit.Assert.*;
 import static org.foxlabs.common.Sets.*;
 
 /**
- * Tests for the {@link Predicates} class.
+ * Tests for the {@link Sets} class.
  *
  * @author Fox Mulder
  */
 public class SetsTest {
 
   /**
-   * Tests the following methods:
-   * <ul>
-   *   <li>{@link Sets#toHashSet(Object...)}</li>
-   *   <li>{@link Sets#toImmutableHashSet(Object...)}</li>
-   * </ul>
+   * Tests the {@link Sets#toHashSet(Object...)} method.
    */
   @Test
   public void testToHashSet() {
-    final Set<String> expectedSet = new HashSet<>();
-    Collections.addAll(expectedSet, "one", "two", "three");
-
-    // toHashSet(Object...)
     assertThrows(NullPointerException.class, () -> toHashSet((String[]) null));
     assertNotSame(Collections.emptySet(), toHashSet());
-    final Set<String> actualSet1 = toHashSet("one", "two", "three");
-    assertEquals(expectedSet, actualSet1);
-    actualSet1.add("four");
-    assertTrue(actualSet1.contains("one"));
-    assertTrue(actualSet1.contains("two"));
-    assertTrue(actualSet1.contains("three"));
-    assertTrue(actualSet1.contains("four"));
-
-    // toImmutableHashSet(Object...)
-    assertThrows(NullPointerException.class, () -> toImmutableHashSet((String[]) null));
-    assertSame(Collections.emptySet(), toImmutableHashSet());
-    final Set<String> actualSet2 = toImmutableHashSet("one", "two", "three");
-    assertEquals(expectedSet, actualSet2);
-    assertThrows(UnsupportedOperationException.class, () -> actualSet2.add("four"));
-    assertTrue(actualSet2.contains("one"));
-    assertTrue(actualSet2.contains("two"));
-    assertTrue(actualSet2.contains("three"));
+    final Set<String> sampleSet = new HashSet<>();
+    Collections.addAll(sampleSet, "one", "two", "three");
+    final Set<String> actualSet = toHashSet("one", "two", "three");
+    assertEquals(sampleSet, actualSet);
+    actualSet.add("four");
+    assertTrue(actualSet.contains("one"));
+    assertTrue(actualSet.contains("two"));
+    assertTrue(actualSet.contains("three"));
+    assertTrue(actualSet.contains("four"));
   }
 
   /**
-   * Tests the following methods:
-   * <ul>
-   *   <li>{@link Sets#toLinkedHashSet(Object...)}</li>
-   *   <li>{@link Sets#toImmutableLinkedHashSet(Object...)}</li>
-   * </ul>
+   * Tests the {@link Sets#toImmutableHashSet(Object...)} method.
+   */
+  @Test
+  public void testToImmutableHashSet() {
+    assertThrows(NullPointerException.class, () -> toImmutableHashSet((String[]) null));
+    assertSame(Collections.emptySet(), toImmutableHashSet());
+    final Set<String> sampleSet = new HashSet<>();
+    Collections.addAll(sampleSet, "one", "two", "three");
+    final Set<String> actualSet = toImmutableHashSet("one", "two", "three");
+    assertEquals(sampleSet, actualSet);
+    assertThrows(UnsupportedOperationException.class, () -> actualSet.add("four"));
+    assertTrue(actualSet.contains("one"));
+    assertTrue(actualSet.contains("two"));
+    assertTrue(actualSet.contains("three"));
+    assertFalse(actualSet.contains("four"));
+  }
+
+  /**
+   * Tests the {@link Sets#toLinkedHashSet(Object...)} method.
    */
   @Test
   public void testToLinkedHashSet() {
-    final Set<String> expectedSet = new LinkedHashSet<>();
-    Collections.addAll(expectedSet, "one", "two", "three");
-
-    // toLinkedHashSet(Object...)
     assertThrows(NullPointerException.class, () -> toLinkedHashSet((String[]) null));
     assertNotSame(Collections.emptySet(), toLinkedHashSet());
-    final Set<String> actualSet1 = toLinkedHashSet("one", "two", "three");
-    assertEquals(expectedSet, actualSet1);
-    actualSet1.add("four");
-    final Iterator<String> itr1 = actualSet1.iterator();
-    assertEquals("one", itr1.next());
-    assertEquals("two", itr1.next());
-    assertEquals("three", itr1.next());
-    assertEquals("four", itr1.next());
-
-    // toImmutableLinkedHashSet(Object...)
-    assertThrows(NullPointerException.class, () -> toImmutableLinkedHashSet((String[]) null));
-    assertSame(Collections.emptySet(), toImmutableLinkedHashSet());
-    final Set<String> actualSet2 = toImmutableLinkedHashSet("one", "two", "three");
-    assertEquals(expectedSet, actualSet2);
-    assertThrows(UnsupportedOperationException.class, () -> actualSet2.add("four"));
-    final Iterator<String> itr2 = actualSet2.iterator();
-    assertEquals("one", itr2.next());
-    assertEquals("two", itr2.next());
-    assertEquals("three", itr2.next());
+    final Set<String> sampleSet = new LinkedHashSet<>();
+    Collections.addAll(sampleSet, "one", "two", "three");
+    final Set<String> actualSet = toLinkedHashSet("one", "two", "three");
+    assertEquals(sampleSet, actualSet);
+    actualSet.add("four");
+    final Iterator<String> itr = actualSet.iterator();
+    assertEquals("one", itr.next());
+    assertEquals("two", itr.next());
+    assertEquals("three", itr.next());
+    assertEquals("four", itr.next());
+    assertFalse(itr.hasNext());
   }
 
   /**
-   * Tests the following methods:
-   * <ul>
-   *   <li>{@link Sets#toTreeSet(Object...)}</li>
-   *   <li>{@link Sets#toImmutableTreeSet(Object...)}</li>
-   *   <li>{@link Sets#toTreeSet(Comparator, Object...)}</li>
-   *   <li>{@link Sets#toImmutableTreeSet(Comparator, Object...)}</li>
-   * </ul>
+   * Tests the {@link Sets#toImmutableLinkedHashSet(Object...)} method.
+   */
+  @Test
+  public void testToImmutableLinkedHashSet() {
+    assertThrows(NullPointerException.class, () -> toImmutableLinkedHashSet((String[]) null));
+    assertSame(Collections.emptySet(), toImmutableLinkedHashSet());
+    final Set<String> sampleSet = new LinkedHashSet<>();
+    Collections.addAll(sampleSet, "one", "two", "three");
+    final Set<String> actualSet = toImmutableLinkedHashSet("one", "two", "three");
+    assertEquals(sampleSet, actualSet);
+    assertThrows(UnsupportedOperationException.class, () -> actualSet.add("four"));
+    final Iterator<String> itr = actualSet.iterator();
+    assertEquals("one", itr.next());
+    assertEquals("two", itr.next());
+    assertEquals("three", itr.next());
+    assertFalse(itr.hasNext());
+  }
+
+  /**
+   * Tests the {@link Sets#toTreeSet(Object...)} method.
    */
   @Test
   public void testToTreeSet() {
-    final SortedSet<String> expectedSet = new TreeSet<>();
-    Collections.addAll(expectedSet, "one", "two", "three");
-    final Comparator<String> comparator = (s1, s2) -> -s1.compareTo(s2);
-
-    // toTreeSet(Object...)
     assertThrows(NullPointerException.class, () -> toTreeSet((String[]) null));
     assertNotSame(Collections.emptySet(), toTreeSet());
-    final SortedSet<String> actualSet1 = toTreeSet("one", "two", "three");
-    assertEquals(expectedSet, actualSet1);
-    actualSet1.add("four");
-    final Iterator<String> itr1 = actualSet1.iterator();
-    assertEquals("four", itr1.next());
-    assertEquals("one", itr1.next());
-    assertEquals("three", itr1.next());
-    assertEquals("two", itr1.next());
+    final SortedSet<String> sampleSet = new TreeSet<>();
+    Collections.addAll(sampleSet, "one", "two", "three");
+    final SortedSet<String> actualSet = toTreeSet("one", "two", "three");
+    assertEquals(sampleSet, actualSet);
+    actualSet.add("four");
+    final Iterator<String> itr = actualSet.iterator();
+    assertEquals("four", itr.next());
+    assertEquals("one", itr.next());
+    assertEquals("three", itr.next());
+    assertEquals("two", itr.next());
+    assertFalse(itr.hasNext());
+  }
 
-    // toImmutableTreeSet(Object...)
+  /**
+   * Tests the {@link Sets#toImmutableTreeSet(Object...)} method.
+   */
+  @Test
+  public void testToImmutableTreeSet() {
     assertThrows(NullPointerException.class, () -> toImmutableTreeSet((String[]) null));
     assertSame(Collections.emptySortedSet(), toImmutableTreeSet());
-    final SortedSet<String> actualSet2 = toImmutableTreeSet("one", "two", "three");
-    assertEquals(expectedSet, actualSet2);
-    assertThrows(UnsupportedOperationException.class, () -> actualSet2.add("four"));
-    final Iterator<String> itr2 = actualSet2.iterator();
-    assertEquals("one", itr2.next());
-    assertEquals("three", itr2.next());
-    assertEquals("two", itr2.next());
+    final SortedSet<String> sampleSet = new TreeSet<>();
+    Collections.addAll(sampleSet, "one", "two", "three");
+    final SortedSet<String> actualSet = toImmutableTreeSet("one", "two", "three");
+    assertEquals(sampleSet, actualSet);
+    assertThrows(UnsupportedOperationException.class, () -> actualSet.add("four"));
+    final Iterator<String> itr = actualSet.iterator();
+    assertEquals("one", itr.next());
+    assertEquals("three", itr.next());
+    assertEquals("two", itr.next());
+    assertFalse(itr.hasNext());
+  }
 
-    // toTreeSet(Comparator, Object...)
+  /**
+   * Tests the {@link Sets#toTreeSet(Comparator, Object...)} method.
+   */
+  @Test
+  public void testToTreeSetWithComparator() {
     assertThrows(NullPointerException.class, () -> toTreeSet((Comparator<?>) null));
+    final Comparator<String> comparator = (s1, s2) -> -s1.compareTo(s2);
     assertThrows(NullPointerException.class, () -> toTreeSet(comparator, (String[]) null));
     assertNotSame(Collections.emptySortedSet(), toTreeSet(comparator));
-    final SortedSet<String> actualSet3 = toTreeSet(comparator, "one", "two", "three");
-    assertEquals(expectedSet, actualSet3);
-    actualSet3.add("four");
-    final Iterator<String> itr3 = actualSet3.iterator();
-    assertEquals("two", itr3.next());
-    assertEquals("three", itr3.next());
-    assertEquals("one", itr3.next());
-    assertEquals("four", itr3.next());
+    final SortedSet<String> sampleSet = new TreeSet<>();
+    Collections.addAll(sampleSet, "one", "two", "three");
+    final SortedSet<String> actualSet = toTreeSet(comparator, "one", "two", "three");
+    assertEquals(sampleSet, actualSet);
+    actualSet.add("four");
+    final Iterator<String> itr = actualSet.iterator();
+    assertEquals("two", itr.next());
+    assertEquals("three", itr.next());
+    assertEquals("one", itr.next());
+    assertEquals("four", itr.next());
+    assertFalse(itr.hasNext());
+  }
 
-    // toImmutableTreeSet(Comparator, Object...)
+  /**
+   * Tests the {@link Sets#toImmutableTreeSet(Comparator, Object...)} method.
+   */
+  @Test
+  public void testToImmutableTreeSetWithComparator() {
     assertThrows(NullPointerException.class, () -> toImmutableTreeSet((Comparator<?>) null));
+    final Comparator<String> comparator = (s1, s2) -> -s1.compareTo(s2);
     assertThrows(NullPointerException.class, () -> toImmutableTreeSet(comparator, (String[]) null));
     assertSame(Collections.emptySortedSet(), toImmutableTreeSet(comparator));
-    final SortedSet<String> actualSet4 = toImmutableTreeSet(comparator, "one", "two", "three");
-    assertEquals(expectedSet, actualSet4);
-    assertThrows(UnsupportedOperationException.class, () -> actualSet4.add("four"));
-    final Iterator<String> itr4 = actualSet4.iterator();
-    assertEquals("two", itr4.next());
-    assertEquals("three", itr4.next());
-    assertEquals("one", itr4.next());
+    final SortedSet<String> sampleSet = new TreeSet<>();
+    Collections.addAll(sampleSet, "one", "two", "three");
+    final SortedSet<String> actualSet = toImmutableTreeSet(comparator, "one", "two", "three");
+    assertEquals(sampleSet, actualSet);
+    assertThrows(UnsupportedOperationException.class, () -> actualSet.add("four"));
+    final Iterator<String> itr = actualSet.iterator();
+    assertEquals("two", itr.next());
+    assertEquals("three", itr.next());
+    assertEquals("one", itr.next());
+    assertFalse(itr.hasNext());
   }
 
   /**
@@ -176,13 +199,11 @@ public class SetsTest {
    */
   @Test
   public void testAddAll() {
-    final Set<String> sampleSet = new LinkedHashSet<>();
-    Collections.addAll(sampleSet, "one", "two", "three");
-
-    // addAll(Set, Object...)
     assertThrows(NullPointerException.class, () -> addAll((Set<?>) null));
     final Set<String> actualSet = new HashSet<>();
     assertThrows(NullPointerException.class, () -> addAll(actualSet, (String[]) null));
+    final Set<String> sampleSet = new LinkedHashSet<>();
+    Collections.addAll(sampleSet, "one", "two", "three");
     assertSame(actualSet, addAll(actualSet, "one", "two", "three"));
     assertEquals(sampleSet, actualSet);
     assertSame(actualSet, addAll(actualSet, "four"));
