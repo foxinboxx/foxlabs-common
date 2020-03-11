@@ -26,7 +26,7 @@ import java.util.function.DoublePredicate;
 
 /**
  * A collection of reusable predicates and the {@code requireNonNull()}, {@code require()},
- * {@code requireElementsNonNull()}, {@code requireElements()} methods that check that a given
+ * {@code requireAllNonNull()}, {@code requireAll()} methods that check that a given
  * object satisfies a given condition. The primary goal of this utility class is parameter
  * validation in methods and constructors.
  *
@@ -47,14 +47,14 @@ import java.util.function.DoublePredicate;
  *     ExceptionProvider.ofNPE("cannot be null", "result"));
  *
  * // Throws NPE with detail message: "[1]"
- * String[] items = requireElementsNonNull(new String[]{"one", null, "three"});
+ * String[] items = requireAllNonNull(new String[]{"one", null, "three"});
  *
  * // Throws NPE with detail message: "cannot be null: [1]"
- * String[] items = requireElementsNonNull(new String[]{"one", null, "three"},
+ * String[] items = requireAllNonNull(new String[]{"one", null, "three"},
  *     "cannot be null");
  *
  * // Throws NPE with detail message: "cannot be null: items[1]"
- * String[] items = requireElementsNonNull(new String[]{"one", null, "three"},
+ * String[] items = requireAllNonNull(new String[]{"one", null, "three"},
  *     ExceptionProvider.OfSequence.ofNPE("cannot be null", "items"));
  * </pre>
  * </p>
@@ -76,16 +76,16 @@ import java.util.function.DoublePredicate;
  *     ExceptionProvider.ofIAE("should be >= 0", "index"));
  *
  * // Throws IAE with detail message: "[2] = three"
- * List&lt;String&gt; items = requireElements(Arrays.asList("one", "two", "three"),
+ * List&lt;String&gt; items = requireAll(Arrays.asList("one", "two", "three"),
  *     (s) -> s != null && s.length() <= 3);
  *
  * // Throws IAE with detail message: "length should be <= 3: [2] = three"
- * List&lt;String&gt; items = requireElements(Arrays.asList("one", "two", "three"),
+ * List&lt;String&gt; items = requireAll(Arrays.asList("one", "two", "three"),
  *     (s) -> s != null && s.length() <= 3,
  *     "length should be <= 3");
  *
  * // Throws IAE with detail message: "length should be <= 3: items[2] = three"
- * List&lt;String&gt; items = requireElements(Arrays.asList("one", "two", "three"),
+ * List&lt;String&gt; items = requireAll(Arrays.asList("one", "two", "three"),
  *     (s) -> s != null && s.length() <= 3,
  *     ExceptionProvider.OfSequence.ofIAE("length should be <= 3", "items"));
  * </pre>
@@ -98,8 +98,13 @@ import java.util.function.DoublePredicate;
  * int index = require(-5, (int i) -> i > 10 && i < 100,
  *     (i) -> new IndexOutOfBoundsException("index should be > 10 and < 100: " + i));
  *
+ * // Returns "one two three"
+ * final Pattern pattern = Pattern.compile(".*two.*");
+ * String result = require("one two three", STRING_NON_EMPTY.and(match(pattern)),
+ *     ExceptionProvider.ofIAE("cannot be null or empty and should match '" + pattern + "'"));
+ *
  * // Throws NPE with detail message: "item cannot be null: items[2]"
- * List&lt;String&gt; items = requireElementsNonNull(
+ * List&lt;String&gt; items = requireAllNonNull(
  *     require(Arrays.asList("one", null, "three"), COLLECTION_NON_EMPTY_OR_NULL,
  *         "items cannot be null or empty"),
  *     ExceptionProvider.OfSequence.ofNPE("item cannot be null", "items"));
@@ -416,7 +421,7 @@ public final class Predicates {
   // Miscellaneous predicates
 
   /** (s) -> s != null && regex.matcher(s).matches() */
-  public static Predicate<String> match(java.util.regex.Pattern regex) {
+  public static Predicate<CharSequence> match(java.util.regex.Pattern regex) {
     return (s) -> s != null && regex.matcher(s).matches();
   }
 
@@ -759,7 +764,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElementsNonNull(array, ExceptionProvider.OfSequence.ofNPE())
+   * requireAllNonNull(array, ExceptionProvider.OfSequence.ofNPE())
    * </pre>
    * </p>
    *
@@ -768,8 +773,8 @@ public final class Predicates {
    * @return A reference to the specified array.
    * @throws NullPointerException if the specified array contains {@code null} elements.
    */
-  public static <T> T[] requireElementsNonNull(T[] array) {
-    return requireElementsNonNull(array, ExceptionProvider.OfSequence.ofNPE());
+  public static <T> T[] requireAllNonNull(T[] array) {
+    return requireAllNonNull(array, ExceptionProvider.OfSequence.ofNPE());
   }
 
   /**
@@ -780,7 +785,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElementsNonNull(array, ExceptionProvider.OfSequence.ofNPE(message))
+   * requireAllNonNull(array, ExceptionProvider.OfSequence.ofNPE(message))
    * </pre>
    * </p>
    *
@@ -790,8 +795,8 @@ public final class Predicates {
    * @return A reference to the specified array.
    * @throws NullPointerException if the specified array contains {@code null} elements.
    */
-  public static <T> T[] requireElementsNonNull(T[] array, String message) {
-    return requireElementsNonNull(array, ExceptionProvider.OfSequence.ofNPE(message));
+  public static <T> T[] requireAllNonNull(T[] array, String message) {
+    return requireAllNonNull(array, ExceptionProvider.OfSequence.ofNPE(message));
   }
 
   /**
@@ -806,7 +811,7 @@ public final class Predicates {
    * @return A reference to the specified array.
    * @throws E if the specified array contains {@code null} elements.
    */
-  public static <T, E extends Throwable> T[] requireElementsNonNull(T[] array,
+  public static <T, E extends Throwable> T[] requireAllNonNull(T[] array,
       ExceptionProvider.OfSequence<T[], T, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
@@ -825,7 +830,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE())
+   * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -836,8 +841,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified array does not
    *         satisfy the specified condition.
    */
-  public static <T> T[] requireElements(T[] array, Predicate<? super T> condition) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE());
+  public static <T> T[] requireAll(T[] array, Predicate<? super T> condition) {
+    return requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -848,7 +853,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
+   * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -860,8 +865,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified array does not
    *         satisfy the specified condition.
    */
-  public static <T> T[] requireElements(T[] array, Predicate<? super T> condition, String message) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
+  public static <T> T[] requireAll(T[] array, Predicate<? super T> condition, String message) {
+    return requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -878,7 +883,7 @@ public final class Predicates {
    * @throws E if at least one element of the specified array does not satisfy the specified
    *         condition.
    */
-  public static <T, E extends Throwable> T[] requireElements(T[] array, Predicate<? super T> condition,
+  public static <T, E extends Throwable> T[] requireAll(T[] array, Predicate<? super T> condition,
       ExceptionProvider.OfSequence<T[], T, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
@@ -899,7 +904,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE())
+   * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -909,8 +914,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code byte[]} array
    *         does not satisfy the specified condition.
    */
-  public static byte[] requireElements(byte[] array, IntPredicate condition) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE());
+  public static byte[] requireAll(byte[] array, IntPredicate condition) {
+    return requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -922,7 +927,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
+   * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -933,8 +938,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code byte[]} array
    *         does not satisfy the specified condition.
    */
-  public static byte[] requireElements(byte[] array, IntPredicate condition, String message) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
+  public static byte[] requireAll(byte[] array, IntPredicate condition, String message) {
+    return requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -950,7 +955,7 @@ public final class Predicates {
    * @throws E if at least one element of the specified {@code byte[]} array does not satisfy the
    *         specified condition.
    */
-  public static <E extends Throwable> byte[] requireElements(byte[] array, IntPredicate condition,
+  public static <E extends Throwable> byte[] requireAll(byte[] array, IntPredicate condition,
       ExceptionProvider.OfSequence<byte[], Byte, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
@@ -971,7 +976,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE())
+   * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -981,8 +986,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code short[]}
    *         array does not satisfy the specified condition.
    */
-  public static short[] requireElements(short[] array, IntPredicate condition) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE());
+  public static short[] requireAll(short[] array, IntPredicate condition) {
+    return requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -994,7 +999,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
+   * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -1005,8 +1010,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code short[]}
    *         array does not satisfy the specified condition.
    */
-  public static short[] requireElements(short[] array, IntPredicate condition, String message) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
+  public static short[] requireAll(short[] array, IntPredicate condition, String message) {
+    return requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -1022,7 +1027,7 @@ public final class Predicates {
    * @throws E if at least one element of the specified {@code short[]} array does not satisfy the
    *         specified condition.
    */
-  public static <E extends Throwable> short[] requireElements(short[] array, IntPredicate condition,
+  public static <E extends Throwable> short[] requireAll(short[] array, IntPredicate condition,
       ExceptionProvider.OfSequence<short[], Short, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
@@ -1043,7 +1048,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE())
+   * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -1053,8 +1058,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code int[]} array
    *         does not satisfy the specified condition.
    */
-  public static int[] requireElements(int[] array, IntPredicate condition) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE());
+  public static int[] requireAll(int[] array, IntPredicate condition) {
+    return requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -1066,7 +1071,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
+   * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -1077,8 +1082,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code int[]} array
    *         does not satisfy the specified condition.
    */
-  public static int[] requireElements(int[] array, IntPredicate condition, String message) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
+  public static int[] requireAll(int[] array, IntPredicate condition, String message) {
+    return requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -1094,7 +1099,7 @@ public final class Predicates {
    * @throws E if at least one element of the specified {@code int[]} array does not satisfy the
    *         specified condition.
    */
-  public static <E extends Throwable> int[] requireElements(int[] array, IntPredicate condition,
+  public static <E extends Throwable> int[] requireAll(int[] array, IntPredicate condition,
       ExceptionProvider.OfSequence<int[], Integer, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
@@ -1115,7 +1120,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE())
+   * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -1125,8 +1130,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code long[]} array
    *         does not satisfy the specified condition.
    */
-  public static long[] requireElements(long[] array, LongPredicate condition) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE());
+  public static long[] requireAll(long[] array, LongPredicate condition) {
+    return requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -1138,7 +1143,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
+   * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -1149,8 +1154,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code long[]} array
    *         does not satisfy the specified condition.
    */
-  public static long[] requireElements(long[] array, LongPredicate condition, String message) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
+  public static long[] requireAll(long[] array, LongPredicate condition, String message) {
+    return requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -1166,7 +1171,7 @@ public final class Predicates {
    * @throws E if at least one element of the specified {@code long[]} array does not satisfy the
    *         specified condition.
    */
-  public static <E extends Throwable> long[] requireElements(long[] array, LongPredicate condition,
+  public static <E extends Throwable> long[] requireAll(long[] array, LongPredicate condition,
       ExceptionProvider.OfSequence<long[], Long, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
@@ -1187,7 +1192,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE())
+   * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -1197,8 +1202,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code float[]}
    *         array does not satisfy the specified condition.
    */
-  public static float[] requireElements(float[] array, DoublePredicate condition) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE());
+  public static float[] requireAll(float[] array, DoublePredicate condition) {
+    return requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -1210,7 +1215,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
+   * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -1221,8 +1226,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code float[]}
    *         array does not satisfy the specified condition.
    */
-  public static float[] requireElements(float[] array, DoublePredicate condition, String message) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
+  public static float[] requireAll(float[] array, DoublePredicate condition, String message) {
+    return requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -1238,7 +1243,7 @@ public final class Predicates {
    * @throws E if at least one element of the specified {@code float[]} array does not satisfy the
    *         specified condition.
    */
-  public static <E extends Throwable> float[] requireElements(float[] array, DoublePredicate condition,
+  public static <E extends Throwable> float[] requireAll(float[] array, DoublePredicate condition,
       ExceptionProvider.OfSequence<float[], Float, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
@@ -1259,7 +1264,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE())
+   * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -1269,8 +1274,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code double[]}
    *         array does not satisfy the specified condition.
    */
-  public static double[] requireElements(double[] array, DoublePredicate condition) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE());
+  public static double[] requireAll(double[] array, DoublePredicate condition) {
+    return requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -1282,7 +1287,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
+   * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -1293,8 +1298,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code double[]}
    *         array does not satisfy the specified condition.
    */
-  public static double[] requireElements(double[] array, DoublePredicate condition, String message) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
+  public static double[] requireAll(double[] array, DoublePredicate condition, String message) {
+    return requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -1310,7 +1315,7 @@ public final class Predicates {
    * @throws E if at least one element of the specified {@code double[]} array does not satisfy the
    *         specified condition.
    */
-  public static <E extends Throwable> double[] requireElements(double[] array, DoublePredicate condition,
+  public static <E extends Throwable> double[] requireAll(double[] array, DoublePredicate condition,
       ExceptionProvider.OfSequence<double[], Double, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
@@ -1331,7 +1336,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE())
+   * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -1341,8 +1346,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code char[]} array
    *         does not satisfy the specified condition.
    */
-  public static char[] requireElements(char[] array, IntPredicate condition) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE());
+  public static char[] requireAll(char[] array, IntPredicate condition) {
+    return requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -1354,7 +1359,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
+   * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -1365,8 +1370,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code char[]} array
    *         does not satisfy the specified condition.
    */
-  public static char[] requireElements(char[] array, IntPredicate condition, String message) {
-    return requireElements(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
+  public static char[] requireAll(char[] array, IntPredicate condition, String message) {
+    return requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -1382,7 +1387,7 @@ public final class Predicates {
    * @throws E if at least one element of the specified {@code char[]} array does not satisfy the
    *         specified condition.
    */
-  public static <E extends Throwable> char[] requireElements(char[] array, IntPredicate condition,
+  public static <E extends Throwable> char[] requireAll(char[] array, IntPredicate condition,
       ExceptionProvider.OfSequence<char[], Character, E> exception) throws E {
     final int length = array == null ? 0 : array.length;
     for (int index = 0; index < length; index++) {
@@ -1403,7 +1408,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElementsNonNull(iterable, ExceptionProvider.OfSequence.ofNPE())
+   * requireAllNonNull(iterable, ExceptionProvider.OfSequence.ofNPE())
    * </pre>
    * </p>
    *
@@ -1414,8 +1419,8 @@ public final class Predicates {
    * @throws NullPointerException if the specified {@code Iterable} sequence contains {@code null}
    *         elements.
    */
-  public static <T, I extends Iterable<T>> I requireElementsNonNull(I iterable) {
-    return requireElementsNonNull(iterable, ExceptionProvider.OfSequence.ofNPE());
+  public static <T, I extends Iterable<T>> I requireAllNonNull(I iterable) {
+    return requireAllNonNull(iterable, ExceptionProvider.OfSequence.ofNPE());
   }
 
   /**
@@ -1426,7 +1431,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElementsNonNull(iterable, ExceptionProvider.OfSequence.ofNPE(message))
+   * requireAllNonNull(iterable, ExceptionProvider.OfSequence.ofNPE(message))
    * </pre>
    * </p>
    *
@@ -1438,8 +1443,8 @@ public final class Predicates {
    * @throws NullPointerException if the specified {@code Iterable} sequence contains {@code null}
    *         elements.
    */
-  public static <T, I extends Iterable<T>> I requireElementsNonNull(I iterable, String message) {
-    return requireElementsNonNull(iterable, ExceptionProvider.OfSequence.ofNPE(message));
+  public static <T, I extends Iterable<T>> I requireAllNonNull(I iterable, String message) {
+    return requireAllNonNull(iterable, ExceptionProvider.OfSequence.ofNPE(message));
   }
 
   /**
@@ -1455,7 +1460,7 @@ public final class Predicates {
    * @return A reference to the specified {@code Iterable} sequence.
    * @throws E if the specified {@code Iterable} sequence contains {@code null} elements.
    */
-  public static <T, I extends Iterable<T>, E extends Throwable> I requireElementsNonNull(I iterable,
+  public static <T, I extends Iterable<T>, E extends Throwable> I requireAllNonNull(I iterable,
       ExceptionProvider.OfSequence<I, T, E> exception) throws E {
     if (iterable != null) {
       final Iterator<T> itr = iterable.iterator();
@@ -1476,7 +1481,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(iterable, condition, ExceptionProvider.OfSequence.ofIAE())
+   * requireAll(iterable, condition, ExceptionProvider.OfSequence.ofIAE())
    * </pre>
    * </p>
    *
@@ -1488,8 +1493,8 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code Iterable}
    *         sequence does not satisfy the specified condition.
    */
-  public static <T, I extends Iterable<T>> I requireElements(I iterable, Predicate<? super T> condition) {
-    return requireElements(iterable, condition, ExceptionProvider.OfSequence.ofIAE());
+  public static <T, I extends Iterable<T>> I requireAll(I iterable, Predicate<? super T> condition) {
+    return requireAll(iterable, condition, ExceptionProvider.OfSequence.ofIAE());
   }
 
   /**
@@ -1501,7 +1506,7 @@ public final class Predicates {
    * <p>
    * This is a shortcut for the:
    * <pre>
-   * requireElements(iterable, condition, ExceptionProvider.OfSequence.ofIAE(message))
+   * requireAll(iterable, condition, ExceptionProvider.OfSequence.ofIAE(message))
    * </pre>
    * </p>
    *
@@ -1514,9 +1519,9 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code Iterable}
    *         sequence does not satisfy the specified condition.
    */
-  public static <T, I extends Iterable<T>> I requireElements(I iterable, Predicate<? super T> condition,
+  public static <T, I extends Iterable<T>> I requireAll(I iterable, Predicate<? super T> condition,
       String message) {
-    return requireElements(iterable, condition, ExceptionProvider.OfSequence.ofIAE(message));
+    return requireAll(iterable, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
   /**
@@ -1534,7 +1539,7 @@ public final class Predicates {
    * @throws E if at least one element of the specified {@code Iterable} sequence does not satisfy
    *         the specified condition.
    */
-  public static <T, I extends Iterable<T>, E extends Throwable> I requireElements(I iterable,
+  public static <T, I extends Iterable<T>, E extends Throwable> I requireAll(I iterable,
       Predicate<? super T> condition, ExceptionProvider.OfSequence<I, T, E> exception) throws E {
     if (iterable != null) {
       final Iterator<T> itr = iterable.iterator();
@@ -1648,8 +1653,8 @@ public final class Predicates {
     // ExceptionProvider.OfSequence
 
     /**
-     * A provider of exceptions that will be thrown by the {@code requireElementsNonNull()} and
-     * {@code requireElements()} methods to indicate that an element of the sequence does not
+     * A provider of exceptions that will be thrown by the {@code requireAllNonNull()} and
+     * {@code requireAll()} methods to indicate that an element of the sequence does not
      * satisfy the required condition.
      *
      * @param <S> The type of the sequence (either array or {@code Iterable}).
