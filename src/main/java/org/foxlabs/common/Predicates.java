@@ -1519,8 +1519,7 @@ public final class Predicates {
    * @throws IllegalArgumentException if at least one element of the specified {@code Iterable}
    *         sequence does not satisfy the specified condition.
    */
-  public static <T, I extends Iterable<T>> I requireAll(I iterable, Predicate<? super T> condition,
-      String message) {
+  public static <T, I extends Iterable<T>> I requireAll(I iterable, Predicate<? super T> condition, String message) {
     return requireAll(iterable, condition, ExceptionProvider.OfSequence.ofIAE(message));
   }
 
