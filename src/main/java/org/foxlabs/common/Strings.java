@@ -46,14 +46,56 @@ public final class Strings {
   public static final String ELLIPSIS = "...";
 
   /**
-   * Returns an empty string (i.e. {@code ""}) if the specified one is {@code null}, otherwise
-   * returns the specified string itself.
+   * The empty array of strings (i.e. {@code String[0]}).
+   */
+  public static final String[] EMPTY_ARRAY = new String[0];
+
+  // Null
+
+  /**
+   * Returns an empty string (i.e. {@code ""}) if the specified string is {@code null}, otherwise
+   * returns the a reference to the specified string.
    *
    * @param string The string to test.
    * @return {@code null}-safe string.
    */
   public static String nullSafe(String string) {
     return string == null ? "" : string;
+  }
+
+  /**
+   * Returns {@code null} if the specified string is {@code null} or empty (i.e. {@code ""}),
+   * otherwise returns a reference to the specified string.
+   *
+   * @param string The string to test for {@code null} or empty.
+   * @return {@code null} if the specified string is {@code null} or empty; a reference to the
+   *         specified string otherwise.
+   */
+  public static String nullify(String string) {
+    return string == null || string.isEmpty() ? null : string;
+  }
+
+  /**
+   * Returns the {@link #EMPTY_ARRAY} if the specified array of strings is {@code null} or empty,
+   * otherwise returns a reference to the specified array.
+   *
+   * @param strings The array of strings to test for {@code null} or empty.
+   * @return {@code null}-safe array of strings.
+   */
+  public static String[] nullSafe(String... strings) {
+    return strings == null || strings.length == 0 ? EMPTY_ARRAY : strings;
+  }
+
+  /**
+   * Returns {@code null} if the specified array of strings is {@code null} or empty, otherwise
+   * returns a reference to the specified array.
+   *
+   * @param strings The array of strings to test for {@code null} or empty.
+   * @return {@code null} if the specified array of strings is {@code null} or empty; a reference
+   *         to the specified array otherwise.
+   */
+  public static String[] nullify(String... strings) {
+    return strings == null || strings.length == 0 ? null : strings;
   }
 
   // Checks

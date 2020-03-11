@@ -17,9 +17,10 @@
 package org.foxlabs.common;
 
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.Comparator;
 import java.util.Collections;
 
@@ -38,38 +39,35 @@ public final class Sets {
   // Array operations
 
   /**
-   * Adds all the specified elements to the specified set. This is the same as the
-   * {@code Collections.addAll(set, elements)}, but returns a reference to the specified set.
-   *
-   * @param <E> The type of elements of the set.
-   * @param <S> The type of the set.
-   * @param set The set to add new elements to.
-   * @param elements The array of elements to be added to the set.
-   * @return A reference to the specified set.
-   * @throws NullPointerException if the specified set or elements is {@code null}.
-   * @see Collections#addAll(java.util.Collection, Object...)
-   */
-  @SafeVarargs
-  public static <E, S extends Set<E>> S addAll(S set, E... elements) {
-    Predicates.requireNonNull(set);
-    Predicates.requireNonNull(elements);
-    Collections.addAll(set, elements);
-    return set;
-  }
-
-  /**
    * Returns a new {@link HashSet} with the specified elements added. This is a shortcut for the
    * {@code addAll(new HashSet<>(), elements)}.
    *
    * @param <E> The type of elements of the set.
    * @param elements The array of elements to be added to the set.
    * @return A new {@link HashSet} with the specified elements added.
-   * @throws NullPointerException if the specified elements is {@code null}.
-   * @see #addAll(Set, Object...)
+   * @throws NullPointerException if the specified reference to elements is {@code null}.
    */
   @SafeVarargs
   public static <E> HashSet<E> toHashSet(E... elements) {
-    return addAll(new HashSet<>(), elements);
+    Predicates.requireNonNull(elements);
+    return addAll0(new HashSet<>(), elements);
+  }
+
+  /**
+   * Returns a new immutable {@link Set} based on the {@link HashSet} with the specified elements
+   * added.
+   *
+   * @param <E> The type of elements of the set.
+   * @param elements The array of elements to be added to the set.
+   * @return A new immutable {@link Set} with the specified elements added.
+   * @throws NullPointerException if the specified reference to elements is {@code null}.
+   */
+  @SafeVarargs
+  public static <E> Set<E> toImmutableHashSet(E... elements) {
+    Predicates.requireNonNull(elements);
+    return elements.length > 0
+        ? Collections.unmodifiableSet(addAll0(new HashSet<>(), elements))
+        : Collections.emptySet();
   }
 
   /**
@@ -79,12 +77,29 @@ public final class Sets {
    * @param <E> The type of elements of the set.
    * @param elements The array of elements to be added to the set.
    * @return A new {@link LinkedHashSet} with the specified elements added.
-   * @throws NullPointerException if the specified elements is {@code null}.
-   * @see #addAll(Set, Object...)
+   * @throws NullPointerException if the specified reference to elements is {@code null}.
    */
   @SafeVarargs
   public static <E> LinkedHashSet<E> toLinkedHashSet(E... elements) {
-    return addAll(new LinkedHashSet<>(), elements);
+    Predicates.requireNonNull(elements);
+    return addAll0(new LinkedHashSet<>(), elements);
+  }
+
+  /**
+   * Returns a new immutable {@link Set} based on the {@link LinkedHashSet} with the specified
+   * elements added.
+   *
+   * @param <E> The type of elements of the set.
+   * @param elements The array of elements to be added to the set.
+   * @return A new immutable {@link Set} with the specified elements added.
+   * @throws NullPointerException if the specified reference to elements is {@code null}.
+   */
+  @SafeVarargs
+  public static <E> Set<E> toImmutableLinkedHashSet(E... elements) {
+    Predicates.requireNonNull(elements);
+    return elements.length > 0
+        ? Collections.unmodifiableSet(addAll0(new LinkedHashSet<>(), elements))
+        : Collections.emptySet();
   }
 
   /**
@@ -94,12 +109,29 @@ public final class Sets {
    * @param <E> The type of elements of the set.
    * @param elements The array of elements to be added to the set.
    * @return A new {@link TreeSet} with the specified elements added.
-   * @throws NullPointerException if the specified elements is {@code null}.
-   * @see #addAll(Set, Object...)
+   * @throws NullPointerException if the specified reference to elements is {@code null}.
    */
   @SafeVarargs
   public static <E extends Comparable<? super E>> TreeSet<E> toTreeSet(E... elements) {
-    return addAll(new TreeSet<>(), elements);
+    Predicates.requireNonNull(elements);
+    return addAll0(new TreeSet<>(), elements);
+  }
+
+  /**
+   * Returns a new immutable {@link SortedSet} based on the {@link TreeSet} with the specified
+   * elements added.
+   *
+   * @param <E> The type of elements of the set.
+   * @param elements The array of elements to be added to the set.
+   * @return A new immutable {@link SortedSet} with the specified elements added.
+   * @throws NullPointerException if the specified reference to elements is {@code null}.
+   */
+  @SafeVarargs
+  public static <E> SortedSet<E> toImmutableTreeSet(E... elements) {
+    Predicates.requireNonNull(elements);
+    return elements.length > 0
+        ? Collections.unmodifiableSortedSet(addAll0(new TreeSet<>(), elements))
+        : Collections.emptySortedSet();
   }
 
   /**
@@ -110,12 +142,60 @@ public final class Sets {
    * @param comparator The comparator that will be used to order the resulting set.
    * @param elements The array of elements to be added to the set.
    * @return A new {@link TreeSet} with the specified elements added.
-   * @throws NullPointerException if the specified elements is {@code null}.
-   * @see #addAll(Set, Object...)
+   * @throws NullPointerException if the specified reference to comparator or elements is
+   *         {@code null}.
    */
   @SafeVarargs
   public static <E> TreeSet<E> toTreeSet(Comparator<? super E> comparator, E... elements) {
-    return addAll(new TreeSet<>(comparator), elements);
+    Predicates.requireNonNull(comparator);
+    Predicates.requireNonNull(elements);
+    return addAll0(new TreeSet<>(comparator), elements);
+  }
+
+  /**
+   * Returns a new immutable {@link SortedSet} based on the {@link TreeSet} with the specified
+   * elements added.
+   *
+   * @param <E> The type of elements of the set.
+   * @param comparator The comparator that will be used to order the resulting set.
+   * @param elements The array of elements to be added to the set.
+   * @return A new immutable {@link SortedSet} with the specified elements added.
+   * @throws NullPointerException if the specified reference to comparator or elements is
+   *         {@code null}.
+   */
+  @SafeVarargs
+  public static <E> SortedSet<E> toImmutableTreeSet(Comparator<? super E> comparator, E... elements) {
+    Predicates.requireNonNull(comparator);
+    Predicates.requireNonNull(elements);
+    return elements.length > 0
+        ? Collections.unmodifiableSortedSet(addAll0(new TreeSet<>(comparator), elements))
+        : Collections.emptySortedSet();
+  }
+
+  /**
+   * Adds all the specified elements to the specified set. This method does the same as the
+   * {@link Collections#addAll(java.util.Collection, Object...)}, but returns a reference to the
+   * specified set.
+   *
+   * @param <E> The type of elements of the set.
+   * @param <S> The type of the set.
+   * @param set The set to add new elements to.
+   * @param elements The array of elements to be added to the set.
+   * @return A reference to the specified set.
+   * @throws NullPointerException if the specified reference to set or elements is {@code null}.
+   */
+  @SafeVarargs
+  public static <E, S extends Set<E>> S addAll(S set, E... elements) {
+    Predicates.requireNonNull(set);
+    Predicates.requireNonNull(elements);
+    return addAll0(set, elements);
+  }
+
+  /* Adds all the specified elements to the specified set */
+  @SafeVarargs
+  private static <E, S extends Set<E>> S addAll0(S set, E... elements) {
+    Collections.addAll(set, elements);
+    return set;
   }
 
 }

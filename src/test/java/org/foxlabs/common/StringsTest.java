@@ -40,7 +40,7 @@ public class StringsTest {
    */
   @Test
   public void testNullSafe() {
-    Assert.assertEquals("", Strings.nullSafe(null));
+    Assert.assertEquals("", Strings.nullSafe((String) null));
     Assert.assertEquals("", Strings.nullSafe(""));
     Assert.assertEquals(" ", Strings.nullSafe(" "));
     Assert.assertEquals("TEST", Strings.nullSafe("TEST"));
