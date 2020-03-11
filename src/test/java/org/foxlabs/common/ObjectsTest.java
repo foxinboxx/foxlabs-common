@@ -34,11 +34,10 @@ public class ObjectsTest {
    * Tests the {@link Objects#cast(Object)} method.
    */
   @Test
-  @SuppressWarnings("unused")
   public void test_cast() {
-    assertThrows(ClassCastException.class, () -> { Integer number = Objects.cast(""); });
-    final Integer sampleNumber = Integer.valueOf(10);
-    assertSame(sampleNumber, cast(sampleNumber));
+    final Integer sampleObject = Integer.valueOf(10);
+    assertSame(sampleObject, cast(sampleObject));
+    assertThrows(ClassCastException.class, () -> new String(Objects.<char[]>cast(Integer.valueOf(10))));
   }
 
 }
