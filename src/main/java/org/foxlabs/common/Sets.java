@@ -64,7 +64,6 @@ public final class Sets {
    */
   @SafeVarargs
   public static <E> Set<E> toImmutableHashSet(E... elements) {
-    Predicates.requireNonNull(elements);
     return elements.length > 0
         ? Collections.unmodifiableSet(addAll0(new HashSet<>(), elements))
         : Collections.emptySet();
@@ -96,7 +95,6 @@ public final class Sets {
    */
   @SafeVarargs
   public static <E> Set<E> toImmutableLinkedHashSet(E... elements) {
-    Predicates.requireNonNull(elements);
     return elements.length > 0
         ? Collections.unmodifiableSet(addAll0(new LinkedHashSet<>(), elements))
         : Collections.emptySet();
@@ -128,7 +126,6 @@ public final class Sets {
    */
   @SafeVarargs
   public static <E> SortedSet<E> toImmutableTreeSet(E... elements) {
-    Predicates.requireNonNull(elements);
     return elements.length > 0
         ? Collections.unmodifiableSortedSet(addAll0(new TreeSet<>(), elements))
         : Collections.emptySortedSet();
@@ -166,7 +163,6 @@ public final class Sets {
   @SafeVarargs
   public static <E> SortedSet<E> toImmutableTreeSet(Comparator<? super E> comparator, E... elements) {
     Predicates.requireNonNull(comparator);
-    Predicates.requireNonNull(elements);
     return elements.length > 0
         ? Collections.unmodifiableSortedSet(addAll0(new TreeSet<>(comparator), elements))
         : Collections.emptySortedSet();
@@ -191,11 +187,19 @@ public final class Sets {
     return addAll0(set, elements);
   }
 
-  // Utilities
-  
-  /* Adds all the specified elements to the specified set */
+  /**
+   * Does the same as the {@link Collections#addAll(java.util.Collection, Object...)}, but returns
+   * a reference to the specified set. This method should be used internally when all the arguments
+   * checks like {@code Predicates.requireNonNull()} are done.
+   *
+   * @param <E> The type of elements of the set.
+   * @param <S> The type of the set.
+   * @param set The set to add new elements to.
+   * @param elements The array of elements to be added to the set.
+   * @return A reference to the specified set.
+   */
   @SafeVarargs
-  private static <E, S extends Set<E>> S addAll0(S set, E... elements) {
+  static <E, S extends Set<E>> S addAll0(S set, E... elements) {
     Collections.addAll(set, elements);
     return set;
   }

@@ -21,348 +21,279 @@ import java.util.function.Function;
 import java.util.function.IntPredicate;
 
 import org.junit.Test;
-import org.junit.Assert;
+
+import static org.junit.Assert.*;
+import static org.foxlabs.common.Strings.*;
 
 /**
- * Tests for the {@link Strings} class.
+ * Tests for methods of the {@link Strings} class.
  *
  * @author Fox Mulder
  */
 public class StringsTest {
 
-  /**
-   * The reference to an original string for {@code ==} comparisons in tests.
-   */
-  private String reference;
+  // Null
 
   /**
    * Tests the {@link Strings#nullSafe(String)} method.
    */
   @Test
-  public void testNullSafe() {
-    Assert.assertEquals("", Strings.nullSafe((String) null));
-    Assert.assertEquals("", Strings.nullSafe(""));
-    Assert.assertEquals(" ", Strings.nullSafe(" "));
-    Assert.assertEquals("TEST", Strings.nullSafe("TEST"));
+  public void test_nullSafe() {
+    assertEquals("", nullSafe((String) null));
+    assertEquals("", nullSafe(""));
+    assertEquals(" ", nullSafe(" "));
+    assertEquals("non-null", nullSafe("non-null"));
   }
+
+  // Checks
 
   /**
    * Tests the {@link Strings#isEmpty(String)} method.
    */
   @Test
-  public void testIsEmpty() {
-    Assert.assertFalse(Strings.isEmpty(null));
-    Assert.assertTrue(Strings.isEmpty(""));
-    Assert.assertFalse(Strings.isEmpty(" "));
-    Assert.assertFalse(Strings.isEmpty("TEST"));
+  public void test_isEmpty() {
+    assertFalse(isEmpty(null));
+    assertTrue(isEmpty(""));
+    assertFalse(isEmpty(" "));
+    assertFalse(isEmpty("non-empty"));
   }
 
   /**
    * Tests the {@link Strings#isEmptyOrNull(String)} method.
    */
   @Test
-  public void testIsEmptyOrNull() {
-    Assert.assertTrue(Strings.isEmptyOrNull(null));
-    Assert.assertTrue(Strings.isEmptyOrNull(""));
-    Assert.assertFalse(Strings.isEmptyOrNull(" "));
-    Assert.assertFalse(Strings.isEmptyOrNull("TEST"));
+  public void test_isEmptyOrNull() {
+    assertTrue(isEmptyOrNull(null));
+    assertTrue(isEmptyOrNull(""));
+    assertFalse(isEmptyOrNull(" "));
+    assertFalse(isEmptyOrNull("non-empty"));
   }
 
   /**
    * Tests the {@link Strings#isNonEmpty(String)} method.
    */
   @Test
-  public void testIsNonEmpty() {
-    Assert.assertFalse(Strings.isNonEmpty(null));
-    Assert.assertFalse(Strings.isNonEmpty(""));
-    Assert.assertTrue(Strings.isNonEmpty(" "));
-    Assert.assertTrue(Strings.isNonEmpty("TEST"));
+  public void test_isNonEmpty() {
+    assertFalse(isNonEmpty(null));
+    assertFalse(isNonEmpty(""));
+    assertTrue(isNonEmpty(" "));
+    assertTrue(isNonEmpty("non-empty"));
   }
 
   /**
    * Tests the {@link Strings#isBlank(String)} method.
    */
   @Test
-  public void testIsBlank() {
-    Assert.assertFalse(Strings.isBlank(null));
-    Assert.assertTrue(Strings.isBlank(""));
-    Assert.assertTrue(Strings.isBlank(" "));
-    Assert.assertTrue(Strings.isBlank("  "));
-    Assert.assertTrue(Strings.isBlank("\n\r\t"));
-    Assert.assertFalse(Strings.isBlank("TEST"));
+  public void test_isBlank() {
+    assertFalse(isBlank(null));
+    assertTrue(isBlank(""));
+    assertTrue(isBlank(" "));
+    assertTrue(isBlank("  "));
+    assertTrue(isBlank("\n\r\t"));
+    assertFalse(isBlank("non-blank"));
   }
 
   /**
    * Tests the {@link Strings#isBlankOrNull(String)} method.
    */
   @Test
-  public void testIsBlankOrNull() {
-    Assert.assertTrue(Strings.isBlankOrNull(null));
-    Assert.assertTrue(Strings.isBlankOrNull(""));
-    Assert.assertTrue(Strings.isBlankOrNull(" "));
-    Assert.assertTrue(Strings.isBlankOrNull("  "));
-    Assert.assertTrue(Strings.isBlankOrNull("\n\r\t"));
-    Assert.assertFalse(Strings.isBlankOrNull("TEST"));
+  public void test_isBlankOrNull() {
+    assertTrue(isBlankOrNull(null));
+    assertTrue(isBlankOrNull(""));
+    assertTrue(isBlankOrNull(" "));
+    assertTrue(isBlankOrNull("  "));
+    assertTrue(isBlankOrNull("\n\r\t"));
+    assertFalse(isBlankOrNull("non-blank"));
   }
 
   /**
    * Tests the {@link Strings#isNonBlank(String)} method.
    */
   @Test
-  public void testIsNonBlank() {
-    Assert.assertFalse(Strings.isNonBlank(null));
-    Assert.assertFalse(Strings.isNonBlank(""));
-    Assert.assertFalse(Strings.isNonBlank(" "));
-    Assert.assertFalse(Strings.isNonBlank("  "));
-    Assert.assertFalse(Strings.isNonBlank("\n\r\t"));
-    Assert.assertTrue(Strings.isNonBlank("TEST"));
+  public void test_isNonBlank() {
+    assertFalse(isNonBlank(null));
+    assertFalse(isNonBlank(""));
+    assertFalse(isNonBlank(" "));
+    assertFalse(isNonBlank("  "));
+    assertFalse(isNonBlank("\n\r\t"));
+    assertTrue(isNonBlank("non-blank"));
   }
 
   /**
    * Tests the {@link Strings#isWhitespaced(String)} method.
    */
   @Test
-  public void testIsWhitespaced() {
-    Assert.assertFalse(Strings.isWhitespaced(null));
-    Assert.assertTrue(Strings.isWhitespaced(""));
-    Assert.assertTrue(Strings.isWhitespaced(" "));
-    Assert.assertTrue(Strings.isWhitespaced("  "));
-    Assert.assertTrue(Strings.isWhitespaced("\n\r\t"));
-    Assert.assertFalse(Strings.isWhitespaced("TEST"));
-    Assert.assertTrue(Strings.isWhitespaced(" TEST"));
-    Assert.assertTrue(Strings.isWhitespaced("TEST "));
-    Assert.assertTrue(Strings.isWhitespaced(" TEST "));
-    Assert.assertTrue(Strings.isWhitespaced("T E S T"));
+  public void test_isWhitespaced() {
+    assertFalse(isWhitespaced(null));
+    assertTrue(isWhitespaced(""));
+    assertTrue(isWhitespaced(" "));
+    assertTrue(isWhitespaced("  "));
+    assertTrue(isWhitespaced("\n\r\t"));
+    assertFalse(isWhitespaced("non-whitespaced"));
+    assertTrue(isWhitespaced(" whitespaced"));
+    assertTrue(isWhitespaced("whitespaced "));
+    assertTrue(isWhitespaced(" whitespaced "));
+    assertTrue(isWhitespaced("w h i t e s p a c e d"));
   }
 
   /**
    * Tests the {@link Strings#isWhitespacedOrNull(String)} method.
    */
   @Test
-  public void testIsWhitespacedOrNull() {
-    Assert.assertTrue(Strings.isWhitespacedOrNull(null));
-    Assert.assertTrue(Strings.isWhitespacedOrNull(""));
-    Assert.assertTrue(Strings.isWhitespacedOrNull(" "));
-    Assert.assertTrue(Strings.isWhitespacedOrNull("  "));
-    Assert.assertTrue(Strings.isWhitespacedOrNull("\n\r\t"));
-    Assert.assertFalse(Strings.isWhitespacedOrNull("TEST"));
-    Assert.assertTrue(Strings.isWhitespacedOrNull(" TEST"));
-    Assert.assertTrue(Strings.isWhitespacedOrNull("TEST "));
-    Assert.assertTrue(Strings.isWhitespacedOrNull(" TEST "));
-    Assert.assertTrue(Strings.isWhitespacedOrNull("T E S T"));
+  public void test_isWhitespacedOrNull() {
+    assertTrue(isWhitespacedOrNull(null));
+    assertTrue(isWhitespacedOrNull(""));
+    assertTrue(isWhitespacedOrNull(" "));
+    assertTrue(isWhitespacedOrNull("  "));
+    assertTrue(isWhitespacedOrNull("\n\r\t"));
+    assertFalse(isWhitespacedOrNull("non-whitespaced"));
+    assertTrue(isWhitespacedOrNull(" whitespaced"));
+    assertTrue(isWhitespacedOrNull("whitespaced "));
+    assertTrue(isWhitespacedOrNull(" whitespaced "));
+    assertTrue(isWhitespacedOrNull("w h i t e s p a c e d"));
   }
 
   /**
    * Tests the {@link Strings#isNonWhitespaced(String)} method.
    */
   @Test
-  public void testIsNonWhitespaced() {
-    Assert.assertFalse(Strings.isNonWhitespaced(null));
-    Assert.assertFalse(Strings.isNonWhitespaced(""));
-    Assert.assertFalse(Strings.isNonWhitespaced(" "));
-    Assert.assertFalse(Strings.isNonWhitespaced("  "));
-    Assert.assertFalse(Strings.isNonWhitespaced("\n\r\t"));
-    Assert.assertTrue(Strings.isNonWhitespaced("TEST"));
-    Assert.assertFalse(Strings.isNonWhitespaced(" TEST"));
-    Assert.assertFalse(Strings.isNonWhitespaced("TEST "));
-    Assert.assertFalse(Strings.isNonWhitespaced(" TEST "));
-    Assert.assertFalse(Strings.isNonWhitespaced("T E S T"));
+  public void test_isNonWhitespaced() {
+    assertFalse(isNonWhitespaced(null));
+    assertFalse(isNonWhitespaced(""));
+    assertFalse(isNonWhitespaced(" "));
+    assertFalse(isNonWhitespaced("  "));
+    assertFalse(isNonWhitespaced("\n\r\t"));
+    assertTrue(isNonWhitespaced("non-whitespaced"));
+    assertFalse(isNonWhitespaced(" whitespaced"));
+    assertFalse(isNonWhitespaced("whitespaced "));
+    assertFalse(isNonWhitespaced(" whitespaced "));
+    assertFalse(isNonWhitespaced("w h i t e s p a c e d"));
   }
+
+  // Modifications
 
   /**
    * Tests the {@link Strings#replace(String, int, IntPredicate)} method.
    */
   @Test
-  public void testReplace() {
-    Assert.assertEquals(null, Strings.replace(null, 'X', (ch) -> true));
-    Assert.assertTrue(Strings.replace(reference = "", 'X', (ch) -> true) == reference);
-    Assert.assertTrue(Strings.replace(reference = "TEST", 'X', (ch) -> false) == reference);
-    Assert.assertTrue(Strings.replace(reference = "TEST", 'T', (ch) -> false) == reference);
-    Assert.assertEquals("_ES_", Strings.replace("TEST", '_', (ch) -> ch == 'T'));
+  public void test_replace() {
+    assertEquals(null, replace(null, 'X', (ch) -> true));
+    String sampleString = "";
+    assertSame(sampleString, replace(sampleString, 'X', (ch) -> true));
+    sampleString = "test";
+    assertSame(sampleString, replace(sampleString, 'X', (ch) -> false));
+    assertSame(sampleString, replace(sampleString, 't', (ch) -> false));
+    assertEquals("_es_", replace(sampleString, '_', (ch) -> ch == 't'));
   }
 
-  /**
-   * Tests the {@link Strings#replaceNullSafe(String, int, IntPredicate)} method.
-   */
-  @Test
-  public void testReplaceNullSafe() {
-    Assert.assertEquals("", Strings.replaceNullSafe(null, 'X', (ch) -> true));
-    Assert.assertEquals("", Strings.replaceNullSafe("", 'X', (ch) -> true));
-    Assert.assertTrue(Strings.replaceNullSafe(reference = "TEST", 'X', (ch) -> false) == reference);
-    Assert.assertTrue(Strings.replaceNullSafe(reference = "TEST", 'T', (ch) -> false) == reference);
-    Assert.assertEquals("_ES_", Strings.replaceNullSafe("TEST", '_', (ch) -> ch == 'T'));
-  }
-
-  /**
+ /**
    * Tests the {@link Strings#toLowerCase(String)} method.
    */
   @Test
-  public void testToLowerCase() {
-    Assert.assertEquals(null, Strings.toLowerCase(null));
-    Assert.assertTrue(Strings.toLowerCase(reference = "") == reference);
-    Assert.assertTrue(Strings.toLowerCase(reference = "test") == reference);
-    Assert.assertEquals("test", Strings.toLowerCase("TesT"));
-    Assert.assertEquals("test", Strings.toLowerCase("TEST"));
-    Assert.assertEquals(" test", Strings.toLowerCase(" TEST"));
-    Assert.assertEquals("test ", Strings.toLowerCase("TEST "));
-    Assert.assertEquals(" test ", Strings.toLowerCase(" TEST "));
-  }
-
-  /**
-   * Tests the {@link Strings#toLowerCaseNullSafe(String)} method.
-   */
-  @Test
-  public void testToLowerCaseNullSafe() {
-    Assert.assertEquals("", Strings.toLowerCaseNullSafe(null));
-    Assert.assertTrue(Strings.toLowerCaseNullSafe(reference = "") == reference);
-    Assert.assertTrue(Strings.toLowerCaseNullSafe(reference = "test") == reference);
-    Assert.assertEquals("test", Strings.toLowerCaseNullSafe("TesT"));
-    Assert.assertEquals("test", Strings.toLowerCaseNullSafe("TEST"));
-    Assert.assertEquals(" test", Strings.toLowerCaseNullSafe(" TEST"));
-    Assert.assertEquals("test ", Strings.toLowerCaseNullSafe("TEST "));
-    Assert.assertEquals(" test ", Strings.toLowerCaseNullSafe(" TEST "));
+  public void test_toLowerCase() {
+    assertEquals(null, toLowerCase(null));
+    String sampleString = "";
+    assertSame(sampleString, toLowerCase(sampleString));
+    sampleString = "test";
+    assertSame(sampleString, toLowerCase(sampleString));
+    assertEquals("test", toLowerCase("TesT"));
+    assertEquals("test", toLowerCase("TEST"));
+    assertEquals(" test", toLowerCase(" TEST"));
+    assertEquals("test ", toLowerCase("TEST "));
+    assertEquals(" test ", toLowerCase(" TEST "));
   }
 
   /**
    * Tests the {@link Strings#toUpperCase(String)} method.
    */
   @Test
-  public void testToUpperCase() {
-    Assert.assertEquals(null, Strings.toUpperCase(null));
-    Assert.assertTrue(Strings.toUpperCase(reference = "") == reference);
-    Assert.assertTrue(Strings.toUpperCase(reference = "TEST") == reference);
-    Assert.assertEquals("TEST", Strings.toUpperCase("TesT"));
-    Assert.assertEquals(" TEST", Strings.toUpperCase(" test"));
-    Assert.assertEquals("TEST ", Strings.toUpperCase("test "));
-    Assert.assertEquals(" TEST ", Strings.toUpperCase(" test "));
-  }
-
-  /**
-   * Tests the {@link Strings#toUpperCaseNullSafe(String)} method.
-   */
-  @Test
-  public void testToUpperCaseNullSafe() {
-    Assert.assertEquals("", Strings.toUpperCaseNullSafe(null));
-    Assert.assertTrue(Strings.toUpperCaseNullSafe(reference = "") == reference);
-    Assert.assertTrue(Strings.toUpperCaseNullSafe(reference = "TEST") == reference);
-    Assert.assertEquals("TEST", Strings.toUpperCaseNullSafe("TesT"));
-    Assert.assertEquals(" TEST", Strings.toUpperCaseNullSafe(" test"));
-    Assert.assertEquals("TEST ", Strings.toUpperCaseNullSafe("test "));
-    Assert.assertEquals(" TEST ", Strings.toUpperCaseNullSafe(" test "));
+  public void test_toUpperCase() {
+    assertEquals(null, toUpperCase(null));
+    String sampleString = "";
+    assertSame(sampleString, toUpperCase(sampleString));
+    sampleString = "TEST";
+    assertSame(sampleString, toUpperCase(sampleString));
+    assertEquals("TEST", toUpperCase("TesT"));
+    assertEquals(" TEST", toUpperCase(" test"));
+    assertEquals("TEST ", toUpperCase("test "));
+    assertEquals(" TEST ", toUpperCase(" test "));
   }
 
   /**
    * Tests the {@link Strings#trim(String)} method.
    */
   @Test
-  public void testTrim() {
-    Assert.assertEquals(null, Strings.trim(null));
-    Assert.assertEquals(null, Strings.trim(""));
-    Assert.assertEquals(null, Strings.trim(" "));
-    Assert.assertEquals(null, Strings.trim("  "));
-    Assert.assertEquals(null, Strings.trim("\n\r\t"));
-    Assert.assertTrue(Strings.trim(reference = "TEST") == reference);
-    Assert.assertEquals("TEST", Strings.trim(" TEST"));
-    Assert.assertEquals("TEST", Strings.trim("TEST "));
-    Assert.assertEquals("TEST", Strings.trim(" TEST "));
-    Assert.assertEquals("T E S T", Strings.trim("T E S T"));
-    Assert.assertEquals("T E S T", Strings.trim(" T E S T "));
-  }
-
-  /**
-   * Tests the {@link Strings#trimNullSafe(String)} method.
-   */
-  @Test
-  public void testTrimNullSafe() {
-    Assert.assertEquals("", Strings.trimNullSafe(null));
-    Assert.assertEquals("", Strings.trimNullSafe(""));
-    Assert.assertEquals("", Strings.trimNullSafe(" "));
-    Assert.assertEquals("", Strings.trimNullSafe("  "));
-    Assert.assertEquals("", Strings.trimNullSafe("\n\r\t"));
-    Assert.assertTrue(Strings.trimNullSafe(reference = "TEST") == reference);
-    Assert.assertEquals("TEST", Strings.trimNullSafe(" TEST"));
-    Assert.assertEquals("TEST", Strings.trimNullSafe("TEST "));
-    Assert.assertEquals("TEST", Strings.trimNullSafe(" TEST "));
-    Assert.assertEquals("T E S T", Strings.trimNullSafe("T E S T"));
-    Assert.assertEquals("T E S T", Strings.trimNullSafe(" T E S T "));
+  public void test_trim() {
+    final String sampleString = "test";
+    assertSame(sampleString, trim(sampleString));
+    assertEquals(null, trim(null));
+    assertEquals(null, trim(""));
+    assertEquals(null, trim(" "));
+    assertEquals(null, trim("  "));
+    assertEquals(null, trim("\n\r\t"));
+    assertEquals("test", trim(" test"));
+    assertEquals("test", trim("test "));
+    assertEquals("test", trim(" test "));
+    assertEquals("t e s t", trim("t e s t"));
+    assertEquals("t e s t", trim(" t e s t "));
   }
 
   /**
    * Tests the {@link Strings#cut(String, int)} method.
    */
   @Test
-  public void testCut() {
-    Assert.assertThrows(IllegalArgumentException.class, () -> Strings.cut(null, -1));
-    Assert.assertEquals(null, Strings.cut(null, 10));
-    Assert.assertEquals(null, Strings.cut("", 0));
-    Assert.assertEquals(null, Strings.cut("", 10));
-    Assert.assertEquals(null, Strings.cut("TEST", 0));
-    Assert.assertTrue(Strings.cut(reference = "TEST", 4) == reference);
-    Assert.assertEquals("T", Strings.cut("TEST", 1));
-  }
-
-  /**
-   * Tests the {@link Strings#cutNullSafe(String, int)} method.
-   */
-  @Test
-  public void testCutNullSafe() {
-    Assert.assertThrows(IllegalArgumentException.class, () -> Strings.cutNullSafe(null, -1));
-    Assert.assertEquals("", Strings.cutNullSafe(null, 10));
-    Assert.assertTrue(Strings.cutNullSafe(reference = "", 0) == reference);
-    Assert.assertTrue(Strings.cutNullSafe(reference = "", 10) == reference);
-    Assert.assertEquals("", Strings.cutNullSafe("TEST", 0));
-    Assert.assertTrue(Strings.cutNullSafe(reference = "TEST", 4) == reference);
-    Assert.assertEquals("T", Strings.cutNullSafe("TEST", 1));
+  public void test_cut() {
+    final String sampleString = "test";
+    assertSame(sampleString, cut(sampleString, 4));
+    assertThrows(IllegalArgumentException.class, () -> cut(null, -1));
+    assertEquals(null, cut(null, 10));
+    assertEquals(null, cut("", 0));
+    assertEquals(null, cut("", 10));
+    assertEquals(null, cut("test", 0));
+    assertEquals("t", cut("test", 1));
   }
 
   /**
    * Tests the {@link Strings#ellipsis(String, int)} method.
    */
   @Test
-  public void testEllipsis() {
-    Assert.assertThrows(IllegalArgumentException.class, () -> Strings.ellipsis(null, -1));
-    Assert.assertEquals(null, Strings.ellipsis(null, 10));
-    Assert.assertEquals(null, Strings.ellipsis("", 0));
-    Assert.assertEquals(null, Strings.ellipsis("", 10));
-    Assert.assertEquals(null, Strings.ellipsis("TEST", 0));
-    Assert.assertTrue(Strings.ellipsis(reference = "TEST", 4) == reference);
-    Assert.assertEquals("T...", Strings.ellipsis("TEST", 1));
+  public void test_ellipsis() {
+    final String sampleString = "test";
+    assertSame(sampleString, ellipsis(sampleString, 4));
+    assertThrows(IllegalArgumentException.class, () -> ellipsis(null, -1));
+    assertEquals(null, ellipsis(null, 10));
+    assertEquals(null, ellipsis("", 0));
+    assertEquals(null, ellipsis("", 10));
+    assertEquals(null, ellipsis("test", 0));
+    assertEquals("t...", ellipsis("test", 1));
+  }
+
+  // Miscellaneous
+
+ /**
+   * Tests the {@link Strings#join(String, Function, Object...)} method.
+   */
+  @Test
+  public void test_join_array() {
+    assertThrows(NullPointerException.class, () -> join(null, Function.identity()));
+    assertThrows(NullPointerException.class, () -> join(",", null));
+    assertThrows(NullPointerException.class, () -> join(",", Object::toString, (Object[]) null));
+    assertEquals("", join(",", Function.identity()));
+    assertEquals("one,two", join(",", Function.identity(), "one", "two"));
+    assertEquals("1,2", join(",", Object::toString, 1, 2));
   }
 
   /**
-   * Tests the {@link Strings#ellipsisNullSafe(String, int)} method.
+   * Tests the {@link Strings#join(String, Function, Iterable)} method.
    */
   @Test
-  public void testEllipsisNullSafe() {
-    Assert.assertThrows(IllegalArgumentException.class, () -> Strings.ellipsisNullSafe(null, -1));
-    Assert.assertEquals("", Strings.ellipsisNullSafe(null, 10));
-    Assert.assertTrue(Strings.ellipsisNullSafe(reference = "", 0) == reference);
-    Assert.assertTrue(Strings.ellipsisNullSafe(reference = "", 10) == reference);
-    Assert.assertEquals("", Strings.ellipsisNullSafe("TEST", 0));
-    Assert.assertTrue(Strings.ellipsisNullSafe(reference = "TEST", 4) == reference);
-    Assert.assertEquals("T...", Strings.ellipsisNullSafe("TEST", 1));
-  }
-
-  /**
-   * Tests the {@link Strings#join(String, Function, Object...)} and
-   * {@link Strings#join(String, Function, Iterable) methods.
-   */
-  @Test
-  public void testJoin() {
-    // Strings.join(String, Function, Object...)
-    Assert.assertThrows(NullPointerException.class, () -> Strings.join(null, Function.identity()));
-    Assert.assertThrows(NullPointerException.class, () -> Strings.join(",", null));
-    Assert.assertThrows(NullPointerException.class, () -> Strings.join(",", Object::toString, (Object[]) null));
-    Assert.assertEquals("", Strings.join(",", Function.identity()));
-    Assert.assertEquals("a,b", Strings.join(",", Function.identity(), "a", "b"));
-    Assert.assertEquals("1,2", Strings.join(",", Object::toString, 1, 2));
-    // Strings#join(String, Function, Iterable)
-    Assert.assertThrows(NullPointerException.class, () -> Strings.join(null, Function.identity(), Arrays.asList()));
-    Assert.assertThrows(NullPointerException.class, () -> Strings.join(",", null, Arrays.asList()));
-    Assert.assertThrows(NullPointerException.class, () -> Strings.join(",", Object::toString, (Object[]) null));
-    Assert.assertEquals("", Strings.join(",", Function.identity(), Arrays.asList()));
-    Assert.assertEquals("a,b", Strings.join(",", Function.identity(), Arrays.asList("a", "b")));
-    Assert.assertEquals("1,2", Strings.join(",", Object::toString, Arrays.asList(1, 2)));
+  public void test_join_iterable() {
+    assertThrows(NullPointerException.class, () -> join(null, Function.identity(), Arrays.asList()));
+    assertThrows(NullPointerException.class, () -> join(",", null, Arrays.asList()));
+    assertThrows(NullPointerException.class, () -> join(",", Object::toString, (Object[]) null));
+    assertEquals("", join(",", Function.identity(), Arrays.asList()));
+    assertEquals("one,two", join(",", Function.identity(), Arrays.asList("one", "two")));
+    assertEquals("1,2", join(",", Object::toString, Arrays.asList(1, 2)));
   }
 
 }

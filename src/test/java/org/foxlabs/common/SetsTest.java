@@ -31,17 +31,19 @@ import static org.junit.Assert.*;
 import static org.foxlabs.common.Sets.*;
 
 /**
- * Tests for the {@link Sets} class.
+ * Tests for methods of the {@link Sets} class.
  *
  * @author Fox Mulder
  */
 public class SetsTest {
 
+  // Array operations
+
   /**
    * Tests the {@link Sets#toHashSet(Object...)} method.
    */
   @Test
-  public void testToHashSet() {
+  public void test_toHashSet() {
     assertThrows(NullPointerException.class, () -> toHashSet((String[]) null));
     assertNotSame(Collections.emptySet(), toHashSet());
     final Set<String> sampleSet = new HashSet<>();
@@ -59,7 +61,7 @@ public class SetsTest {
    * Tests the {@link Sets#toImmutableHashSet(Object...)} method.
    */
   @Test
-  public void testToImmutableHashSet() {
+  public void test_toImmutableHashSet() {
     assertThrows(NullPointerException.class, () -> toImmutableHashSet((String[]) null));
     assertSame(Collections.emptySet(), toImmutableHashSet());
     final Set<String> sampleSet = new HashSet<>();
@@ -77,7 +79,7 @@ public class SetsTest {
    * Tests the {@link Sets#toLinkedHashSet(Object...)} method.
    */
   @Test
-  public void testToLinkedHashSet() {
+  public void test_toLinkedHashSet() {
     assertThrows(NullPointerException.class, () -> toLinkedHashSet((String[]) null));
     assertNotSame(Collections.emptySet(), toLinkedHashSet());
     final Set<String> sampleSet = new LinkedHashSet<>();
@@ -97,7 +99,7 @@ public class SetsTest {
    * Tests the {@link Sets#toImmutableLinkedHashSet(Object...)} method.
    */
   @Test
-  public void testToImmutableLinkedHashSet() {
+  public void test_toImmutableLinkedHashSet() {
     assertThrows(NullPointerException.class, () -> toImmutableLinkedHashSet((String[]) null));
     assertSame(Collections.emptySet(), toImmutableLinkedHashSet());
     final Set<String> sampleSet = new LinkedHashSet<>();
@@ -116,7 +118,7 @@ public class SetsTest {
    * Tests the {@link Sets#toTreeSet(Object...)} method.
    */
   @Test
-  public void testToTreeSet() {
+  public void test_toTreeSet() {
     assertThrows(NullPointerException.class, () -> toTreeSet((String[]) null));
     assertNotSame(Collections.emptySet(), toTreeSet());
     final SortedSet<String> sampleSet = new TreeSet<>();
@@ -136,7 +138,7 @@ public class SetsTest {
    * Tests the {@link Sets#toImmutableTreeSet(Object...)} method.
    */
   @Test
-  public void testToImmutableTreeSet() {
+  public void test_toImmutableTreeSet() {
     assertThrows(NullPointerException.class, () -> toImmutableTreeSet((String[]) null));
     assertSame(Collections.emptySortedSet(), toImmutableTreeSet());
     final SortedSet<String> sampleSet = new TreeSet<>();
@@ -155,7 +157,7 @@ public class SetsTest {
    * Tests the {@link Sets#toTreeSet(Comparator, Object...)} method.
    */
   @Test
-  public void testToTreeSetWithComparator() {
+  public void test_toTreeSet_comparator() {
     assertThrows(NullPointerException.class, () -> toTreeSet((Comparator<?>) null));
     final Comparator<String> comparator = (s1, s2) -> -s1.compareTo(s2);
     assertThrows(NullPointerException.class, () -> toTreeSet(comparator, (String[]) null));
@@ -177,7 +179,7 @@ public class SetsTest {
    * Tests the {@link Sets#toImmutableTreeSet(Comparator, Object...)} method.
    */
   @Test
-  public void testToImmutableTreeSetWithComparator() {
+  public void test_toImmutableTreeSet_comparator() {
     assertThrows(NullPointerException.class, () -> toImmutableTreeSet((Comparator<?>) null));
     final Comparator<String> comparator = (s1, s2) -> -s1.compareTo(s2);
     assertThrows(NullPointerException.class, () -> toImmutableTreeSet(comparator, (String[]) null));
@@ -198,7 +200,7 @@ public class SetsTest {
    * Tests the {@link Sets#addAll(Set, Object...)} method.
    */
   @Test
-  public void testAddAll() {
+  public void test_addAll() {
     assertThrows(NullPointerException.class, () -> addAll((Set<?>) null));
     final Set<String> actualSet = new HashSet<>();
     assertThrows(NullPointerException.class, () -> addAll(actualSet, (String[]) null));

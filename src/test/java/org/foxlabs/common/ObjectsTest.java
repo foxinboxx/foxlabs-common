@@ -16,44 +16,29 @@
 
 package org.foxlabs.common;
 
-import java.util.function.Supplier;
-
 import org.junit.Test;
-import org.junit.Assert;
+
+import static org.junit.Assert.*;
+import static org.foxlabs.common.Objects.*;
 
 /**
- * Tests for the {@link Objects} class.
+ * Tests for methods of the {@link Objects} class.
  *
  * @author Fox Mulder
  */
 public class ObjectsTest {
 
-  /**
-   * The reference to an original object for {@code ==} comparisons in tests.
-   */
-  private Object reference;
-
-  /**
-   * The reference to a {@link Number} for cast operations in tests.
-   */
-  @SuppressWarnings("unused")
-  private Number number;
+  // Miscellaneous
 
   /**
    * Tests the {@link Objects#cast(Object)} method.
    */
   @Test
-  public void testCast() {
-    Assert.assertTrue((number = Objects.cast(reference = Integer.valueOf(1))) == reference);
-    Assert.assertThrows(ClassCastException.class, () -> number = Objects.cast(""));
-  }
-
-  /**
-   * Tests the {@link Objects#message(Supplier)} method.
-   */
-  @Test
-  public void testMessage() {
-    Assert.assertEquals("TEST", Objects.message(() -> "TEST").toString());
+  @SuppressWarnings("unused")
+  public void test_cast() {
+    assertThrows(ClassCastException.class, () -> { Integer number = Objects.cast(""); });
+    final Integer sampleNumber = Integer.valueOf(10);
+    assertSame(sampleNumber, cast(sampleNumber));
   }
 
 }

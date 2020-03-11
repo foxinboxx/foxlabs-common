@@ -157,8 +157,10 @@ public final class Objects {
    *
    * @param formatter The {@code Object.toString()} result formatter.
    * @return A new object instance with the overridden {@code Object.toString()} method.
+   * @throws NullPointerException if the specified formatter is {@code null}.
    */
   public static Object message(Supplier<String> formatter) {
+    Predicates.requireNonNull(formatter);
     return new Object() {
       @Override public String toString() {
         return formatter.get();

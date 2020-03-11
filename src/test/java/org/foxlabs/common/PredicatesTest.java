@@ -19,65 +19,100 @@ package org.foxlabs.common;
 import java.util.function.Predicate;
 
 import org.junit.Test;
-import org.junit.Assert;
 
+import static org.junit.Assert.*;
 import static org.foxlabs.common.Predicates.*;
 
 /**
- * Tests for the {@link Predicates} class.
+ * Tests for methods of the {@link Predicates} class.
  *
  * @author Fox Mulder
  */
 public class PredicatesTest {
 
+  // Simple checks
+
+  // Object
+
   /**
-   * Tests the following methods:
-   * <ul>
-   *   <li>{@link Predicates#requireNonNull(Object)}</li>
-   *   <li>{@link Predicates#requireNonNull(Object, String)}</li>
-   *   <li>{@link Predicates#requireNonNull(Object, ExceptionProvider)}</li>
-   * </ul>
+   * Tests the {@link Predicates#requireNonNull(Object)} method.
    */
   @Test
-  public void testRequireNonNull() {
-    final Object reference = new Object();
-    // requireNonNull(Object)
-    Assert.assertTrue(requireNonNull(reference) == reference);
-    Assert.assertEquals(null, Assert.assertThrows(NullPointerException.class,
+  public void test_requireNonNull() {
+    final Object sampleObject = new Object();
+    assertSame(sampleObject, requireNonNull(sampleObject));
+    assertEquals(null, assertThrows(NullPointerException.class,
         () -> requireNonNull(null)).getMessage());
-    // requireNonNull(Object, String)
-    Assert.assertTrue(requireNonNull(reference, "TEST") == reference);
-    Assert.assertEquals("TEST", Assert.assertThrows(NullPointerException.class,
-        () -> requireNonNull(null, "TEST")).getMessage());
-    // requireNonNull(Object, ExceptionProvider)
-    Assert.assertTrue(requireNonNull(reference, ExceptionProvider.ofNPE()) == reference);
-    Assert.assertEquals("TEST", Assert.assertThrows(NullPointerException.class,
-            () -> requireNonNull(null, ExceptionProvider.ofNPE("TEST"))).getMessage());
   }
 
   /**
-   * Tests the following methods:
-   * <ul>
-   *   <li>{@link Predicates#require(Object, Predicate)}</li>
-   *   <li>{@link Predicates#require(Object, Predicate, String)}</li>
-   *   <li>{@link Predicates#require(Object, Predicate, ExceptionProvider)}</li>
-   * </ul>
+   * Tests the {@link Predicates#requireNonNull(Object, String)} method.
    */
   @Test
-  public void testRequire() {
-    final Object reference = new Object();
-    // require(Object, Predicate)
-    Assert.assertTrue(require(reference, (o) -> true) == reference);
-    Assert.assertEquals("null", Assert.assertThrows(IllegalArgumentException.class,
-        () -> require(null, (o) -> false)).getMessage());
-    // require(Object, Predicate, String)
-    Assert.assertTrue(require(reference, (o) -> true, "test") == reference);
-    Assert.assertEquals("test: null", Assert.assertThrows(IllegalArgumentException.class,
-        () -> require(null, (o) -> false, "test")).getMessage());
-    // require(Object, Predicate, ExceptionProvider)
-    Assert.assertTrue(require(reference, (o) -> true, ExceptionProvider.ofIAE()) == reference);
-    Assert.assertEquals("test: object = null", Assert.assertThrows(IllegalArgumentException.class,
-        () -> require(null, (o) -> false, ExceptionProvider.ofIAE("test", "object"))).getMessage());
+  public void test_requireNonNull_message() {
+    final Object sampleObject = new Object();
+    assertSame(sampleObject, requireNonNull(sampleObject, "object cannot be null"));
+    assertEquals("object cannot be null", assertThrows(NullPointerException.class,
+        () -> requireNonNull(null, "object cannot be null")).getMessage());
+  }
+
+  /**
+   * Tests the {@link Predicates#requireNonNull(Object, ExceptionProvider)} method.
+   */
+  @Test
+  public void test_requireNonNull_exception() {
+    final Object sampleObject = new Object();
+    assertSame(sampleObject, requireNonNull(sampleObject, ExceptionProvider.ofNPE()));
+    assertEquals(null, assertThrows(NullPointerException.class,
+        () -> requireNonNull(null, ExceptionProvider.ofNPE())).getMessage());
+    assertEquals("object cannot be null", assertThrows(NullPointerException.class,
+        () -> requireNonNull(null, ExceptionProvider.ofNPE("object cannot be null"))).getMessage());
+    assertEquals("object cannot be null: sample", assertThrows(NullPointerException.class,
+        () -> requireNonNull(null, ExceptionProvider.ofNPE("object cannot be null", "sample"))).getMessage());
+    assertEquals("object cannot be null", assertThrows(IllegalStateException.class,
+        () -> requireNonNull(null, (o) -> new IllegalStateException("object cannot be null"))).getMessage());
+  }
+
+  /**
+   * Tests the {@link Predicates#require(Object, Predicate)} method.
+   */
+  @Test
+  public void test_require() {
+    final Integer sampleNumber = Integer.valueOf(10);
+    assertSame(sampleNumber, require(sampleNumber, (n) -> true));
+    assertEquals("10", assertThrows(IllegalArgumentException.class,
+        () -> require(sampleNumber, (n) -> false)).getMessage());
+  }
+
+  /**
+   * Tests the {@link Predicates#require(Object, Predicate, String)} method.
+   */
+  @Test
+  public void test_require_message() {
+    final Integer sampleNumber = Integer.valueOf(10);
+    assertSame(sampleNumber, require(sampleNumber, (n) -> true, "number cannot be illegal"));
+    assertEquals("number cannot be illegal: 10", assertThrows(IllegalArgumentException.class,
+        () -> require(sampleNumber, (n) -> false, "number cannot be illegal")).getMessage());
+  }
+
+  /**
+   * Tests the {@link Predicates#require(Object, Predicate, ExceptionProvider)} method.
+   */
+  @Test
+  public void test_require_exception() {
+    final Integer sampleNumber = Integer.valueOf(10);
+    assertSame(sampleNumber, require(sampleNumber, (n) -> true, ExceptionProvider.ofIAE()));
+    assertEquals("10", assertThrows(IllegalArgumentException.class,
+        () -> require(sampleNumber, (o) -> false, ExceptionProvider.ofIAE())).getMessage());
+    assertEquals("number cannot be illegal: 10", assertThrows(IllegalArgumentException.class,
+        () -> require(sampleNumber, (n) -> false,
+            ExceptionProvider.ofIAE("number cannot be illegal"))).getMessage());
+    assertEquals("number cannot be illegal: sample = 10", assertThrows(IllegalArgumentException.class,
+        () -> require(sampleNumber, (n) -> false,
+            ExceptionProvider.ofIAE("number cannot be illegal", "sample"))).getMessage());
+    assertEquals("number cannot be illegal: 10", assertThrows(IllegalStateException.class,
+        () -> require(sampleNumber, (n) -> false,
+            (n) -> new IllegalStateException("number cannot be illegal: " + n))).getMessage());
   }
 
 }

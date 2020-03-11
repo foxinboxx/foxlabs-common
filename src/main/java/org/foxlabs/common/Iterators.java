@@ -46,7 +46,6 @@ public final class Iterators {
    * @param elements An array of elements to iterate over.
    * @return A new {@code Iterable} instance that wraps the specified array of elements.
    * @throws NullPointerException if the specified array of elements is {@code null}.
-   * @see #toIterator(Object...)
    */
   @SafeVarargs
   public static <E> Iterable<E> toIterable(E... elements) {
@@ -55,7 +54,7 @@ public final class Iterators {
     } else {
       return new Iterable<E>() {
         @Override public Iterator<E> iterator() {
-          return toIterator(elements);
+          return toIterator0(elements);
         }
       };
     }
@@ -73,19 +72,32 @@ public final class Iterators {
    */
   @SafeVarargs
   public static <E> Iterator<E> toIterator(E... elements) {
-    if (elements.length == 0) {
-      return Collections.emptyIterator();
-    } else {
-      return new Iterator<E>() {
-        int index = 0;
-        @Override public boolean hasNext() {
-          return index < elements.length;
-        }
-        @Override public E next() {
+    return elements.length == 0 ? Collections.emptyIterator() : toIterator0(elements);
+  }
+
+  /**
+   * Returns an {code Iterator} instance for the specified array of elements. This method should be
+   * used internally when all the arguments checks like {@code Predicates.requireNonNull()} are
+   * done.
+   *
+   * @param <E> The type of the array elements.
+   * @param elements An array of elements to iterate over.
+   * @return A new {@code Iterator} instance that wraps the specified array of elements.
+   */
+  @SafeVarargs
+  static <E> Iterator<E> toIterator0(E... elements) {
+    return new Iterator<E>() {
+      int index = 0;
+      @Override public boolean hasNext() {
+        return index < elements.length;
+      }
+      @Override public E next() {
+        if (index < elements.length) {
           return elements[index++];
         }
-      };
-    }
+        throw new NoSuchElementException();
+      }
+    };
   }
 
   // Mapping iterators
@@ -108,7 +120,8 @@ public final class Iterators {
     Predicates.requireNonNull(iterable);
     return new Iterable<T>() {
       @Override public Iterator<T> iterator() {
-        return withMapper(mapper, iterable.iterator());
+        final Iterator<S> iterator = Predicates.requireNonNull(iterable.iterator());
+        return withMapper0(mapper, iterator);
       }
     };
   }
@@ -128,6 +141,21 @@ public final class Iterators {
   public static <S, T> Iterator<T> withMapper(Function<S, T> mapper, Iterator<S> iterator) {
     Predicates.requireNonNull(mapper);
     Predicates.requireNonNull(iterator);
+    return withMapper0(mapper, iterator);
+  }
+
+  /**
+   * Returns an {@code Iterator} instance that wraps the specified one and applies the specified
+   * mapper function for each element during iteration. This method should be used internally when
+   * all the arguments checks like {@code Predicates.requireNonNull()} are done.
+   *
+   * @param <S> The type of elements of the original iteration.
+   * @param <T> The type of elements of the resulting iteration.
+   * @param mapper A mapper function to be applied for each element during iteration.
+   * @param iterator The {@code Iterator} instance to be wrapped.
+   * @return A new {@code Iterator} instance that wraps the specified one.
+   */
+  static <S, T> Iterator<T> withMapper0(Function<S, T> mapper, Iterator<S> iterator) {
     return new Iterator<T>() {
       @Override public boolean hasNext() {
         return iterator.hasNext();
