@@ -16,8 +16,12 @@
 
 package org.foxlabs.common;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.function.IntPredicate;
+import java.util.function.LongPredicate;
+import java.util.function.DoublePredicate;
 
 import org.junit.Test;
 
@@ -952,6 +956,150 @@ public class PredicatesTest {
     assertEquals("char elements cannot be invalid", assertThrows(IllegalStateException.class,
         () -> requireAll(new char[]{'a', 'b', 'c'}, (c) -> c < 'c',
             (a, i, e) -> new IllegalStateException("char elements cannot be invalid"))).getMessage());
+  }
+
+  // Iterable checks
+
+  /**
+   * Tests the {@link Predicates#requireAllNonNull(Iterable)} method.
+   */
+  @Test
+  public void test_requireAllNonNull_iterable() {
+    // OK: null
+    final Iterable<Object> nullSample = null;
+    assertSame(nullSample, requireAllNonNull(nullSample));
+    // OK: []
+    final Iterable<Object> emptySample = Collections.emptySet();
+    assertSame(emptySample, requireAllNonNull(emptySample));
+    // OK: [...]
+    final Iterable<Object> validSample = Arrays.asList("one", "two", "three");
+    assertSame(validSample, requireAllNonNull(validSample));
+    // NPE: [index]
+    assertEquals("[1]", assertThrows(NullPointerException.class,
+        () -> requireAllNonNull(Arrays.asList("one", null, "three"))).getMessage());
+  }
+
+  /**
+   * Tests the {@link Predicates#requireAllNonNull(Iterable, String)} method.
+   */
+  @Test
+  public void test_requireAllNonNull_iterable_message() {
+    // OK: null
+    final Iterable<Object> nullSample = null;
+    assertSame(nullSample, requireAllNonNull(nullSample, "elements cannot be null"));
+    // OK: []
+    final Iterable<Object> emptySample = Collections.emptySet();
+    assertSame(emptySample, requireAllNonNull(emptySample, "elements cannot be null"));
+    // OK: [...]
+    final Iterable<Object> validSample = Arrays.asList("one", "two", "three");
+    assertSame(validSample, requireAllNonNull(validSample, "elements cannot be null"));
+    // NPE: message: [index]
+    assertEquals("elements cannot be null: [1]", assertThrows(NullPointerException.class,
+        () -> requireAllNonNull(Arrays.asList("one", null, "three"),
+            "elements cannot be null")).getMessage());
+  }
+
+  /**
+   * Tests the {@link Predicates#requireAllNonNull(Iterable, ExceptionProvider)} method.
+   */
+  @Test
+  public void test_requireAllNonNull_iterable_exception() {
+    // OK: null
+    final Iterable<Object> nullSample = null;
+    assertSame(nullSample, requireAllNonNull(nullSample, ExceptionProvider.OfSequence.ofNPE()));
+    // OK: []
+    final Iterable<Object> emptySample = Collections.emptySet();
+    assertSame(emptySample, requireAllNonNull(emptySample, ExceptionProvider.OfSequence.ofNPE()));
+    // OK: [...]
+    final Iterable<Object> validSample = Arrays.asList("one", "two", "three");
+    assertSame(validSample, requireAllNonNull(validSample, ExceptionProvider.OfSequence.ofNPE()));
+    // NPE: [index]
+    assertEquals("[1]", assertThrows(NullPointerException.class,
+        () -> requireAllNonNull(Arrays.asList("one", null, "three"),
+            ExceptionProvider.OfSequence.ofNPE())).getMessage());
+    // NPE: message: [index]
+    assertEquals("elements cannot be null: [1]", assertThrows(NullPointerException.class,
+        () -> requireAllNonNull(Arrays.asList("one", null, "three"),
+            ExceptionProvider.OfSequence.ofNPE("elements cannot be null"))).getMessage());
+    // NPE: message: identifier[index]
+    assertEquals("elements cannot be null: sample[1]", assertThrows(NullPointerException.class,
+        () -> requireAllNonNull(Arrays.asList("one", null, "three"),
+            ExceptionProvider.OfSequence.ofNPE("elements cannot be null", "sample"))).getMessage());
+    // ISE: message
+    assertEquals("elements cannot be null", assertThrows(IllegalStateException.class,
+        () -> requireAllNonNull(Arrays.asList("one", null, "three"),
+            (a, i, e) -> new IllegalStateException("elements cannot be null"))).getMessage());
+  }
+
+  /**
+   * Tests the {@link Predicates#requireAll(Iterable, Predicate)} method.
+   */
+  @Test
+  public void test_requireAll_iterable() {
+    // OK: null
+    final Iterable<Object> nullSample = null;
+    assertSame(nullSample, requireAll(nullSample, (o) -> true));
+    // OK: []
+    final Iterable<Object> emptySample = Collections.emptySet();
+    assertSame(emptySample, requireAll(emptySample, (o) -> true));
+    // OK: [...]
+    final Iterable<Object> validSample = Arrays.asList("one", "two", "three");
+    assertSame(validSample, requireAll(validSample, (o) -> true));
+    // IAE: [index]
+    assertEquals("[2] = three", assertThrows(IllegalArgumentException.class,
+        () -> requireAll(Arrays.asList("one", "two", "three"), (o) -> o.length() == 3)).getMessage());
+  }
+
+  /**
+   * Tests the {@link Predicates#requireAll(Iterable, Predicate, String)} method.
+   */
+  @Test
+  public void test_requireAll_iterable_message() {
+    // OK: null
+    final Iterable<Object> nullSample = null;
+    assertSame(nullSample, requireAll(nullSample, (o) -> true, "elements cannot be invalid"));
+    // OK: []
+    final Iterable<Object> emptySample = Collections.emptySet();
+    assertSame(emptySample, requireAll(emptySample, (o) -> true, "elements cannot be invalid"));
+    // OK: [...]
+    final Iterable<Object> validSample = Arrays.asList("one", "two", "three");
+    assertSame(validSample, requireAll(validSample, (o) -> true, "elements cannot be invalid"));
+    // IAE: message: [index] = element
+    assertEquals("elements cannot be invalid: [2] = three", assertThrows(IllegalArgumentException.class,
+        () -> requireAll(Arrays.asList("one", "two", "three"), (o) -> o.length() == 3,
+            "elements cannot be invalid")).getMessage());
+  }
+
+  /**
+   * Tests the {@link Predicates#requireAll(Iterable, Predicate, ExceptionProvider)} method.
+   */
+  @Test
+  public void test_requireAll_iterable_exception() {
+    // OK: null
+    final Iterable<Object> nullSample = null;
+    assertSame(nullSample, requireAll(nullSample, (o) -> true, ExceptionProvider.OfSequence.ofIAE()));
+    // OK: []
+    final Iterable<Object> emptySample = Collections.emptySet();
+    assertSame(emptySample, requireAll(emptySample, (o) -> true, ExceptionProvider.OfSequence.ofIAE()));
+    // OK: [...]
+    final Iterable<Object> validSample = Arrays.asList("one", "two", "three");
+    assertSame(validSample, requireAll(validSample, (o) -> true, ExceptionProvider.OfSequence.ofIAE()));
+    // IAE: [index] = element
+    assertEquals("[2] = three", assertThrows(IllegalArgumentException.class,
+        () -> requireAll(Arrays.asList("one", "two", "three"), (o) -> o.length() == 3,
+            ExceptionProvider.OfSequence.ofIAE())).getMessage());
+    // IAE: message: [index] = element
+    assertEquals("elements cannot be invalid: [2] = three", assertThrows(IllegalArgumentException.class,
+        () -> requireAll(Arrays.asList("one", "two", "three"), (o) -> o.length() == 3,
+            ExceptionProvider.OfSequence.ofIAE("elements cannot be invalid"))).getMessage());
+    // IAE: message: identifier[index] = element
+    assertEquals("elements cannot be invalid: sample[2] = three", assertThrows(IllegalArgumentException.class,
+        () -> requireAll(Arrays.asList("one", "two", "three"), (o) -> o.length() == 3,
+            ExceptionProvider.OfSequence.ofIAE("elements cannot be invalid", "sample"))).getMessage());
+    // ISE: message
+    assertEquals("elements cannot be invalid", assertThrows(IllegalStateException.class,
+        () -> requireAll(Arrays.asList("one", "two", "three"), (o) -> o.length() == 3,
+            (a, i, e) -> new IllegalStateException("elements cannot be invalid"))).getMessage());
   }
 
 }
