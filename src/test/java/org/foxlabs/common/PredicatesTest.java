@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
 import static org.foxlabs.common.Predicates.*;
 
 /**
- * Tests for methods of the {@link Predicates} class.
+ * Tests for methods and constants of the {@link Predicates} class.
  *
  * @author Fox Mulder
  */
@@ -39,7 +39,7 @@ public class PredicatesTest {
   // Predicates
 
   /**
-   * Tests predicates.
+   * Tests predicates constants.
    */
   @Test
   public void test__predicates() {
