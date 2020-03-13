@@ -16,7 +16,6 @@
 
 package org.foxlabs.common;
 
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
@@ -630,55 +629,7 @@ public final class Strings {
 
   // ----- TO BE REFACTORED END -----------------------------------------------
 
-  // StringBuilder
-
-  static boolean appendSafe0(boolean value, StringBuilder buffer, int threshold) {
-    return appendSafe0((sb) -> sb.append(value), buffer, threshold);
-  }
-
-  static boolean appendSafe0(char value, StringBuilder buffer, int threshold) {
-    return appendSafe0((sb) -> sb.append(value), buffer, threshold);
-  }
-
-  static boolean appendSafe0(int value, StringBuilder buffer, int threshold) {
-    return appendSafe0((sb) -> sb.append(value), buffer, threshold);
-  }
-
-  static boolean appendSafe0(long value, StringBuilder buffer, int threshold) {
-    return appendSafe0((sb) -> sb.append(value), buffer, threshold);
-  }
-
-  static boolean appendSafe0(float value, StringBuilder buffer, int threshold) {
-    return appendSafe0((sb) -> sb.append(value), buffer, threshold);
-  }
-
-  static boolean appendSafe0(double value, StringBuilder buffer, int threshold) {
-    return appendSafe0((sb) -> sb.append(value), buffer, threshold);
-  }
-
-  static boolean appendSafe0(CharSequence value, StringBuilder buffer, int threshold) {
-    return appendSafe0((sb) -> sb.append(value), buffer, threshold);
-  }
-
-  static boolean appendSafe0(Consumer<StringBuilder> appender, StringBuilder buffer, int threshold) {
-    if (buffer.length() < threshold) {
-      try {
-        appender.accept(buffer);
-        if (buffer.length() > threshold) {
-          buffer.setLength(threshold);
-          return false;
-        }
-        return true;
-      } catch (OutOfMemoryError e) {
-        final StringBuilder temp = new StringBuilder(0);
-        appender.accept(temp);
-        buffer.append(temp, 0, threshold - buffer.length());
-      }
-    }
-    return false;
-  }
-
-  // Miscellaneous
+ // Miscellaneous
 
   /**
    * Returns a new string composed of copies of the specified array of elements joined together

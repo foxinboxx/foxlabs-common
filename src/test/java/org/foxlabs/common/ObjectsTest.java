@@ -28,7 +28,14 @@ import static org.foxlabs.common.Objects.*;
  */
 public class ObjectsTest {
 
-  // Miscellaneous
+  /**
+   * Tests the {@link Objects#toString(Object)} method.
+   */
+  @Test
+  public void test_toString() {
+    final String[] sampleObject = new String[]{"one", "two", "three"};
+    assertEquals("[one, two, three]", Objects.toString(sampleObject));
+  }
 
   /**
    * Tests the {@link Objects#cast(Object)} method.

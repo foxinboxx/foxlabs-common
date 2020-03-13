@@ -1,12 +1,12 @@
-/* 
+/*
  * Copyright (C) 2016 FoxLabs
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,13 +23,13 @@ import org.foxlabs.common.function.ToString;
 
 /**
  * Factory class for all counters.
- * 
+ *
  * <p>All the <code>defaultXXXCounter()</code> methods return non thread-safe
  * counter instances; the <code>concurrentXXXCounter()</code> methods return
  * thread-safe ones. Also the <code>XXX_COUNTER_STUB</code> constants contain
  * counter stubs that do not perform any measurements at all and could be used
  * when statistics gathering is disabled.</p>
- * 
+ *
  * @author Fox Mulder
  * @see HitCounter
  * @see LatencyCounter
@@ -49,40 +49,50 @@ public abstract class Counters {
    */
   public static final HitCounter HIT_COUNTER_STUB = new HitCounter() {
 
+    @Override
     public long getInvocationCount() {
       return 0L;
     }
 
+    @Override
     public long getHitCount() {
       return 0L;
     }
 
+    @Override
     public double getHitRate() {
       return 0.0;
     }
 
+    @Override
     public long getMissCount() {
       return 0L;
     }
 
+    @Override
     public double getMissRate() {
       return 0.0;
     }
 
+    @Override
     public void increment(boolean hit) {
     }
 
+    @Override
     public void merge(HitCounter counter) {
     }
 
+    @Override
     public void reset() {
     }
 
+    @Override
     public String toString() {
       return NA;
     }
 
-    public StringBuilder toString(StringBuilder buf) {
+    @Override
+    public ToString.Builder toString(ToString.Builder buf) {
       return buf.append(NA);
     }
 
@@ -90,7 +100,7 @@ public abstract class Counters {
 
   /**
    * Returns new {@link HitCounter} instance.
-   * 
+   *
    * @return New {@link HitCounter} instance.
    */
   public static HitCounter defaultHitCounter() {
@@ -99,7 +109,7 @@ public abstract class Counters {
 
   /**
    * Returns new thread-safe {@link HitCounter} instance.
-   * 
+   *
    * @return New thread-safe {@link HitCounter} instance.
    */
   public static HitCounter concurrentHitCounter() {
@@ -110,7 +120,7 @@ public abstract class Counters {
 
   /**
    * Abstract implementation of the {@link HitCounter}.
-   * 
+   *
    * @author Fox Mulder
    * @see HitCounter
    * @see DefaultHitCounter
@@ -120,7 +130,7 @@ public abstract class Counters {
 
     /**
      * Returns total number of invocations (hits + misses).
-     * 
+     *
      * @return Total number of invocations (hits + misses).
      */
     @Override
@@ -130,7 +140,7 @@ public abstract class Counters {
 
     /**
      * Returns percentage of hits.
-     * 
+     *
      * @return Percentage of hits.
      */
     @Override
@@ -140,7 +150,7 @@ public abstract class Counters {
 
     /**
      * Returns percentage of misses.
-     * 
+     *
      * @return Percentage of misses.
      */
     @Override
@@ -151,14 +161,14 @@ public abstract class Counters {
     /**
      * Appends string representation of current state of this counter to the
      * specified buffer.
-     * 
+     *
      * The format is <code>INVOCATION_COUNT (+HIT_COUNT HIT_RATE% | -MISS_COUNT MISS_RATE%)</code>.
-     * 
+     *
      * @param buf Buffer to append.
      * @return The specified buffer.
      */
     @Override
-    public StringBuilder toString(StringBuilder buf) {
+    public ToString.Builder toString(ToString.Builder buf) {
       buf.append(getInvocationCount());
       formatRate(getHitRate(), buf.append(" (+").append(getHitCount()).append(" "));
       formatRate(getMissRate(), buf.append(" | -").append(getMissCount()).append(" "));
@@ -171,7 +181,7 @@ public abstract class Counters {
 
   /**
    * Default non thread-safe implementation of the {@link HitCounter}.
-   * 
+   *
    * @author Fox Mulder
    * @see AbstractHitCounter
    */
@@ -189,7 +199,7 @@ public abstract class Counters {
 
     /**
      * Returns number of hits.
-     * 
+     *
      * @return Number of hits.
      */
     @Override
@@ -199,7 +209,7 @@ public abstract class Counters {
 
     /**
      * Returns number of misses.
-     * 
+     *
      * @return Number of misses.
      */
     @Override
@@ -210,7 +220,7 @@ public abstract class Counters {
     /**
      * Increments hits value if the specified hit flag is <code>true</code>;
      * increments misses value otherwise.
-     * 
+     *
      * @param hit Determines whether hits or misses value should be incremented.
      */
     @Override
@@ -224,7 +234,7 @@ public abstract class Counters {
 
     /**
      * Merges statistics of the specified counter into this counter.
-     * 
+     *
      * @param counter Counter which statistics should be merged into this
      *        counter.
      */
@@ -248,7 +258,7 @@ public abstract class Counters {
 
   /**
    * Thread-safe implementation of the {@link HitCounter}.
-   * 
+   *
    * @author Fox Mulder
    * @see AbstractHitCounter
    */
@@ -266,7 +276,7 @@ public abstract class Counters {
 
     /**
      * Returns number of hits.
-     * 
+     *
      * @return Number of hits.
      */
     @Override
@@ -276,7 +286,7 @@ public abstract class Counters {
 
     /**
      * Returns number of misses.
-     * 
+     *
      * @return Number of misses.
      */
     @Override
@@ -287,7 +297,7 @@ public abstract class Counters {
     /**
      * Increments hits value if the specified hit flag is <code>true</code>;
      * increments misses value otherwise.
-     * 
+     *
      * @param hit Determines whether hits or misses value should be incremented.
      */
     @Override
@@ -301,7 +311,7 @@ public abstract class Counters {
 
     /**
      * Merges statistics of the specified counter into this counter.
-     * 
+     *
      * @param counter Counter which statistics should be merged into this counter.
      */
     @Override
@@ -330,59 +340,73 @@ public abstract class Counters {
 
     private volatile int depth = 0;
 
+    @Override
     public int getMaxDepth() {
       return 0;
     }
 
+    @Override
     public long getInvocationCount() {
       return 0L;
     }
 
+    @Override
     public long getMinLatency() {
       return 0L;
     }
 
+    @Override
     public long getMaxLatency() {
       return 0L;
     }
 
+    @Override
     public long getAverageLatency() {
       return 0L;
     }
 
+    @Override
     public long getTotalLatency() {
       return 0L;
     }
 
+    @Override
     public void start() {
       depth++;
     }
 
+    @Override
     public void stop() {
       if (--depth <= 0)
         throw new IllegalStateException();
     }
 
+    @Override
     public boolean isStarted() {
       return depth > 0;
     }
 
+    @Override
     public boolean isStopped() {
       return depth <= 0;
     }
 
+    @Override
     public void merge(LatencyCounter counter) {
     }
 
+    @Override
     public void reset() {
       depth = 0;
     }
 
+    @Override
     public String toString() {
       return NA;
     }
 
-    public StringBuilder toString(StringBuilder buf) {
+    @Override
+    public ToString.Builder toString(ToString.Builder buf) {
       return buf.append(NA);
     }
 
@@ -390,7 +414,7 @@ public abstract class Counters {
 
   /**
    * Returns new {@link LatencyCounter} instance.
-   * 
+   *
    * @return New {@link LatencyCounter} instance.
    */
   public static LatencyCounter defaultLatencyCounter() {
@@ -399,7 +423,7 @@ public abstract class Counters {
 
   /**
    * Returns new thread-safe {@link LatencyCounter} instance.
-   * 
+   *
    * @return New thread-safe {@link LatencyCounter} instance.
    */
   public static LatencyCounter concurrentLatencyCounter() {
@@ -410,7 +434,7 @@ public abstract class Counters {
 
   /**
    * Abstract implementation of the {@link LatencyCounter}.
-   * 
+   *
    * @author Fox Mulder
    * @see LatencyCounter
    * @see DefaultLatencyCounter
@@ -420,7 +444,7 @@ public abstract class Counters {
 
     /**
      * Returns average latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Average latency time over all the invocations in milliseconds.
      */
     @Override
@@ -430,7 +454,7 @@ public abstract class Counters {
 
     /**
      * Starts next measurement.
-     * 
+     *
      * @see #start(long)
      */
     @Override
@@ -440,14 +464,14 @@ public abstract class Counters {
 
     /**
      * Starts next measurement using the specified start time.
-     * 
+     *
      * @param time Start time.
      */
     protected abstract void start(long time);
 
     /**
      * Stops measurement and updates statistics.
-     * 
+     *
      * @throws IllegalStateException if corresponding {@link #start()} method
      *         was not called before.
      * @see #stop(long)
@@ -459,7 +483,7 @@ public abstract class Counters {
 
     /**
      * Stops measurement using the specified stop time and updates statistics.
-     * 
+     *
      * @param time Stop time.
      * @throws IllegalStateException if corresponding {@link #start()} method
      *         was not called before.
@@ -469,15 +493,15 @@ public abstract class Counters {
     /**
      * Appends string representation of current state of this latency counter to
      * the specified buffer.
-     * 
+     *
      * The format is <code>INVOCATION_COUNT / TOTAL_LATENCY (-MIN_LATENCY +MAX_LATENCY ~AVERAGE_LATENCY)</code>.
-     * 
+     *
      * @param buf Buffer to append.
      * @return The specified buffer.
      * @see #formatLatency(long, StringBuilder)
      */
     @Override
-    public StringBuilder toString(StringBuilder buf) {
+    public ToString.Builder toString(ToString.Builder buf) {
       buf.append(getInvocationCount());
       formatLatency(getTotalLatency(), buf.append(" / "));
       formatLatency(getMinLatency(), buf.append(" (-"));
@@ -492,7 +516,7 @@ public abstract class Counters {
 
   /**
    * Default non thread-safe implementation of the {@link LatencyCounter}.
-   * 
+   *
    * @author Fox Mulder
    * @see AbstractLatencyCounter
    */
@@ -535,7 +559,7 @@ public abstract class Counters {
 
     /**
      * Returns maximum recursion depth.
-     * 
+     *
      * @return Maximum recursion depth.
      */
     @Override
@@ -545,7 +569,7 @@ public abstract class Counters {
 
     /**
      * Returns total number of invocations.
-     * 
+     *
      * @return Total number of invocations.
      */
     @Override
@@ -555,7 +579,7 @@ public abstract class Counters {
 
     /**
      * Returns minimum latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Minimum latency time over all the invocations in milliseconds.
      */
     @Override
@@ -565,7 +589,7 @@ public abstract class Counters {
 
     /**
      * Returns maximum latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Maximum latency time over all the invocations in milliseconds.
      */
     @Override
@@ -575,7 +599,7 @@ public abstract class Counters {
 
     /**
      * Returns total latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Total latency time over all the invocations in milliseconds.
      */
     @Override
@@ -585,7 +609,7 @@ public abstract class Counters {
 
     /**
      * Starts next measurement using the specified start time.
-     * 
+     *
      * @param time Start time.
      */
     @Override
@@ -600,7 +624,7 @@ public abstract class Counters {
 
     /**
      * Stops measurement using the specified stop time and updates statistics.
-     * 
+     *
      * @param time Stop time.
      * @throws IllegalStateException if corresponding {@link #start()} method
      *         was not called before.
@@ -627,7 +651,7 @@ public abstract class Counters {
     /**
      * Determines whether this counter is started (the {@link #start()} method
      * was called and no corresponding {@link #stop()} method called yet).
-     * 
+     *
      * @return <code>true</code> if this counter was started;
      *         <code>false</code> otherwise.
      */
@@ -639,7 +663,7 @@ public abstract class Counters {
     /**
      * Determines whether this counter is stopped (the {@link #stop()} method
      * was called).
-     * 
+     *
      * @return <code>true</code> if this counter was stopped;
      *         <code>false</code> otherwise.
      */
@@ -650,7 +674,7 @@ public abstract class Counters {
 
     /**
      * Merges statistics of the specified counter into this counter.
-     * 
+     *
      * @param counter Counter which statistics should be merged into this counter.
      */
     @Override
@@ -685,7 +709,7 @@ public abstract class Counters {
 
   /**
    * Thread-safe implementation of the {@link LatencyCounter}.
-   * 
+   *
    * @author Fox Mulder
    * @see AbstractLatencyCounter
    */
@@ -707,7 +731,7 @@ public abstract class Counters {
 
     /**
      * Returns maximum recursion depth.
-     * 
+     *
      * @return Maximum recursion depth.
      */
     @Override
@@ -717,7 +741,7 @@ public abstract class Counters {
 
     /**
      * Returns total number of invocations.
-     * 
+     *
      * @return Total number of invocations.
      */
     @Override
@@ -727,7 +751,7 @@ public abstract class Counters {
 
     /**
      * Returns minimum latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Minimum latency time over all the invocations in milliseconds.
      */
     @Override
@@ -737,7 +761,7 @@ public abstract class Counters {
 
     /**
      * Returns maximum latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Maximum latency time over all the invocations in milliseconds.
      */
     @Override
@@ -747,7 +771,7 @@ public abstract class Counters {
 
     /**
      * Returns total latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Total latency time over all the invocations in milliseconds.
      */
     @Override
@@ -757,7 +781,7 @@ public abstract class Counters {
 
     /**
      * Starts next measurement using the specified start time.
-     * 
+     *
      * @param time Start time.
      */
     @Override
@@ -772,7 +796,7 @@ public abstract class Counters {
 
     /**
      * Stops measurement using the specified stop time and updates statistics.
-     * 
+     *
      * @param time Stop time.
      * @throws IllegalStateException if corresponding {@link #start()} method
      *         was not called before.
@@ -804,7 +828,7 @@ public abstract class Counters {
 
     /**
      * Merges statistics of the specified counter into this counter.
-     * 
+     *
      * @param counter Counter which statistics should be merged into this counter.
      */
     @Override
@@ -843,107 +867,133 @@ public abstract class Counters {
 
     private volatile int depth = 0;
 
+    @Override
     public int getMaxDepth() {
       return 0;
     }
 
+    @Override
     public long getInvocationCount() {
       return 0L;
     }
 
+    @Override
     public long getMinLatency() {
       return 0L;
     }
 
+    @Override
     public long getMaxLatency() {
       return 0L;
     }
 
+    @Override
     public long getAverageLatency() {
       return 0L;
     }
 
+    @Override
     public long getTotalLatency() {
       return 0L;
     }
 
+    @Override
     public long getHitCount() {
       return 0L;
     }
 
+    @Override
     public double getHitRate() {
       return 0.0;
     }
 
+    @Override
     public long getHitMinLatency() {
       return 0L;
     }
 
+    @Override
     public long getHitMaxLatency() {
       return 0L;
     }
 
+    @Override
     public long getHitAverageLatency() {
       return 0L;
     }
 
+    @Override
     public long getHitTotalLatency() {
       return 0L;
     }
 
+    @Override
     public long getMissCount() {
       return 0L;
     }
 
+    @Override
     public double getMissRate() {
       return 0.0;
     }
 
+    @Override
     public long getMissMinLatency() {
       return 0L;
     }
 
+    @Override
     public long getMissMaxLatency() {
       return 0L;
     }
 
+    @Override
     public long getMissAverageLatency() {
       return 0L;
     }
 
+    @Override
     public long getMissTotalLatency() {
       return 0L;
     }
 
+    @Override
     public void start() {
       depth++;
     }
 
+    @Override
     public void stop(boolean hit) {
       if (--depth <= 0)
         throw new IllegalStateException();
     }
 
+    @Override
     public boolean isStarted() {
       return depth > 0;
     }
 
+    @Override
     public boolean isStopped() {
       return depth <= 0;
     }
 
+    @Override
     public void merge(HitLatencyCounter counter) {
     }
 
+    @Override
     public void reset() {
       depth = 0;
     }
 
+    @Override
     public String toString() {
       return NA;
     }
 
-    public StringBuilder toString(StringBuilder buf) {
+    @Override
+    public ToString.Builder toString(ToString.Builder buf) {
       return buf.append(NA);
     }
 
@@ -951,7 +1001,7 @@ public abstract class Counters {
 
   /**
    * Returns new {@link HitLatencyCounter} instance.
-   * 
+   *
    * @return New {@link HitLatencyCounter} instance.
    */
   public static HitLatencyCounter defaultHitLatencyCounter() {
@@ -962,7 +1012,7 @@ public abstract class Counters {
 
   /**
    * Abstract implementation of the {@link HitLatencyCounter}.
-   * 
+   *
    * @author Fox Mulder
    * @see HitLatencyCounter
    * @see DefaultHitLatencyCounter
@@ -972,7 +1022,7 @@ public abstract class Counters {
 
     /**
      * Returns total number of invocations (hits + misses).
-     * 
+     *
      * @return Total number of invocations (hits + misses).
      */
     @Override
@@ -982,7 +1032,7 @@ public abstract class Counters {
 
     /**
      * Returns minimum latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Minimum latency time over all the invocations in milliseconds.
      */
     @Override
@@ -992,7 +1042,7 @@ public abstract class Counters {
 
     /**
      * Returns maximum latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Maximum latency time over all the invocations in milliseconds.
      */
     @Override
@@ -1002,7 +1052,7 @@ public abstract class Counters {
 
     /**
      * Returns average latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Average latency time over all the invocations in milliseconds.
      */
     @Override
@@ -1012,7 +1062,7 @@ public abstract class Counters {
 
     /**
      * Returns total latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Total latency time over all the invocations in milliseconds.
      */
     @Override
@@ -1022,7 +1072,7 @@ public abstract class Counters {
 
     /**
      * Returns rate of hits (hits / invocations).
-     * 
+     *
      * @return Rate of hits (hits / invocations).
      */
     @Override
@@ -1032,7 +1082,7 @@ public abstract class Counters {
 
     /**
      * Returns average hits latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Average hits latency time over all the invocations in milliseconds.
      */
     @Override
@@ -1042,7 +1092,7 @@ public abstract class Counters {
 
     /**
      * Returns rate of misses (misses / invocations).
-     * 
+     *
      * @return Rate of misses (misses / invocations).
      */
     @Override
@@ -1052,7 +1102,7 @@ public abstract class Counters {
 
     /**
      * Returns average misses latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Average misses latency time over all the invocations in milliseconds.
      */
     @Override
@@ -1062,7 +1112,7 @@ public abstract class Counters {
 
     /**
      * Starts next measurement.
-     * 
+     *
      * @see #start(long)
      */
     @Override
@@ -1072,14 +1122,14 @@ public abstract class Counters {
 
     /**
      * Starts next measurement using the specified start time.
-     * 
+     *
      * @param time Start time.
      */
     protected abstract void start(long time);
 
     /**
      * Stops measurement and updates statistics.
-     * 
+     *
      * @param hit Determines whether hits or misses value should be incremented.
      * @throws IllegalStateException if corresponding {@link #start()} method
      *         was not called before.
@@ -1092,7 +1142,7 @@ public abstract class Counters {
 
     /**
      * Stops measurement using the specified stop time and updates statistics.
-     * 
+     *
      * @param time Stop time.
      * @param hit Determines whether hits or misses value should be incremented.
      * @throws IllegalStateException if corresponding {@link #start()} method
@@ -1105,13 +1155,13 @@ public abstract class Counters {
      * specified buffer. The format is <code>INVOCATION_COUNT / TOTAL_LATENCY
      * (+HIT_COUNT HIT_RATE% HIT_TOTAL_LATENCY ~HIT_AVERAGE_LATENCY |
      * -MISS_COUNT MISS_RATE% MISS_TOTAL_LATENCY ~MISS_AVERAGE_LATENCY)</code>.
-     * 
+     *
      * @param buf Buffer to append.
      * @return The specified buffer.
      * @see #formatLatency(long, StringBuilder)
      */
     @Override
-    public StringBuilder toString(StringBuilder buf) {
+    public ToString.Builder toString(ToString.Builder buf) {
       buf.append(getInvocationCount());
       formatLatency(getTotalLatency(), buf.append(" / "));
       formatRate(getHitRate(), buf.append(" (+").append(getHitCount()).append(" "));
@@ -1127,7 +1177,7 @@ public abstract class Counters {
 
   /**
    * Default non thread-safe implementation of the {@link HitLatencyCounter}.
-   * 
+   *
    * @author Fox Mulder
    * @see AbstractHitLatencyCounter
    */
@@ -1190,7 +1240,7 @@ public abstract class Counters {
 
     /**
      * Returns maximum recursion depth.
-     * 
+     *
      * @return Maximum recursion depth.
      */
     @Override
@@ -1200,7 +1250,7 @@ public abstract class Counters {
 
     /**
      * Returns number of hits.
-     * 
+     *
      * @return Number of hits.
      */
     @Override
@@ -1210,7 +1260,7 @@ public abstract class Counters {
 
     /**
      * Returns minimum hits latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Minimum hits latency time over all the invocations in milliseconds.
      */
     @Override
@@ -1220,7 +1270,7 @@ public abstract class Counters {
 
     /**
      * Returns maximum hits latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Maximum hits latency time over all the invocations in milliseconds.
      */
     @Override
@@ -1230,7 +1280,7 @@ public abstract class Counters {
 
     /**
      * Returns total hits latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Total hits latency time over all the invocations in milliseconds.
      */
     @Override
@@ -1240,7 +1290,7 @@ public abstract class Counters {
 
     /**
      * Returns number of misses.
-     * 
+     *
      * @return Number of misses.
      */
     @Override
@@ -1250,7 +1300,7 @@ public abstract class Counters {
 
     /**
      * Returns minimum misses latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Minimum misses latency time over all the invocations in milliseconds.
      */
     @Override
@@ -1260,7 +1310,7 @@ public abstract class Counters {
 
     /**
      * Returns maximum misses latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Maximum misses latency time over all the invocations in milliseconds.
      */
     @Override
@@ -1270,7 +1320,7 @@ public abstract class Counters {
 
     /**
      * Returns total misses latency time over all the invocations in milliseconds.
-     * 
+     *
      * @return Total misses latency time over all the invocations in milliseconds.
      */
     @Override
@@ -1280,7 +1330,7 @@ public abstract class Counters {
 
     /**
      * Starts next measurement using the specified start time.
-     * 
+     *
      * @param time Start time.
      */
     @Override
@@ -1294,7 +1344,7 @@ public abstract class Counters {
 
     /**
      * Stops measurement using the specified stop time and updates statistics.
-     * 
+     *
      * @param time Stop time.
      * @param hit Determines whether hits or misses value should be incremented.
      * @throws IllegalStateException if corresponding {@link #start()} method
@@ -1334,7 +1384,7 @@ public abstract class Counters {
      * Determines whether this counter is started (the {@link #start()} method
      * was called and no corresponding {@link #stop(boolean)} method called
      * yet).
-     * 
+     *
      * @return <code>true</code> if this counter was started;
      *         <code>false</code> otherwise.
      */
@@ -1346,7 +1396,7 @@ public abstract class Counters {
     /**
      * Determines whether this counter is stopped (the {@link #stop(boolean)}
      * method was called).
-     * 
+     *
      * @return <code>true</code> if this counter was stopped;
      *         <code>false</code> otherwise.
      */
@@ -1357,7 +1407,7 @@ public abstract class Counters {
 
     /**
      * Merges statistics of the specified counter into this counter.
-     * 
+     *
      * @param counter Counter which statistics should be merged into this counter.
      */
     @Override
@@ -1398,7 +1448,7 @@ public abstract class Counters {
 
   /**
    * Node that stores time in milliseconds.
-   * 
+   *
    * @author Fox Mulder
    * @see DefaultLatencyCounter
    */
@@ -1416,7 +1466,7 @@ public abstract class Counters {
 
     /**
      * Constructs new time node with the specified next node and time.
-     * 
+     *
      * @param next Next time node.
      * @param time Time in milliseconds.
      */
@@ -1432,26 +1482,26 @@ public abstract class Counters {
   /**
    * Returns string representation of the specified rate value. The format is
    * <code>00.00%</code>.
-   * 
+   *
    * @param rate Rate value.
    * @return String representation of the specified rate value.
    * @throws IllegalArgumentException if the specified rate is not in range [0..1].
    * @see #formatRate(double, StringBuilder)
    */
   public static String formatRate(double rate) {
-    return formatRate(rate, new StringBuilder()).toString();
+    return formatRate(rate, new ToString.Builder()).toString();
   }
 
   /**
    * Appends string representation of the specified rate value to the specified
    * buffer. The format is <code>00.00%</code>.
-   * 
+   *
    * @param rate Rate value.
    * @param buf Buffer to append.
    * @throws IllegalArgumentException if the specified rate is not in range [0..1].
    * @return String representation of the specified rate value.
    */
-  public static StringBuilder formatRate(double rate, StringBuilder buf) {
+  public static ToString.Builder formatRate(double rate, ToString.Builder buf) {
     if (rate < 0.0 || rate > 1.0 || Double.isNaN(rate) || Double.isInfinite(rate)) {
       throw new IllegalArgumentException();
     } else {
@@ -1473,26 +1523,26 @@ public abstract class Counters {
   /**
    * Returns string representation of the specified latency time. The format is
    * <code>[[[DAYS:]HOURS:]MINUTES:]SECONDS.MILLIS</code>.
-   * 
+   *
    * @param latency Latency time in milliseconds.
    * @return String representation of the specified latency time.
    * @throws IllegalArgumentException if the specified latency time is negative.
    * @see #formatLatency(long, StringBuilder)
    */
   public static String formatLatency(long latency) {
-    return formatLatency(latency, new StringBuilder()).toString();
+    return formatLatency(latency, new ToString.Builder()).toString();
   }
 
   /**
    * Appends string representation of the specified latency time to the
    * specified buffer. The format is <code>[[[DAYS:]HOURS:]MINUTES:]SECONDS.MILLIS</code>.
-   * 
+   *
    * @param latency Latency time in milliseconds.
    * @param buf Buffer to append.
    * @return The specified buffer.
    * @throws IllegalArgumentException if the specified latency time is negative.
    */
-  public static StringBuilder formatLatency(long latency, StringBuilder buf) {
+  public static ToString.Builder formatLatency(long latency, ToString.Builder buf) {
     if (latency < 0L) {
       throw new IllegalArgumentException(Long.toString(latency));
     } else {
