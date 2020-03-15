@@ -17,6 +17,7 @@
 package org.foxlabs.common.text;
 
 import org.foxlabs.common.exception.ThresholdReachedException;
+import org.foxlabs.common.function.CharacterSequence;
 
 import static org.foxlabs.common.Predicates.*;
 import static org.foxlabs.common.Predicates.ExceptionProvider.*;
@@ -100,72 +101,31 @@ public class CharacterBuffer {
   }
 
   public final CharacterBuffer append(char[] values) {
-    return appendSafe(values, 0, values.length);
+    return appendSafe(CharacterSequence.of(values), 0, values.length);
   }
 
   public final CharacterBuffer append(char[] values, int start) {
     require(requireNonNull(values), checkCharArrayRange(start), ofIOOB(start));
-    return appendSafe(values, start, values.length);
+    return appendSafe(CharacterSequence.of(values), start, values.length);
   }
 
   public final CharacterBuffer append(char[] values, int start, int end) {
     require(requireNonNull(values), checkCharArrayRange(start, end), ofIOOB(start, end));
-    return appendSafe(values, start, end);
-  }
-
-  public final CharacterBuffer append(String string) {
-    return appendSafe(string, 0, string.length());
-  }
-
-  public final CharacterBuffer append(String string, int start) {
-    require(requireNonNull(string), checkCharSequenceRange(start), ofIOOB(start));
-    return appendSafe(string, start, string.length());
-  }
-
-  public final CharacterBuffer append(String string, int start, int end) {
-    require(requireNonNull(string), checkCharSequenceRange(start, end), ofIOOB(start, end));
-    return appendSafe(string, start, end);
-  }
-
-  public final CharacterBuffer append(StringBuilder buffer) {
-    return appendSafe(buffer, 0, buffer.length());
-  }
-
-  public final CharacterBuffer append(StringBuilder buffer, int start) {
-    require(requireNonNull(buffer), checkCharSequenceRange(start), ofIOOB(start));
-    return appendSafe(buffer, start, buffer.length());
-  }
-
-  public final CharacterBuffer append(StringBuilder buffer, int start, int end) {
-    require(requireNonNull(buffer), checkCharSequenceRange(start, end), ofIOOB(start, end));
-    return appendSafe(buffer, start, end);
+    return appendSafe(CharacterSequence.of(values), start, end);
   }
 
   public final CharacterBuffer append(CharSequence sequence) {
-    requireNonNull(sequence);
-    return sequence instanceof String
-        ? appendSafe((String) sequence, 0, sequence.length())
-        : sequence instanceof StringBuilder
-          ? appendSafe((StringBuilder) sequence, 0, sequence.length())
-          : append(sequence, 0, sequence.length());
+    return appendSafe(CharacterSequence.of(sequence), 0, sequence.length());
   }
 
   public final CharacterBuffer append(CharSequence sequence, int start) {
     require(requireNonNull(sequence), checkCharSequenceRange(start), ofIOOB(start));
-    return sequence instanceof String
-        ? appendSafe((String) sequence, start, sequence.length())
-        : sequence instanceof StringBuilder
-          ? appendSafe((StringBuilder) sequence, start, sequence.length())
-          : append(sequence, start, sequence.length());
+    return appendSafe(CharacterSequence.of(sequence), start, sequence.length());
   }
 
   public final CharacterBuffer append(CharSequence sequence, int start, int end) {
     require(requireNonNull(sequence), checkCharSequenceRange(start, end), ofIOOB(start, end));
-    return sequence instanceof String
-        ? appendSafe((String) sequence, start, end)
-        : sequence instanceof StringBuilder
-          ? appendSafe((StringBuilder) sequence, start, end)
-          : append(sequence, start, end);
+    return appendSafe(CharacterSequence.of(sequence), start, sequence.length());
   }
 
   // Cleanup operations
@@ -184,7 +144,7 @@ public class CharacterBuffer {
 
   // Internal operations
 
-  protected final CharacterBuffer appendSafe(char[] values, int start, int end) {
+  protected final CharacterBuffer appendSafe(CharacterSequence sequence, int start, int end) {
     // calculate the number of characters to append
     int count = end - start;
     if (count > 0) { // fast check
@@ -192,75 +152,9 @@ public class CharacterBuffer {
         // copy part of the characters to the current slot
         final int offset = length % depth;
         final int remainder = Math.min(depth - offset, count);
-        System.arraycopy(values, start, nextSlot(), offset, remainder);
+        sequence.copy(start, start + remainder, nextSlot(), offset);
         length += remainder;
         start += remainder;
-        count -= remainder;
-      }
-      if (start < end) {
-        // Not all the characters have been appended
-        throw new ThresholdReachedException(this);
-      }
-    }
-    return this;
-  }
-
-  protected final CharacterBuffer appendSafe(String string, int start, int end) {
-    // calculate the number of characters to append
-    int count = end - start;
-    if (count > 0) { // fast check
-      for (count = ensureCapacity(count); count > 0;) {
-        // copy part of the string characters to the current slot
-        final int offset = length % depth;
-        final int remainder = Math.min(depth - offset, count);
-        string.getChars(start, offset + remainder, nextSlot(), offset);
-        length += remainder;
-        start += remainder;
-        count -= remainder;
-      }
-      if (start < end) {
-        // Not all the characters have been appended
-        throw new ThresholdReachedException(this);
-      }
-    }
-    return this;
-  }
-
-  protected final CharacterBuffer appendSafe(StringBuilder buffer, int start, int end) {
-    // calculate the number of characters to append
-    int count = end - start;
-    if (count > 0) { // fast check
-      for (count = ensureCapacity(count); count > 0;) {
-        // copy part of the string characters to the current slot
-        final int offset = length % depth;
-        final int remainder = Math.min(depth - offset, count);
-        buffer.getChars(start, offset + remainder, nextSlot(), offset);
-        length += remainder;
-        start += remainder;
-        count -= remainder;
-      }
-      if (start < end) {
-        // Not all the characters have been appended
-        throw new ThresholdReachedException(this);
-      }
-    }
-    return this;
-  }
-
-  protected final CharacterBuffer appendSafe(CharSequence sequence, int start, int end) {
-    // calculate the number of characters to append
-    int count = end - start;
-    if (count > 0) { // fast check
-      for (count = ensureCapacity(count); count > 0;) {
-        // copy part of the characters to the current slot
-        int offset = length % depth;
-        final int remainder = Math.min(depth - offset, count);
-        final int limit = offset + remainder;
-        final char[] slot = nextSlot();
-        while (offset < limit) {
-          slot[offset++] = sequence.charAt(start++);
-        }
-        length += remainder;
         count -= remainder;
       }
       if (start < end) {
