@@ -130,16 +130,16 @@ public class CharacterBuffer {
 
   // Cleanup operations
 
-  public final void clear() {
+  public final void reset() {
     length = 0;
   }
 
-  public final void reset() {
+  public final void clear() {
     final int nslots = (length - 1) / depth + 1;
     for (int index = 0; index < nslots; index++) {
       buffer[index] = null;
     }
-    clear();
+    length = 0;
   }
 
   // Internal operations

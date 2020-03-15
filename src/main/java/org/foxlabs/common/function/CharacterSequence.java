@@ -57,7 +57,9 @@ public interface CharacterSequence extends CharSequence {
   }
 
   static CharacterSequence of(CharSequence source) {
-    if (source instanceof String) {
+    if (source instanceof CharacterSequence) {
+      return (CharacterSequence) source;
+    } else if (source instanceof String) {
       return of((String) source);
     } else if (source instanceof StringBuilder) {
       return of((StringBuilder) source);
