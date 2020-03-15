@@ -1746,7 +1746,7 @@ public final class Predicates {
      * </code>
      */
     static <T> ExceptionProvider<T, NullPointerException> ofNPE() {
-      return (o) -> new NullPointerException();
+      return (o) -> new NullPointerException("Cannot be null");
     }
 
     /**
@@ -1768,7 +1768,7 @@ public final class Predicates {
      * </code>
      */
     static <T> ExceptionProvider<T, IllegalArgumentException> ofIAE() {
-      return (o) -> new IllegalArgumentException(Objects.toString(o));
+      return ofIAE("Invalid argument: %s");
     }
 
     /**
@@ -1790,7 +1790,7 @@ public final class Predicates {
      * </code>
      */
     static <T> ExceptionProvider<T, IndexOutOfBoundsException> ofIOOB(int index) {
-      return ofIOOB("Out of range: [0 <= %d <= %d]", index);
+      return ofIOOB("Index out of range: [0 <= %d <= %d]", index);
     }
 
     /**
@@ -1859,7 +1859,7 @@ public final class Predicates {
        * </code>
        */
       static <S, T> OfSequence<S, T, NullPointerException> ofNPE() {
-        return ofNPE("[%d]");
+        return ofNPE("Element [%d] cannot be null");
       }
 
       /**
@@ -1881,7 +1881,7 @@ public final class Predicates {
        * </code>
        */
       static <S, T> OfSequence<S, T, IllegalArgumentException> ofIAE() {
-        return ofIAE("[%d] = %s");
+        return ofIAE("Invalid element [%d]: %s");
       }
 
       /**

@@ -471,8 +471,230 @@ public class PredicatesTest {
     assertFalse(MAP_NON_EMPTY_OR_NULL.test(null));
     assertFalse(MAP_NON_EMPTY_OR_NULL.test(Collections.emptyMap()));
     assertTrue(MAP_NON_EMPTY_OR_NULL.test(Collections.singletonMap(new Object(), new Object())));
+    // Index predicates
+    assertTrue(checkByteArrayIndex(0).test(null));
+    assertFalse(checkByteArrayIndex(0).test(new byte[0]));
+    assertTrue(checkByteArrayIndex(0).test(new byte[1]));
+    assertFalse(checkByteArrayIndex(-1).test(new byte[1]));
+    assertFalse(checkByteArrayIndex(1).test(new byte[1]));
+    assertTrue(checkByteArrayIndex(1).test(new byte[2]));
+    assertFalse(checkByteArrayIndex(3).test(new byte[2]));
+    assertTrue(checkShortArrayIndex(0).test(null));
+    assertFalse(checkShortArrayIndex(0).test(new short[0]));
+    assertTrue(checkShortArrayIndex(0).test(new short[1]));
+    assertFalse(checkShortArrayIndex(-1).test(new short[1]));
+    assertFalse(checkShortArrayIndex(1).test(new short[1]));
+    assertTrue(checkShortArrayIndex(1).test(new short[2]));
+    assertFalse(checkShortArrayIndex(3).test(new short[2]));
+    assertTrue(checkIntArrayIndex(0).test(null));
+    assertFalse(checkIntArrayIndex(0).test(new int[0]));
+    assertTrue(checkIntArrayIndex(0).test(new int[1]));
+    assertFalse(checkIntArrayIndex(-1).test(new int[1]));
+    assertFalse(checkIntArrayIndex(1).test(new int[1]));
+    assertTrue(checkIntArrayIndex(1).test(new int[2]));
+    assertFalse(checkIntArrayIndex(3).test(new int[2]));
+    assertTrue(checkLongArrayIndex(0).test(null));
+    assertFalse(checkLongArrayIndex(0).test(new long[0]));
+    assertTrue(checkLongArrayIndex(0).test(new long[1]));
+    assertFalse(checkLongArrayIndex(-1).test(new long[1]));
+    assertFalse(checkLongArrayIndex(1).test(new long[1]));
+    assertTrue(checkLongArrayIndex(1).test(new long[2]));
+    assertFalse(checkLongArrayIndex(3).test(new long[2]));
+    assertTrue(checkFloatArrayIndex(0).test(null));
+    assertFalse(checkFloatArrayIndex(0).test(new float[0]));
+    assertTrue(checkFloatArrayIndex(0).test(new float[1]));
+    assertFalse(checkFloatArrayIndex(-1).test(new float[1]));
+    assertFalse(checkFloatArrayIndex(1).test(new float[1]));
+    assertTrue(checkFloatArrayIndex(1).test(new float[2]));
+    assertFalse(checkFloatArrayIndex(3).test(new float[2]));
+    assertTrue(checkDoubleArrayIndex(0).test(null));
+    assertFalse(checkDoubleArrayIndex(0).test(new double[0]));
+    assertTrue(checkDoubleArrayIndex(0).test(new double[1]));
+    assertFalse(checkDoubleArrayIndex(-1).test(new double[1]));
+    assertFalse(checkDoubleArrayIndex(1).test(new double[1]));
+    assertTrue(checkDoubleArrayIndex(1).test(new double[2]));
+    assertFalse(checkDoubleArrayIndex(3).test(new double[2]));
+    assertTrue(checkCharArrayIndex(0).test(null));
+    assertFalse(checkCharArrayIndex(0).test(new char[0]));
+    assertTrue(checkCharArrayIndex(0).test(new char[1]));
+    assertFalse(checkCharArrayIndex(-1).test(new char[1]));
+    assertFalse(checkCharArrayIndex(1).test(new char[1]));
+    assertTrue(checkCharArrayIndex(1).test(new char[2]));
+    assertFalse(checkCharArrayIndex(3).test(new char[2]));
+    assertTrue(checkBooleanArrayIndex(0).test(null));
+    assertFalse(checkBooleanArrayIndex(0).test(new boolean[0]));
+    assertTrue(checkBooleanArrayIndex(0).test(new boolean[1]));
+    assertFalse(checkBooleanArrayIndex(-1).test(new boolean[1]));
+    assertFalse(checkBooleanArrayIndex(1).test(new boolean[1]));
+    assertTrue(checkBooleanArrayIndex(1).test(new boolean[2]));
+    assertFalse(checkBooleanArrayIndex(3).test(new boolean[2]));
+    assertTrue(checkObjectArrayIndex(0).test(null));
+    assertFalse(checkObjectArrayIndex(0).test(new Object[0]));
+    assertTrue(checkObjectArrayIndex(0).test(new Object[1]));
+    assertFalse(checkObjectArrayIndex(-1).test(new Object[1]));
+    assertFalse(checkObjectArrayIndex(1).test(new Object[1]));
+    assertTrue(checkObjectArrayIndex(1).test(new Object[2]));
+    assertFalse(checkObjectArrayIndex(3).test(new Object[2]));
+    assertTrue(checkCharSequenceIndex(0).test(null));
+    assertFalse(checkCharSequenceIndex(0).test(""));
+    assertTrue(checkCharSequenceIndex(0).test("a"));
+    assertFalse(checkCharSequenceIndex(-1).test("a"));
+    assertFalse(checkCharSequenceIndex(1).test("a"));
+    assertTrue(checkCharSequenceIndex(1).test("ab"));
+    assertFalse(checkCharSequenceIndex(3).test("ab"));
+    // Range predicates
+    assertTrue(checkByteArrayRange(0).test(null));
+    assertTrue(checkByteArrayRange(0).test(new byte[0]));
+    assertTrue(checkByteArrayRange(0).test(new byte[1]));
+    assertFalse(checkByteArrayRange(-1).test(new byte[1]));
+    assertTrue(checkByteArrayRange(1).test(new byte[1]));
+    assertTrue(checkByteArrayRange(1).test(new byte[2]));
+    assertFalse(checkByteArrayRange(3).test(new byte[2]));
+    assertTrue(checkByteArrayRange(0, 0).test(null));
+    assertTrue(checkByteArrayRange(0, 0).test(new byte[0]));
+    assertTrue(checkByteArrayRange(0, 1).test(new byte[1]));
+    assertFalse(checkByteArrayRange(-1, 1).test(new byte[1]));
+    assertTrue(checkByteArrayRange(1, 1).test(new byte[1]));
+    assertTrue(checkByteArrayRange(1, 2).test(new byte[2]));
+    assertFalse(checkByteArrayRange(1, 3).test(new byte[2]));
+    assertFalse(checkByteArrayRange(2, 1).test(new byte[2]));
+    assertTrue(checkShortArrayRange(0).test(null));
+    assertTrue(checkShortArrayRange(0).test(new short[0]));
+    assertTrue(checkShortArrayRange(0).test(new short[1]));
+    assertFalse(checkShortArrayRange(-1).test(new short[1]));
+    assertTrue(checkShortArrayRange(1).test(new short[1]));
+    assertTrue(checkShortArrayRange(1).test(new short[2]));
+    assertFalse(checkShortArrayRange(3).test(new short[2]));
+    assertTrue(checkShortArrayRange(0, 0).test(null));
+    assertTrue(checkShortArrayRange(0, 0).test(new short[0]));
+    assertTrue(checkShortArrayRange(0, 1).test(new short[1]));
+    assertFalse(checkShortArrayRange(-1, 1).test(new short[1]));
+    assertTrue(checkShortArrayRange(1, 1).test(new short[1]));
+    assertTrue(checkShortArrayRange(1, 2).test(new short[2]));
+    assertFalse(checkShortArrayRange(1, 3).test(new short[2]));
+    assertFalse(checkShortArrayRange(2, 1).test(new short[2]));
+    assertTrue(checkIntArrayRange(0).test(null));
+    assertTrue(checkIntArrayRange(0).test(new int[0]));
+    assertTrue(checkIntArrayRange(0).test(new int[1]));
+    assertFalse(checkIntArrayRange(-1).test(new int[1]));
+    assertTrue(checkIntArrayRange(1).test(new int[1]));
+    assertTrue(checkIntArrayRange(1).test(new int[2]));
+    assertFalse(checkIntArrayRange(3).test(new int[2]));
+    assertTrue(checkIntArrayRange(0, 0).test(null));
+    assertTrue(checkIntArrayRange(0, 0).test(new int[0]));
+    assertTrue(checkIntArrayRange(0, 1).test(new int[1]));
+    assertFalse(checkIntArrayRange(-1, 1).test(new int[1]));
+    assertTrue(checkIntArrayRange(1, 1).test(new int[1]));
+    assertTrue(checkIntArrayRange(1, 2).test(new int[2]));
+    assertFalse(checkIntArrayRange(1, 3).test(new int[2]));
+    assertFalse(checkIntArrayRange(2, 1).test(new int[2]));
+    assertTrue(checkLongArrayRange(0).test(null));
+    assertTrue(checkLongArrayRange(0).test(new long[0]));
+    assertTrue(checkLongArrayRange(0).test(new long[1]));
+    assertFalse(checkLongArrayRange(-1).test(new long[1]));
+    assertTrue(checkLongArrayRange(1).test(new long[1]));
+    assertTrue(checkLongArrayRange(1).test(new long[2]));
+    assertFalse(checkLongArrayRange(3).test(new long[2]));
+    assertTrue(checkLongArrayRange(0, 0).test(null));
+    assertTrue(checkLongArrayRange(0, 0).test(new long[0]));
+    assertTrue(checkLongArrayRange(0, 1).test(new long[1]));
+    assertFalse(checkLongArrayRange(-1, 1).test(new long[1]));
+    assertTrue(checkLongArrayRange(1, 1).test(new long[1]));
+    assertTrue(checkLongArrayRange(1, 2).test(new long[2]));
+    assertFalse(checkLongArrayRange(1, 3).test(new long[2]));
+    assertFalse(checkLongArrayRange(2, 1).test(new long[2]));
+    assertTrue(checkFloatArrayRange(0).test(null));
+    assertTrue(checkFloatArrayRange(0).test(new float[0]));
+    assertTrue(checkFloatArrayRange(0).test(new float[1]));
+    assertFalse(checkFloatArrayRange(-1).test(new float[1]));
+    assertTrue(checkFloatArrayRange(1).test(new float[1]));
+    assertTrue(checkFloatArrayRange(1).test(new float[2]));
+    assertFalse(checkFloatArrayRange(3).test(new float[2]));
+    assertTrue(checkFloatArrayRange(0, 0).test(null));
+    assertTrue(checkFloatArrayRange(0, 0).test(new float[0]));
+    assertTrue(checkFloatArrayRange(0, 1).test(new float[1]));
+    assertFalse(checkFloatArrayRange(-1, 1).test(new float[1]));
+    assertTrue(checkFloatArrayRange(1, 1).test(new float[1]));
+    assertTrue(checkFloatArrayRange(1, 2).test(new float[2]));
+    assertFalse(checkFloatArrayRange(1, 3).test(new float[2]));
+    assertFalse(checkFloatArrayRange(2, 1).test(new float[2]));
+    assertTrue(checkDoubleArrayRange(0).test(null));
+    assertTrue(checkDoubleArrayRange(0).test(new double[0]));
+    assertTrue(checkDoubleArrayRange(0).test(new double[1]));
+    assertFalse(checkDoubleArrayRange(-1).test(new double[1]));
+    assertTrue(checkDoubleArrayRange(1).test(new double[1]));
+    assertTrue(checkDoubleArrayRange(1).test(new double[2]));
+    assertFalse(checkDoubleArrayRange(3).test(new double[2]));
+    assertTrue(checkDoubleArrayRange(0, 0).test(null));
+    assertTrue(checkDoubleArrayRange(0, 0).test(new double[0]));
+    assertTrue(checkDoubleArrayRange(0, 1).test(new double[1]));
+    assertFalse(checkDoubleArrayRange(-1, 1).test(new double[1]));
+    assertTrue(checkDoubleArrayRange(1, 1).test(new double[1]));
+    assertTrue(checkDoubleArrayRange(1, 2).test(new double[2]));
+    assertFalse(checkDoubleArrayRange(1, 3).test(new double[2]));
+    assertFalse(checkDoubleArrayRange(2, 1).test(new double[2]));
+    assertTrue(checkCharArrayRange(0).test(null));
+    assertTrue(checkCharArrayRange(0).test(new char[0]));
+    assertTrue(checkCharArrayRange(0).test(new char[1]));
+    assertFalse(checkCharArrayRange(-1).test(new char[1]));
+    assertTrue(checkCharArrayRange(1).test(new char[1]));
+    assertTrue(checkCharArrayRange(1).test(new char[2]));
+    assertFalse(checkCharArrayRange(3).test(new char[2]));
+    assertTrue(checkCharArrayRange(0, 0).test(null));
+    assertTrue(checkCharArrayRange(0, 0).test(new char[0]));
+    assertTrue(checkCharArrayRange(0, 1).test(new char[1]));
+    assertFalse(checkCharArrayRange(-1, 1).test(new char[1]));
+    assertTrue(checkCharArrayRange(1, 1).test(new char[1]));
+    assertTrue(checkCharArrayRange(1, 2).test(new char[2]));
+    assertFalse(checkCharArrayRange(1, 3).test(new char[2]));
+    assertFalse(checkCharArrayRange(2, 1).test(new char[2]));
+    assertTrue(checkBooleanArrayRange(0).test(null));
+    assertTrue(checkBooleanArrayRange(0).test(new boolean[0]));
+    assertTrue(checkBooleanArrayRange(0).test(new boolean[1]));
+    assertFalse(checkBooleanArrayRange(-1).test(new boolean[1]));
+    assertTrue(checkBooleanArrayRange(1).test(new boolean[1]));
+    assertTrue(checkBooleanArrayRange(1).test(new boolean[2]));
+    assertFalse(checkBooleanArrayRange(3).test(new boolean[2]));
+    assertTrue(checkBooleanArrayRange(0, 0).test(null));
+    assertTrue(checkBooleanArrayRange(0, 0).test(new boolean[0]));
+    assertTrue(checkBooleanArrayRange(0, 1).test(new boolean[1]));
+    assertFalse(checkBooleanArrayRange(-1, 1).test(new boolean[1]));
+    assertTrue(checkBooleanArrayRange(1, 1).test(new boolean[1]));
+    assertTrue(checkBooleanArrayRange(1, 2).test(new boolean[2]));
+    assertFalse(checkBooleanArrayRange(1, 3).test(new boolean[2]));
+    assertFalse(checkBooleanArrayRange(2, 1).test(new boolean[2]));
+    assertTrue(checkObjectArrayRange(0).test(null));
+    assertTrue(checkObjectArrayRange(0).test(new Object[0]));
+    assertTrue(checkObjectArrayRange(0).test(new Object[1]));
+    assertFalse(checkObjectArrayRange(-1).test(new Object[1]));
+    assertTrue(checkObjectArrayRange(1).test(new Object[1]));
+    assertTrue(checkObjectArrayRange(1).test(new Object[2]));
+    assertFalse(checkObjectArrayRange(3).test(new Object[2]));
+    assertTrue(checkObjectArrayRange(0, 0).test(null));
+    assertTrue(checkObjectArrayRange(0, 0).test(new Object[0]));
+    assertTrue(checkObjectArrayRange(0, 1).test(new Object[1]));
+    assertFalse(checkObjectArrayRange(-1, 1).test(new Object[1]));
+    assertTrue(checkObjectArrayRange(1, 1).test(new Object[1]));
+    assertTrue(checkObjectArrayRange(1, 2).test(new Object[2]));
+    assertFalse(checkObjectArrayRange(1, 3).test(new Object[2]));
+    assertFalse(checkObjectArrayRange(2, 1).test(new Object[2]));
+    assertTrue(checkCharSequenceRange(0).test(null));
+    assertTrue(checkCharSequenceRange(0).test(""));
+    assertTrue(checkCharSequenceRange(0).test("a"));
+    assertFalse(checkCharSequenceRange(-1).test("a"));
+    assertTrue(checkCharSequenceRange(1).test("a"));
+    assertTrue(checkCharSequenceRange(1).test("ab"));
+    assertFalse(checkCharSequenceRange(3).test("ab"));
+    assertTrue(checkCharSequenceRange(0, 0).test(null));
+    assertTrue(checkCharSequenceRange(0, 0).test(""));
+    assertTrue(checkCharSequenceRange(0, 1).test("a"));
+    assertFalse(checkCharSequenceRange(-1, 1).test("a"));
+    assertTrue(checkCharSequenceRange(1, 1).test("a"));
+    assertTrue(checkCharSequenceRange(1, 2).test("ab"));
+    assertFalse(checkCharSequenceRange(1, 3).test("ab"));
+    assertFalse(checkCharSequenceRange(2, 1).test("ab"));
     // Miscellaneous predicates
-    assertFalse(match(Pattern.compile("")).test(null));
+    assertTrue(match(Pattern.compile("")).test(null));
     assertFalse(match(Pattern.compile(".*abc.*")).test("123"));
     assertTrue(match(Pattern.compile(".*abc.*")).test("abc"));
     assertTrue(match(Pattern.compile(".*abc.*")).test("123abc456"));
@@ -518,7 +740,7 @@ public class PredicatesTest {
     final Object validObject = new Object();
     assertSame(validObject, requireNonNull(validObject, ExceptionProvider.ofNPE()));
     // NPE: null
-    assertEquals(null, assertThrows(NullPointerException.class,
+    assertEquals("Cannot be null", assertThrows(NullPointerException.class,
         () -> requireNonNull(null,
             ExceptionProvider.ofNPE())).getMessage());
     // NPE: message
@@ -540,7 +762,7 @@ public class PredicatesTest {
     final Object validSample = new Object();
     assertSame(validSample, require(validSample, (o) -> true));
     // IAE: object
-    assertEquals("10", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid argument: 10", assertThrows(IllegalArgumentException.class,
         () -> require(Integer.valueOf(10), (o) -> false)).getMessage());
   }
 
@@ -567,7 +789,7 @@ public class PredicatesTest {
     final Object validSample = new Object();
     assertSame(validSample, require(validSample, (o) -> true, ExceptionProvider.ofIAE()));
     // IAE: object
-    assertEquals("10", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid argument: 10", assertThrows(IllegalArgumentException.class,
         () -> require(Integer.valueOf(10), (o) -> false,
             ExceptionProvider.ofIAE())).getMessage());
     // IAE: message: object
@@ -590,7 +812,7 @@ public class PredicatesTest {
     // OK: int
     assertEquals(10, require(10, (int n) -> true));
     // IAE: int
-    assertEquals("10", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid argument: 10", assertThrows(IllegalArgumentException.class,
         () -> require(10, (int n) -> false)).getMessage());
   }
 
@@ -615,7 +837,7 @@ public class PredicatesTest {
     // OK: int
     assertEquals(10, require(10, (int n) -> true, ExceptionProvider.ofIAE()));
     // IAE: int
-    assertEquals("10", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid argument: 10", assertThrows(IllegalArgumentException.class,
         () -> require(10, (int n) -> false,
             ExceptionProvider.ofIAE())).getMessage());
     // IAE: message: int
@@ -638,7 +860,7 @@ public class PredicatesTest {
     // OK: long
     assertEquals(10L, require(10L, (long n) -> true));
     // IAE: long
-    assertEquals("10", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid argument: 10", assertThrows(IllegalArgumentException.class,
         () -> require(10L, (long n) -> false)).getMessage());
   }
 
@@ -663,7 +885,7 @@ public class PredicatesTest {
     // OK: long
     assertEquals(10L, require(10L, (long n) -> true, ExceptionProvider.ofIAE()));
     // IAE: long
-    assertEquals("10", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid argument: 10", assertThrows(IllegalArgumentException.class,
         () -> require(10L, (long n) -> false,
             ExceptionProvider.ofIAE())).getMessage());
     // IAE: message: long
@@ -686,7 +908,7 @@ public class PredicatesTest {
     // OK: double
     assertEquals(10., require(10., (double n) -> true), .0);
     // NPE: double
-    assertEquals("10.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid argument: 10.0", assertThrows(IllegalArgumentException.class,
         () -> require(10., (double n) -> false)).getMessage());
   }
 
@@ -711,7 +933,7 @@ public class PredicatesTest {
     // OK: double
     assertEquals(10., require(10., (double n) -> true, ExceptionProvider.ofIAE()), .0);
     // NPE: double
-    assertEquals("10.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid argument: 10.0", assertThrows(IllegalArgumentException.class,
         () -> require(10., (double n) -> false,
             ExceptionProvider.ofIAE())).getMessage());
     // NPE: message: double
@@ -743,7 +965,7 @@ public class PredicatesTest {
     final Object[] validSample = new Object[]{"one", "two", "three"};
     assertSame(validSample, requireAllNonNull(validSample));
     // NPE: [index]
-    assertEquals("[1]", assertThrows(NullPointerException.class,
+    assertEquals("Element [1] cannot be null", assertThrows(NullPointerException.class,
         () -> requireAllNonNull(new Object[]{"one", null, "three"})).getMessage());
   }
 
@@ -782,7 +1004,7 @@ public class PredicatesTest {
     final Object[] validSample = new Object[]{"one", "two", "three"};
     assertSame(validSample, requireAllNonNull(validSample, ExceptionProvider.OfSequence.ofNPE()));
     // NPE: [index]
-    assertEquals("[1]", assertThrows(NullPointerException.class,
+    assertEquals("Element [1] cannot be null", assertThrows(NullPointerException.class,
         () -> requireAllNonNull(new Object[]{"one", null, "three"},
             ExceptionProvider.OfSequence.ofNPE())).getMessage());
     // NPE: message: [index]
@@ -810,7 +1032,7 @@ public class PredicatesTest {
     final Object[] validSample = new Object[]{"one", "two", "three"};
     assertSame(validSample, requireAll(validSample, (o) -> true));
     // IAE: [index]
-    assertEquals("[2] = three", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: three", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new String[]{"one", "two", "three"}, (o) -> o.length() == 3)).getMessage());
   }
 
@@ -849,7 +1071,7 @@ public class PredicatesTest {
     final Object[] validSample = new Object[]{"one", "two", "three"};
     assertSame(validSample, requireAll(validSample, (o) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("[2] = three", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: three", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new String[]{"one", "two", "three"}, (o) -> o.length() == 3,
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
@@ -879,7 +1101,7 @@ public class PredicatesTest {
     final byte[] validSample = new byte[]{1, 2, 3};
     assertSame(validSample, requireAll(validSample, (n) -> true));
     // IAE: [index]
-    assertEquals("[2] = 3", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new byte[]{1, 2, 3}, (n) -> n < 3)).getMessage());
   }
 
@@ -918,7 +1140,7 @@ public class PredicatesTest {
     final byte[] validSample = new byte[]{1, 2, 3};
     assertSame(validSample, requireAll(validSample, (n) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("[2] = 3", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new byte[]{1, 2, 3}, (n) -> n < 3,
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
@@ -948,7 +1170,7 @@ public class PredicatesTest {
     final short[] validSample = new short[]{1, 2, 3};
     assertSame(validSample, requireAll(validSample, (n) -> true));
     // IAE: [index]
-    assertEquals("[2] = 3", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new short[]{1, 2, 3}, (n) -> n < 3)).getMessage());
   }
 
@@ -987,7 +1209,7 @@ public class PredicatesTest {
     final short[] validSample = new short[]{1, 2, 3};
     assertSame(validSample, requireAll(validSample, (n) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("[2] = 3", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new short[]{1, 2, 3}, (n) -> n < 3,
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
@@ -1017,7 +1239,7 @@ public class PredicatesTest {
     final int[] validSample = new int[]{1, 2, 3};
     assertSame(validSample, requireAll(validSample, (n) -> true));
     // IAE: [index]
-    assertEquals("[2] = 3", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new int[]{1, 2, 3}, (n) -> n < 3)).getMessage());
   }
 
@@ -1056,7 +1278,7 @@ public class PredicatesTest {
     final int[] validSample = new int[]{1, 2, 3};
     assertSame(validSample, requireAll(validSample, (n) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("[2] = 3", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new int[]{1, 2, 3}, (n) -> n < 3,
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
@@ -1086,7 +1308,7 @@ public class PredicatesTest {
     final long[] validSample = new long[]{1L, 2L, 3L};
     assertSame(validSample, requireAll(validSample, (n) -> true));
     // IAE: [index]
-    assertEquals("[2] = 3", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new long[]{1L, 2L, 3L}, (n) -> n < 3L)).getMessage());
   }
 
@@ -1125,7 +1347,7 @@ public class PredicatesTest {
     final long[] validSample = new long[]{1L, 2L, 3L};
     assertSame(validSample, requireAll(validSample, (n) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("[2] = 3", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new long[]{1L, 2L, 3L}, (n) -> n < 3L,
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
@@ -1155,7 +1377,7 @@ public class PredicatesTest {
     final float[] validSample = new float[]{1.f, 2.f, 3.f};
     assertSame(validSample, requireAll(validSample, (n) -> true));
     // IAE: [index]
-    assertEquals("[2] = 3.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3.0", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new float[]{1.f, 2.f, 3L}, (n) -> n < 3.f)).getMessage());
   }
 
@@ -1194,7 +1416,7 @@ public class PredicatesTest {
     final float[] validSample = new float[]{1.f, 2.f, 3.f};
     assertSame(validSample, requireAll(validSample, (n) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("[2] = 3.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3.0", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new float[]{1.f, 2.f, 3.f}, (n) -> n < 3.f,
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
@@ -1224,7 +1446,7 @@ public class PredicatesTest {
     final double[] validSample = new double[]{1., 2., 3.};
     assertSame(validSample, requireAll(validSample, (n) -> true));
     // IAE: [index]
-    assertEquals("[2] = 3.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3.0", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new double[]{1., 2., 3L}, (n) -> n < 3.)).getMessage());
   }
 
@@ -1263,7 +1485,7 @@ public class PredicatesTest {
     final double[] validSample = new double[]{1., 2., 3.};
     assertSame(validSample, requireAll(validSample, (n) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("[2] = 3.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3.0", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new double[]{1., 2., 3.}, (n) -> n < 3.,
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
@@ -1293,7 +1515,7 @@ public class PredicatesTest {
     final char[] validSample = new char[]{'a', 'b', 'c'};
     assertSame(validSample, requireAll(validSample, (c) -> true));
     // IAE: [index]
-    assertEquals("[2] = c", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: c", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new char[]{'a', 'b', 'c'}, (c) -> c < 'c')).getMessage());
   }
 
@@ -1332,7 +1554,7 @@ public class PredicatesTest {
     final char[] validSample = new char[]{'a', 'b', 'c'};
     assertSame(validSample, requireAll(validSample, (c) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("[2] = c", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: c", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new char[]{'a', 'b', 'c'}, (c) -> c < 'c',
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
@@ -1362,7 +1584,7 @@ public class PredicatesTest {
     final Iterable<Object> validSample = Arrays.asList("one", "two", "three");
     assertSame(validSample, requireAllNonNull(validSample));
     // NPE: [index]
-    assertEquals("[1]", assertThrows(NullPointerException.class,
+    assertEquals("Element [1] cannot be null", assertThrows(NullPointerException.class,
         () -> requireAllNonNull(Arrays.asList("one", null, "three"))).getMessage());
   }
 
@@ -1401,7 +1623,7 @@ public class PredicatesTest {
     final Iterable<Object> validSample = Arrays.asList("one", "two", "three");
     assertSame(validSample, requireAllNonNull(validSample, ExceptionProvider.OfSequence.ofNPE()));
     // NPE: [index]
-    assertEquals("[1]", assertThrows(NullPointerException.class,
+    assertEquals("Element [1] cannot be null", assertThrows(NullPointerException.class,
         () -> requireAllNonNull(Arrays.asList("one", null, "three"),
             ExceptionProvider.OfSequence.ofNPE())).getMessage());
     // NPE: message: [index]
@@ -1429,7 +1651,7 @@ public class PredicatesTest {
     final Iterable<Object> validSample = Arrays.asList("one", "two", "three");
     assertSame(validSample, requireAll(validSample, (o) -> true));
     // IAE: [index]
-    assertEquals("[2] = three", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: three", assertThrows(IllegalArgumentException.class,
         () -> requireAll(Arrays.asList("one", "two", "three"), (o) -> o.length() == 3)).getMessage());
   }
 
@@ -1468,7 +1690,7 @@ public class PredicatesTest {
     final Iterable<Object> validSample = Arrays.asList("one", "two", "three");
     assertSame(validSample, requireAll(validSample, (o) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("[2] = three", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: three", assertThrows(IllegalArgumentException.class,
         () -> requireAll(Arrays.asList("one", "two", "three"), (o) -> o.length() == 3,
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
