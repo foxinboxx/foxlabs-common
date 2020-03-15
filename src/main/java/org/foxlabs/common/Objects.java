@@ -18,7 +18,7 @@ package org.foxlabs.common;
 
 import java.util.function.Supplier;
 
-import org.foxlabs.common.function.ToString;
+import org.foxlabs.common.text.CharacterBuffer;
 
 /**
  * The commonly used operations on objects.
@@ -38,16 +38,16 @@ public final class Objects {
    * <p>
    * This is a shortcut for the:
    * <code>
-   * ToString.Builder.toString(object)
+   * CharacterBuffer.toString(object)
    * </code>
    * </p>
    *
    * @param object The reference to an object to be converted to a string representation.
    * @return A string representation of the specified object.
-   * @see ToString.Builder#toString(Object)
+   * @see CharacterBuffer
    */
   public static String toString(Object object) {
-    return ToString.Builder.toString(object);
+    return CharacterBuffer.toString(object);
   }
 
   /**

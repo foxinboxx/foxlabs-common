@@ -40,7 +40,7 @@ public interface CharacterSequence extends CharSequence {
 
   void copy(int from, int to, char[] target, int offset);
 
-  static CharacterSequence of(char[] source) {
+  static CharacterSequence of(char... source) {
     return (from, to, target, offset) -> System.arraycopy(source, from, target, offset, to - from);
   }
 

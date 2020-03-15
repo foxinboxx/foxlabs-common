@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import org.foxlabs.common.Strings;
 import org.foxlabs.common.function.ToString;
+import org.foxlabs.common.text.CharacterBuffer;
 
 /**
  * This class represents a set of unicode characters and provides operations
@@ -334,7 +335,7 @@ public final class UnicodeSet extends ToString.Adapter implements java.io.Serial
      * @param buffer Buffer to append.
      */
     @Override
-    public ToString.Builder toString(ToString.Builder buffer) {
+    public CharacterBuffer toString(CharacterBuffer buffer) {
         buffer.append('[');
         if (min.length > 0) {
             toString(buffer, min[0], max[0]);
@@ -400,7 +401,7 @@ public final class UnicodeSet extends ToString.Adapter implements java.io.Serial
      * @param m Maximum bound.
      * @param buf Buffer to append.
      */
-    private static void toString(ToString.Builder buf, int n, int m) {
+    private static void toString(CharacterBuffer buf, int n, int m) {
         buf.append('\'')
            .append(Strings.escape((char) n))
            .append('\'');

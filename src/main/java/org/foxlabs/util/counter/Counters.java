@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.foxlabs.common.function.ToString;
+import org.foxlabs.common.text.CharacterBuffer;
 
 /**
  * Factory class for all counters.
@@ -92,7 +93,7 @@ public abstract class Counters {
     }
 
     @Override
-    public ToString.Builder toString(ToString.Builder buf) {
+    public CharacterBuffer toString(CharacterBuffer buf) {
       return buf.append(NA);
     }
 
@@ -168,10 +169,10 @@ public abstract class Counters {
      * @return The specified buffer.
      */
     @Override
-    public ToString.Builder toString(ToString.Builder buf) {
-      buf.append(getInvocationCount());
-      formatRate(getHitRate(), buf.append(" (+").append(getHitCount()).append(" "));
-      formatRate(getMissRate(), buf.append(" | -").append(getMissCount()).append(" "));
+    public CharacterBuffer toString(CharacterBuffer buf) {
+      buf.appendLong(getInvocationCount());
+      formatRate(getHitRate(), buf.append(" (+").appendLong(getHitCount()).append(" "));
+      formatRate(getMissRate(), buf.append(" | -").appendLong(getMissCount()).append(" "));
       return buf.append(")");
     }
 
@@ -406,7 +407,7 @@ public abstract class Counters {
     }
 
     @Override
-    public ToString.Builder toString(ToString.Builder buf) {
+    public CharacterBuffer toString(CharacterBuffer buf) {
       return buf.append(NA);
     }
 
@@ -501,8 +502,8 @@ public abstract class Counters {
      * @see #formatLatency(long, StringBuilder)
      */
     @Override
-    public ToString.Builder toString(ToString.Builder buf) {
-      buf.append(getInvocationCount());
+    public CharacterBuffer toString(CharacterBuffer buf) {
+      buf.appendLong(getInvocationCount());
       formatLatency(getTotalLatency(), buf.append(" / "));
       formatLatency(getMinLatency(), buf.append(" (-"));
       formatLatency(getMaxLatency(), buf.append(" +"));
@@ -993,7 +994,7 @@ public abstract class Counters {
     }
 
     @Override
-    public ToString.Builder toString(ToString.Builder buf) {
+    public CharacterBuffer toString(CharacterBuffer buf) {
       return buf.append(NA);
     }
 
@@ -1161,13 +1162,13 @@ public abstract class Counters {
      * @see #formatLatency(long, StringBuilder)
      */
     @Override
-    public ToString.Builder toString(ToString.Builder buf) {
-      buf.append(getInvocationCount());
+    public CharacterBuffer toString(CharacterBuffer buf) {
+      buf.appendLong(getInvocationCount());
       formatLatency(getTotalLatency(), buf.append(" / "));
-      formatRate(getHitRate(), buf.append(" (+").append(getHitCount()).append(" "));
+      formatRate(getHitRate(), buf.append(" (+").appendLong(getHitCount()).append(" "));
       formatLatency(getHitTotalLatency(), buf.append(" "));
       formatLatency(getHitAverageLatency(), buf.append(" ~"));
-      formatRate(getMissRate(), buf.append(" | -").append(getMissCount()).append(" "));
+      formatRate(getMissRate(), buf.append(" | -").appendLong(getMissCount()).append(" "));
       formatLatency(getMissTotalLatency(), buf.append(" "));
       formatLatency(getMissAverageLatency(), buf.append(" ~"));
       return buf.append(")");
@@ -1489,7 +1490,7 @@ public abstract class Counters {
    * @see #formatRate(double, StringBuilder)
    */
   public static String formatRate(double rate) {
-    return formatRate(rate, new ToString.Builder()).toString();
+    return formatRate(rate, new CharacterBuffer()).toString();
   }
 
   /**
@@ -1501,7 +1502,7 @@ public abstract class Counters {
    * @throws IllegalArgumentException if the specified rate is not in range [0..1].
    * @return String representation of the specified rate value.
    */
-  public static ToString.Builder formatRate(double rate, ToString.Builder buf) {
+  public static CharacterBuffer formatRate(double rate, CharacterBuffer buf) {
     if (rate < 0.0 || rate > 1.0 || Double.isNaN(rate) || Double.isInfinite(rate)) {
       throw new IllegalArgumentException();
     } else {
@@ -1512,11 +1513,11 @@ public abstract class Counters {
       if (integer < 10) {
         buf.append('0');
       }
-      buf.append(integer).append('.');
+      buf.appendInt(integer).append('.');
       if (decimal < 10) {
         buf.append('0');
       }
-      return buf.append(decimal).append('%');
+      return buf.appendInt(decimal).append('%');
     }
   }
 
@@ -1530,7 +1531,7 @@ public abstract class Counters {
    * @see #formatLatency(long, StringBuilder)
    */
   public static String formatLatency(long latency) {
-    return formatLatency(latency, new ToString.Builder()).toString();
+    return formatLatency(latency, new CharacterBuffer()).toString();
   }
 
   /**
@@ -1542,7 +1543,7 @@ public abstract class Counters {
    * @return The specified buffer.
    * @throws IllegalArgumentException if the specified latency time is negative.
    */
-  public static ToString.Builder formatLatency(long latency, ToString.Builder buf) {
+  public static CharacterBuffer formatLatency(long latency, CharacterBuffer buf) {
     if (latency < 0L) {
       throw new IllegalArgumentException(Long.toString(latency));
     } else {
@@ -1554,34 +1555,34 @@ public abstract class Counters {
 
       boolean appended = false;
       if (days > 0L) {
-        buf.append(days).append(':');
+        buf.appendLong(days).append(':');
         appended = true;
       }
       if (appended || hours > 0L) {
         if (hours < 10L) {
           buf.append('0');
         }
-        buf.append(hours).append(':');
+        buf.appendLong(hours).append(':');
         appended = true;
       }
       if (appended || minutes > 0L) {
         if (minutes < 10L) {
           buf.append('0');
         }
-        buf.append(minutes).append(':');
+        buf.appendLong(minutes).append(':');
         appended = true;
       }
       if (appended && seconds < 10L) {
         buf.append('0');
       }
-      buf.append(seconds).append('.');
+      buf.appendLong(seconds).append('.');
       if (millis < 100L) {
         buf.append('0');
       }
       if (millis < 10L) {
         buf.append('0');
       }
-      return buf.append(millis);
+      return buf.appendLong(millis);
     }
   }
 
