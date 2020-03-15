@@ -525,10 +525,6 @@ public class PredicatesTest {
     assertEquals("object cannot be null", assertThrows(NullPointerException.class,
         () -> requireNonNull(null,
             ExceptionProvider.ofNPE("object cannot be null"))).getMessage());
-    // NPE: message: identifier
-    assertEquals("object cannot be null: sample", assertThrows(NullPointerException.class,
-        () -> requireNonNull(null,
-            ExceptionProvider.ofNPE("object cannot be null", "sample"))).getMessage());
     // ISE: message
     assertEquals("object cannot be null", assertThrows(IllegalStateException.class,
         () -> requireNonNull(null,
@@ -559,7 +555,7 @@ public class PredicatesTest {
     // IAE: message: object
     assertEquals("object cannot be illegal: 10", assertThrows(IllegalArgumentException.class,
         () -> require(Integer.valueOf(10), (o) -> false,
-            "object cannot be illegal")).getMessage());
+            "object cannot be illegal: %s")).getMessage());
   }
 
   /**
@@ -577,11 +573,7 @@ public class PredicatesTest {
     // IAE: message: object
     assertEquals("object cannot be illegal: 10", assertThrows(IllegalArgumentException.class,
         () -> require(Integer.valueOf(10), (o) -> false,
-            ExceptionProvider.ofIAE("object cannot be illegal"))).getMessage());
-    // IAE: message: identifier = object
-    assertEquals("object cannot be illegal: sample = 10", assertThrows(IllegalArgumentException.class,
-        () -> require(Integer.valueOf(10), (o) -> false,
-            ExceptionProvider.ofIAE("object cannot be illegal", "sample"))).getMessage());
+            ExceptionProvider.ofIAE("object cannot be illegal: %s"))).getMessage());
     // ISE: message
     assertEquals("object cannot be illegal", assertThrows(IllegalStateException.class,
         () -> require(Integer.valueOf(10), (o) -> false,
@@ -612,7 +604,7 @@ public class PredicatesTest {
     // IAE: message: int
     assertEquals("int cannot be illegal: 10", assertThrows(IllegalArgumentException.class,
         () -> require(10, (int n) -> false,
-            "int cannot be illegal")).getMessage());
+            "int cannot be illegal: %s")).getMessage());
   }
 
   /**
@@ -629,11 +621,7 @@ public class PredicatesTest {
     // IAE: message: int
     assertEquals("long cannot be illegal: 10", assertThrows(IllegalArgumentException.class,
         () -> require(10, (int n) -> false,
-            ExceptionProvider.ofIAE("long cannot be illegal"))).getMessage());
-    // IAE: message: identifier = int
-    assertEquals("long cannot be illegal: sample = 10", assertThrows(IllegalArgumentException.class,
-        () -> require(10, (int n) -> false,
-            ExceptionProvider.ofIAE("long cannot be illegal", "sample"))).getMessage());
+            ExceptionProvider.ofIAE("long cannot be illegal: %s"))).getMessage());
     // ISE: message
     assertEquals("long cannot be illegal", assertThrows(IllegalStateException.class,
         () -> require(10, (int n) -> false,
@@ -664,7 +652,7 @@ public class PredicatesTest {
     // IAE: message: long
     assertEquals("long cannot be illegal: 10", assertThrows(IllegalArgumentException.class,
         () -> require(10L, (long n) -> false,
-            "long cannot be illegal")).getMessage());
+            "long cannot be illegal: %s")).getMessage());
   }
 
   /**
@@ -681,11 +669,7 @@ public class PredicatesTest {
     // IAE: message: long
     assertEquals("long cannot be illegal: 10", assertThrows(IllegalArgumentException.class,
         () -> require(10L, (long n) -> false,
-            ExceptionProvider.ofIAE("long cannot be illegal"))).getMessage());
-    // IAE: message: identifier = long
-    assertEquals("long cannot be illegal: sample = 10", assertThrows(IllegalArgumentException.class,
-        () -> require(10L, (long n) -> false,
-            ExceptionProvider.ofIAE("long cannot be illegal", "sample"))).getMessage());
+            ExceptionProvider.ofIAE("long cannot be illegal: %s"))).getMessage());
     // ISE: message
     assertEquals("long cannot be illegal", assertThrows(IllegalStateException.class,
         () -> require(10L, (long n) -> false,
@@ -716,7 +700,7 @@ public class PredicatesTest {
     // NPE: message: double
     assertEquals("double cannot be illegal: 10.0", assertThrows(IllegalArgumentException.class,
         () -> require(10., (double n) -> false,
-            "double cannot be illegal")).getMessage());
+            "double cannot be illegal: %s")).getMessage());
   }
 
   /**
@@ -733,11 +717,7 @@ public class PredicatesTest {
     // NPE: message: double
     assertEquals("double cannot be illegal: 10.0", assertThrows(IllegalArgumentException.class,
         () -> require(10., (double n) -> false,
-            ExceptionProvider.ofIAE("double cannot be illegal"))).getMessage());
-    // NPE: message: identifier = double
-    assertEquals("double cannot be illegal: sample = 10.0", assertThrows(IllegalArgumentException.class,
-        () -> require(10., (double n) -> false,
-            ExceptionProvider.ofIAE("double cannot be illegal", "sample"))).getMessage());
+            ExceptionProvider.ofIAE("double cannot be illegal: %s"))).getMessage());
     // ISE: message
     assertEquals("double cannot be illegal", assertThrows(IllegalStateException.class,
         () -> require(10., (double n) -> false,
@@ -784,7 +764,7 @@ public class PredicatesTest {
     // NPE: message: [index]
     assertEquals("elements cannot be null: [1]", assertThrows(NullPointerException.class,
         () -> requireAllNonNull(new Object[]{"one", null, "three"},
-            "elements cannot be null")).getMessage());
+            "elements cannot be null: [%d]")).getMessage());
   }
 
   /**
@@ -808,11 +788,7 @@ public class PredicatesTest {
     // NPE: message: [index]
     assertEquals("elements cannot be null: [1]", assertThrows(NullPointerException.class,
         () -> requireAllNonNull(new Object[]{"one", null, "three"},
-            ExceptionProvider.OfSequence.ofNPE("elements cannot be null"))).getMessage());
-    // NPE: message: identifier[index]
-    assertEquals("elements cannot be null: sample[1]", assertThrows(NullPointerException.class,
-        () -> requireAllNonNull(new Object[]{"one", null, "three"},
-            ExceptionProvider.OfSequence.ofNPE("elements cannot be null", "sample"))).getMessage());
+            ExceptionProvider.OfSequence.ofNPE("elements cannot be null: [%d]"))).getMessage());
     // ISE: message
     assertEquals("elements cannot be null", assertThrows(IllegalStateException.class,
         () -> requireAllNonNull(new Object[]{"one", null, "three"},
@@ -855,7 +831,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("elements cannot be invalid: [2] = three", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new String[]{"one", "two", "three"}, (o) -> o.length() == 3,
-            "elements cannot be invalid")).getMessage());
+            "elements cannot be invalid: [%d] = %s")).getMessage());
   }
 
   /**
@@ -879,11 +855,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("elements cannot be invalid: [2] = three", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new String[]{"one", "two", "three"}, (o) -> o.length() == 3,
-            ExceptionProvider.OfSequence.ofIAE("elements cannot be invalid"))).getMessage());
-    // IAE: message: identifier[index] = element
-    assertEquals("elements cannot be invalid: sample[2] = three", assertThrows(IllegalArgumentException.class,
-        () -> requireAll(new String[]{"one", "two", "three"}, (o) -> o.length() == 3,
-            ExceptionProvider.OfSequence.ofIAE("elements cannot be invalid", "sample"))).getMessage());
+            ExceptionProvider.OfSequence.ofIAE("elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message
     assertEquals("elements cannot be invalid", assertThrows(IllegalStateException.class,
         () -> requireAll(new String[]{"one", "two", "three"}, (o) -> o.length() == 3,
@@ -928,7 +900,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("byte elements cannot be invalid: [2] = 3", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new byte[]{1, 2, 3}, (n) -> n < 3,
-            "byte elements cannot be invalid")).getMessage());
+            "byte elements cannot be invalid: [%d] = %s")).getMessage());
   }
 
   /**
@@ -952,11 +924,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("byte elements cannot be invalid: [2] = 3", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new byte[]{1, 2, 3}, (n) -> n < 3,
-            ExceptionProvider.OfSequence.ofIAE("byte elements cannot be invalid"))).getMessage());
-    // IAE: message: identifier[index] = element
-    assertEquals("byte elements cannot be invalid: sample[2] = 3", assertThrows(IllegalArgumentException.class,
-        () -> requireAll(new byte[]{1, 2, 3}, (n) -> n < 3,
-            ExceptionProvider.OfSequence.ofIAE("byte elements cannot be invalid", "sample"))).getMessage());
+            ExceptionProvider.OfSequence.ofIAE("byte elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message
     assertEquals("byte elements cannot be invalid", assertThrows(IllegalStateException.class,
         () -> requireAll(new byte[]{1, 2, 3}, (n) -> n < 3,
@@ -1001,7 +969,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("short elements cannot be invalid: [2] = 3", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new short[]{1, 2, 3}, (n) -> n < 3,
-            "short elements cannot be invalid")).getMessage());
+            "short elements cannot be invalid: [%d] = %s")).getMessage());
   }
 
   /**
@@ -1025,11 +993,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("short elements cannot be invalid: [2] = 3", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new short[]{1, 2, 3}, (n) -> n < 3,
-            ExceptionProvider.OfSequence.ofIAE("short elements cannot be invalid"))).getMessage());
-    // IAE: message: identifier[index] = element
-    assertEquals("short elements cannot be invalid: sample[2] = 3", assertThrows(IllegalArgumentException.class,
-        () -> requireAll(new short[]{1, 2, 3}, (n) -> n < 3,
-            ExceptionProvider.OfSequence.ofIAE("short elements cannot be invalid", "sample"))).getMessage());
+            ExceptionProvider.OfSequence.ofIAE("short elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message
     assertEquals("short elements cannot be invalid", assertThrows(IllegalStateException.class,
         () -> requireAll(new short[]{1, 2, 3}, (n) -> n < 3,
@@ -1074,7 +1038,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("int elements cannot be invalid: [2] = 3", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new int[]{1, 2, 3}, (n) -> n < 3,
-            "int elements cannot be invalid")).getMessage());
+            "int elements cannot be invalid: [%d] = %s")).getMessage());
   }
 
   /**
@@ -1098,11 +1062,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("int elements cannot be invalid: [2] = 3", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new int[]{1, 2, 3}, (n) -> n < 3,
-            ExceptionProvider.OfSequence.ofIAE("int elements cannot be invalid"))).getMessage());
-    // IAE: message: identifier[index] = element
-    assertEquals("int elements cannot be invalid: sample[2] = 3", assertThrows(IllegalArgumentException.class,
-        () -> requireAll(new int[]{1, 2, 3}, (n) -> n < 3,
-            ExceptionProvider.OfSequence.ofIAE("int elements cannot be invalid", "sample"))).getMessage());
+            ExceptionProvider.OfSequence.ofIAE("int elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message
     assertEquals("int elements cannot be invalid", assertThrows(IllegalStateException.class,
         () -> requireAll(new int[]{1, 2, 3}, (n) -> n < 3,
@@ -1147,7 +1107,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("long elements cannot be invalid: [2] = 3", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new long[]{1L, 2L, 3L}, (n) -> n < 3L,
-            "long elements cannot be invalid")).getMessage());
+            "long elements cannot be invalid: [%d] = %s")).getMessage());
   }
 
   /**
@@ -1171,11 +1131,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("long elements cannot be invalid: [2] = 3", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new long[]{1L, 2L, 3L}, (n) -> n < 3L,
-            ExceptionProvider.OfSequence.ofIAE("long elements cannot be invalid"))).getMessage());
-    // IAE: message: identifier[index] = element
-    assertEquals("long elements cannot be invalid: sample[2] = 3", assertThrows(IllegalArgumentException.class,
-        () -> requireAll(new long[]{1L, 2L, 3L}, (n) -> n < 3L,
-            ExceptionProvider.OfSequence.ofIAE("long elements cannot be invalid", "sample"))).getMessage());
+            ExceptionProvider.OfSequence.ofIAE("long elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message
     assertEquals("long elements cannot be invalid", assertThrows(IllegalStateException.class,
         () -> requireAll(new long[]{1L, 2L, 3L}, (n) -> n < 3L,
@@ -1220,7 +1176,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("float elements cannot be invalid: [2] = 3.0", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new float[]{1.f, 2.f, 3.f}, (n) -> n < 3.f,
-            "float elements cannot be invalid")).getMessage());
+            "float elements cannot be invalid: [%d] = %s")).getMessage());
   }
 
   /**
@@ -1244,11 +1200,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("float elements cannot be invalid: [2] = 3.0", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new float[]{1.f, 2.f, 3.f}, (n) -> n < 3.f,
-            ExceptionProvider.OfSequence.ofIAE("float elements cannot be invalid"))).getMessage());
-    // IAE: message: identifier[index] = element
-    assertEquals("float elements cannot be invalid: sample[2] = 3.0", assertThrows(IllegalArgumentException.class,
-        () -> requireAll(new float[]{1.f, 2.f, 3.f}, (n) -> n < 3.f,
-            ExceptionProvider.OfSequence.ofIAE("float elements cannot be invalid", "sample"))).getMessage());
+            ExceptionProvider.OfSequence.ofIAE("float elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message
     assertEquals("float elements cannot be invalid", assertThrows(IllegalStateException.class,
         () -> requireAll(new float[]{1.f, 2.f, 3.f}, (n) -> n < 3.f,
@@ -1293,7 +1245,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("double elements cannot be invalid: [2] = 3.0", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new double[]{1., 2., 3.}, (n) -> n < 3.,
-            "double elements cannot be invalid")).getMessage());
+            "double elements cannot be invalid: [%d] = %s")).getMessage());
   }
 
   /**
@@ -1317,11 +1269,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("double elements cannot be invalid: [2] = 3.0", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new double[]{1., 2., 3.}, (n) -> n < 3.,
-            ExceptionProvider.OfSequence.ofIAE("double elements cannot be invalid"))).getMessage());
-    // IAE: message: identifier[index] = element
-    assertEquals("double elements cannot be invalid: sample[2] = 3.0", assertThrows(IllegalArgumentException.class,
-        () -> requireAll(new double[]{1., 2., 3.}, (n) -> n < 3.,
-            ExceptionProvider.OfSequence.ofIAE("double elements cannot be invalid", "sample"))).getMessage());
+            ExceptionProvider.OfSequence.ofIAE("double elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message
     assertEquals("double elements cannot be invalid", assertThrows(IllegalStateException.class,
         () -> requireAll(new double[]{1., 2., 3.}, (n) -> n < 3.,
@@ -1366,7 +1314,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("char elements cannot be invalid: [2] = c", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new char[]{'a', 'b', 'c'}, (c) -> c < 'c',
-            "char elements cannot be invalid")).getMessage());
+            "char elements cannot be invalid: [%d] = %s")).getMessage());
   }
 
   /**
@@ -1390,11 +1338,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("char elements cannot be invalid: [2] = c", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new char[]{'a', 'b', 'c'}, (c) -> c < 'c',
-            ExceptionProvider.OfSequence.ofIAE("char elements cannot be invalid"))).getMessage());
-    // IAE: message: identifier[index] = element
-    assertEquals("char elements cannot be invalid: sample[2] = c", assertThrows(IllegalArgumentException.class,
-        () -> requireAll(new char[]{'a', 'b', 'c'}, (c) -> c < 'c',
-            ExceptionProvider.OfSequence.ofIAE("char elements cannot be invalid", "sample"))).getMessage());
+            ExceptionProvider.OfSequence.ofIAE("char elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message
     assertEquals("char elements cannot be invalid", assertThrows(IllegalStateException.class,
         () -> requireAll(new char[]{'a', 'b', 'c'}, (c) -> c < 'c',
@@ -1439,7 +1383,7 @@ public class PredicatesTest {
     // NPE: message: [index]
     assertEquals("elements cannot be null: [1]", assertThrows(NullPointerException.class,
         () -> requireAllNonNull(Arrays.asList("one", null, "three"),
-            "elements cannot be null")).getMessage());
+            "elements cannot be null: [%d]")).getMessage());
   }
 
   /**
@@ -1463,11 +1407,7 @@ public class PredicatesTest {
     // NPE: message: [index]
     assertEquals("elements cannot be null: [1]", assertThrows(NullPointerException.class,
         () -> requireAllNonNull(Arrays.asList("one", null, "three"),
-            ExceptionProvider.OfSequence.ofNPE("elements cannot be null"))).getMessage());
-    // NPE: message: identifier[index]
-    assertEquals("elements cannot be null: sample[1]", assertThrows(NullPointerException.class,
-        () -> requireAllNonNull(Arrays.asList("one", null, "three"),
-            ExceptionProvider.OfSequence.ofNPE("elements cannot be null", "sample"))).getMessage());
+            ExceptionProvider.OfSequence.ofNPE("elements cannot be null: [%d]"))).getMessage());
     // ISE: message
     assertEquals("elements cannot be null", assertThrows(IllegalStateException.class,
         () -> requireAllNonNull(Arrays.asList("one", null, "three"),
@@ -1510,7 +1450,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("elements cannot be invalid: [2] = three", assertThrows(IllegalArgumentException.class,
         () -> requireAll(Arrays.asList("one", "two", "three"), (o) -> o.length() == 3,
-            "elements cannot be invalid")).getMessage());
+            "elements cannot be invalid: [%d] = %s")).getMessage());
   }
 
   /**
@@ -1534,11 +1474,7 @@ public class PredicatesTest {
     // IAE: message: [index] = element
     assertEquals("elements cannot be invalid: [2] = three", assertThrows(IllegalArgumentException.class,
         () -> requireAll(Arrays.asList("one", "two", "three"), (o) -> o.length() == 3,
-            ExceptionProvider.OfSequence.ofIAE("elements cannot be invalid"))).getMessage());
-    // IAE: message: identifier[index] = element
-    assertEquals("elements cannot be invalid: sample[2] = three", assertThrows(IllegalArgumentException.class,
-        () -> requireAll(Arrays.asList("one", "two", "three"), (o) -> o.length() == 3,
-            ExceptionProvider.OfSequence.ofIAE("elements cannot be invalid", "sample"))).getMessage());
+            ExceptionProvider.OfSequence.ofIAE("elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message
     assertEquals("elements cannot be invalid", assertThrows(IllegalStateException.class,
         () -> requireAll(Arrays.asList("one", "two", "three"), (o) -> o.length() == 3,

@@ -16,6 +16,8 @@
 
 package org.foxlabs.common;
 
+import java.lang.reflect.Array;
+
 import java.util.Map;
 import java.util.Collection;
 import java.util.Iterator;
@@ -424,11 +426,165 @@ public final class Predicates {
   /** {@code (m) -> m != null && m.size() > 0} */
   public static final Predicate<Map<?, ?>> MAP_NON_EMPTY_OR_NULL = (m) -> m != null && m.size() > 0;
 
+  // Index predicates
+
+  /** {@code (a) -> a == null || index >= 0 && index < a.length} */
+  public static Predicate<byte[]> checkByteArrayIndex(int index) {
+    return (a) -> a == null || index >= 0 && index < a.length;
+  }
+
+  /** {@code (a) -> a == null || index >= 0 && index < a.length} */
+  public static Predicate<short[]> checkShortArrayIndex(int index) {
+    return (a) -> a == null || index >= 0 && index < a.length;
+  }
+
+  /** {@code (a) -> a == null || index >= 0 && index < a.length} */
+  public static Predicate<int[]> checkIntArrayIndex(int index) {
+    return (a) -> a == null || index >= 0 && index < a.length;
+  }
+
+  /** {@code (a) -> a == null || index >= 0 && index < a.length} */
+  public static Predicate<long[]> checkLongArrayIndex(int index) {
+    return (a) -> a == null || index >= 0 && index < a.length;
+  }
+
+  /** {@code (a) -> a == null || index >= 0 && index < a.length} */
+  public static Predicate<float[]> checkFloatArrayIndex(int index) {
+    return (a) -> a == null || index >= 0 && index < a.length;
+  }
+
+  /** {@code (a) -> a == null || index >= 0 && index < a.length} */
+  public static Predicate<double[]> checkDoubleArrayIndex(int index) {
+    return (a) -> a == null || index >= 0 && index < a.length;
+  }
+
+  /** {@code (a) -> a == null || index >= 0 && index < a.length} */
+  public static Predicate<char[]> checkCharArrayIndex(int index) {
+    return (a) -> a == null || index >= 0 && index < a.length;
+  }
+
+  /** {@code (a) -> a == null || index >= 0 && index < a.length} */
+  public static Predicate<boolean[]> checkBooleanArrayIndex(int index) {
+    return (a) -> a == null || index >= 0 && index < a.length;
+  }
+
+  /** {@code (a) -> a == null || index >= 0 && index < a.length} */
+  public static <T> Predicate<T[]> checkObjectArrayIndex(int index) {
+    return (a) -> a == null || index >= 0 && index < a.length;
+  }
+
+  /** {@code (s) -> s == null || index >= 0 && index < s.length()} */
+  public static Predicate<CharSequence> checkCharSequenceIndex(int index) {
+    return (s) -> s == null || index >= 0 && index < s.length();
+  }
+
+  // Range predicates
+
+  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
+  public static Predicate<byte[]> checkByteArrayRange(int from) {
+    return (a) -> a == null || from >= 0 && from <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
+  public static Predicate<byte[]> checkByteArrayRange(int from, int to) {
+    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
+  public static Predicate<short[]> checkShortArrayRange(int from) {
+    return (a) -> a == null || from >= 0 && from <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
+  public static Predicate<short[]> checkShortArrayRange(int from, int to) {
+    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
+  public static Predicate<int[]> checkIntArrayRange(int from) {
+    return (a) -> a == null || from >= 0 && from <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
+  public static Predicate<int[]> checkIntArrayRange(int from, int to) {
+    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
+  public static Predicate<long[]> checkLongArrayRange(int from) {
+    return (a) -> a == null || from >= 0 && from <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
+  public static Predicate<long[]> checkLongArrayRange(int from, int to) {
+    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
+  public static Predicate<float[]> checkFloatArrayRange(int from) {
+    return (a) -> a == null || from >= 0 && from <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
+  public static Predicate<float[]> checkFloatArrayRange(int from, int to) {
+    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
+  public static Predicate<double[]> checkDoubleArrayRange(int from) {
+    return (a) -> a == null || from >= 0 && from <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
+  public static Predicate<double[]> checkDoubleArrayRange(int from, int to) {
+    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
+  public static Predicate<char[]> checkCharArrayRange(int from) {
+    return (a) -> a == null || from >= 0 && from <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
+  public static Predicate<char[]> checkCharArrayRange(int from, int to) {
+    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
+  public static Predicate<boolean[]> checkBooleanArrayRange(int from) {
+    return (a) -> a == null || from >= 0 && from <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
+  public static Predicate<boolean[]> checkBooleanArrayRange(int from, int to) {
+    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
+  public static <T> Predicate<T[]> checkObjectArrayRange(int from) {
+    return (a) -> a == null || from >= 0 && from <= a.length;
+  }
+
+  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
+  public static <T> Predicate<T[]> checkObjectArrayRange(int from, int to) {
+    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  }
+
+  /** {@code (s) -> s == null || from >= 0 && from <= s.length()} */
+  public static Predicate<CharSequence> checkCharSequenceRange(int from) {
+    return (s) -> s == null || from >= 0 && from <= s.length();
+  }
+
+  /** (s) -> s == null || from >= 0 && from <= to && to <= s.length()} */
+  public static Predicate<CharSequence> checkCharSequenceRange(int from, int to) {
+    return (s) -> s == null || from >= 0 && from <= to && to <= s.length();
+  }
+
   // Miscellaneous predicates
 
-  /** (s) -> s != null && regex.matcher(s).matches() */
+  /** (s) -> s == null || regex.matcher(s).matches() */
   public static Predicate<CharSequence> match(java.util.regex.Pattern regex) {
-    return (s) -> s != null && regex.matcher(s).matches();
+    return (s) -> s == null || regex.matcher(s).matches();
   }
 
   // Simple checks
@@ -1603,56 +1759,68 @@ public final class Predicates {
       return (o) -> new NullPointerException(message);
     }
 
-    /**
-     * A shortcut for the:
-     * <code>
-     * (o) -> new NullPointerException(message + ": " + identifier)
-     * </code>
-     */
-    static <T> ExceptionProvider<T, NullPointerException> ofNPE(String message, String identifier) {
-      return (o) -> new NullPointerException(message + ": " + identifier);
-    }
-
     // IllegalArgumentException
 
     /**
      * A shortcut for the:
      * <code>
-     * (o) -> new IllegalArgumentException(
-     *     Objects.toString(o))
+     * (o) -> new IllegalArgumentException(Objects.toString(o))
      * </code>
      */
     static <T> ExceptionProvider<T, IllegalArgumentException> ofIAE() {
-      return (o) -> new IllegalArgumentException(
-          Objects.toString(o));
+      return (o) -> new IllegalArgumentException(Objects.toString(o));
     }
 
     /**
      * A shortcut for the:
      * <code>
-     * (o) -> new IllegalArgumentException(message + ": " +
-     *     Objects.toString(o))
+     * (o) -> new IllegalArgumentException(String.format(message, Objects.toString(o)))
      * </code>
-     *
-     * @param <T> The type of the object.
-     * @param message The {@code IllegalArgumentException} detail message.
-     * @return A reference to the {@code IllegalArgumentException} provider.
      */
     static <T> ExceptionProvider<T, IllegalArgumentException> ofIAE(String message) {
-      return (o) -> new IllegalArgumentException(message + ": " +
-          Objects.toString(o));
+      return (o) -> new IllegalArgumentException(String.format(message, Objects.toString(o)));
+    }
+
+    // IndexOutOfBoundsException
+
+    /**
+     * A shortcut for the:
+     * <code>
+     * ofIOOB("Out of range: [0 <= %d <= %d]", index)
+     * </code>
+     */
+    static <T> ExceptionProvider<T, IndexOutOfBoundsException> ofIOOB(int index) {
+      return ofIOOB("Out of range: [0 <= %d <= %d]", index);
     }
 
     /**
      * A shortcut for the:
      * <code>
-     * (o) -> new IllegalArgumentException(message + ": " + identifier + " = " +
-     *     Objects.toString(o))
+     * (a) -> new IndexOutOfBoundsException(String.format(message, index, Array.getLength(a)))
      * </code>
      */
-    static <T> ExceptionProvider<T, IllegalArgumentException> ofIAE(String message, String identifier) {
-      return (o) -> new IllegalArgumentException(message + ": " + identifier + " = " +
-          Objects.toString(o));
+    static <T> ExceptionProvider<T, IndexOutOfBoundsException> ofIOOB(String message, int index) {
+      return (a) -> new IndexOutOfBoundsException(String.format(message, index, Array.getLength(a)));
+    }
+
+    /**
+     * A shortcut for the:
+     * <code>
+     * ofIOOB("Invalid range: [0 <= %d <= %d <= %d]", start, end)
+     * </code>
+     */
+    static <T> ExceptionProvider<T, IndexOutOfBoundsException> ofIOOB(int start, int end) {
+      return ofIOOB("Invalid range: [0 <= %d <= %d <= %d]", start, end);
+    }
+
+    /**
+     * A shortcut for the:
+     * <code>
+     * (a) -> new IndexOutOfBoundsException(String.format(message, start, end, Array.getLength(a)))
+     * </code>
+     */
+    static <T> ExceptionProvider<T, IndexOutOfBoundsException> ofIOOB(String message, int start, int end) {
+      return (a) -> new IndexOutOfBoundsException(String.format(message, start, end, Array.getLength(a)));
     }
 
     // ExceptionProvider.OfSequence
@@ -1687,31 +1855,21 @@ public final class Predicates {
       /**
        * A shortcut for the:
        * <code>
-       * (s, i, e) -> new NullPointerException("[" + i + "]")
+       * ofNPE("[%d]")
        * </code>
        */
       static <S, T> OfSequence<S, T, NullPointerException> ofNPE() {
-        return (s, i, e) -> new NullPointerException("[" + i + "]");
+        return ofNPE("[%d]");
       }
 
       /**
        * A shortcut for the:
        * <code>
-       * (s, i, e) -> new NullPointerException(message + ": [" + i + "]")
+       * (s, i, e) -> new NullPointerException(String.format(message, i))
        * </code>
        */
       static <S, T> OfSequence<S, T, NullPointerException> ofNPE(String message) {
-        return (s, i, e) -> new NullPointerException(message + ": [" + i + "]");
-      }
-
-      /**
-       * A shortcut for the:
-       * <code>
-       * (s, i, e) -> new NullPointerException(message + ": " + identifier + "[" + i + "]")
-       * </code>
-       */
-      static <S, T> OfSequence<S, T, NullPointerException> ofNPE(String message, String identifier) {
-        return (s, i, e) -> new NullPointerException(message + ": " + identifier + "[" + i + "]");
+        return (s, i, e) -> new NullPointerException(String.format(message, i));
       }
 
       // IllegalArgumentException
@@ -1719,37 +1877,21 @@ public final class Predicates {
       /**
        * A shortcut for the:
        * <code>
-       * (s, i, e) -> new IllegalArgumentException("[" + i + "] = " +
-       *     Objects.toString(e))
+       * ofIAE("[%d] = %s")
        * </code>
        */
       static <S, T> OfSequence<S, T, IllegalArgumentException> ofIAE() {
-        return (s, i, e) -> new IllegalArgumentException("[" + i + "] = " +
-            Objects.toString(e));
+        return ofIAE("[%d] = %s");
       }
 
       /**
        * A shortcut for the:
        * <code>
-       * (s, i, e) -> new IllegalArgumentException(message + ": [" + i + "] = " +
-       *     Objects.toString(e))
+       * (s, i, e) -> new IllegalArgumentException(String.format(message, i, Objects.toString(e)))
        * </code>
        */
       static <S, T> OfSequence<S, T, IllegalArgumentException> ofIAE(String message) {
-        return (s, i, e) -> new IllegalArgumentException(message + ": [" + i + "] = " +
-            Objects.toString(e));
-      }
-
-      /**
-       * A shortcut for the:
-       * <code>
-       * (s, i, e) -> new IllegalArgumentException(message + ": " + identifier + "[" + i + "] = " +
-       *     Objects.toString(e))
-       * </code>
-       */
-      static <S, T> OfSequence<S, T, IllegalArgumentException> ofIAE(String message, String identifier) {
-        return (s, i, e) -> new IllegalArgumentException(message + ": " + identifier + "[" + i + "] = " +
-            Objects.toString(e));
+        return (s, i, e) -> new IllegalArgumentException(String.format(message, i, Objects.toString(e)));
       }
 
     }
