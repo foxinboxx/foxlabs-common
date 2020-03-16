@@ -22,14 +22,16 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 
 import org.foxlabs.common.function.ToString;
-import org.foxlabs.common.function.CharacterEscaper;
-import org.foxlabs.common.function.CharacterSequence;
+import org.foxlabs.common.function.CharEncoder;
+import org.foxlabs.common.function.GetChars;
 import org.foxlabs.common.exception.ThresholdReachedException;
 
 import static org.foxlabs.common.Predicates.*;
 import static org.foxlabs.common.Predicates.ExceptionProvider.*;
 
-public class CharacterBuffer implements CharacterSequence {
+public class CharBuffer implements CharSequence, GetChars {
+
+  // Public constants
 
   public static final int MAX_THRESHOLD = Integer.MAX_VALUE;
 
@@ -39,152 +41,12 @@ public class CharacterBuffer implements CharacterSequence {
 
   public static final int MAX_DEPTH = 1 << 15; // 32K characters long (64K bytes)
 
-  private final int threshold;
+  // Private constants
 
-  private final int depth;
-
-  private final int capacity;
-
-  private char[][] buffer;
-
-  private int length;
-
-  public CharacterBuffer() {
-    this(MAX_THRESHOLD, MIN_DEPTH);
-  }
-
-  public CharacterBuffer(int threshold) {
-    this(threshold, MIN_DEPTH);
-  }
-
-  public CharacterBuffer(int threshold, int depth) {
-    this.threshold = require(threshold, INT_POSITIVE);
-    // round depth to be a multiple of 32 and trim it to maximum possible
-    this.depth = Math.min((((require(depth, INT_POSITIVE) - 1) >> 5) + 1) << 5, MAX_DEPTH);
-    // calculate maximum number of slots
-    this.capacity = (this.threshold - 1) / this.depth + 1;
-    // allocate at most 16 initial slots depending on the capacity
-    this.buffer = new char[Math.min(this.capacity, 16)][];
-  }
-
-  // Query operations
-
-  /**
-   * Returns the threshold of the buffer (i.e. the maximum number of characters that the buffer can
-   * contain).
-   *
-   * @return The threshold of the buffer.
-   */
-  public final int threshold() {
-    return threshold;
-  }
-
-  /**
-   * Returns the current number of characters that have already been appended to the buffer (i.e.
-   * the current length of the buffer).
-   *
-   * @return The current number of characters that have already been appended to the buffer.
-   */
-  @Override
-  public final int length() {
-    return length;
-  }
-
-  /**
-   * Returns the remaining number of characters that can be appended to the buffer until the
-   * {@link ThresholdReachedException} will be thrown.
-   *
-   * @return The remaining number of characters that can be appended to the buffer.
-   */
-  public final int remaining() {
-    return threshold - length;
-  }
-
-  // Core operations
-
-  public final CharacterBuffer append(char value) {
-    ensureCapacity(1);
-    nextSlot()[length++ % depth] = value;
-    return this;
-  }
-
-  public final CharacterBuffer append(char... values) {
-    return appendSafe(CharacterSequence.of(values), 0, values.length);
-  }
-
-  public final CharacterBuffer append(char[] values, int start) {
-    require(requireNonNull(values), checkCharArrayRange(start), ofIOOB(start));
-    return appendSafe(CharacterSequence.of(values), start, values.length);
-  }
-
-  public final CharacterBuffer append(char[] values, int start, int end) {
-    require(requireNonNull(values), checkCharArrayRange(start, end), ofIOOB(start, end));
-    return appendSafe(CharacterSequence.of(values), start, end);
-  }
-
-  public final CharacterBuffer append(CharSequence sequence) {
-    return appendSafe(CharacterSequence.of(sequence), 0, sequence.length());
-  }
-
-  public final CharacterBuffer append(CharSequence sequence, int start) {
-    require(requireNonNull(sequence), checkCharSequenceRange(start), ofIOOB(start));
-    return appendSafe(CharacterSequence.of(sequence), start, sequence.length());
-  }
-
-  public final CharacterBuffer append(CharSequence sequence, int start, int end) {
-    require(requireNonNull(sequence), checkCharSequenceRange(start, end), ofIOOB(start, end));
-    return appendSafe(CharacterSequence.of(sequence), start, sequence.length());
-  }
-
-  protected final CharacterBuffer appendSafe(CharacterSequence sequence, int start, int end) {
-    // calculate the number of characters to append
-    int count = end - start;
-    if (count > 0) { // fast check
-      for (count = ensureCapacity(count); count > 0;) {
-        // copy part of the characters to the current slot
-        final int offset = length % depth;
-        final int remainder = Math.min(depth - offset, count);
-        sequence.copy(start, start + remainder, nextSlot(), offset);
-        length += remainder;
-        start += remainder;
-        count -= remainder;
-      }
-      if (start < end) {
-        // Not all the characters have been appended
-        throw new ThresholdReachedException(this);
-      }
-    }
-    return this;
-  }
-
-  protected final int ensureCapacity(int count) {
-    // trim count if it exceeds threshold
-    long nlength = (long) length + (long) count; // avoid int overflow
-    if (nlength > threshold) {
-      count = (int) (nlength = threshold) - length;
-      if (count == 0) { // fast check
-        throw new ThresholdReachedException(this);
-      }
-    }
-    // calculate total number of required slots
-    final int nslots = ((int) nlength - 1) / depth + 1;
-    if (nslots > buffer.length) {
-      // extend buffer for new slots as x2 required slots
-      final char[][] copy = new char[Math.min(nslots << 1, capacity)][];
-      System.arraycopy(buffer, 0, copy, 0, (length - 1) / depth + 1);
-      buffer = copy;
-    }
-    // return the actual number of characters that can be appended
-    return count;
-  }
-
-  private final char[] nextSlot() {
-    // allocate a new slot if necessary
-    final int index = length / depth;
-    return buffer[index] == null ? buffer[index] = new char[depth] : buffer[index];
-  }
-
-  // Conversion operations
+  private static final char[] DIGITS = {
+      '0', '1', '2', '3', '4', '5', '6', '7',
+      '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+  };
 
   private static final char CHAR_QUOTE = '\'';
 
@@ -239,17 +101,299 @@ public class CharacterBuffer implements CharacterSequence {
    */
   private static final char[] KEY_VALUE_SEPARATOR = {':', ' '};
 
+  // Fields
+
+  private final int threshold;
+
+  private final int depth;
+
+  private final int capacity;
+
+  private char[][] buffer;
+
+  private int length;
+
   /**
    * The objects cross-reference map to detect circular references.
    */
   private IdentityHashMap<Object, char[]> crossrefs;
+
+  public CharBuffer() {
+    this(MAX_THRESHOLD, MIN_DEPTH);
+  }
+
+  public CharBuffer(int threshold) {
+    this(threshold, MIN_DEPTH);
+  }
+
+  public CharBuffer(int threshold, int depth) {
+    this.threshold = require(threshold, INT_POSITIVE);
+    // round depth to be a multiple of 32 and trim it to maximum possible
+    this.depth = Math.min((((require(depth, INT_POSITIVE) - 1) >> 5) + 1) << 5, MAX_DEPTH);
+    // calculate maximum number of slots
+    this.capacity = (this.threshold - 1) / this.depth + 1;
+    // allocate at most 16 initial slots depending on the capacity
+    this.buffer = new char[Math.min(this.capacity, 16)][];
+  }
+
+  // Query operations
+
+  /**
+   * Returns the threshold of the buffer (i.e. the maximum number of characters that the buffer can
+   * contain).
+   *
+   * @return The threshold of the buffer.
+   */
+  public final int threshold() {
+    return threshold;
+  }
+
+  /**
+   * Returns the current number of characters that have already been appended to the buffer (i.e.
+   * the current length of the buffer).
+   *
+   * @return The current number of characters that have already been appended to the buffer.
+   */
+  @Override
+  public final int length() {
+    return length;
+  }
+
+  /**
+   * Returns the remaining number of characters that can be appended to the buffer until the
+   * {@link ThresholdReachedException} will be thrown.
+   *
+   * @return The remaining number of characters that can be appended to the buffer.
+   */
+  public final int remaining() {
+    return threshold - length;
+  }
+
+  // Core operations
+
+  public final CharBuffer append(char value) {
+    ensureCapacity(1);
+    nextSlot()[length++ % depth] = value;
+    return this;
+  }
+
+  public final CharBuffer append(int value) {
+    if (Character.isBmpCodePoint(value)) {
+      return append((char) value);
+    } else {
+      append(Character.highSurrogate(value));
+      return append(Character.lowSurrogate(value));
+    }
+  }
+
+  public final CharBuffer append(char... values) {
+    return appendSafe(GetChars.of(values), 0, values.length);
+  }
+
+  public final CharBuffer append(char[] values, int start) {
+    final int length = values.length; // NPE check as well
+    require(values, checkCharArrayRange(start), ofIOOB(start, length));
+    return appendSafe(GetChars.of(values), start, length);
+  }
+
+  public final CharBuffer append(char[] values, int start, int end) {
+    require(requireNonNull(values), checkCharArrayRange(start, end), ofIOOB(start, end));
+    return appendSafe(GetChars.of(values), start, end);
+  }
+
+  public final CharBuffer append(CharSequence sequence) {
+    return appendSafe(GetChars.of(sequence), 0, sequence.length());
+  }
+
+  public final CharBuffer append(CharSequence sequence, int start) {
+    final int length = sequence.length(); // NPE check as well
+    require(sequence, checkCharSequenceRange(start), ofIOOB(start, length));
+    return appendSafe(GetChars.of(sequence), start, length);
+  }
+
+  public final CharBuffer append(CharSequence sequence, int start, int end) {
+    require(requireNonNull(sequence), checkCharSequenceRange(start, end), ofIOOB(start, end));
+    return appendSafe(GetChars.of(sequence), start, sequence.length());
+  }
+
+  protected final CharBuffer append0(char ch) {
+    return append(ch); // FIXME!!!
+  }
+
+  protected final CharBuffer appendSafe(GetChars sequence, int from, int to) {
+    // calculate the number of characters to append
+    int count = to - from;
+    if (count > 0) { // fast check
+      for (count = ensureCapacity(count); count > 0;) {
+        // copy part of the characters to the current slot
+        final int offset = length % depth;
+        final int remainder = Math.min(depth - offset, count);
+        sequence.getChars(from, from + remainder, nextSlot(), offset);
+        length += remainder;
+        from += remainder;
+        count -= remainder;
+      }
+      if (from < to) {
+        // Not all the characters have been appended
+        throw new ThresholdReachedException(this);
+      }
+    }
+    return this;
+  }
+
+  public final int ensureCapacity(int count) {
+    // trim count if it exceeds threshold
+    long nlength = (long) length + (long) count; // avoid int overflow
+    if (nlength > threshold) {
+      count = (int) (nlength = threshold) - length;
+      if (count == 0) { // fast check
+        throw new ThresholdReachedException(this);
+      }
+    }
+    // calculate total number of required slots
+    final int nslots = ((int) nlength - 1) / depth + 1;
+    if (nslots > buffer.length) {
+      // extend buffer for new slots as x2 required slots
+      final char[][] copy = new char[Math.min(nslots << 1, capacity)][];
+      System.arraycopy(buffer, 0, copy, 0, (length - 1) / depth + 1);
+      buffer = copy;
+    }
+    // return the actual number of characters that can be appended
+    return count;
+  }
+
+  private final char[] nextSlot() {
+    // allocate a new slot if necessary
+    final int index = length / depth;
+    return buffer[index] == null ? buffer[index] = new char[depth] : buffer[index];
+  }
+
+  // Advanced operations
+
+  public final CharBuffer appendHex(byte value) {
+    ensureCapacity(2);
+    append0(DIGITS[(value >>> 0x04) & (byte) 0xf]);
+    append0(DIGITS[(value >>> 0x00) & (byte) 0xf]);
+    return this;
+  }
+
+  public final CharBuffer appendHexTrimZeros(byte value) {
+    if ((value & (byte) 0xf) == value) { // fast check
+      ensureCapacity(1);
+      return append0(DIGITS[(value >>> 0x00) & (byte) 0xf]);
+    }
+    return appendHex(value);
+  }
+
+  public final CharBuffer appendHex(short value) {
+    ensureCapacity(4);
+    append0(DIGITS[(value >>> 0x0c) & (short) 0xf]);
+    append0(DIGITS[(value >>> 0x08) & (short) 0xf]);
+    append0(DIGITS[(value >>> 0x04) & (short) 0xf]);
+    append0(DIGITS[(value >>> 0x00) & (short) 0xf]);
+    return this;
+  }
+
+  public final CharBuffer appendHexTrimZeros(short value) {
+    if ((value & (short) 0xff) == value) { // fast check
+      return appendHexTrimZeros((byte) value);
+    }
+    if ((value & (short) 0xfff) == value) {
+      ensureCapacity(3);
+      append0(DIGITS[(value >>> 0x08) & (short) 0xf]);
+      append0(DIGITS[(value >>> 0x04) & (short) 0xf]);
+      append0(DIGITS[(value >>> 0x00) & (short) 0xf]);
+      return this;
+    }
+    return appendHex(value);
+  }
+
+  public final CharBuffer appendHex(int value) {
+    ensureCapacity(8);
+    append0(DIGITS[(value >>> 0x1c) & 0xf]);
+    append0(DIGITS[(value >>> 0x18) & 0xf]);
+    append0(DIGITS[(value >>> 0x14) & 0xf]);
+    append0(DIGITS[(value >>> 0x10) & 0xf]);
+    append0(DIGITS[(value >>> 0x0c) & 0xf]);
+    append0(DIGITS[(value >>> 0x08) & 0xf]);
+    append0(DIGITS[(value >>> 0x04) & 0xf]);
+    append0(DIGITS[(value >>> 0x00) & 0xf]);
+    return this;
+  }
+
+  public final CharBuffer appendHexTrimZeros(int value) {
+    // 16 or less bits long?
+    if ((value & 0xffff) == value) {
+      return appendHexTrimZeros((short) value);
+    }
+    // 32 bits long?
+    if ((value & 0xfffffff) != value) {
+      return appendHex(value);
+    }
+    // from 20 to 28 bits long
+    for (int n = 20; n < 32; n += 4) {
+      if ((value >>> n) == 0) {
+        ensureCapacity(n / 4);
+        for (n -= 4; n >= 0; n -= 4) {
+          append0(DIGITS[(value >>> n) & 0xf]);
+        }
+        return this;
+      }
+    }
+    return this;
+  }
+
+  public final CharBuffer appendHex(long value) {
+    ensureCapacity(16);
+    append0(DIGITS[(int) ((value >>> 0x3c) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x38) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x34) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x30) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x2c) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x28) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x24) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x20) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x1c) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x18) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x14) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x10) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x0c) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x08) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x04) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x00) & 0xfL)]);
+    return this;
+  }
+
+  public final CharBuffer appendHexTrimZeros(long value) {
+    // 32 or less bits long?
+    if ((value & 0xffffffffL) == value) {
+      return appendHexTrimZeros((int) value);
+    }
+    // 64 bits long?
+    if ((value & 0xfffffffffffffffL) != value) {
+      return appendHex(value);
+    }
+    // from 36 to 60 bits long
+    for (int n = 36; n < 64; n += 4) {
+      if ((value >>> n) == 0L) {
+        ensureCapacity(n / 4);
+        for (n -= 4; n >= 0; n -= 4) {
+          append0(DIGITS[(int) ((value >>> n) & 0xfL)]);
+        }
+        return this;
+      }
+    }
+    return this;
+  }
+
+  // Conversion operations
 
   /**
    * Appends string representation of the {@code null} reference to the buffer.
    *
    * @return A reference to this buffer.
    */
-  public CharacterBuffer appendNull() {
+  public CharBuffer appendNull() {
     return append(NULL_REFERENCE);
   }
 
@@ -286,8 +430,6 @@ public class CharacterBuffer implements CharacterSequence {
    *     bar.foo = foo;
    *     // Infinite loop
    *     foo.toString();
-   *     // Infinite loop as well
-   *     new ToString.Builder().append(foo);
    *   }
    *
    * }
@@ -297,51 +439,72 @@ public class CharacterBuffer implements CharacterSequence {
    * @param object The object to append to the buffer.
    * @return A reference to this buffer.
    */
-  public CharacterBuffer appendObject(Object object) {
+  public CharBuffer appendObject(Object object) {
     // append the object depending on its type (in order of probability)
     if (object == null) {
       return appendNull();
-    } else if (object instanceof CharSequence) {
+    }
+    if (object instanceof CharSequence) {
       return appendString((CharSequence) object);
-    } else if (object instanceof Integer) {
+    }
+    if (object instanceof Integer) {
       return appendInt(((Integer) object).intValue());
-    } else if (object instanceof Long) {
+    }
+    if (object instanceof Long) {
       return appendLong(((Long) object).longValue());
-    } else if (object instanceof Double) {
+    }
+    if (object instanceof Double) {
       return appendDouble(((Double) object).doubleValue());
-    } else if (object instanceof Float) {
+    }
+    if (object instanceof Float) {
       return appendFloat(((Float) object).floatValue());
-    } else if (object instanceof Byte) {
+    }
+    if (object instanceof Byte) {
       return appendByte(((Byte) object).byteValue());
-    } else if (object instanceof Short) {
+    }
+    if (object instanceof Short) {
       return appendShort(((Short) object).shortValue());
-    } else if (object instanceof Character) {
+    }
+    if (object instanceof Character) {
       return appendChar(((Character) object).charValue());
-    } else if (object instanceof Boolean) {
+    }
+    if (object instanceof Boolean) {
       return appendBoolean(((Boolean) object).booleanValue());
-    } else if (object instanceof Enum<?>) {
+    }
+    if (object instanceof Enum<?>) {
       return appendEnum(((Enum<?>) object));
-    } else if (object instanceof Iterable<?>) {
+    }
+    if (object instanceof Iterable<?>) {
       return appendIterable((Iterable<?>) object);
-    } else if (object instanceof Map<?, ?>) {
+    }
+    if (object instanceof Map<?, ?>) {
       return appendMap((Map<?, ?>) object);
-    } else if (object instanceof Object[]) {
+    }
+    if (object instanceof Object[]) {
       return appendObjectArray((Object[]) object);
-    } else if (object instanceof int[]) {
+    }
+    if (object instanceof int[]) {
       return appendIntArray((int[]) object);
-    } else if (object instanceof long[]) {
+    }
+    if (object instanceof long[]) {
       return appendLongArray((long[]) object);
-    } else if (object instanceof double[]) {
+    }
+    if (object instanceof double[]) {
       return appendDoubleArray((double[]) object);
-    } else if (object instanceof float[]) {
+    }
+    if (object instanceof float[]) {
       return appendFloatArray((float[]) object);
-    } else if (object instanceof byte[]) {
+    }
+    if (object instanceof byte[]) {
       return appendByteArray((byte[]) object);
-    } else if (object instanceof short[]) {
+    }
+    if (object instanceof short[]) {
       return appendShortArray((short[]) object);
-    } else if (object instanceof char[]) {
+    }
+    if (object instanceof char[]) {
       return appendCharArray((char[]) object);
-    } else if (object instanceof boolean[]) {
+    }
+    if (object instanceof boolean[]) {
       return appendBooleanArray((boolean[]) object);
     }
     // unsupported object type
@@ -357,7 +520,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #appendObject(Object)
    */
-  public CharacterBuffer appendObjectArray(Object[] array) {
+  public CharBuffer appendObjectArray(Object[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
@@ -389,7 +552,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #append(char...)
    */
-  public CharacterBuffer appendBoolean(boolean value) {
+  public CharBuffer appendBoolean(boolean value) {
     return value ? append(TRUE_CONSTANT) : append(FALSE_CONSTANT);
   }
 
@@ -402,7 +565,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #appendBoolean(boolean)
    */
-  public CharacterBuffer appendBooleanArray(boolean[] array) {
+  public CharBuffer appendBooleanArray(boolean[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
@@ -423,7 +586,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #append(CharSequence)
    */
-  public CharacterBuffer appendByte(byte value) {
+  public CharBuffer appendByte(byte value) {
     return append(Integer.toString(value));
   }
 
@@ -436,7 +599,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #appendByte(byte)
    */
-  public CharacterBuffer appendByteArray(byte[] array) {
+  public CharBuffer appendByteArray(byte[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
@@ -457,7 +620,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #append(CharSequence)
    */
-  public CharacterBuffer appendShort(short value) {
+  public CharBuffer appendShort(short value) {
     return append(Integer.toString(value));
   }
 
@@ -470,7 +633,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #appendShort(short)
    */
-  public CharacterBuffer appendShortArray(short[] array) {
+  public CharBuffer appendShortArray(short[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
@@ -491,7 +654,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #append(CharSequence)
    */
-  public CharacterBuffer appendInt(int value) {
+  public CharBuffer appendInt(int value) {
     return append(Integer.toString(value));
   }
 
@@ -504,7 +667,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #appendInt(int)
    */
-  public CharacterBuffer appendIntArray(int[] array) {
+  public CharBuffer appendIntArray(int[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
@@ -525,7 +688,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #append(CharSequence)
    */
-  public CharacterBuffer appendLong(long value) {
+  public CharBuffer appendLong(long value) {
     return append(Long.toString(value)).append(LONG_SUFFIX);
   }
 
@@ -538,7 +701,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #appendLong(long)
    */
-  public CharacterBuffer appendLongArray(long[] array) {
+  public CharBuffer appendLongArray(long[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
@@ -559,7 +722,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #append(CharSequence)
    */
-  public CharacterBuffer appendFloat(float value) {
+  public CharBuffer appendFloat(float value) {
     return append(Float.toString(value)).append(FLOAT_SUFFIX);
   }
 
@@ -572,7 +735,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #appendFloat(float)
    */
-  public CharacterBuffer appendFloatArray(float[] array) {
+  public CharBuffer appendFloatArray(float[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
@@ -593,7 +756,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #append(CharSequence)
    */
-  public CharacterBuffer appendDouble(double value) {
+  public CharBuffer appendDouble(double value) {
     return append(Double.toString(value)).append(DOUBLE_SUFFIX);
   }
 
@@ -606,7 +769,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #appendDouble(double)
    */
-  public CharacterBuffer appendDoubleArray(double[] array) {
+  public CharBuffer appendDoubleArray(double[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
@@ -626,12 +789,10 @@ public class CharacterBuffer implements CharacterSequence {
    * @param value The {@code char} value to append to the buffer.
    * @return A reference to this buffer.
    * @see #append(char)
-   * @see #appendEscaped(char)
+   * @see CharEncoder#JAVA
    */
-  public CharacterBuffer appendChar(char value) {
-    append(CHAR_QUOTE);
-    CharacterEscaper.JAVA_ESCAPER.escape(value, this);
-    return append(CHAR_QUOTE);
+  public CharBuffer appendChar(char value) {
+    return CharEncoder.JAVA.encode(value, append(CHAR_QUOTE)).append(CHAR_QUOTE);
   }
 
   /**
@@ -643,7 +804,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #appendChar(char)
    */
-  public CharacterBuffer appendCharArray(char[] array) {
+  public CharBuffer appendCharArray(char[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
@@ -663,15 +824,12 @@ public class CharacterBuffer implements CharacterSequence {
    * @param value The {@code CharSequence} value to append to the buffer.
    * @return A reference to this buffer.
    * @see #append(char)
-   * @see #appendEscaped(CharSequence)
+   * @see CharEncoder#JAVA
    */
-  public CharacterBuffer appendString(CharSequence value) {
-    if (value != null) {
-      append(STRING_QUOTE);
-      CharacterEscaper.JAVA_ESCAPER.escape(value, this);
-      return append(STRING_QUOTE);
-    }
-    return appendNull();
+  public CharBuffer appendString(CharSequence value) {
+    return value != null
+        ? CharEncoder.JAVA.encode(value, append(STRING_QUOTE)).append(STRING_QUOTE)
+        : appendNull();
   }
 
   /**
@@ -682,7 +840,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #append(CharSequence)
    */
-  public CharacterBuffer appendEnum(Enum<?> value) {
+  public CharBuffer appendEnum(Enum<?> value) {
     return value != null ? append(value.name()) : appendNull();
   }
 
@@ -695,7 +853,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #appendObject(Object)
    */
-  public CharacterBuffer appendIterable(Iterable<?> iterable) {
+  public CharBuffer appendIterable(Iterable<?> iterable) {
     // make sure that nothing is null to avoid NPE
     final Iterator<?> itr = iterable != null
         ? iterable.iterator()
@@ -733,7 +891,7 @@ public class CharacterBuffer implements CharacterSequence {
    * @return A reference to this buffer.
    * @see #appendObject(Object)
    */
-  public CharacterBuffer appendMap(Map<?, ?> map) {
+  public CharBuffer appendMap(Map<?, ?> map) {
     // make sure that nothing is null to avoid NPE
     final Set<? extends Map.Entry<?, ?>> entries = map != null
         ? map.entrySet()
@@ -780,7 +938,7 @@ public class CharacterBuffer implements CharacterSequence {
     return append(MAP_CLOSE);
   }
 
-  public CharacterBuffer appendPlain(Object object) {
+  public CharBuffer appendPlain(Object object) {
     if (object == null) {
       return appendNull();
     }
@@ -812,12 +970,11 @@ public class CharacterBuffer implements CharacterSequence {
       if (crossref == null) {
         final String classname = object.getClass().getName();
         final String hashcode = Integer.toHexString(System.identityHashCode(object));
-        crossref = new char[classname.length() + hashcode.length() + 2];
+        crossrefs.put(object, crossref = new char[classname.length() + hashcode.length() + 2]);
         classname.getChars(0, classname.length(), crossref, 1);
         hashcode.getChars(0, hashcode.length(), crossref, classname.length() + 2);
         crossref[classname.length() + 1] = '@';
         crossref[0] = '!';
-        crossrefs.put(object, crossref);
       }
       append(crossref);
       return true;
@@ -864,28 +1021,28 @@ public class CharacterBuffer implements CharacterSequence {
   public String substring(int from, int to) {
     require(this, checkCharSequenceRange(from, to), ofIOOB(from, to));
     final char[] value = new char[to - from];
-    copySafe(from, to, value, 0);
+    copyChars(from, to, value, 0);
     return new String(value);
   }
 
   @Override
-  public void copy(int from, int to, char[] array, int index) {
+  public void getChars(int from, int to, char[] array, int index) {
     require(this, checkCharSequenceRange(from, to), ofIOOB(from, to));
     require(array, checkCharArrayIndex(index), ofIOOB(index));
-    copySafe(from, to, array, index);
+    copyChars(from, to, array, index);
   }
 
   @Override
   public String toString() {
     if (length != 0) { // fast check
       final char[] value = new char[length];
-      copySafe(0, length, value, 0);
+      copyChars(0, length, value, 0);
       return new String(value);
     }
     return "";
   }
 
-  protected final void copySafe(int from, int to, char[] target, int offset) {
+  protected final void copyChars(int from, int to, char[] target, int offset) {
     while (from < to) {
       final int index = from % depth;
       final int remainder = Math.min(depth - index, to - from);
@@ -903,7 +1060,7 @@ public class CharacterBuffer implements CharacterSequence {
 
   public static String toString(Object object, int threshold) {
     try {
-      return new CharacterBuffer(threshold).appendObject(object).toString();
+      return new CharBuffer(threshold).appendObject(object).toString();
     } catch (ThresholdReachedException e) {
       return e.getProducer().toString();
     }

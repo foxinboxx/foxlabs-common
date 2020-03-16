@@ -1786,11 +1786,11 @@ public final class Predicates {
     /**
      * A shortcut for the:
      * <code>
-     * ofIOOB("Index out of range: [0 <= %d <= %d]", index)
+     * ofIOOB("Index out of range: [0 <= %d < %d]", index)
      * </code>
      */
     static <T> ExceptionProvider<T, IndexOutOfBoundsException> ofIOOB(int index) {
-      return ofIOOB("Index out of range: [0 <= %d <= %d]", index);
+      return ofIOOB("Index out of range: [0 <= %d < %d]", index);
     }
 
     /**

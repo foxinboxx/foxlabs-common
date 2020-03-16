@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.foxlabs.common.function.ToString;
-import org.foxlabs.common.text.CharacterBuffer;
+import org.foxlabs.common.text.CharBuffer;
 
 /**
  * Factory class for all counters.
@@ -93,7 +93,7 @@ public abstract class Counters {
     }
 
     @Override
-    public CharacterBuffer toString(CharacterBuffer buf) {
+    public CharBuffer toString(CharBuffer buf) {
       return buf.append(NA);
     }
 
@@ -169,7 +169,7 @@ public abstract class Counters {
      * @return The specified buffer.
      */
     @Override
-    public CharacterBuffer toString(CharacterBuffer buf) {
+    public CharBuffer toString(CharBuffer buf) {
       buf.appendLong(getInvocationCount());
       formatRate(getHitRate(), buf.append(" (+").appendLong(getHitCount()).append(" "));
       formatRate(getMissRate(), buf.append(" | -").appendLong(getMissCount()).append(" "));
@@ -407,7 +407,7 @@ public abstract class Counters {
     }
 
     @Override
-    public CharacterBuffer toString(CharacterBuffer buf) {
+    public CharBuffer toString(CharBuffer buf) {
       return buf.append(NA);
     }
 
@@ -502,7 +502,7 @@ public abstract class Counters {
      * @see #formatLatency(long, StringBuilder)
      */
     @Override
-    public CharacterBuffer toString(CharacterBuffer buf) {
+    public CharBuffer toString(CharBuffer buf) {
       buf.appendLong(getInvocationCount());
       formatLatency(getTotalLatency(), buf.append(" / "));
       formatLatency(getMinLatency(), buf.append(" (-"));
@@ -994,7 +994,7 @@ public abstract class Counters {
     }
 
     @Override
-    public CharacterBuffer toString(CharacterBuffer buf) {
+    public CharBuffer toString(CharBuffer buf) {
       return buf.append(NA);
     }
 
@@ -1162,7 +1162,7 @@ public abstract class Counters {
      * @see #formatLatency(long, StringBuilder)
      */
     @Override
-    public CharacterBuffer toString(CharacterBuffer buf) {
+    public CharBuffer toString(CharBuffer buf) {
       buf.appendLong(getInvocationCount());
       formatLatency(getTotalLatency(), buf.append(" / "));
       formatRate(getHitRate(), buf.append(" (+").appendLong(getHitCount()).append(" "));
@@ -1490,7 +1490,7 @@ public abstract class Counters {
    * @see #formatRate(double, StringBuilder)
    */
   public static String formatRate(double rate) {
-    return formatRate(rate, new CharacterBuffer()).toString();
+    return formatRate(rate, new CharBuffer()).toString();
   }
 
   /**
@@ -1502,7 +1502,7 @@ public abstract class Counters {
    * @throws IllegalArgumentException if the specified rate is not in range [0..1].
    * @return String representation of the specified rate value.
    */
-  public static CharacterBuffer formatRate(double rate, CharacterBuffer buf) {
+  public static CharBuffer formatRate(double rate, CharBuffer buf) {
     if (rate < 0.0 || rate > 1.0 || Double.isNaN(rate) || Double.isInfinite(rate)) {
       throw new IllegalArgumentException();
     } else {
@@ -1531,7 +1531,7 @@ public abstract class Counters {
    * @see #formatLatency(long, StringBuilder)
    */
   public static String formatLatency(long latency) {
-    return formatLatency(latency, new CharacterBuffer()).toString();
+    return formatLatency(latency, new CharBuffer()).toString();
   }
 
   /**
@@ -1543,7 +1543,7 @@ public abstract class Counters {
    * @return The specified buffer.
    * @throws IllegalArgumentException if the specified latency time is negative.
    */
-  public static CharacterBuffer formatLatency(long latency, CharacterBuffer buf) {
+  public static CharBuffer formatLatency(long latency, CharBuffer buf) {
     if (latency < 0L) {
       throw new IllegalArgumentException(Long.toString(latency));
     } else {

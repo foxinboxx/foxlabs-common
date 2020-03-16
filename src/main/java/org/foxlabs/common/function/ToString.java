@@ -16,7 +16,7 @@
 
 package org.foxlabs.common.function;
 
-import org.foxlabs.common.text.CharacterBuffer;
+import org.foxlabs.common.text.CharBuffer;
 import org.foxlabs.common.exception.ThresholdReachedException;
 
 /**
@@ -45,7 +45,7 @@ import org.foxlabs.common.exception.ThresholdReachedException;
  * </pre>
  *
  * @author Fox Mulder
- * @see CharacterBuffer
+ * @see CharBuffer
  */
 @FunctionalInterface
 public interface ToString {
@@ -56,13 +56,13 @@ public interface ToString {
    * @param buffer The buffer to append to.
    * @return A reference to the specified buffer.
    */
-  CharacterBuffer toString(CharacterBuffer buffer);
+  CharBuffer toString(CharBuffer buffer);
 
   // Adapter
 
   /**
    * An abstract {@code ToString} implementation which overrides the {@link Object#toString()}
-   * method that calls {@link #toString(CharacterBuffer)} with an empty buffer and returns the
+   * method that calls {@link #toString(CharBuffer)} with an empty buffer and returns the
    * resulting string (i.e. {@code toString(new CharacterBuffer()).toString()}).
    *
    * @author Fox Mulder
@@ -70,7 +70,7 @@ public interface ToString {
   public static abstract class Adapter implements ToString {
     @Override public String toString() {
       try {
-        return toString(new CharacterBuffer()).toString();
+        return toString(new CharBuffer()).toString();
       } catch (ThresholdReachedException e) {
         return e.getProducer().toString();
       }

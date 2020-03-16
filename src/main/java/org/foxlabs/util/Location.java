@@ -17,7 +17,7 @@
 package org.foxlabs.util;
 
 import org.foxlabs.common.function.ToString;
-import org.foxlabs.common.text.CharacterBuffer;
+import org.foxlabs.common.text.CharBuffer;
 
 /**
  * This class represents text position in some abstract resource.
@@ -138,7 +138,7 @@ public final class Location extends ToString.Adapter implements Comparable<Locat
      * @return The specified buffer.
      */
     @Override
-    public CharacterBuffer toString(CharacterBuffer buffer) {
+    public CharBuffer toString(CharBuffer buffer) {
         if (file != null) {
             buffer.append(file);
         }
