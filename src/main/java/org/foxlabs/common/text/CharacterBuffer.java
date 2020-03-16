@@ -22,13 +22,14 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 
 import org.foxlabs.common.function.ToString;
+import org.foxlabs.common.function.CharacterEscaper;
 import org.foxlabs.common.function.CharacterSequence;
 import org.foxlabs.common.exception.ThresholdReachedException;
 
 import static org.foxlabs.common.Predicates.*;
 import static org.foxlabs.common.Predicates.ExceptionProvider.*;
 
-public class CharacterBuffer {
+public class CharacterBuffer implements CharacterSequence {
 
   public static final int MAX_THRESHOLD = Integer.MAX_VALUE;
 
@@ -84,6 +85,7 @@ public class CharacterBuffer {
    *
    * @return The current number of characters that have already been appended to the buffer.
    */
+  @Override
   public final int length() {
     return length;
   }
@@ -182,23 +184,17 @@ public class CharacterBuffer {
     return buffer[index] == null ? buffer[index] = new char[depth] : buffer[index];
   }
 
-  // Advanced operations
-
-  public CharacterBuffer appendEscaped(char value) {
-    // TODO
-    return this;
-  }
-
-  public CharacterBuffer appendEscaped(CharSequence value) {
-    // TODO
-    return this;
-  }
-
   // Conversion operations
 
   private static final char CHAR_QUOTE = '\'';
 
   private static final char STRING_QUOTE = '\"';
+
+  private static final char LONG_SUFFIX = 'L';
+
+  private static final char FLOAT_SUFFIX = 'F';
+
+  private static final char DOUBLE_SUFFIX = 'D';
 
   private static final char SEQUENCE_OPEN = '[';
 
@@ -371,7 +367,7 @@ public class CharacterBuffer {
     // remember reference to the array and check for cross-reference
     if (pushReference(array)) {
       // cross-reference detected!
-      // reference has already been added to the underlying buffer
+      // reference has already been appended to the buffer
       return this;
     }
     try {
@@ -523,14 +519,14 @@ public class CharacterBuffer {
 
   /**
    * Appends string representation of the specified {@code long} value to the buffer using the
-   * {@link Long#toString(long)} method.
+   * {@link Long#toString(long)} method. The format is {@code <LONG>L}.
    *
    * @param value The {@code long} value to append to the buffer.
    * @return A reference to this buffer.
    * @see #append(CharSequence)
    */
   public CharacterBuffer appendLong(long value) {
-    return append(Long.toString(value));
+    return append(Long.toString(value)).append(LONG_SUFFIX);
   }
 
   /**
@@ -557,14 +553,14 @@ public class CharacterBuffer {
 
   /**
    * Appends string representation of the specified {@code float} value to the buffer using the
-   * {@link Float#toString(float)} method.
+   * {@link Float#toString(float)} method. The format is {@code <FLOAT>F}.
    *
    * @param value The {@code float} value to append to the buffer.
    * @return A reference to this buffer.
    * @see #append(CharSequence)
    */
   public CharacterBuffer appendFloat(float value) {
-    return append(Float.toString(value));
+    return append(Float.toString(value)).append(FLOAT_SUFFIX);
   }
 
   /**
@@ -591,14 +587,14 @@ public class CharacterBuffer {
 
   /**
    * Appends string representation of the specified {@code double} value to the buffer using the
-   * {@link Double#toString(double)} method.
+   * {@link Double#toString(double)} method. The format is {@code <DOUBLE>D}.
    *
    * @param value The {@code double} value to append to the buffer.
    * @return A reference to this buffer.
    * @see #append(CharSequence)
    */
   public CharacterBuffer appendDouble(double value) {
-    return append(Double.toString(value));
+    return append(Double.toString(value)).append(DOUBLE_SUFFIX);
   }
 
   /**
@@ -633,7 +629,9 @@ public class CharacterBuffer {
    * @see #appendEscaped(char)
    */
   public CharacterBuffer appendChar(char value) {
-    return append(CHAR_QUOTE).appendEscaped(value).append(CHAR_QUOTE);
+    append(CHAR_QUOTE);
+    CharacterEscaper.JAVA_ESCAPER.escape(value, this);
+    return append(CHAR_QUOTE);
   }
 
   /**
@@ -668,7 +666,12 @@ public class CharacterBuffer {
    * @see #appendEscaped(CharSequence)
    */
   public CharacterBuffer appendString(CharSequence value) {
-    return value != null ? append(STRING_QUOTE).appendEscaped(value).append(STRING_QUOTE) : appendNull();
+    if (value != null) {
+      append(STRING_QUOTE);
+      CharacterEscaper.JAVA_ESCAPER.escape(value, this);
+      return append(STRING_QUOTE);
+    }
+    return appendNull();
   }
 
   /**
@@ -706,7 +709,7 @@ public class CharacterBuffer {
     // remember reference to the iteration and check for cross-reference
     if (pushReference(iterable)) {
       // cross-reference detected!
-      // reference has already been added to the underlying buffer
+      // reference has already been appended to the buffer
       return this;
     }
     try {
@@ -747,7 +750,7 @@ public class CharacterBuffer {
     // remember reference to the map and check for cross-reference
     if (pushReference(map)) {
       // cross-reference detected!
-      // reference has already been added to the underlying buffer
+      // reference has already been appended to the buffer
       return this;
     }
     try {
@@ -839,6 +842,57 @@ public class CharacterBuffer {
       buffer[index] = null;
     }
     length = 0;
+  }
+
+  // Miscelanous
+
+  @Override
+  public char charAt(int index) {
+    require(this, checkCharSequenceIndex(index), ofIOOB(index));
+    return buffer[index / depth][index % depth];
+  }
+
+  @Override
+  public CharSequence subSequence(int from, int to) {
+    return substring(from, to);
+  }
+
+  public String substring(int from) {
+    return substring(from, length);
+  }
+
+  public String substring(int from, int to) {
+    require(this, checkCharSequenceRange(from, to), ofIOOB(from, to));
+    final char[] value = new char[to - from];
+    copySafe(from, to, value, 0);
+    return new String(value);
+  }
+
+  @Override
+  public void copy(int from, int to, char[] array, int index) {
+    require(this, checkCharSequenceRange(from, to), ofIOOB(from, to));
+    require(array, checkCharArrayIndex(index), ofIOOB(index));
+    copySafe(from, to, array, index);
+  }
+
+  @Override
+  public String toString() {
+    if (length != 0) { // fast check
+      final char[] value = new char[length];
+      copySafe(0, length, value, 0);
+      return new String(value);
+    }
+    return "";
+  }
+
+  protected final void copySafe(int from, int to, char[] target, int offset) {
+    while (from < to) {
+      final int index = from % depth;
+      final int remainder = Math.min(depth - index, to - from);
+      System.arraycopy(buffer[from / depth], index, target, offset, remainder);
+      from += remainder;
+      offset += remainder;
+    }
   }
 
   // Helpers

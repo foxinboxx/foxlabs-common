@@ -34,7 +34,7 @@ public class ObjectsTest {
   @Test
   public void test_toString() {
     final String[] sampleObject = new String[]{"one", "two", "three"};
-    assertEquals("[one, two, three]", Objects.toString(sampleObject));
+    assertEquals("[\"one\", \"two\", \"three\"]", Objects.toString(sampleObject));
   }
 
   /**

@@ -860,7 +860,7 @@ public class PredicatesTest {
     // OK: long
     assertEquals(10L, require(10L, (long n) -> true));
     // IAE: long
-    assertEquals("Invalid argument: 10", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid argument: 10L", assertThrows(IllegalArgumentException.class,
         () -> require(10L, (long n) -> false)).getMessage());
   }
 
@@ -872,7 +872,7 @@ public class PredicatesTest {
     // OK: long
     assertEquals(10L, require(10L, (long n) -> true, "long cannot be illegal"));
     // IAE: message: long
-    assertEquals("long cannot be illegal: 10", assertThrows(IllegalArgumentException.class,
+    assertEquals("long cannot be illegal: 10L", assertThrows(IllegalArgumentException.class,
         () -> require(10L, (long n) -> false,
             "long cannot be illegal: %s")).getMessage());
   }
@@ -885,11 +885,11 @@ public class PredicatesTest {
     // OK: long
     assertEquals(10L, require(10L, (long n) -> true, ExceptionProvider.ofIAE()));
     // IAE: long
-    assertEquals("Invalid argument: 10", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid argument: 10L", assertThrows(IllegalArgumentException.class,
         () -> require(10L, (long n) -> false,
             ExceptionProvider.ofIAE())).getMessage());
     // IAE: message: long
-    assertEquals("long cannot be illegal: 10", assertThrows(IllegalArgumentException.class,
+    assertEquals("long cannot be illegal: 10L", assertThrows(IllegalArgumentException.class,
         () -> require(10L, (long n) -> false,
             ExceptionProvider.ofIAE("long cannot be illegal: %s"))).getMessage());
     // ISE: message
@@ -908,7 +908,7 @@ public class PredicatesTest {
     // OK: double
     assertEquals(10., require(10., (double n) -> true), .0);
     // NPE: double
-    assertEquals("Invalid argument: 10.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid argument: 10.0D", assertThrows(IllegalArgumentException.class,
         () -> require(10., (double n) -> false)).getMessage());
   }
 
@@ -920,7 +920,7 @@ public class PredicatesTest {
     // OK: double
     assertEquals(10., require(10., (double n) -> true, "double cannot be illegal"), .0);
     // NPE: message: double
-    assertEquals("double cannot be illegal: 10.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("double cannot be illegal: 10.0D", assertThrows(IllegalArgumentException.class,
         () -> require(10., (double n) -> false,
             "double cannot be illegal: %s")).getMessage());
   }
@@ -933,11 +933,11 @@ public class PredicatesTest {
     // OK: double
     assertEquals(10., require(10., (double n) -> true, ExceptionProvider.ofIAE()), .0);
     // NPE: double
-    assertEquals("Invalid argument: 10.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid argument: 10.0D", assertThrows(IllegalArgumentException.class,
         () -> require(10., (double n) -> false,
             ExceptionProvider.ofIAE())).getMessage());
     // NPE: message: double
-    assertEquals("double cannot be illegal: 10.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("double cannot be illegal: 10.0D", assertThrows(IllegalArgumentException.class,
         () -> require(10., (double n) -> false,
             ExceptionProvider.ofIAE("double cannot be illegal: %s"))).getMessage());
     // ISE: message
@@ -1032,7 +1032,7 @@ public class PredicatesTest {
     final Object[] validSample = new Object[]{"one", "two", "three"};
     assertSame(validSample, requireAll(validSample, (o) -> true));
     // IAE: [index]
-    assertEquals("Invalid element [2]: three", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: \"three\"", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new String[]{"one", "two", "three"}, (o) -> o.length() == 3)).getMessage());
   }
 
@@ -1051,7 +1051,7 @@ public class PredicatesTest {
     final Object[] validSample = new Object[]{"one", "two", "three"};
     assertSame(validSample, requireAll(validSample, (o) -> true, "elements cannot be invalid"));
     // IAE: message: [index] = element
-    assertEquals("elements cannot be invalid: [2] = three", assertThrows(IllegalArgumentException.class,
+    assertEquals("elements cannot be invalid: [2] = \"three\"", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new String[]{"one", "two", "three"}, (o) -> o.length() == 3,
             "elements cannot be invalid: [%d] = %s")).getMessage());
   }
@@ -1071,11 +1071,11 @@ public class PredicatesTest {
     final Object[] validSample = new Object[]{"one", "two", "three"};
     assertSame(validSample, requireAll(validSample, (o) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("Invalid element [2]: three", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: \"three\"", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new String[]{"one", "two", "three"}, (o) -> o.length() == 3,
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
-    assertEquals("elements cannot be invalid: [2] = three", assertThrows(IllegalArgumentException.class,
+    assertEquals("elements cannot be invalid: [2] = \"three\"", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new String[]{"one", "two", "three"}, (o) -> o.length() == 3,
             ExceptionProvider.OfSequence.ofIAE("elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message
@@ -1308,7 +1308,7 @@ public class PredicatesTest {
     final long[] validSample = new long[]{1L, 2L, 3L};
     assertSame(validSample, requireAll(validSample, (n) -> true));
     // IAE: [index]
-    assertEquals("Invalid element [2]: 3", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3L", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new long[]{1L, 2L, 3L}, (n) -> n < 3L)).getMessage());
   }
 
@@ -1327,7 +1327,7 @@ public class PredicatesTest {
     final long[] validSample = new long[]{1L, 2L, 3L};
     assertSame(validSample, requireAll(validSample, (n) -> true, "long elements cannot be invalid"));
     // IAE: message: [index] = element
-    assertEquals("long elements cannot be invalid: [2] = 3", assertThrows(IllegalArgumentException.class,
+    assertEquals("long elements cannot be invalid: [2] = 3L", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new long[]{1L, 2L, 3L}, (n) -> n < 3L,
             "long elements cannot be invalid: [%d] = %s")).getMessage());
   }
@@ -1347,11 +1347,11 @@ public class PredicatesTest {
     final long[] validSample = new long[]{1L, 2L, 3L};
     assertSame(validSample, requireAll(validSample, (n) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("Invalid element [2]: 3", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3L", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new long[]{1L, 2L, 3L}, (n) -> n < 3L,
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
-    assertEquals("long elements cannot be invalid: [2] = 3", assertThrows(IllegalArgumentException.class,
+    assertEquals("long elements cannot be invalid: [2] = 3L", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new long[]{1L, 2L, 3L}, (n) -> n < 3L,
             ExceptionProvider.OfSequence.ofIAE("long elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message
@@ -1377,7 +1377,7 @@ public class PredicatesTest {
     final float[] validSample = new float[]{1.f, 2.f, 3.f};
     assertSame(validSample, requireAll(validSample, (n) -> true));
     // IAE: [index]
-    assertEquals("Invalid element [2]: 3.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3.0F", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new float[]{1.f, 2.f, 3L}, (n) -> n < 3.f)).getMessage());
   }
 
@@ -1396,7 +1396,7 @@ public class PredicatesTest {
     final float[] validSample = new float[]{1.f, 2.f, 3.f};
     assertSame(validSample, requireAll(validSample, (n) -> true, "float elements cannot be invalid"));
     // IAE: message: [index] = element
-    assertEquals("float elements cannot be invalid: [2] = 3.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("float elements cannot be invalid: [2] = 3.0F", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new float[]{1.f, 2.f, 3.f}, (n) -> n < 3.f,
             "float elements cannot be invalid: [%d] = %s")).getMessage());
   }
@@ -1416,11 +1416,11 @@ public class PredicatesTest {
     final float[] validSample = new float[]{1.f, 2.f, 3.f};
     assertSame(validSample, requireAll(validSample, (n) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("Invalid element [2]: 3.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3.0F", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new float[]{1.f, 2.f, 3.f}, (n) -> n < 3.f,
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
-    assertEquals("float elements cannot be invalid: [2] = 3.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("float elements cannot be invalid: [2] = 3.0F", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new float[]{1.f, 2.f, 3.f}, (n) -> n < 3.f,
             ExceptionProvider.OfSequence.ofIAE("float elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message
@@ -1446,8 +1446,8 @@ public class PredicatesTest {
     final double[] validSample = new double[]{1., 2., 3.};
     assertSame(validSample, requireAll(validSample, (n) -> true));
     // IAE: [index]
-    assertEquals("Invalid element [2]: 3.0", assertThrows(IllegalArgumentException.class,
-        () -> requireAll(new double[]{1., 2., 3L}, (n) -> n < 3.)).getMessage());
+    assertEquals("Invalid element [2]: 3.0D", assertThrows(IllegalArgumentException.class,
+        () -> requireAll(new double[]{1., 2., 3.}, (n) -> n < 3.)).getMessage());
   }
 
   /**
@@ -1465,7 +1465,7 @@ public class PredicatesTest {
     final double[] validSample = new double[]{1., 2., 3.};
     assertSame(validSample, requireAll(validSample, (n) -> true, "double elements cannot be invalid"));
     // IAE: message: [index] = element
-    assertEquals("double elements cannot be invalid: [2] = 3.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("double elements cannot be invalid: [2] = 3.0D", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new double[]{1., 2., 3.}, (n) -> n < 3.,
             "double elements cannot be invalid: [%d] = %s")).getMessage());
   }
@@ -1485,11 +1485,11 @@ public class PredicatesTest {
     final double[] validSample = new double[]{1., 2., 3.};
     assertSame(validSample, requireAll(validSample, (n) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("Invalid element [2]: 3.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3.0D", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new double[]{1., 2., 3.}, (n) -> n < 3.,
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
-    assertEquals("double elements cannot be invalid: [2] = 3.0", assertThrows(IllegalArgumentException.class,
+    assertEquals("double elements cannot be invalid: [2] = 3.0D", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new double[]{1., 2., 3.}, (n) -> n < 3.,
             ExceptionProvider.OfSequence.ofIAE("double elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message
@@ -1515,7 +1515,7 @@ public class PredicatesTest {
     final char[] validSample = new char[]{'a', 'b', 'c'};
     assertSame(validSample, requireAll(validSample, (c) -> true));
     // IAE: [index]
-    assertEquals("Invalid element [2]: c", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 'c'", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new char[]{'a', 'b', 'c'}, (c) -> c < 'c')).getMessage());
   }
 
@@ -1534,7 +1534,7 @@ public class PredicatesTest {
     final char[] validSample = new char[]{'a', 'b', 'c'};
     assertSame(validSample, requireAll(validSample, (c) -> true, "char elements cannot be invalid"));
     // IAE: message: [index] = element
-    assertEquals("char elements cannot be invalid: [2] = c", assertThrows(IllegalArgumentException.class,
+    assertEquals("char elements cannot be invalid: [2] = 'c'", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new char[]{'a', 'b', 'c'}, (c) -> c < 'c',
             "char elements cannot be invalid: [%d] = %s")).getMessage());
   }
@@ -1554,11 +1554,11 @@ public class PredicatesTest {
     final char[] validSample = new char[]{'a', 'b', 'c'};
     assertSame(validSample, requireAll(validSample, (c) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("Invalid element [2]: c", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 'c'", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new char[]{'a', 'b', 'c'}, (c) -> c < 'c',
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
-    assertEquals("char elements cannot be invalid: [2] = c", assertThrows(IllegalArgumentException.class,
+    assertEquals("char elements cannot be invalid: [2] = 'c'", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new char[]{'a', 'b', 'c'}, (c) -> c < 'c',
             ExceptionProvider.OfSequence.ofIAE("char elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message
@@ -1651,7 +1651,7 @@ public class PredicatesTest {
     final Iterable<Object> validSample = Arrays.asList("one", "two", "three");
     assertSame(validSample, requireAll(validSample, (o) -> true));
     // IAE: [index]
-    assertEquals("Invalid element [2]: three", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: \"three\"", assertThrows(IllegalArgumentException.class,
         () -> requireAll(Arrays.asList("one", "two", "three"), (o) -> o.length() == 3)).getMessage());
   }
 
@@ -1670,7 +1670,7 @@ public class PredicatesTest {
     final Iterable<Object> validSample = Arrays.asList("one", "two", "three");
     assertSame(validSample, requireAll(validSample, (o) -> true, "elements cannot be invalid"));
     // IAE: message: [index] = element
-    assertEquals("elements cannot be invalid: [2] = three", assertThrows(IllegalArgumentException.class,
+    assertEquals("elements cannot be invalid: [2] = \"three\"", assertThrows(IllegalArgumentException.class,
         () -> requireAll(Arrays.asList("one", "two", "three"), (o) -> o.length() == 3,
             "elements cannot be invalid: [%d] = %s")).getMessage());
   }
@@ -1690,11 +1690,11 @@ public class PredicatesTest {
     final Iterable<Object> validSample = Arrays.asList("one", "two", "three");
     assertSame(validSample, requireAll(validSample, (o) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("Invalid element [2]: three", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: \"three\"", assertThrows(IllegalArgumentException.class,
         () -> requireAll(Arrays.asList("one", "two", "three"), (o) -> o.length() == 3,
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
-    assertEquals("elements cannot be invalid: [2] = three", assertThrows(IllegalArgumentException.class,
+    assertEquals("elements cannot be invalid: [2] = \"three\"", assertThrows(IllegalArgumentException.class,
         () -> requireAll(Arrays.asList("one", "two", "three"), (o) -> o.length() == 3,
             ExceptionProvider.OfSequence.ofIAE("elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message

@@ -34,7 +34,7 @@ public interface CharacterSequence extends CharSequence {
   }
 
   @Override
-  default CharacterSequence subSequence(int start, int end) {
+  default CharSequence subSequence(int start, int end) {
     throw new UnsupportedOperationException();
   }
 
