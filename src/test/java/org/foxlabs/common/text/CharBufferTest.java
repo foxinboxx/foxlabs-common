@@ -27,6 +27,26 @@ import static org.junit.Assert.*;
  */
 public class CharBufferTest {
 
+  // Number operations
+
+  /**
+   * Tests the {@link CharBuffer#appendDec(byte)} method.
+   */
+  @Test
+  public void test_appendDec_byte() {
+    assertEquals(   "0", new CharBuffer().appendDec((byte)    0).toString());
+    assertEquals(   "9", new CharBuffer().appendDec((byte)    9).toString());
+    assertEquals(  "10", new CharBuffer().appendDec((byte)   10).toString());
+    assertEquals(  "99", new CharBuffer().appendDec((byte)   99).toString());
+    assertEquals( "100", new CharBuffer().appendDec((byte)  100).toString());
+    assertEquals( "127", new CharBuffer().appendDec((byte)  127).toString());
+    assertEquals("-128", new CharBuffer().appendDec((byte) -128).toString());
+    assertEquals("-100", new CharBuffer().appendDec((byte) -100).toString());
+    assertEquals( "-99", new CharBuffer().appendDec((byte)  -99).toString());
+    assertEquals( "-10", new CharBuffer().appendDec((byte)  -10).toString());
+    assertEquals(  "-9", new CharBuffer().appendDec((byte)   -9).toString());
+  }
+
   /**
    * Tests the {@link CharBuffer#appendHex(byte)} method.
    */

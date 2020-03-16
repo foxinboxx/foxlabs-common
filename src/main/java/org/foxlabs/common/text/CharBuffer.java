@@ -43,11 +43,6 @@ public class CharBuffer implements CharSequence, GetChars {
 
   // Private constants
 
-  private static final char[] DIGITS = {
-      '0', '1', '2', '3', '4', '5', '6', '7',
-      '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
-  };
-
   private static final char CHAR_QUOTE = '\'';
 
   private static final char STRING_QUOTE = '\"';
@@ -270,41 +265,88 @@ public class CharBuffer implements CharSequence, GetChars {
 
   // Advanced operations
 
+  // Number to string representation
+
+  /**
+   * All possible digits (up to the hexadecimal system) of which an integer number can consist.
+   */
+  private static final char[] DIGITS = {
+      '0', '1', '2', '3', '4', '5', '6', '7',
+      '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+  };
+
+  public final CharBuffer appendDec(byte value) {
+    // check sign
+    int sign = 0;
+    int v = value;
+    if (v < 0) {
+      sign = 1;
+      v = -v;
+    }
+    // one digit?
+    if (v < 10) {
+      ensureCapacity(sign + 1);
+      appendSign(value);
+      append0(DIGITS[v]);
+      return this;
+    }
+    // two digits?
+    if (v < 100) {
+      ensureCapacity(sign + 2);
+      appendSign(value);
+      append0(DIGITS[v / 10]);
+      append0(DIGITS[v % 10]);
+      return this;
+    }
+    // three digits
+    ensureCapacity(sign + 3);
+    appendSign(value);
+    append0(DIGITS[1]); // the only case
+    append0(DIGITS[v % 100 / 10]);
+    append0(DIGITS[v % 10]);
+    return this;
+  }
+
   public final CharBuffer appendHex(byte value) {
     ensureCapacity(2);
-    append0(DIGITS[(value >>> 0x04) & (byte) 0xf]);
-    append0(DIGITS[(value >>> 0x00) & (byte) 0xf]);
+    append0(DIGITS[(value >>> 0x04) & 0xf]);
+    append0(DIGITS[(value >>> 0x00) & 0xf]);
     return this;
   }
 
   public final CharBuffer appendHexTrimZeros(byte value) {
-    if ((value & (byte) 0xf) == value) { // fast check
+    // 4 or less bits long?
+    if ((value & 0xf) == value) {
       ensureCapacity(1);
-      return append0(DIGITS[(value >>> 0x00) & (byte) 0xf]);
+      return append0(DIGITS[(value >>> 0x00) & 0xf]);
     }
+    // 8 bits long
     return appendHex(value);
   }
 
   public final CharBuffer appendHex(short value) {
     ensureCapacity(4);
-    append0(DIGITS[(value >>> 0x0c) & (short) 0xf]);
-    append0(DIGITS[(value >>> 0x08) & (short) 0xf]);
-    append0(DIGITS[(value >>> 0x04) & (short) 0xf]);
-    append0(DIGITS[(value >>> 0x00) & (short) 0xf]);
+    append0(DIGITS[(value >>> 0x0c) & 0xf]);
+    append0(DIGITS[(value >>> 0x08) & 0xf]);
+    append0(DIGITS[(value >>> 0x04) & 0xf]);
+    append0(DIGITS[(value >>> 0x00) & 0xf]);
     return this;
   }
 
   public final CharBuffer appendHexTrimZeros(short value) {
-    if ((value & (short) 0xff) == value) { // fast check
+    // 8 or less bits long?
+    if ((value & 0xff) == value) {
       return appendHexTrimZeros((byte) value);
     }
-    if ((value & (short) 0xfff) == value) {
+    // less than 16 bits long?
+    if ((value & 0xfff) == value) {
       ensureCapacity(3);
-      append0(DIGITS[(value >>> 0x08) & (short) 0xf]);
-      append0(DIGITS[(value >>> 0x04) & (short) 0xf]);
-      append0(DIGITS[(value >>> 0x00) & (short) 0xf]);
+      append0(DIGITS[(value >>> 0x08) & 0xf]);
+      append0(DIGITS[(value >>> 0x04) & 0xf]);
+      append0(DIGITS[(value >>> 0x00) & 0xf]);
       return this;
     }
+    // 16 bits long
     return appendHex(value);
   }
 
@@ -326,21 +368,21 @@ public class CharBuffer implements CharSequence, GetChars {
     if ((value & 0xffff) == value) {
       return appendHexTrimZeros((short) value);
     }
-    // 32 bits long?
-    if ((value & 0xfffffff) != value) {
-      return appendHex(value);
-    }
-    // from 20 to 28 bits long
-    for (int n = 20; n < 32; n += 4) {
-      if ((value >>> n) == 0) {
-        ensureCapacity(n / 4);
-        for (n -= 4; n >= 0; n -= 4) {
-          append0(DIGITS[(value >>> n) & 0xf]);
+    // less than 32 bits long?
+    if ((value & 0xfffffff) == value) {
+      // from 20 to 28 bits long
+      for (int n = 20; n < 32; n += 4) {
+        if ((value >>> n) == 0) {
+          ensureCapacity(n / 4);
+          for (n -= 4; n >= 0; n -= 4) {
+            append0(DIGITS[(value >>> n) & 0xf]);
+          }
+          return this;
         }
-        return this;
       }
     }
-    return this;
+    // 32 bits long
+    return appendHex(value);
   }
 
   public final CharBuffer appendHex(long value) {
@@ -369,24 +411,30 @@ public class CharBuffer implements CharSequence, GetChars {
     if ((value & 0xffffffffL) == value) {
       return appendHexTrimZeros((int) value);
     }
-    // 64 bits long?
-    if ((value & 0xfffffffffffffffL) != value) {
-      return appendHex(value);
-    }
-    // from 36 to 60 bits long
-    for (int n = 36; n < 64; n += 4) {
-      if ((value >>> n) == 0L) {
-        ensureCapacity(n / 4);
-        for (n -= 4; n >= 0; n -= 4) {
-          append0(DIGITS[(int) ((value >>> n) & 0xfL)]);
+    // less than 64 bits long?
+    if ((value & 0xfffffffffffffffL) == value) {
+      // from 36 to 60 bits long
+      for (int n = 36; n < 64; n += 4) {
+        if ((value >>> n) == 0L) {
+          ensureCapacity(n / 4);
+          for (n -= 4; n >= 0; n -= 4) {
+            append0(DIGITS[(int) ((value >>> n) & 0xfL)]);
+          }
+          return this;
         }
-        return this;
       }
     }
-    return this;
+    // 64 bits long
+    return appendHex(value);
   }
 
-  // Conversion operations
+  private final void appendSign(int value) {
+    if (value < 0) {
+      append0('-');
+    }
+  }
+
+  // Object to string representation
 
   /**
    * Appends string representation of the {@code null} reference to the buffer.
