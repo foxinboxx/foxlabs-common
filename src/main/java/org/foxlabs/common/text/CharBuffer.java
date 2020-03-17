@@ -31,8 +31,6 @@ import static org.foxlabs.common.Predicates.ExceptionProvider.*;
 
 public class CharBuffer implements Appendable, CharSequence, GetChars {
 
-  // Public constants
-
   public static final int MAX_THRESHOLD = Integer.MAX_VALUE;
 
   public static final int LOG_THRESHOLD = 4096;
@@ -40,42 +38,6 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
   public static final int MIN_DEPTH = 1 << 5; // 32 characters long (64 bytes)
 
   public static final int MAX_DEPTH = 1 << 15; // 32K characters long (64K bytes)
-
-  // Private constants
-
-  private static final char CHAR_QUOTE = '\'';
-
-  private static final char STRING_QUOTE = '\"';
-
-  private static final char SEQUENCE_OPEN = '[';
-
-  private static final char SEQUENCE_CLOSE = ']';
-
-  private static final char MAP_OPEN = '{';
-
-  private static final char MAP_CLOSE = '}';
-
-  /**
-   * The string representation of an empty array or {@code Iterable} sequence.
-   */
-  private static final char[] EMPTY_SEQUENCE = {SEQUENCE_OPEN, SEQUENCE_CLOSE};
-
-  /**
-   * The string representation of an empty map.
-   */
-  private static final char[] EMPTY_MAP = {MAP_OPEN, MAP_CLOSE};
-
-  /**
-   * The string representation of elements separator in an array or {@code Iterable} sequence.
-   */
-  private static final char[] ELEMENT_SEPARATOR = {',', ' '};
-
-  /**
-   * The string representation of key value pair separator in a map.
-   */
-  private static final char[] KEY_VALUE_SEPARATOR = {':', ' '};
-
-  // Fields
 
   private final int threshold;
 
@@ -98,7 +60,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
   public CharBuffer(int threshold, int depth) {
     this.threshold = require(threshold, INT_POSITIVE);
     // round depth to be a multiple of 32 and trim it to maximum possible
-    this.depth = Math.min((((require(depth, INT_POSITIVE) - 1) >> 5) + 1) << 5, MAX_DEPTH);
+    this.depth = Math.min((((require(depth, INT_POSITIVE) - 1) >>> 5) + 1) << 5, MAX_DEPTH);
     // calculate maximum number of slots
     this.capacity = (this.threshold - 1) / this.depth + 1;
     // allocate at most 16 initial slots depending on the capacity
@@ -805,9 +767,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
-      return append(EMPTY_SEQUENCE);
+      return append0('[').append0(']');
     }
-    append(SEQUENCE_OPEN);
+    append0('[');
     // remember reference to the array and check for cross-reference
     if (pushReference(array)) {
       // cross-reference detected!
@@ -817,13 +779,13 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
     try {
       appendObject(array[0]);
       for (int index = 1; index < array.length; index++) {
-        append(ELEMENT_SEPARATOR).appendObject(array[index]);
+        append0(',').append0(' ').appendObject(array[index]);
       }
     } finally {
       // forget reference to the array
       popReference(array);
     }
-    return append(SEQUENCE_CLOSE);
+    return append0(']');
   }
 
   /**
@@ -850,13 +812,13 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
-      return append(EMPTY_SEQUENCE);
+      return append0('[').append0(']');
     }
-    append(SEQUENCE_OPEN).appendBoolean(array[0]);
+    append0('[').appendBoolean(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append(ELEMENT_SEPARATOR).appendBoolean(array[index]);
+      append0(',').append0(' ').appendBoolean(array[index]);
     }
-    return append(SEQUENCE_CLOSE);
+    return append0(']');
   }
 
   /**
@@ -884,13 +846,13 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
-      return append(EMPTY_SEQUENCE);
+      return append0('[').append0(']');
     }
-    append(SEQUENCE_OPEN).appendByte(array[0]);
+    append0('[').appendByte(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append(ELEMENT_SEPARATOR).appendByte(array[index]);
+      append0(',').append0(' ').appendByte(array[index]);
     }
-    return append(SEQUENCE_CLOSE);
+    return append0(']');
   }
 
   /**
@@ -918,13 +880,13 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
-      return append(EMPTY_SEQUENCE);
+      return append0('[').append0(']');
     }
-    append(SEQUENCE_OPEN).appendShort(array[0]);
+    append0('[').appendShort(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append(ELEMENT_SEPARATOR).appendShort(array[index]);
+      append0(',').append0(' ').appendShort(array[index]);
     }
-    return append(SEQUENCE_CLOSE);
+    return append0(']');
   }
 
   /**
@@ -952,13 +914,13 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
-      return append(EMPTY_SEQUENCE);
+      return append0('[').append0(']');
     }
-    append(SEQUENCE_OPEN).appendInt(array[0]);
+    append0('[').appendInt(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append(ELEMENT_SEPARATOR).appendInt(array[index]);
+      append0(',').append0(' ').appendInt(array[index]);
     }
-    return append(SEQUENCE_CLOSE);
+    return append0(']');
   }
 
   /**
@@ -986,13 +948,13 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
-      return append(EMPTY_SEQUENCE);
+      return append0('[').append0(']');
     }
-    append(SEQUENCE_OPEN).appendLong(array[0]);
+    append0('[').appendLong(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append(ELEMENT_SEPARATOR).appendLong(array[index]);
+      append0(',').append0(' ').appendLong(array[index]);
     }
-    return append(SEQUENCE_CLOSE);
+    return append0(']');
   }
 
   /**
@@ -1020,13 +982,13 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
-      return append(EMPTY_SEQUENCE);
+      return append0('[').append0(']');
     }
-    append(SEQUENCE_OPEN).appendFloat(array[0]);
+    append0('[').appendFloat(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append(ELEMENT_SEPARATOR).appendFloat(array[index]);
+      append0(',').append0(' ').appendFloat(array[index]);
     }
-    return append(SEQUENCE_CLOSE);
+    return append0(']');
   }
 
   /**
@@ -1054,13 +1016,13 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
-      return append(EMPTY_SEQUENCE);
+      return append0('[').append0(']');
     }
-    append(SEQUENCE_OPEN).appendDouble(array[0]);
+    append0('[').appendDouble(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append(ELEMENT_SEPARATOR).appendDouble(array[index]);
+      append0(',').append0(' ').appendDouble(array[index]);
     }
-    return append(SEQUENCE_CLOSE);
+    return append0(']');
   }
 
   /**
@@ -1073,7 +1035,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
    * @see CharEncoder#JAVA
    */
   public CharBuffer appendChar(char value) {
-    return CharEncoder.JAVA.encode(value, append(CHAR_QUOTE)).append(CHAR_QUOTE);
+    return CharEncoder.JAVA.encode(value, append0('\'')).append0('\'');
   }
 
   /**
@@ -1089,13 +1051,13 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
-      return append(EMPTY_SEQUENCE);
+      return append0('[').append0(']');
     }
-    append(SEQUENCE_OPEN).appendChar(array[0]);
+    append0('[').appendChar(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append(ELEMENT_SEPARATOR).appendChar(array[index]);
+      append0(',').append0(' ').appendChar(array[index]);
     }
-    return append(SEQUENCE_CLOSE);
+    return append0(']');
   }
 
   /**
@@ -1108,9 +1070,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
    * @see CharEncoder#JAVA
    */
   public CharBuffer appendString(CharSequence value) {
-    return value != null
-        ? CharEncoder.JAVA.encode(value, append(STRING_QUOTE)).append(STRING_QUOTE)
-        : appendNull();
+    return value != null ? CharEncoder.JAVA.encode(value, append0('\"')).append0('\"') : appendNull();
   }
 
   /**
@@ -1142,9 +1102,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
     if (itr == null) {
       return appendNull();
     } else if (!itr.hasNext()) { // fast check
-      return append(EMPTY_SEQUENCE);
+      return append0('[').append0(']');
     }
-    append(SEQUENCE_OPEN);
+    append0('[');
     // remember reference to the iteration and check for cross-reference
     if (pushReference(iterable)) {
       // cross-reference detected!
@@ -1154,13 +1114,13 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
     try {
       appendObject(itr.next());
       while (itr.hasNext()) {
-        append(ELEMENT_SEPARATOR).appendObject(itr.next());
+        append0(',').append0(' ').appendObject(itr.next());
       }
     } finally {
       // forget reference to the iteration
       popReference(iterable);
     }
-    return append(SEQUENCE_CLOSE);
+    return append0(']');
   }
 
   /**
@@ -1183,9 +1143,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
     if (itr == null) {
       return appendNull();
     } else if (!itr.hasNext()) { // fast check
-      return append(EMPTY_MAP);
+      return append0('{').append0('}');
     }
-    append(MAP_OPEN);
+    append0('{');
     // remember reference to the map and check for cross-reference
     if (pushReference(map)) {
       // cross-reference detected!
@@ -1198,17 +1158,17 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
         appendNull();
       } else {
         appendObject(entry.getKey());
-        append(KEY_VALUE_SEPARATOR);
+        append0(':').append0(' ');
         appendObject(entry.getValue());
       }
       while (itr.hasNext()) {
         entry = itr.next();
-        append(ELEMENT_SEPARATOR);
+        append0(',').append0(' ');
         if (entry == null) { // who knows
           appendNull();
         } else {
           appendObject(entry.getKey());
-          append(KEY_VALUE_SEPARATOR);
+          append0(':').append0(' ');
           appendObject(entry.getValue());
         }
       }
@@ -1216,7 +1176,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
       // forget reference to the map
       popReference(map);
     }
-    return append(MAP_CLOSE);
+    return append0('}');
   }
 
   public CharBuffer appendPlain(Object object) {

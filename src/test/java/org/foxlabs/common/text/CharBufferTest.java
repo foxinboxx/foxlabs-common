@@ -78,7 +78,7 @@ public class CharBufferTest {
    */
   @Test
   public void test_appendIdent_char() {
-    assertThrows(IllegalArgumentException.class, () -> new CharBuffer().appendIndent(-1));
+    assertThrows(IllegalArgumentException.class, () -> new CharBuffer().appendIndent(-1, '_'));
     assertEquals("", new CharBuffer().appendIndent(0, '0').toString());
     assertEquals("1", new CharBuffer().appendIndent(1, '1').toString());
     assertEquals("22", new CharBuffer().appendIndent(2, '2').toString());
