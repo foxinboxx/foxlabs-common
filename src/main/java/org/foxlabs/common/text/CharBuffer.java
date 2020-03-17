@@ -47,12 +47,6 @@ public class CharBuffer implements CharSequence, GetChars {
 
   private static final char STRING_QUOTE = '\"';
 
-  private static final char LONG_SUFFIX = 'L';
-
-  private static final char FLOAT_SUFFIX = 'F';
-
-  private static final char DOUBLE_SUFFIX = 'D';
-
   private static final char SEQUENCE_OPEN = '[';
 
   private static final char SEQUENCE_CLOSE = ']';
@@ -60,21 +54,6 @@ public class CharBuffer implements CharSequence, GetChars {
   private static final char MAP_OPEN = '{';
 
   private static final char MAP_CLOSE = '}';
-
-  /**
-   * The string representation of the {@code null} reference.
-   */
-  private static final char[] NULL_REFERENCE = {'n', 'u', 'l', 'l'};
-
-  /**
-   * The string representation of the {@code true} constant.
-   */
-  private static final char[] TRUE_CONSTANT = {'t', 'r', 'u', 'e'};
-
-  /**
-   * The string representation of the {@code false} constant.
-   */
-  private static final char[] FALSE_CONSTANT = {'f', 'a', 'l', 's', 'e'};
 
   /**
    * The string representation of an empty array or {@code Iterable} sequence.
@@ -531,6 +510,21 @@ public class CharBuffer implements CharSequence, GetChars {
   // Object to string representation
 
   /**
+   * The string representation of the {@code null} reference.
+   */
+  private static final char[] NULL_REFERENCE = {'n', 'u', 'l', 'l'};
+
+  /**
+   * The string representation of the {@code true} constant.
+   */
+  private static final char[] TRUE_CONSTANT = {'t', 'r', 'u', 'e'};
+
+  /**
+   * The string representation of the {@code false} constant.
+   */
+  private static final char[] FALSE_CONSTANT = {'f', 'a', 'l', 's', 'e'};
+
+  /**
    * Appends string representation of the {@code null} reference to the buffer.
    *
    * @return A reference to this buffer.
@@ -726,10 +720,10 @@ public class CharBuffer implements CharSequence, GetChars {
    *
    * @param value The {@code byte} value to append to the buffer.
    * @return A reference to this buffer.
-   * @see #append(CharSequence)
+   * @see #appendDec(byte)
    */
   public CharBuffer appendByte(byte value) {
-    return append(Integer.toString(value));
+    return appendDec(value);
   }
 
   /**
@@ -760,10 +754,10 @@ public class CharBuffer implements CharSequence, GetChars {
    *
    * @param value The {@code short} value to append to the buffer.
    * @return A reference to this buffer.
-   * @see #append(CharSequence)
+   * @see #appendDec(short)
    */
   public CharBuffer appendShort(short value) {
-    return append(Integer.toString(value));
+    return appendDec(value);
   }
 
   /**
@@ -794,10 +788,10 @@ public class CharBuffer implements CharSequence, GetChars {
    *
    * @param value The {@code int} value to append to the buffer.
    * @return A reference to this buffer.
-   * @see #append(CharSequence)
+   * @see #appendDec(int)
    */
   public CharBuffer appendInt(int value) {
-    return append(Integer.toString(value));
+    return appendDec(value);
   }
 
   /**
@@ -828,10 +822,10 @@ public class CharBuffer implements CharSequence, GetChars {
    *
    * @param value The {@code long} value to append to the buffer.
    * @return A reference to this buffer.
-   * @see #append(CharSequence)
+   * @see #appendDec(long)
    */
   public CharBuffer appendLong(long value) {
-    return append(Long.toString(value)).append(LONG_SUFFIX);
+    return appendDec(value).append('L');
   }
 
   /**
@@ -865,7 +859,7 @@ public class CharBuffer implements CharSequence, GetChars {
    * @see #append(CharSequence)
    */
   public CharBuffer appendFloat(float value) {
-    return append(Float.toString(value)).append(FLOAT_SUFFIX);
+    return append(Float.toString(value)).append('f');
   }
 
   /**
@@ -899,7 +893,7 @@ public class CharBuffer implements CharSequence, GetChars {
    * @see #append(CharSequence)
    */
   public CharBuffer appendDouble(double value) {
-    return append(Double.toString(value)).append(DOUBLE_SUFFIX);
+    return append(Double.toString(value)).append('d');
   }
 
   /**

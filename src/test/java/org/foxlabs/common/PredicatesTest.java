@@ -908,7 +908,7 @@ public class PredicatesTest {
     // OK: double
     assertEquals(10., require(10., (double n) -> true), .0);
     // NPE: double
-    assertEquals("Invalid argument: 10.0D", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid argument: 10.0d", assertThrows(IllegalArgumentException.class,
         () -> require(10., (double n) -> false)).getMessage());
   }
 
@@ -920,7 +920,7 @@ public class PredicatesTest {
     // OK: double
     assertEquals(10., require(10., (double n) -> true, "double cannot be illegal"), .0);
     // NPE: message: double
-    assertEquals("double cannot be illegal: 10.0D", assertThrows(IllegalArgumentException.class,
+    assertEquals("double cannot be illegal: 10.0d", assertThrows(IllegalArgumentException.class,
         () -> require(10., (double n) -> false,
             "double cannot be illegal: %s")).getMessage());
   }
@@ -933,11 +933,11 @@ public class PredicatesTest {
     // OK: double
     assertEquals(10., require(10., (double n) -> true, ExceptionProvider.ofIAE()), .0);
     // NPE: double
-    assertEquals("Invalid argument: 10.0D", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid argument: 10.0d", assertThrows(IllegalArgumentException.class,
         () -> require(10., (double n) -> false,
             ExceptionProvider.ofIAE())).getMessage());
     // NPE: message: double
-    assertEquals("double cannot be illegal: 10.0D", assertThrows(IllegalArgumentException.class,
+    assertEquals("double cannot be illegal: 10.0d", assertThrows(IllegalArgumentException.class,
         () -> require(10., (double n) -> false,
             ExceptionProvider.ofIAE("double cannot be illegal: %s"))).getMessage());
     // ISE: message
@@ -1377,7 +1377,7 @@ public class PredicatesTest {
     final float[] validSample = new float[]{1.f, 2.f, 3.f};
     assertSame(validSample, requireAll(validSample, (n) -> true));
     // IAE: [index]
-    assertEquals("Invalid element [2]: 3.0F", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3.0f", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new float[]{1.f, 2.f, 3L}, (n) -> n < 3.f)).getMessage());
   }
 
@@ -1396,7 +1396,7 @@ public class PredicatesTest {
     final float[] validSample = new float[]{1.f, 2.f, 3.f};
     assertSame(validSample, requireAll(validSample, (n) -> true, "float elements cannot be invalid"));
     // IAE: message: [index] = element
-    assertEquals("float elements cannot be invalid: [2] = 3.0F", assertThrows(IllegalArgumentException.class,
+    assertEquals("float elements cannot be invalid: [2] = 3.0f", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new float[]{1.f, 2.f, 3.f}, (n) -> n < 3.f,
             "float elements cannot be invalid: [%d] = %s")).getMessage());
   }
@@ -1416,11 +1416,11 @@ public class PredicatesTest {
     final float[] validSample = new float[]{1.f, 2.f, 3.f};
     assertSame(validSample, requireAll(validSample, (n) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("Invalid element [2]: 3.0F", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3.0f", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new float[]{1.f, 2.f, 3.f}, (n) -> n < 3.f,
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
-    assertEquals("float elements cannot be invalid: [2] = 3.0F", assertThrows(IllegalArgumentException.class,
+    assertEquals("float elements cannot be invalid: [2] = 3.0f", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new float[]{1.f, 2.f, 3.f}, (n) -> n < 3.f,
             ExceptionProvider.OfSequence.ofIAE("float elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message
@@ -1446,7 +1446,7 @@ public class PredicatesTest {
     final double[] validSample = new double[]{1., 2., 3.};
     assertSame(validSample, requireAll(validSample, (n) -> true));
     // IAE: [index]
-    assertEquals("Invalid element [2]: 3.0D", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3.0d", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new double[]{1., 2., 3.}, (n) -> n < 3.)).getMessage());
   }
 
@@ -1465,7 +1465,7 @@ public class PredicatesTest {
     final double[] validSample = new double[]{1., 2., 3.};
     assertSame(validSample, requireAll(validSample, (n) -> true, "double elements cannot be invalid"));
     // IAE: message: [index] = element
-    assertEquals("double elements cannot be invalid: [2] = 3.0D", assertThrows(IllegalArgumentException.class,
+    assertEquals("double elements cannot be invalid: [2] = 3.0d", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new double[]{1., 2., 3.}, (n) -> n < 3.,
             "double elements cannot be invalid: [%d] = %s")).getMessage());
   }
@@ -1485,11 +1485,11 @@ public class PredicatesTest {
     final double[] validSample = new double[]{1., 2., 3.};
     assertSame(validSample, requireAll(validSample, (n) -> true, ExceptionProvider.OfSequence.ofIAE()));
     // IAE: [index] = element
-    assertEquals("Invalid element [2]: 3.0D", assertThrows(IllegalArgumentException.class,
+    assertEquals("Invalid element [2]: 3.0d", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new double[]{1., 2., 3.}, (n) -> n < 3.,
             ExceptionProvider.OfSequence.ofIAE())).getMessage());
     // IAE: message: [index] = element
-    assertEquals("double elements cannot be invalid: [2] = 3.0D", assertThrows(IllegalArgumentException.class,
+    assertEquals("double elements cannot be invalid: [2] = 3.0d", assertThrows(IllegalArgumentException.class,
         () -> requireAll(new double[]{1., 2., 3.}, (n) -> n < 3.,
             ExceptionProvider.OfSequence.ofIAE("double elements cannot be invalid: [%d] = %s"))).getMessage());
     // ISE: message
