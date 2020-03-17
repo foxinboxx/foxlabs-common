@@ -275,36 +275,130 @@ public class CharBuffer implements CharSequence, GetChars {
       '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
   };
 
+  /**
+   * The string representation of the {@code int} minimum value ({@code -2147483648}).
+   */
+  private static final char[] MIN_INT_DIGITS = {
+      '-', '2', '1', '4', '7', '4', '8', '3', '6', '4', '8'
+  };
+
+  /**
+   * The string representation of the {@code long} minimum value ({@code -9223372036854775808}).
+   */
+  private static final char[] MIN_LONG_DIGITS = {
+      '-', '9', '2', '2', '3', '3', '7', '2', '0', '3',
+      '6', '8', '5', '4', '7', '7', '5', '8', '0', '8'
+  };
+
+  /**
+   * All possible {@code 10^n} values for the {@code int} number.
+   */
+  private static final int[] INT_TENS = {
+      1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000
+  };
+
+  /**
+   * All possible {@code 10^n} values for the {@code long} number.
+   */
+  private static final long[] LONG_TENS = {
+      1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L, 1000000000L,
+      10000000000L, 100000000000L, 1000000000000L, 10000000000000L, 100000000000000L,
+      1000000000000000L, 10000000000000000L, 100000000000000000L, 1000000000000000000L
+  };
+
+  /**
+   * Returns a number of characters required to represent the specified {@code int} value.
+   * Note that the specified value must not be negative.
+   *
+   * @param value The non-negative {@code int} value.
+   * @return A number of characters required to represent the specified {@code int} value.
+   */
+  private static int getDecCapacity0(int value) {
+    if (value < 1000) {
+      return value < 100 ? value < 10 ? 1 : 2 : 3;
+    }
+    if (value < 1000000) {
+      return value < 100000 ? value < 10000 ? 4 : 5 : 6;
+    }
+    if (value < 1000000000) {
+      return value < 100000000 ? value < 10000000 ? 7 : 8 : 9;
+    }
+    return 10;
+  }
+
+  /**
+   * Returns a number of characters required to represent the specified {@code long} value.
+   * Note that the specified value must not be negative.
+   *
+   * @param value The non-negative {@code long} value.
+   * @return A number of characters required to represent the specified {@code long} value.
+   */
+  private static int getDecCapacity0(long value) {
+    if (value < 1000000000L) {
+      return getDecCapacity0((int) value);
+    }
+    if (value < 1000000000000L) {
+      return value < 100000000000L ? value < 10000000000L ? 10 : 11 : 12;
+    }
+    if (value < 1000000000000000L) {
+      return value < 100000000000000L ? value < 10000000000000L ? 13 : 14 : 15;
+    }
+    if (value < 1000000000000000000L) {
+      return value < 100000000000000000L ? value < 10000000000000000L ? 16 : 17 : 18;
+    }
+    return 19;
+  }
+
   public final CharBuffer appendDec(byte value) {
-    // check sign
-    int sign = 0;
-    int v = value;
-    if (v < 0) {
-      sign = 1;
-      v = -v;
+    final int sign = value >>> 31;
+    int v = value < 0 ? -value : value;
+    int n = getDecCapacity0(v);
+    ensureCapacity(sign + n--);
+    for (appendSign(sign); n > 0; v %= INT_TENS[n--]) {
+      append0(DIGITS[v / INT_TENS[n]]);
     }
-    // one digit?
-    if (v < 10) {
-      ensureCapacity(sign + 1);
-      appendSign(value);
-      append0(DIGITS[v]);
-      return this;
+    return append0(DIGITS[v]);
+  }
+
+  public final CharBuffer appendDec(short value) {
+    final int sign = value >>> 31;
+    int v = value < 0 ? -value : value;
+    int n = getDecCapacity0(v);
+    ensureCapacity(sign + n--);
+    for (appendSign(sign); n > 0; v %= INT_TENS[n--]) {
+      append0(DIGITS[v / INT_TENS[n]]);
     }
-    // two digits?
-    if (v < 100) {
-      ensureCapacity(sign + 2);
-      appendSign(value);
-      append0(DIGITS[v / 10]);
-      append0(DIGITS[v % 10]);
-      return this;
+    return append0(DIGITS[v]);
+  }
+
+  public final CharBuffer appendDec(int value) {
+    if (value == Integer.MIN_VALUE) {
+      // special case - sign inversion does not work for -2147483648
+      return append(MIN_INT_DIGITS);
     }
-    // three digits
-    ensureCapacity(sign + 3);
-    appendSign(value);
-    append0(DIGITS[1]); // the only case
-    append0(DIGITS[v % 100 / 10]);
-    append0(DIGITS[v % 10]);
-    return this;
+    final int sign = value >>> 31;
+    int v = value < 0 ? -value : value;
+    int n = getDecCapacity0(v);
+    ensureCapacity(sign + n--);
+    for (appendSign(sign); n > 0; v %= INT_TENS[n--]) {
+      append0(DIGITS[v / INT_TENS[n]]);
+    }
+    return append0(DIGITS[v]);
+  }
+
+  public final CharBuffer appendDec(long value) {
+    if (value == Long.MIN_VALUE) {
+      // special case - sign inversion does not work for -9223372036854775808
+      return append(MIN_LONG_DIGITS);
+    }
+    final int sign = (int) (value >>> 63);
+    long v = value < 0L ? -value : value;
+    int n = getDecCapacity0(v);
+    ensureCapacity(sign + n--);
+    for (appendSign(sign); n > 0; v %= LONG_TENS[n--]) {
+      append0(DIGITS[(int) (v / LONG_TENS[n])]);
+    }
+    return append0(DIGITS[(int) v]);
   }
 
   public final CharBuffer appendHex(byte value) {
@@ -428,8 +522,8 @@ public class CharBuffer implements CharSequence, GetChars {
     return appendHex(value);
   }
 
-  private final void appendSign(int value) {
-    if (value < 0) {
+  private final void appendSign(int sign) {
+    if (sign != 0) {
       append0('-');
     }
   }
