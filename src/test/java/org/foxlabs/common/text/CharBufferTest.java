@@ -160,6 +160,70 @@ public class CharBufferTest {
   }
 
   /**
+   * Tests the {@link CharBuffer#getHexCapacity(int)} method.
+   */
+  @Test
+  public void test_getHexCapacity_int() {
+    // @formatter:off
+    assertEquals(1, CharBuffer.getHexCapacity(0x00000000));
+    assertEquals(1, CharBuffer.getHexCapacity(0x0000000f));
+    assertEquals(2, CharBuffer.getHexCapacity(0x000000ff));
+    assertEquals(3, CharBuffer.getHexCapacity(0x00000fff));
+    assertEquals(4, CharBuffer.getHexCapacity(0x0000ffff));
+    assertEquals(5, CharBuffer.getHexCapacity(0x000fffff));
+    assertEquals(6, CharBuffer.getHexCapacity(0x00ffffff));
+    assertEquals(7, CharBuffer.getHexCapacity(0x0fffffff));
+    assertEquals(8, CharBuffer.getHexCapacity(0xffffffff));
+    assertEquals(8, CharBuffer.getHexCapacity(0xfffffff0));
+    assertEquals(8, CharBuffer.getHexCapacity(0xffffff00));
+    assertEquals(8, CharBuffer.getHexCapacity(0xfffff000));
+    assertEquals(8, CharBuffer.getHexCapacity(0xffff0000));
+    assertEquals(8, CharBuffer.getHexCapacity(0xfff00000));
+    assertEquals(8, CharBuffer.getHexCapacity(0xff000000));
+    assertEquals(8, CharBuffer.getHexCapacity(0xf0000000));
+  }
+
+  /**
+   * Tests the {@link CharBuffer#getHexCapacity(long)} method.
+   */
+  @Test
+  public void test_getHexCapacity_long() {
+    // @formatter:off
+    assertEquals( 1, CharBuffer.getHexCapacity(0x0000000000000000L));
+    assertEquals( 1, CharBuffer.getHexCapacity(0x000000000000000fL));
+    assertEquals( 2, CharBuffer.getHexCapacity(0x00000000000000ffL));
+    assertEquals( 3, CharBuffer.getHexCapacity(0x0000000000000fffL));
+    assertEquals( 4, CharBuffer.getHexCapacity(0x000000000000ffffL));
+    assertEquals( 5, CharBuffer.getHexCapacity(0x00000000000fffffL));
+    assertEquals( 6, CharBuffer.getHexCapacity(0x0000000000ffffffL));
+    assertEquals( 7, CharBuffer.getHexCapacity(0x000000000fffffffL));
+    assertEquals( 8, CharBuffer.getHexCapacity(0x00000000ffffffffL));
+    assertEquals( 9, CharBuffer.getHexCapacity(0x0000000fffffffffL));
+    assertEquals(10, CharBuffer.getHexCapacity(0x000000ffffffffffL));
+    assertEquals(11, CharBuffer.getHexCapacity(0x00000fffffffffffL));
+    assertEquals(12, CharBuffer.getHexCapacity(0x0000ffffffffffffL));
+    assertEquals(13, CharBuffer.getHexCapacity(0x000fffffffffffffL));
+    assertEquals(14, CharBuffer.getHexCapacity(0x00ffffffffffffffL));
+    assertEquals(15, CharBuffer.getHexCapacity(0x0fffffffffffffffL));
+    assertEquals(16, CharBuffer.getHexCapacity(0xffffffffffffffffL));
+    assertEquals(16, CharBuffer.getHexCapacity(0xfffffffffffffff0L));
+    assertEquals(16, CharBuffer.getHexCapacity(0xffffffffffffff00L));
+    assertEquals(16, CharBuffer.getHexCapacity(0xfffffffffffff000L));
+    assertEquals(16, CharBuffer.getHexCapacity(0xffffffffffff0000L));
+    assertEquals(16, CharBuffer.getHexCapacity(0xfffffffffff00000L));
+    assertEquals(16, CharBuffer.getHexCapacity(0xffffffffff000000L));
+    assertEquals(16, CharBuffer.getHexCapacity(0xfffffffff0000000L));
+    assertEquals(16, CharBuffer.getHexCapacity(0xffffffff00000000L));
+    assertEquals(16, CharBuffer.getHexCapacity(0xfffffff000000000L));
+    assertEquals(16, CharBuffer.getHexCapacity(0xffffff0000000000L));
+    assertEquals(16, CharBuffer.getHexCapacity(0xfffff00000000000L));
+    assertEquals(16, CharBuffer.getHexCapacity(0xffff000000000000L));
+    assertEquals(16, CharBuffer.getHexCapacity(0xfff0000000000000L));
+    assertEquals(16, CharBuffer.getHexCapacity(0xff00000000000000L));
+    assertEquals(16, CharBuffer.getHexCapacity(0xf000000000000000L));
+  }
+
+  /**
    * Tests the {@link CharBuffer#appendDec(byte)} method.
    */
   @Test

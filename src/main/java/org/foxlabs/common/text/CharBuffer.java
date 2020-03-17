@@ -289,10 +289,11 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
   };
 
   /**
-   * Returns a number of characters required to represent the specified {@code int} value.
+   * Returns a number of characters required to represent the specified signed {@code int} value
+   * without leading zeros in the decimal system.
    *
-   * @param value The {@code int} value.
-   * @return A number of characters required to represent the specified {@code int} value.
+   * @param value The signed {@code int} value to be converted to a decimal string.
+   * @return A number of characters required to represent the specified signed {@code int} value.
    */
   public static int getDecCapacity(int value) {
     if (value != Integer.MIN_VALUE) {
@@ -302,11 +303,12 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
   }
 
   /**
-   * Returns a number of characters required to represent the specified {@code int} value.
-   * Note that the specified value must not be negative.
+   * Returns a number of characters required to represent the specified positive signed {@code int}
+   * value without leading zeros in the decimal system.
    *
-   * @param value The non-negative {@code int} value.
-   * @return A number of characters required to represent the specified {@code int} value.
+   * @param value The signed non-negative {@code int} value to be converted to a decimal string.
+   * @return A number of characters required to represent the specified positive signed {@code int}
+   *         value.
    */
   private static int getDecCapacity0(int value) {
     if (value < 1000) {
@@ -322,10 +324,11 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
   }
 
   /**
-   * Returns a number of characters required to represent the specified {@code long} value.
+   * Returns a number of characters required to represent the specified signed {@code long} value
+   * without leading zeros in the decimal system.
    *
-   * @param value The {@code long} value.
-   * @return A number of characters required to represent the specified {@code long} value.
+   * @param value The signed {@code long} value to be converted to a decimal string.
+   * @return A number of characters required to represent the specified signed {@code long} value.
    */
   public static int getDecCapacity(long value) {
     if (value != Long.MIN_VALUE) {
@@ -335,11 +338,12 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
   }
 
   /**
-   * Returns a number of characters required to represent the specified {@code long} value.
-   * Note that the specified value must not be negative.
+   * Returns a number of characters required to represent the specified positive signed
+   * {@code long} value without leading zeros in the decimal system.
    *
-   * @param value The non-negative {@code long} value.
-   * @return A number of characters required to represent the specified {@code long} value.
+   * @param value The signed non-negative {@code long} value to be converted to a decimal string.
+   * @return A number of characters required to represent the specified positive signed
+   *         {@code long} value.
    */
   private static int getDecCapacity0(long value) {
     if (value < 1000000000L) {
@@ -355,6 +359,45 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
       return value < 100000000000000000L ? value < 10000000000000000L ? 16 : 17 : 18;
     }
     return 19;
+  }
+
+  /**
+   * Returns a number of characters required to represent the specified unsigned {@code int} value
+   * without leading zeros in the hexadecimal system.
+   *
+   * @param value The unsigned {@code int} value to be converted to a hexadecimal string.
+   * @return A number of characters required to represent the specified unsigned {@code int} value.
+   */
+  public static int getHexCapacity(int value) {
+    // low 16 bits
+    if ((value & 0xffff) == value) {
+      if ((value & 0xff) == value) {
+        return (value & 0xf) == value ? 1 : 2;
+      }
+      return (value & 0xfff) == value ? 3 : 4;
+    }
+    // high 16 bits
+    if ((value & 0xffffff) == value) {
+      return (value & 0xfffff) == value ? 5 : 6;
+    }
+    return (value & 0xfffffff) == value ? 7 : 8;
+  }
+
+  /**
+   * Returns a number of characters required to represent the specified unsigned {@code long} value
+   * without leading zeros in the hexadecimal system.
+   *
+   * @param value The unsigned {@code long} value to be converted to a hexadecimal string.
+   * @return A number of characters required to represent the specified unsigned {@code long}
+   *         value.
+   */
+  public static int getHexCapacity(long value) {
+    // low 32 bits
+    if ((value & 0xffffffffL) == value) {
+      return getHexCapacity((int) value);
+    }
+    // high 32 bits
+    return 8 + getHexCapacity((int) (value >>> 32));
   }
 
   public final CharBuffer appendDec(byte value) {
@@ -466,22 +509,19 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
   }
 
   public final CharBuffer appendHexTrimZeros(int value) {
+    int n = getHexCapacity(value);
     // 16 or less bits long?
-    if ((value & 0xffff) == value) {
+    if (n < 5) {
       return appendHexTrimZeros((short) value);
     }
     // less than 32 bits long?
-    if ((value & 0xfffffff) == value) {
+    if (n < 8) {
       // from 20 to 28 bits long
-      for (int n = 20; n < 32; n += 4) {
-        if ((value >>> n) == 0) {
-          ensureCapacity(n / 4);
-          for (n -= 4; n >= 0; n -= 4) {
-            append0(DIGITS[(value >>> n) & 0xf]);
-          }
-          return this;
-        }
+      ensureCapacity(n);
+      for (n = (n - 1) << 2; n >= 0; n -= 4) {
+        append0(DIGITS[(value >>> n) & 0xf]);
       }
+      return this;
     }
     // 32 bits long
     return appendHex(value);
@@ -509,22 +549,19 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
   }
 
   public final CharBuffer appendHexTrimZeros(long value) {
+    int n = getHexCapacity(value);
     // 32 or less bits long?
-    if ((value & 0xffffffffL) == value) {
+    if (n < 9) {
       return appendHexTrimZeros((int) value);
     }
     // less than 64 bits long?
-    if ((value & 0xfffffffffffffffL) == value) {
+    if (n < 16) {
       // from 36 to 60 bits long
-      for (int n = 36; n < 64; n += 4) {
-        if ((value >>> n) == 0L) {
-          ensureCapacity(n / 4);
-          for (n -= 4; n >= 0; n -= 4) {
-            append0(DIGITS[(int) ((value >>> n) & 0xfL)]);
-          }
-          return this;
-        }
+      ensureCapacity(n);
+      for (n = (n - 1) << 2; n >= 0; n -= 4) {
+        append0(DIGITS[(int) ((value >>> n) & 0xfL)]);
       }
+      return this;
     }
     // 64 bits long
     return appendHex(value);
