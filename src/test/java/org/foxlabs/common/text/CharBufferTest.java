@@ -30,6 +30,136 @@ public class CharBufferTest {
   // Number operations
 
   /**
+   * Tests the {@link CharBuffer#getDecCapacity(int)} method.
+   */
+  @Test
+  public void test_getDecCapacity_int() {
+    // @formatter:off
+    assertEquals( 1, CharBuffer.getDecCapacity(          0));
+    assertEquals( 1, CharBuffer.getDecCapacity(          9));
+    assertEquals( 2, CharBuffer.getDecCapacity(         10));
+    assertEquals( 2, CharBuffer.getDecCapacity(         99));
+    assertEquals( 3, CharBuffer.getDecCapacity(        100));
+    assertEquals( 3, CharBuffer.getDecCapacity(        999));
+    assertEquals( 4, CharBuffer.getDecCapacity(       1000));
+    assertEquals( 4, CharBuffer.getDecCapacity(       9999));
+    assertEquals( 5, CharBuffer.getDecCapacity(      10000));
+    assertEquals( 5, CharBuffer.getDecCapacity(      99999));
+    assertEquals( 6, CharBuffer.getDecCapacity(     100000));
+    assertEquals( 6, CharBuffer.getDecCapacity(     999999));
+    assertEquals( 7, CharBuffer.getDecCapacity(    1000000));
+    assertEquals( 7, CharBuffer.getDecCapacity(    9999999));
+    assertEquals( 8, CharBuffer.getDecCapacity(   10000000));
+    assertEquals( 8, CharBuffer.getDecCapacity(   99999999));
+    assertEquals( 9, CharBuffer.getDecCapacity(  100000000));
+    assertEquals( 9, CharBuffer.getDecCapacity(  999999999));
+    assertEquals(10, CharBuffer.getDecCapacity( 1000000000));
+    assertEquals(10, CharBuffer.getDecCapacity( 2147483647));
+    assertEquals(11, CharBuffer.getDecCapacity(-2147483648));
+    assertEquals(11, CharBuffer.getDecCapacity(-1000000000));
+    assertEquals(10, CharBuffer.getDecCapacity( -999999999));
+    assertEquals(10, CharBuffer.getDecCapacity( -100000000));
+    assertEquals( 9, CharBuffer.getDecCapacity(  -99999999));
+    assertEquals( 9, CharBuffer.getDecCapacity(  -10000000));
+    assertEquals( 8, CharBuffer.getDecCapacity(   -9999999));
+    assertEquals( 8, CharBuffer.getDecCapacity(   -1000000));
+    assertEquals( 7, CharBuffer.getDecCapacity(    -999999));
+    assertEquals( 7, CharBuffer.getDecCapacity(    -100000));
+    assertEquals( 6, CharBuffer.getDecCapacity(     -99999));
+    assertEquals( 6, CharBuffer.getDecCapacity(     -10000));
+    assertEquals( 5, CharBuffer.getDecCapacity(      -9999));
+    assertEquals( 5, CharBuffer.getDecCapacity(      -1000));
+    assertEquals( 4, CharBuffer.getDecCapacity(       -999));
+    assertEquals( 4, CharBuffer.getDecCapacity(       -100));
+    assertEquals( 3, CharBuffer.getDecCapacity(        -99));
+    assertEquals( 3, CharBuffer.getDecCapacity(        -10));
+    assertEquals( 2, CharBuffer.getDecCapacity(         -9));
+  }
+
+  /**
+   * Tests the {@link CharBuffer#getDecCapacity(long)} method.
+   */
+  @Test
+  public void test_getDecCapacity_long() {
+    // @formatter:off
+    assertEquals( 1, CharBuffer.getDecCapacity(                   0L));
+    assertEquals( 1, CharBuffer.getDecCapacity(                   9L));
+    assertEquals( 2, CharBuffer.getDecCapacity(                  10L));
+    assertEquals( 2, CharBuffer.getDecCapacity(                  99L));
+    assertEquals( 3, CharBuffer.getDecCapacity(                 100L));
+    assertEquals( 3, CharBuffer.getDecCapacity(                 999L));
+    assertEquals( 4, CharBuffer.getDecCapacity(                1000L));
+    assertEquals( 4, CharBuffer.getDecCapacity(                9999L));
+    assertEquals( 5, CharBuffer.getDecCapacity(               10000L));
+    assertEquals( 5, CharBuffer.getDecCapacity(               99999L));
+    assertEquals( 6, CharBuffer.getDecCapacity(              100000L));
+    assertEquals( 6, CharBuffer.getDecCapacity(              999999L));
+    assertEquals( 7, CharBuffer.getDecCapacity(             1000000L));
+    assertEquals( 7, CharBuffer.getDecCapacity(             9999999L));
+    assertEquals( 8, CharBuffer.getDecCapacity(            10000000L));
+    assertEquals( 8, CharBuffer.getDecCapacity(            99999999L));
+    assertEquals( 9, CharBuffer.getDecCapacity(           100000000L));
+    assertEquals( 9, CharBuffer.getDecCapacity(           999999999L));
+    assertEquals(10, CharBuffer.getDecCapacity(          1000000000L));
+    assertEquals(10, CharBuffer.getDecCapacity(          9999999999L));
+    assertEquals(11, CharBuffer.getDecCapacity(         10000000000L));
+    assertEquals(11, CharBuffer.getDecCapacity(         99999999999L));
+    assertEquals(12, CharBuffer.getDecCapacity(        100000000000L));
+    assertEquals(12, CharBuffer.getDecCapacity(        999999999999L));
+    assertEquals(13, CharBuffer.getDecCapacity(       1000000000000L));
+    assertEquals(13, CharBuffer.getDecCapacity(       9999999999999L));
+    assertEquals(14, CharBuffer.getDecCapacity(      10000000000000L));
+    assertEquals(14, CharBuffer.getDecCapacity(      99999999999999L));
+    assertEquals(15, CharBuffer.getDecCapacity(     100000000000000L));
+    assertEquals(15, CharBuffer.getDecCapacity(     999999999999999L));
+    assertEquals(16, CharBuffer.getDecCapacity(    1000000000000000L));
+    assertEquals(16, CharBuffer.getDecCapacity(    9999999999999999L));
+    assertEquals(17, CharBuffer.getDecCapacity(   10000000000000000L));
+    assertEquals(17, CharBuffer.getDecCapacity(   99999999999999999L));
+    assertEquals(18, CharBuffer.getDecCapacity(  100000000000000000L));
+    assertEquals(18, CharBuffer.getDecCapacity(  999999999999999999L));
+    assertEquals(19, CharBuffer.getDecCapacity( 1000000000000000000L));
+    assertEquals(19, CharBuffer.getDecCapacity( 9223372036854775807L));
+    assertEquals(20, CharBuffer.getDecCapacity(-9223372036854775808L));
+    assertEquals(20, CharBuffer.getDecCapacity(-1000000000000000000L));
+    assertEquals(19, CharBuffer.getDecCapacity( -999999999999999999L));
+    assertEquals(19, CharBuffer.getDecCapacity( -100000000000000000L));
+    assertEquals(18, CharBuffer.getDecCapacity(  -99999999999999999L));
+    assertEquals(18, CharBuffer.getDecCapacity(  -10000000000000000L));
+    assertEquals(17, CharBuffer.getDecCapacity(   -9999999999999999L));
+    assertEquals(17, CharBuffer.getDecCapacity(   -1000000000000000L));
+    assertEquals(16, CharBuffer.getDecCapacity(    -999999999999999L));
+    assertEquals(16, CharBuffer.getDecCapacity(    -100000000000000L));
+    assertEquals(15, CharBuffer.getDecCapacity(     -99999999999999L));
+    assertEquals(15, CharBuffer.getDecCapacity(     -10000000000000L));
+    assertEquals(14, CharBuffer.getDecCapacity(      -9999999999999L));
+    assertEquals(14, CharBuffer.getDecCapacity(      -1000000000000L));
+    assertEquals(13, CharBuffer.getDecCapacity(       -999999999999L));
+    assertEquals(13, CharBuffer.getDecCapacity(       -100000000000L));
+    assertEquals(12, CharBuffer.getDecCapacity(        -99999999999L));
+    assertEquals(12, CharBuffer.getDecCapacity(        -10000000000L));
+    assertEquals(11, CharBuffer.getDecCapacity(         -9999999999L));
+    assertEquals(11, CharBuffer.getDecCapacity(         -1000000000L));
+    assertEquals(10, CharBuffer.getDecCapacity(          -999999999L));
+    assertEquals(10, CharBuffer.getDecCapacity(          -100000000L));
+    assertEquals( 9, CharBuffer.getDecCapacity(           -99999999L));
+    assertEquals( 9, CharBuffer.getDecCapacity(           -10000000L));
+    assertEquals( 8, CharBuffer.getDecCapacity(            -9999999L));
+    assertEquals( 8, CharBuffer.getDecCapacity(            -1000000L));
+    assertEquals( 7, CharBuffer.getDecCapacity(             -999999L));
+    assertEquals( 7, CharBuffer.getDecCapacity(             -100000L));
+    assertEquals( 6, CharBuffer.getDecCapacity(              -99999L));
+    assertEquals( 6, CharBuffer.getDecCapacity(              -10000L));
+    assertEquals( 5, CharBuffer.getDecCapacity(               -9999L));
+    assertEquals( 5, CharBuffer.getDecCapacity(               -1000L));
+    assertEquals( 4, CharBuffer.getDecCapacity(                -999L));
+    assertEquals( 4, CharBuffer.getDecCapacity(                -100L));
+    assertEquals( 3, CharBuffer.getDecCapacity(                 -99L));
+    assertEquals( 3, CharBuffer.getDecCapacity(                 -10L));
+    assertEquals( 2, CharBuffer.getDecCapacity(                  -9L));
+  }
+
+  /**
    * Tests the {@link CharBuffer#appendDec(byte)} method.
    */
   @Test
@@ -147,6 +277,8 @@ public class CharBufferTest {
     assertEquals(           "100000000", new CharBuffer().appendDec(           100000000L).toString());
     assertEquals(           "999999999", new CharBuffer().appendDec(           999999999L).toString());
     assertEquals(          "1000000000", new CharBuffer().appendDec(          1000000000L).toString());
+    assertEquals(          "9999999999", new CharBuffer().appendDec(          9999999999L).toString());
+    assertEquals(         "10000000000", new CharBuffer().appendDec(         10000000000L).toString());
     assertEquals(         "99999999999", new CharBuffer().appendDec(         99999999999L).toString());
     assertEquals(        "100000000000", new CharBuffer().appendDec(        100000000000L).toString());
     assertEquals(        "999999999999", new CharBuffer().appendDec(        999999999999L).toString());

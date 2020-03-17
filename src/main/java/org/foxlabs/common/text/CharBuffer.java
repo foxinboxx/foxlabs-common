@@ -29,7 +29,7 @@ import org.foxlabs.common.exception.ThresholdReachedException;
 import static org.foxlabs.common.Predicates.*;
 import static org.foxlabs.common.Predicates.ExceptionProvider.*;
 
-public class CharBuffer implements CharSequence, GetChars {
+public class CharBuffer implements Appendable, CharSequence, GetChars {
 
   // Public constants
 
@@ -145,6 +145,7 @@ public class CharBuffer implements CharSequence, GetChars {
 
   // Core operations
 
+  @Override
   public final CharBuffer append(char value) {
     ensureCapacity(1);
     nextSlot()[length++ % depth] = value;
@@ -175,6 +176,7 @@ public class CharBuffer implements CharSequence, GetChars {
     return appendSafe(GetChars.of(values), start, end);
   }
 
+  @Override
   public final CharBuffer append(CharSequence sequence) {
     return appendSafe(GetChars.of(sequence), 0, sequence.length());
   }
@@ -185,6 +187,7 @@ public class CharBuffer implements CharSequence, GetChars {
     return appendSafe(GetChars.of(sequence), start, length);
   }
 
+  @Override
   public final CharBuffer append(CharSequence sequence, int start, int end) {
     require(requireNonNull(sequence), checkCharSequenceRange(start, end), ofIOOB(start, end));
     return appendSafe(GetChars.of(sequence), start, sequence.length());
@@ -287,6 +290,19 @@ public class CharBuffer implements CharSequence, GetChars {
 
   /**
    * Returns a number of characters required to represent the specified {@code int} value.
+   *
+   * @param value The {@code int} value.
+   * @return A number of characters required to represent the specified {@code int} value.
+   */
+  public static int getDecCapacity(int value) {
+    if (value != Integer.MIN_VALUE) {
+      return (value >>> 31) + getDecCapacity0(value < 0 ? -value : value);
+    }
+    return MIN_INT_DIGITS.length;
+  }
+
+  /**
+   * Returns a number of characters required to represent the specified {@code int} value.
    * Note that the specified value must not be negative.
    *
    * @param value The non-negative {@code int} value.
@@ -303,6 +319,19 @@ public class CharBuffer implements CharSequence, GetChars {
       return value < 100000000 ? value < 10000000 ? 7 : 8 : 9;
     }
     return 10;
+  }
+
+  /**
+   * Returns a number of characters required to represent the specified {@code long} value.
+   *
+   * @param value The {@code long} value.
+   * @return A number of characters required to represent the specified {@code long} value.
+   */
+  public static int getDecCapacity(long value) {
+    if (value != Long.MIN_VALUE) {
+      return (int) (value >>> 63) + getDecCapacity0(value < 0L ? -value : value);
+    }
+    return MIN_LONG_DIGITS.length;
   }
 
   /**
