@@ -87,11 +87,6 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
 
   private int length;
 
-  /**
-   * The objects cross-reference map to detect circular references.
-   */
-  private IdentityHashMap<Object, char[]> crossrefs;
-
   public CharBuffer() {
     this(MAX_THRESHOLD, MIN_DEPTH);
   }
@@ -509,11 +504,11 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
   }
 
   public final CharBuffer appendHexTrimZeros(int value) {
-    int n = getHexCapacity(value);
     // 16 or less bits long?
-    if (n < 5) {
+    if ((value & 0xffff) == value) {
       return appendHexTrimZeros((short) value);
     }
+    int n = getHexCapacity(value);
     // less than 32 bits long?
     if (n < 8) {
       // from 20 to 28 bits long
@@ -549,11 +544,11 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
   }
 
   public final CharBuffer appendHexTrimZeros(long value) {
-    int n = getHexCapacity(value);
     // 32 or less bits long?
-    if (n < 9) {
+    if ((value & 0xffffffffL) == value) {
       return appendHexTrimZeros((int) value);
     }
+    int n = getHexCapacity(value);
     // less than 64 bits long?
     if (n < 16) {
       // from 36 to 60 bits long
@@ -567,6 +562,12 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
     return appendHex(value);
   }
 
+  /**
+   * Appends the {@code '-'} sign to the buffer if the specified sign flag is not {@code 0}.
+   *
+   * @param sign The sign flag ({@code 0} means zero or positive number; negative number
+   *        otherwise).
+   */
   private final void appendSign(int sign) {
     if (sign != 0) {
       append0('-');
@@ -589,6 +590,11 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
    * The string representation of the {@code false} constant.
    */
   private static final char[] FALSE_CONSTANT = {'f', 'a', 'l', 's', 'e'};
+
+  /**
+   * The objects cross-reference map to detect circular references.
+   */
+  private IdentityHashMap<Object, CharBuffer> crossrefs;
 
   /**
    * Appends string representation of the {@code null} reference to the buffer.
@@ -1168,15 +1174,12 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
       crossrefs = new IdentityHashMap<>();
     }
     if (crossrefs.containsKey(object)) {
-      char[] crossref = crossrefs.get(object);
+      CharBuffer crossref = crossrefs.get(object);
       if (crossref == null) {
         final String classname = object.getClass().getName();
-        final String hashcode = Integer.toHexString(System.identityHashCode(object));
-        crossrefs.put(object, crossref = new char[classname.length() + hashcode.length() + 2]);
-        classname.getChars(0, classname.length(), crossref, 1);
-        hashcode.getChars(0, hashcode.length(), crossref, classname.length() + 2);
-        crossref[classname.length() + 1] = '@';
-        crossref[0] = '!';
+        crossref = new CharBuffer(classname.length() + 10);
+        crossref.append0('!').append(classname);
+        crossref.append0('@').appendHex(System.identityHashCode(object));
       }
       append(crossref);
       return true;
