@@ -242,6 +242,73 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
 
   // Advanced operations
 
+  /**
+   * An array of space sequences ({@code '\u0020'}) ranging from 4 to 16 in length, used by the
+   * {@link #appendIdent(int)} method.
+   */
+  private static final char[][] SPACES = {
+      {' ', ' ', ' ', ' '}, // 4
+      {' ', ' ', ' ', ' ', ' '}, // 5
+      {' ', ' ', ' ', ' ', ' ', ' '}, // 6
+      {' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 7
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 8
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 9
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 10
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 11
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 12
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 13
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 14
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 15
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 16
+  };
+
+  /**
+   * Appends an indentation of the specified length to the buffer using the {@code '\u0020'} space
+   * character.
+   *
+   * @param length The number of {@code '\u0020'} space characters to append.
+   * @throws IllegalArgumentException if the specified length is negative.
+   * @see #appendIndent(int, char)
+   */
+  public CharBuffer appendIndent(int length) {
+    if (require(length, INT_POSITIVE_OR_ZERO) > 0) {
+      ensureCapacity(length);
+      do {
+        if (length < 4) { // could be a bit faster
+          for (; length > 0; length--) {
+            append0(' ');
+          }
+        } else {
+          final char[] spaces = SPACES[Math.min(length, SPACES.length) - 4];
+          length -= spaces.length;
+          append(spaces);
+        }
+      } while (length > 0);
+    }
+    return this;
+  }
+
+  /**
+   * Appends an indentation of the specified length to the buffer using the specified character.
+   *
+   * @param length The number of indentation characters to append.
+   * @param ch The indentation character.
+   * @throws IllegalArgumentException if the specified length is negative.
+   * @see #appendIndent(int)
+   */
+  public CharBuffer appendIndent(int length, char ch) {
+    if (ch == ' ') { // who knows
+      return appendIndent(length);
+    }
+    if (require(length, INT_POSITIVE_OR_ZERO) > 0) {
+      ensureCapacity(length);
+      for (; length > 0; length--) {
+        append0(ch);
+      }
+    }
+    return this;
+  }
+
   // Number to string representation
 
   /**
@@ -289,6 +356,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
    *
    * @param value The signed {@code int} value to be converted to a decimal string.
    * @return A number of characters required to represent the specified signed {@code int} value.
+   * @see #appendDec(byte)
+   * @see #appendDec(short)
+   * @see #appendDec(int)
    */
   public static int getDecCapacity(int value) {
     if (value != Integer.MIN_VALUE) {
@@ -324,6 +394,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
    *
    * @param value The signed {@code long} value to be converted to a decimal string.
    * @return A number of characters required to represent the specified signed {@code long} value.
+   * @see #appendDec(long)
    */
   public static int getDecCapacity(long value) {
     if (value != Long.MIN_VALUE) {
@@ -362,6 +433,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
    *
    * @param value The unsigned {@code int} value to be converted to a hexadecimal string.
    * @return A number of characters required to represent the specified unsigned {@code int} value.
+   * @see #appendHexTrimZeros(byte)
+   * @see #appendHexTrimZeros(short)
+   * @see #appendHexTrimZeros(int)
    */
   public static int getHexCapacity(int value) {
     // low 16 bits
@@ -383,8 +457,8 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
    * without leading zeros in the hexadecimal system.
    *
    * @param value The unsigned {@code long} value to be converted to a hexadecimal string.
-   * @return A number of characters required to represent the specified unsigned {@code long}
-   *         value.
+   * @return A number of characters required to represent the specified unsigned {@code long} value.
+   * @see #appendHexTrimZeros(long)
    */
   public static int getHexCapacity(long value) {
     // low 32 bits
@@ -565,8 +639,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
   /**
    * Appends the {@code '-'} sign to the buffer if the specified sign flag is not {@code 0}.
    *
-   * @param sign The sign flag ({@code 0} means zero or positive number; negative number
-   *        otherwise).
+   * @param sign The sign flag ({@code 0} for zero or positive number; negative number otherwise).
    */
   private final void appendSign(int sign) {
     if (sign != 0) {
