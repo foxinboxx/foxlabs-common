@@ -50,7 +50,7 @@ public class CharEncoderTest {
     assertEquals("\\u1000u1000", UCODE.encode(0x10001000, new CharBuffer()).toString());
     assertEquals("\\u0001u0001", UCODE.encode(0x00010001, new CharBuffer()).toString());
     assertEquals("\\u1234u5678", UCODE.encode(0x12345678, new CharBuffer()).toString());
-    assertEquals("\\u9ABCuDEF0", UCODE.encode(0x9abcdef0, new CharBuffer()).toString());
+    assertEquals("\\u9abcudef0", UCODE.encode(0x9abcdef0, new CharBuffer()).toString());
   }
 
   /**
@@ -68,9 +68,9 @@ public class CharEncoderTest {
     assertEquals("\\f", JAVA.encode('\f', new CharBuffer()).toString());
     assertEquals("\\b", JAVA.encode('\b', new CharBuffer()).toString());
     assertEquals("\\u0000", JAVA.encode(0x0000, new CharBuffer()).toString());
-    assertEquals("\\u001F", JAVA.encode(0x001f, new CharBuffer()).toString());
-    assertEquals("\\u007F", JAVA.encode(0x007f, new CharBuffer()).toString());
-    assertEquals("\\u009F", JAVA.encode(0x009f, new CharBuffer()).toString());
+    assertEquals("\\u001f", JAVA.encode(0x001f, new CharBuffer()).toString());
+    assertEquals("\\u007f", JAVA.encode(0x007f, new CharBuffer()).toString());
+    assertEquals("\\u009f", JAVA.encode(0x009f, new CharBuffer()).toString());
   }
 
 }
