@@ -77,7 +77,7 @@ public class CharBufferTest {
    * Tests the {@link CharBuffer#appendIdent(int, char)} method.
    */
   @Test
-  public void test_appendIdent_char() {
+  public void test_appendIdent_int_char() {
     assertThrows(IllegalArgumentException.class, () -> new CharBuffer().appendIndent(-1, '_'));
     assertEquals("", new CharBuffer().appendIndent(0, '0').toString());
     assertEquals("1", new CharBuffer().appendIndent(1, '1').toString());
@@ -115,6 +115,43 @@ public class CharBufferTest {
     assertEquals("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", new CharBuffer().appendIndent(33, 'x').toString());
     assertEquals("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", new CharBuffer().appendIndent(34, 'y').toString());
     assertEquals("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", new CharBuffer().appendIndent(35, 'z').toString());
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendIdent(int, int)} method.
+   */
+  @Test
+  public void test_appendIdent_int_int() {
+    final int ch = 0x2070e;
+    // @formatter:off
+    assertThrows(IllegalArgumentException.class, () -> new CharBuffer().appendIndent(-1, ch));
+    assertEquals( 0, new CharBuffer().appendIndent( 0, ch).length());
+    assertEquals( 2, new CharBuffer().appendIndent( 1, ch).length());
+    assertEquals( 4, new CharBuffer().appendIndent( 2, ch).length());
+    assertEquals( 6, new CharBuffer().appendIndent( 3, ch).length());
+    assertEquals( 8, new CharBuffer().appendIndent( 4, ch).length());
+    assertEquals(10, new CharBuffer().appendIndent( 5, ch).length());
+    assertEquals(12, new CharBuffer().appendIndent( 6, ch).length());
+    assertEquals(14, new CharBuffer().appendIndent( 7, ch).length());
+    assertEquals(16, new CharBuffer().appendIndent( 8, ch).length());
+    assertEquals(18, new CharBuffer().appendIndent( 9, ch).length());
+    assertEquals(20, new CharBuffer().appendIndent(10, ch).length());
+    assertEquals(22, new CharBuffer().appendIndent(11, ch).length());
+    assertEquals(24, new CharBuffer().appendIndent(12, ch).length());
+    assertEquals(26, new CharBuffer().appendIndent(13, ch).length());
+    assertEquals(28, new CharBuffer().appendIndent(14, ch).length());
+    assertEquals(30, new CharBuffer().appendIndent(15, ch).length());
+    assertEquals(32, new CharBuffer().appendIndent(16, ch).length());
+    assertEquals(34, new CharBuffer().appendIndent(17, ch).length());
+    assertEquals(36, new CharBuffer().appendIndent(18, ch).length());
+    assertEquals(38, new CharBuffer().appendIndent(19, ch).length());
+    assertEquals(40, new CharBuffer().appendIndent(20, ch).length());
+    assertEquals(42, new CharBuffer().appendIndent(21, ch).length());
+    assertEquals(44, new CharBuffer().appendIndent(22, ch).length());
+    assertEquals(46, new CharBuffer().appendIndent(23, ch).length());
+    assertEquals(48, new CharBuffer().appendIndent(24, ch).length());
+    assertEquals(50, new CharBuffer().appendIndent(25, ch).length());
+    // @formatter:on
   }
 
   // Number operations

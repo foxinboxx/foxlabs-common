@@ -29,7 +29,7 @@ import org.foxlabs.common.exception.ThresholdReachedException;
 import static org.foxlabs.common.Predicates.*;
 import static org.foxlabs.common.Predicates.ExceptionProvider.*;
 
-public class CharBuffer implements Appendable, CharSequence, GetChars {
+public class CharBuffer implements Appendable, CharSequence, GetChars, ToString {
 
   public static final int MAX_THRESHOLD = Integer.MAX_VALUE;
 
@@ -119,55 +119,55 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
   }
 
   public final CharBuffer append(char... values) {
-    return appendSafe(GetChars.of(values), 0, values.length);
+    return appendSafe(GetChars.from(values), 0, values.length);
   }
 
   public final CharBuffer append(char[] values, int start) {
     final int length = values.length; // NPE check as well
     require(values, checkCharArrayRange(start), ofIOOB(start, length));
-    return appendSafe(GetChars.of(values), start, length);
+    return appendSafe(GetChars.from(values), start, length);
   }
 
   public final CharBuffer append(char[] values, int start, int end) {
     require(requireNonNull(values), checkCharArrayRange(start, end), ofIOOB(start, end));
-    return appendSafe(GetChars.of(values), start, end);
+    return appendSafe(GetChars.from(values), start, end);
   }
 
   @Override
   public final CharBuffer append(CharSequence sequence) {
-    return appendSafe(GetChars.of(sequence), 0, sequence.length());
+    return appendSafe(GetChars.from(sequence), 0, sequence.length());
   }
 
   public final CharBuffer append(CharSequence sequence, int start) {
     final int length = sequence.length(); // NPE check as well
     require(sequence, checkCharSequenceRange(start), ofIOOB(start, length));
-    return appendSafe(GetChars.of(sequence), start, length);
+    return appendSafe(GetChars.from(sequence), start, length);
   }
 
   @Override
   public final CharBuffer append(CharSequence sequence, int start, int end) {
     require(requireNonNull(sequence), checkCharSequenceRange(start, end), ofIOOB(start, end));
-    return appendSafe(GetChars.of(sequence), start, sequence.length());
+    return appendSafe(GetChars.from(sequence), start, sequence.length());
   }
 
   protected final CharBuffer append0(char ch) {
     return append(ch); // FIXME!!!
   }
 
-  protected final CharBuffer appendSafe(GetChars sequence, int from, int to) {
+  protected final CharBuffer appendSafe(GetChars sequence, int start, int end) {
     // calculate the number of characters to append
-    int count = to - from;
+    int count = end - start;
     if (count > 0) { // fast check
       for (count = ensureCapacity(count); count > 0;) {
         // copy part of the characters to the current slot
         final int offset = length % depth;
         final int remainder = Math.min(depth - offset, count);
-        sequence.getChars(from, from + remainder, nextSlot(), offset);
+        sequence.getChars(start, start + remainder, nextSlot(), offset);
         length += remainder;
-        from += remainder;
+        start += remainder;
         count -= remainder;
       }
-      if (from < to) {
+      if (start < end) {
         // Not all the characters have been appended
         throw new ThresholdReachedException(this);
       }
@@ -266,6 +266,31 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
       ensureCapacity(length);
       for (; length > 0; length--) {
         append0(ch);
+      }
+    }
+    return this;
+  }
+
+  /**
+   * Does the same as the {@link #appendIndent(int, char)} but uses the specified character Unicode
+   * code point. Note that this method does not validate the specified character to be a valid
+   * Unicode code point.
+   *
+   * @param length The number of indentation characters to append.
+   * @param ch The Unicode code point of indentation character.
+   * @throws IllegalArgumentException if the specified length is negative.
+   * @see #appendIndent(int, char)
+   */
+  public CharBuffer appendIndent(int length, int ch) {
+    if (Character.isBmpCodePoint(ch)) {
+      return appendIndent(length, (char) ch);
+    }
+    if (require(length, INT_POSITIVE_OR_ZERO) > 0) {
+      ensureCapacity(length * 2);
+      final char high = Character.highSurrogate(ch);
+      final char low = Character.lowSurrogate(ch);
+      for (; length > 0; length--) {
+        append0(high).append0(low);
       }
     }
     return this;
@@ -1248,26 +1273,32 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
   }
 
   @Override
-  public CharSequence subSequence(int from, int to) {
-    return substring(from, to);
+  public CharSequence subSequence(int start, int end) {
+    return substring(start, end);
   }
 
-  public String substring(int from) {
-    return substring(from, length);
+  public String substring(int start) {
+    return substring(start, length);
   }
 
-  public String substring(int from, int to) {
-    require(this, checkCharSequenceRange(from, to), ofIOOB(from, to));
-    final char[] value = new char[to - from];
-    copyChars(from, to, value, 0);
+  public String substring(int start, int end) {
+    require(this, checkCharSequenceRange(start, end), ofIOOB(start, end));
+    final char[] value = new char[end - start];
+    copyChars(start, end, value, 0);
     return new String(value);
   }
 
   @Override
-  public void getChars(int from, int to, char[] array, int index) {
-    require(this, checkCharSequenceRange(from, to), ofIOOB(from, to));
+  public void getChars(int start, int end, char[] array, int index) {
+    require(this, checkCharSequenceRange(start, end), ofIOOB(start, end));
     require(array, checkCharArrayIndex(index), ofIOOB(index));
-    copyChars(from, to, array, index);
+    copyChars(start, end, array, index);
+  }
+
+  @Override
+  public CharBuffer toString(CharBuffer buffer) {
+    // TODO
+    return buffer;
   }
 
   @Override
@@ -1280,12 +1311,12 @@ public class CharBuffer implements Appendable, CharSequence, GetChars {
     return "";
   }
 
-  protected final void copyChars(int from, int to, char[] target, int offset) {
-    while (from < to) {
-      final int index = from % depth;
-      final int remainder = Math.min(depth - index, to - from);
-      System.arraycopy(buffer[from / depth], index, target, offset, remainder);
-      from += remainder;
+  protected final void copyChars(int start, int end, char[] target, int offset) {
+    while (start < end) {
+      final int index = start % depth;
+      final int remainder = Math.min(depth - index, end - start);
+      System.arraycopy(buffer[start / depth], index, target, offset, remainder);
+      start += remainder;
       offset += remainder;
     }
   }

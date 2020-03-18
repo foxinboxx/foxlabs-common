@@ -23,41 +23,41 @@ package org.foxlabs.common.function;
 @FunctionalInterface
 public interface GetChars {
 
-  void getChars(int from, int to, char[] target, int index);
+  void getChars(int start, int end, char[] target, int index);
 
-  static GetChars of(char... source) {
-    return (from, to, target, index) -> System.arraycopy(source, from, target, index, to - from);
+  static GetChars from(char... source) {
+    return (start, end, target, index) -> System.arraycopy(source, start, target, index, end - start);
   }
 
-  static GetChars of(String source) {
-    return (from, to, target, index) -> source.getChars(from, to, target, index);
+  static GetChars from(String source) {
+    return (start, end, target, index) -> source.getChars(start, end, target, index);
   }
 
-  static GetChars of(StringBuilder source) {
-    return (from, to, target, index) -> source.getChars(from, to, target, index);
+  static GetChars from(StringBuilder source) {
+    return (start, end, target, index) -> source.getChars(start, end, target, index);
   }
 
-  static GetChars of(StringBuffer source) {
-    return (from, to, target, index) -> source.getChars(from, to, target, index);
+  static GetChars from(StringBuffer source) {
+    return (start, end, target, index) -> source.getChars(start, end, target, index);
   }
 
-  static GetChars of(CharSequence source) {
+  static GetChars from(CharSequence source) {
     // check known char sequences
     if (source instanceof GetChars) {
       return (GetChars) source;
     }
     if (source instanceof String) {
-      return of((String) source);
+      return from((String) source);
     }
     if (source instanceof StringBuilder) {
-      return of((StringBuilder) source);
+      return from((StringBuilder) source);
     }
     if (source instanceof StringBuffer) {
-      return of((StringBuffer) source);
+      return from((StringBuffer) source);
     }
     // unknown char sequence, copy char by char
-    return (from, to, target, index) -> {
-      while (from < to) target[index++] = source.charAt(from++);
+    return (start, end, target, index) -> {
+      while (start < end) target[index++] = source.charAt(start++);
     };
   }
 

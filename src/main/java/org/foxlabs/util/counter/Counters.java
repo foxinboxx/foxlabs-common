@@ -1555,7 +1555,7 @@ public abstract class Counters {
 
       boolean appended = false;
       if (days > 0L) {
-        buf.appendLong(days).append(':');
+        buf.appendDec(days).append(':');
         appended = true;
       }
       if (appended || hours > 0L) {
@@ -1569,13 +1569,13 @@ public abstract class Counters {
         if (minutes < 10L) {
           buf.append('0');
         }
-        buf.appendLong(minutes).append(':');
+        buf.appendDec(minutes).append(':');
         appended = true;
       }
       if (appended && seconds < 10L) {
         buf.append('0');
       }
-      buf.appendLong(seconds).append('.');
+      buf.appendDec(seconds).append('.');
       if (millis < 100L) {
         buf.append('0');
       }

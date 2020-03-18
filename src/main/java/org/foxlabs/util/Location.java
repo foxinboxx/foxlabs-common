@@ -146,10 +146,10 @@ public final class Location extends ToString.Adapter implements Comparable<Locat
             if (file != null) {
                 buffer.append(':');
             }
-            buffer.appendInt(line);
+            buffer.appendDec(line);
             if (column > 0) {
                 buffer.append(':');
-                buffer.appendInt(column);
+                buffer.appendDec(column);
             }
         } else if (file == null) {
             buffer.append("unknown");

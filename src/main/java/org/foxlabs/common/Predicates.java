@@ -480,104 +480,104 @@ public final class Predicates {
 
   // Range predicates
 
-  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
-  public static Predicate<byte[]> checkByteArrayRange(int from) {
-    return (a) -> a == null || from >= 0 && from <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= a.length} */
+  public static Predicate<byte[]> checkByteArrayRange(int start) {
+    return (a) -> a == null || start >= 0 && start <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
-  public static Predicate<byte[]> checkByteArrayRange(int from, int to) {
-    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= end && end <= a.length} */
+  public static Predicate<byte[]> checkByteArrayRange(int start, int end) {
+    return (a) -> a == null || start >= 0 && start <= end && end <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
-  public static Predicate<short[]> checkShortArrayRange(int from) {
-    return (a) -> a == null || from >= 0 && from <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= a.length} */
+  public static Predicate<short[]> checkShortArrayRange(int start) {
+    return (a) -> a == null || start >= 0 && start <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
-  public static Predicate<short[]> checkShortArrayRange(int from, int to) {
-    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= end && end <= a.length} */
+  public static Predicate<short[]> checkShortArrayRange(int start, int end) {
+    return (a) -> a == null || start >= 0 && start <= end && end <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
-  public static Predicate<int[]> checkIntArrayRange(int from) {
-    return (a) -> a == null || from >= 0 && from <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= a.length} */
+  public static Predicate<int[]> checkIntArrayRange(int start) {
+    return (a) -> a == null || start >= 0 && start <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
-  public static Predicate<int[]> checkIntArrayRange(int from, int to) {
-    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= end && end <= a.length} */
+  public static Predicate<int[]> checkIntArrayRange(int start, int end) {
+    return (a) -> a == null || start >= 0 && start <= end && end <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
-  public static Predicate<long[]> checkLongArrayRange(int from) {
-    return (a) -> a == null || from >= 0 && from <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= a.length} */
+  public static Predicate<long[]> checkLongArrayRange(int start) {
+    return (a) -> a == null || start >= 0 && start <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
-  public static Predicate<long[]> checkLongArrayRange(int from, int to) {
-    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= end && end <= a.length} */
+  public static Predicate<long[]> checkLongArrayRange(int start, int end) {
+    return (a) -> a == null || start >= 0 && start <= end && end <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
-  public static Predicate<float[]> checkFloatArrayRange(int from) {
-    return (a) -> a == null || from >= 0 && from <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= a.length} */
+  public static Predicate<float[]> checkFloatArrayRange(int start) {
+    return (a) -> a == null || start >= 0 && start <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
-  public static Predicate<float[]> checkFloatArrayRange(int from, int to) {
-    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= end && end <= a.length} */
+  public static Predicate<float[]> checkFloatArrayRange(int start, int end) {
+    return (a) -> a == null || start >= 0 && start <= end && end <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
-  public static Predicate<double[]> checkDoubleArrayRange(int from) {
-    return (a) -> a == null || from >= 0 && from <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= a.length} */
+  public static Predicate<double[]> checkDoubleArrayRange(int start) {
+    return (a) -> a == null || start >= 0 && start <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
-  public static Predicate<double[]> checkDoubleArrayRange(int from, int to) {
-    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= end && end <= a.length} */
+  public static Predicate<double[]> checkDoubleArrayRange(int start, int end) {
+    return (a) -> a == null || start >= 0 && start <= end && end <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
-  public static Predicate<char[]> checkCharArrayRange(int from) {
-    return (a) -> a == null || from >= 0 && from <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= a.length} */
+  public static Predicate<char[]> checkCharArrayRange(int start) {
+    return (a) -> a == null || start >= 0 && start <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
-  public static Predicate<char[]> checkCharArrayRange(int from, int to) {
-    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= end && end <= a.length} */
+  public static Predicate<char[]> checkCharArrayRange(int start, int end) {
+    return (a) -> a == null || start >= 0 && start <= end && end <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
-  public static Predicate<boolean[]> checkBooleanArrayRange(int from) {
-    return (a) -> a == null || from >= 0 && from <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= a.length} */
+  public static Predicate<boolean[]> checkBooleanArrayRange(int start) {
+    return (a) -> a == null || start >= 0 && start <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
-  public static Predicate<boolean[]> checkBooleanArrayRange(int from, int to) {
-    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= end && end <= a.length} */
+  public static Predicate<boolean[]> checkBooleanArrayRange(int start, int end) {
+    return (a) -> a == null || start >= 0 && start <= end && end <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= a.length} */
-  public static <T> Predicate<T[]> checkObjectArrayRange(int from) {
-    return (a) -> a == null || from >= 0 && from <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= a.length} */
+  public static <T> Predicate<T[]> checkObjectArrayRange(int start) {
+    return (a) -> a == null || start >= 0 && start <= a.length;
   }
 
-  /** {@code (a) -> a == null || from >= 0 && from <= to && to <= a.length} */
-  public static <T> Predicate<T[]> checkObjectArrayRange(int from, int to) {
-    return (a) -> a == null || from >= 0 && from <= to && to <= a.length;
+  /** {@code (a) -> a == null || start >= 0 && start <= end && end <= a.length} */
+  public static <T> Predicate<T[]> checkObjectArrayRange(int start, int end) {
+    return (a) -> a == null || start >= 0 && start <= end && end <= a.length;
   }
 
-  /** {@code (s) -> s == null || from >= 0 && from <= s.length()} */
-  public static Predicate<CharSequence> checkCharSequenceRange(int from) {
-    return (s) -> s == null || from >= 0 && from <= s.length();
+  /** {@code (s) -> s == null || start >= 0 && start <= s.length()} */
+  public static Predicate<CharSequence> checkCharSequenceRange(int start) {
+    return (s) -> s == null || start >= 0 && start <= s.length();
   }
 
-  /** (s) -> s == null || from >= 0 && from <= to && to <= s.length()} */
-  public static Predicate<CharSequence> checkCharSequenceRange(int from, int to) {
-    return (s) -> s == null || from >= 0 && from <= to && to <= s.length();
+  /** (s) -> s == null || start >= 0 && start <= end && end <= s.length()} */
+  public static Predicate<CharSequence> checkCharSequenceRange(int start, int end) {
+    return (s) -> s == null || start >= 0 && start <= end && end <= s.length();
   }
 
   // Miscellaneous predicates
