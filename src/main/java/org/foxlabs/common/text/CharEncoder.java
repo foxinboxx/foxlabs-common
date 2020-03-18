@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.foxlabs.common.function;
+package org.foxlabs.common.text;
 
 import org.foxlabs.common.Predicates;
-import org.foxlabs.common.text.CharBuffer;
 
 @FunctionalInterface
 public interface CharEncoder {
@@ -38,6 +37,24 @@ public interface CharEncoder {
    * the buffer as is.
    */
   CharEncoder DUMMY = (ch, buffer) -> buffer.append(ch);
+
+  /**
+   * A character encoder that converts characters to uppercase according to the
+   * {@link Character#toUpperCase(int)} method. Note that this encoder does not take locale into
+   * account.
+   */
+  CharEncoder UPPERCASE = (ch, buffer) -> {
+    return buffer.append(Character.toUpperCase(ch));
+  };
+
+  /**
+   * A character encoder that converts characters to lowercase according to the
+   * {@link Character#toLowerCase(int)} method. Note that this encoder does not take locale into
+   * account.
+   */
+  CharEncoder LOWERCASE = (ch, buffer) -> {
+    return buffer.append(Character.toLowerCase(ch));
+  };
 
   /**
    * A character encoder that converts characters to the corresponding Unicode hexadecimal unsigned

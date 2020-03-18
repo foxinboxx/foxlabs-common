@@ -22,7 +22,6 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 
 import org.foxlabs.common.function.ToString;
-import org.foxlabs.common.function.CharEncoder;
 import org.foxlabs.common.function.GetChars;
 import org.foxlabs.common.exception.ThresholdReachedException;
 

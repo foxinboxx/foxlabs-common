@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package org.foxlabs.common.function;
+package org.foxlabs.common.text;
 
 import org.junit.Test;
 
 import org.foxlabs.common.text.CharBuffer;
+import org.foxlabs.common.text.CharEncoder;
 
+import static org.foxlabs.common.text.CharEncoder.*;
 import static org.junit.Assert.*;
-import static org.foxlabs.common.function.CharEncoder.*;
 
 /**
  * Tests for the character encoders defined in the {@link CharEncoder} interface.
@@ -40,11 +41,31 @@ public class CharEncoderTest {
   }
 
   /**
+   * Tests the {@link CharEncoder#UPPERCASE} character encoder.
+   */
+  @Test
+  public void test_UPPERCASE_encoder() {
+    assertEquals("A", UPPERCASE.encode('a', new CharBuffer()).toString());
+    assertEquals("A", UPPERCASE.encode('A', new CharBuffer()).toString());
+    assertEquals("_", UPPERCASE.encode('_', new CharBuffer()).toString());
+  }
+
+  /**
+   * Tests the {@link CharEncoder#LOWERCASE} character encoder.
+   */
+  @Test
+  public void test_LOWERCASE_encoder() {
+    assertEquals("a", LOWERCASE.encode('a', new CharBuffer()).toString());
+    assertEquals("a", LOWERCASE.encode('A', new CharBuffer()).toString());
+    assertEquals("_", LOWERCASE.encode('_', new CharBuffer()).toString());
+  }
+
+  /**
    * Tests the {@link CharEncoder#UCODE} character encoder.
    */
   @Test
   public void test_UCODE_encoder() {
-    //assertEquals("\\u0001", UCODE.encode(0x0001, new CharBuffer()).toString());
+    assertEquals("\\u0001", UCODE.encode(0x0001, new CharBuffer()).toString());
     assertEquals("\\u1000", UCODE.encode(0x1000, new CharBuffer()).toString());
     assertEquals("\\u1000u0000", UCODE.encode(0x10000000, new CharBuffer()).toString());
     assertEquals("\\u1000u1000", UCODE.encode(0x10001000, new CharBuffer()).toString());

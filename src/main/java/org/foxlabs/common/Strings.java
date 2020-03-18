@@ -41,6 +41,11 @@ public final class Strings {
   }
 
   /**
+   * The empty string (i.e. {@code ""}).
+   */
+  public static final String EMPTY = "";
+
+  /**
    * The ellipsis string (i.e. {@code ...}).
    */
   public static final String ELLIPSIS = "...";
@@ -60,7 +65,7 @@ public final class Strings {
    * @return {@code null}-safe string.
    */
   public static String nullSafe(String string) {
-    return string == null ? "" : string;
+    return string == null ? EMPTY : string;
   }
 
   /**
