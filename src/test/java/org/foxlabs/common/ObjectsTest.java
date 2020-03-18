@@ -29,6 +29,16 @@ import static org.foxlabs.common.Objects.*;
 public class ObjectsTest {
 
   /**
+   * Tests the {@link Objects#cast(Object)} method.
+   */
+  @Test
+  public void test_cast() {
+    final Integer sampleObject = Integer.valueOf(10);
+    assertSame(sampleObject, cast(sampleObject));
+    assertThrows(ClassCastException.class, () -> new String(Objects.<char[]>cast(Integer.valueOf(10))));
+  }
+
+  /**
    * Tests the {@link Objects#toString(Object)} method.
    */
   @Test
@@ -38,13 +48,12 @@ public class ObjectsTest {
   }
 
   /**
-   * Tests the {@link Objects#cast(Object)} method.
+   * Tests the {@link Objects#toString(Object, int)} method.
    */
   @Test
-  public void test_cast() {
-    final Integer sampleObject = Integer.valueOf(10);
-    assertSame(sampleObject, cast(sampleObject));
-    assertThrows(ClassCastException.class, () -> new String(Objects.<char[]>cast(Integer.valueOf(10))));
+  public void test_toString_threshold() {
+    final String[] sampleObject = new String[]{"one", "two", "three"};
+    assertEquals("[\"one\"", Objects.toString(sampleObject, 6));
   }
 
 }

@@ -81,20 +81,19 @@ public class CharEncoderTest {
   @Test
   public void test_JAVA_encoder() {
     // @formatter:off
-    assertEquals("a",              JAVA.encode('a',        new CharBuffer()).toString());
-    assertEquals("\\\\",           JAVA.encode('\\',       new CharBuffer()).toString());
-    assertEquals("\\\'",           JAVA.encode('\'',       new CharBuffer()).toString());
-    assertEquals("\\\"",           JAVA.encode('\"',       new CharBuffer()).toString());
-    assertEquals("\\n",            JAVA.encode('\n',       new CharBuffer()).toString());
-    assertEquals("\\r",            JAVA.encode('\r',       new CharBuffer()).toString());
-    assertEquals("\\t",            JAVA.encode('\t',       new CharBuffer()).toString());
-    assertEquals("\\f",            JAVA.encode('\f',       new CharBuffer()).toString());
-    assertEquals("\\b",            JAVA.encode('\b',       new CharBuffer()).toString());
-    assertEquals("\\u0000",        JAVA.encode(0x0000,     new CharBuffer()).toString());
-    assertEquals("\\u001f",        JAVA.encode(0x001f,     new CharBuffer()).toString());
-    assertEquals("\\u007f",        JAVA.encode(0x007f,     new CharBuffer()).toString());
-    assertEquals("\\u009f",        JAVA.encode(0x009f,     new CharBuffer()).toString());
-    assertEquals("\\ud840\\udc00", JAVA.encode(0x00020000, new CharBuffer()).toString());
+    assertEquals("a",       JAVA.encode('a',    new CharBuffer()).toString());
+    assertEquals("\\\\",    JAVA.encode('\\',   new CharBuffer()).toString());
+    assertEquals("\\\'",    JAVA.encode('\'',   new CharBuffer()).toString());
+    assertEquals("\\\"",    JAVA.encode('\"',   new CharBuffer()).toString());
+    assertEquals("\\n",     JAVA.encode('\n',   new CharBuffer()).toString());
+    assertEquals("\\r",     JAVA.encode('\r',   new CharBuffer()).toString());
+    assertEquals("\\t",     JAVA.encode('\t',   new CharBuffer()).toString());
+    assertEquals("\\f",     JAVA.encode('\f',   new CharBuffer()).toString());
+    assertEquals("\\b",     JAVA.encode('\b',   new CharBuffer()).toString());
+    assertEquals("\\u0000", JAVA.encode(0x0000, new CharBuffer()).toString());
+    assertEquals("\\u001f", JAVA.encode(0x001f, new CharBuffer()).toString());
+    assertEquals("\\u007f", JAVA.encode(0x007f, new CharBuffer()).toString());
+    assertEquals("\\u009f", JAVA.encode(0x009f, new CharBuffer()).toString());
     // @formatter:on
   }
 

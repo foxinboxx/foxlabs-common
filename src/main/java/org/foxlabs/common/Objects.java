@@ -19,6 +19,7 @@ package org.foxlabs.common;
 import java.util.function.Supplier;
 
 import org.foxlabs.common.text.CharBuffer;
+import org.foxlabs.common.exception.ThresholdReachedException;
 
 /**
  * The commonly used operations on objects.
@@ -33,24 +34,6 @@ public final class Objects {
   }
 
   /**
-   * Converts the specified object to a string representation.
-   *
-   * <p>
-   * This is a shortcut for the:
-   * <code>
-   * CharacterBuffer.toString(object)
-   * </code>
-   * </p>
-   *
-   * @param object The reference to an object to be converted to a string representation.
-   * @return A string representation of the specified object.
-   * @see CharBuffer
-   */
-  public static String toString(Object object) {
-    return CharBuffer.toString(object);
-  }
-
-  /**
    * Casts the specified object reference to a custom target type. This method just provides a way
    * to avoid declaration of the {@link SuppressWarnings} annotation.
    *
@@ -62,6 +45,36 @@ public final class Objects {
   @SuppressWarnings("unchecked")
   public static <T> T cast(Object object) {
     return (T) object;
+  }
+
+  /**
+   * Converts the specified object to a string representation with a length that will never exceed
+   * {@link CharBuffer#LOG_THRESHOLD}. This method is designed primarily for logging purposes.
+   *
+   * @param object The reference to an object to be converted to a string representation.
+   * @return A string representation of the specified object.
+   * @see #toString(Object, int)
+   */
+  public static String toString(Object object) {
+    return toString(object, CharBuffer.LOG_THRESHOLD);
+  }
+
+  /**
+   * Converts the specified object to a string representation with a length that will never exceed
+   * the specified threshold. This method is designed primarily for logging purposes.
+   *
+   * @param object The reference to an object to be converted to a string representation.
+   * @param threshold The maximum length that the resulting string will never exceed.
+   * @return A string representation of the specified object.
+   * @see CharBuffer#appendObject(Object)
+   */
+  public static String toString(Object object, int threshold) {
+    try {
+      return new CharBuffer(threshold).appendObject(object).toString();
+    } catch (ThresholdReachedException e) {
+      // threshold has been reached, return partial result anyway
+      return e.getProducer().toString();
+    }
   }
 
   /**

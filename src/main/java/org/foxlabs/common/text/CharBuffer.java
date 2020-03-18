@@ -230,8 +230,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @param length The number of {@code '\u0020'} space characters to append.
    * @throws IllegalArgumentException if the specified length is negative.
    * @see #appendIndent(int, char)
+   * @see #appendIndent(int, int)
    */
-  public CharBuffer appendIndent(int length) {
+  public final CharBuffer appendIndent(int length) {
     if (require(length, INT_POSITIVE_OR_ZERO) > 0) {
       ensureCapacity(length);
       do {
@@ -255,9 +256,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @param length The number of indentation characters to append.
    * @param ch The indentation character.
    * @throws IllegalArgumentException if the specified length is negative.
-   * @see #appendIndent(int)
+   * @see #appendIndent(int, int)
    */
-  public CharBuffer appendIndent(int length, char ch) {
+  public final CharBuffer appendIndent(int length, char ch) {
     if (ch == ' ') { // who knows
       return appendIndent(length);
     }
@@ -280,7 +281,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @throws IllegalArgumentException if the specified length is negative.
    * @see #appendIndent(int, char)
    */
-  public CharBuffer appendIndent(int length, int ch) {
+  public final CharBuffer appendIndent(int length, int ch) {
     if (Character.isBmpCodePoint(ch)) {
       return appendIndent(length, (char) ch);
     }
@@ -1317,20 +1318,6 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
       System.arraycopy(buffer[start / depth], index, target, offset, remainder);
       start += remainder;
       offset += remainder;
-    }
-  }
-
-  // Helpers
-
-  public static String toString(Object object) {
-    return toString(object, LOG_THRESHOLD);
-  }
-
-  public static String toString(Object object, int threshold) {
-    try {
-      return new CharBuffer(threshold).appendObject(object).toString();
-    } catch (ThresholdReachedException e) {
-      return e.getProducer().toString();
     }
   }
 

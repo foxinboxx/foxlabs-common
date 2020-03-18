@@ -17,7 +17,7 @@
 package org.foxlabs.common.exception;
 
 import org.foxlabs.common.Objects;
-import org.foxlabs.common.function.ToString;
+import org.foxlabs.common.text.CharBuffer;
 
 /**
  * Thrown to indicate that a threshold of some data structure like buffer has been reached and
@@ -25,7 +25,7 @@ import org.foxlabs.common.function.ToString;
  * not be handled by data producers, but data consumers.
  *
  * @author Fox Mulder
- * @see ToString.Builder
+ * @see CharBuffer
  */
 public class ThresholdReachedException extends UnsupportedOperationException {
   private static final long serialVersionUID = -6690298736199595817L;

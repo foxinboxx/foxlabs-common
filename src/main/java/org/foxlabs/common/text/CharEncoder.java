@@ -63,9 +63,9 @@ public interface CharEncoder {
    * supplementary character. The format of BMP characters is <code>&#92;uXXXX</code>. The format
    * of supplementary characters is <code>&#92;uHHHH&#92;uLLLL</code>, where {@code HHHH} is high
    * surrogate part extracted using the {@link Character#highSurrogate(int)} method and
-   * {@code LLLL} is low surrogate part extracted using the {@link Character#highSurrogate(int)}
-   * method. Note that this encoder does not validate the specified character to be a valid Unicode
-   * code point. The format is compatible with Java language.
+   * {@code LLLL} is low surrogate part extracted using the {@link Character#lowSurrogate(int)}
+   * method. The format is compatible with Java language. Note that this encoder does not validate
+   * the specified character to be a valid Unicode code point.
    */
   CharEncoder UCODE = (ch, buffer) -> {
     if (Character.isBmpCodePoint(ch)) {
