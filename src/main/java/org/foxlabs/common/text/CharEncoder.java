@@ -57,18 +57,24 @@ public interface CharEncoder {
   };
 
   /**
-   * A character encoder that converts characters to the corresponding Unicode hexadecimal unsigned
-   * 32/16-bit representation. The format is <code>&#92;uXXXX</code> for BMP characters and
-   * <code>&#92;uXXXXuXXXX</code> for supplementary characters, leading zeros are preserved.
+   * A character encoder that converts characters to the corresponding Unicode hexadecimal
+   * 16/32-bit representation using the {@link Character#isBmpCodePoint(int)} method to determine
+   * if the specified character code point is in the Basic Multilingual Plane (BMP) or it is a
+   * supplementary character. The format of BMP characters is <code>&#92;uXXXX</code>. The format
+   * of supplementary characters is <code>&#92;uHHHH&#92;uLLLL</code>, where {@code HHHH} is high
+   * surrogate part extracted using the {@link Character#highSurrogate(int)} method and
+   * {@code LLLL} is low surrogate part extracted using the {@link Character#highSurrogate(int)}
+   * method. Note that this encoder does not validate the specified character to be a valid Unicode
+   * code point. The format is compatible with Java language.
    */
   CharEncoder UCODE = (ch, buffer) -> {
-    final int high = ch >>> 16;
-    buffer.ensureCapacity(high != 0 ? 11 : 6);
-    buffer.append('\\').append('u');
-    if (high != 0) {
-      buffer.appendHex((short) (high)).append('u');
+    if (Character.isBmpCodePoint(ch)) {
+      buffer.ensureCapacity(6);
+      return buffer.append('\\').append('u').appendHex((short) ch);
     }
-    return buffer.appendHex((short) (ch & 0xffff));
+    buffer.ensureCapacity(11);
+    return buffer.append('\\').append('u').appendHex((short) Character.highSurrogate(ch))
+        .append('\\').append('u').appendHex((short) Character.lowSurrogate(ch));
   };
 
   /**
