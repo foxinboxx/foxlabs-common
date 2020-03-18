@@ -727,4 +727,164 @@ public class CharBufferTest {
     // @formatter:on
   }
 
+  /**
+   * Tests the {@link CharBuffer#appendBin(byte)} method.
+   */
+  @Test
+  public void test_appendBin_byte() {
+    // @formatter:off
+    assertEquals("00000000", new CharBuffer().appendBin((byte) 0x00).toString());
+    assertEquals("00000001", new CharBuffer().appendBin((byte) 0x01).toString());
+    assertEquals("00000010", new CharBuffer().appendBin((byte) 0x02).toString());
+    assertEquals("00000100", new CharBuffer().appendBin((byte) 0x04).toString());
+    assertEquals("00001000", new CharBuffer().appendBin((byte) 0x08).toString());
+    assertEquals("00010000", new CharBuffer().appendBin((byte) 0x10).toString());
+    assertEquals("00100000", new CharBuffer().appendBin((byte) 0x20).toString());
+    assertEquals("01000000", new CharBuffer().appendBin((byte) 0x40).toString());
+    assertEquals("10000000", new CharBuffer().appendBin((byte) 0x80).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendBin(short)} method.
+   */
+  @Test
+  public void test_appendBin_short() {
+    // @formatter:off
+    assertEquals("0000000000000000", new CharBuffer().appendBin((short) 0x0000).toString());
+    assertEquals("0000000000000001", new CharBuffer().appendBin((short) 0x0001).toString());
+    assertEquals("0000000000000010", new CharBuffer().appendBin((short) 0x0002).toString());
+    assertEquals("0000000000000100", new CharBuffer().appendBin((short) 0x0004).toString());
+    assertEquals("0000000000001000", new CharBuffer().appendBin((short) 0x0008).toString());
+    assertEquals("0000000000010000", new CharBuffer().appendBin((short) 0x0010).toString());
+    assertEquals("0000000000100000", new CharBuffer().appendBin((short) 0x0020).toString());
+    assertEquals("0000000001000000", new CharBuffer().appendBin((short) 0x0040).toString());
+    assertEquals("0000000010000000", new CharBuffer().appendBin((short) 0x0080).toString());
+    assertEquals("0000000100000000", new CharBuffer().appendBin((short) 0x0100).toString());
+    assertEquals("0000001000000000", new CharBuffer().appendBin((short) 0x0200).toString());
+    assertEquals("0000010000000000", new CharBuffer().appendBin((short) 0x0400).toString());
+    assertEquals("0000100000000000", new CharBuffer().appendBin((short) 0x0800).toString());
+    assertEquals("0001000000000000", new CharBuffer().appendBin((short) 0x1000).toString());
+    assertEquals("0010000000000000", new CharBuffer().appendBin((short) 0x2000).toString());
+    assertEquals("0100000000000000", new CharBuffer().appendBin((short) 0x4000).toString());
+    assertEquals("1000000000000000", new CharBuffer().appendBin((short) 0x8000).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendBin(int)} method.
+   */
+  @Test
+  public void test_appendBin_int() {
+    // @formatter:off
+    assertEquals("00000000000000000000000000000000", new CharBuffer().appendBin(0x00000000).toString());
+    assertEquals("00000000000000000000000000000001", new CharBuffer().appendBin(0x00000001).toString());
+    assertEquals("00000000000000000000000000000010", new CharBuffer().appendBin(0x00000002).toString());
+    assertEquals("00000000000000000000000000000100", new CharBuffer().appendBin(0x00000004).toString());
+    assertEquals("00000000000000000000000000001000", new CharBuffer().appendBin(0x00000008).toString());
+    assertEquals("00000000000000000000000000010000", new CharBuffer().appendBin(0x00000010).toString());
+    assertEquals("00000000000000000000000000100000", new CharBuffer().appendBin(0x00000020).toString());
+    assertEquals("00000000000000000000000001000000", new CharBuffer().appendBin(0x00000040).toString());
+    assertEquals("00000000000000000000000010000000", new CharBuffer().appendBin(0x00000080).toString());
+    assertEquals("00000000000000000000000100000000", new CharBuffer().appendBin(0x00000100).toString());
+    assertEquals("00000000000000000000001000000000", new CharBuffer().appendBin(0x00000200).toString());
+    assertEquals("00000000000000000000010000000000", new CharBuffer().appendBin(0x00000400).toString());
+    assertEquals("00000000000000000000100000000000", new CharBuffer().appendBin(0x00000800).toString());
+    assertEquals("00000000000000000001000000000000", new CharBuffer().appendBin(0x00001000).toString());
+    assertEquals("00000000000000000010000000000000", new CharBuffer().appendBin(0x00002000).toString());
+    assertEquals("00000000000000000100000000000000", new CharBuffer().appendBin(0x00004000).toString());
+    assertEquals("00000000000000001000000000000000", new CharBuffer().appendBin(0x00008000).toString());
+    assertEquals("00000000000000010000000000000000", new CharBuffer().appendBin(0x00010000).toString());
+    assertEquals("00000000000000100000000000000000", new CharBuffer().appendBin(0x00020000).toString());
+    assertEquals("00000000000001000000000000000000", new CharBuffer().appendBin(0x00040000).toString());
+    assertEquals("00000000000010000000000000000000", new CharBuffer().appendBin(0x00080000).toString());
+    assertEquals("00000000000100000000000000000000", new CharBuffer().appendBin(0x00100000).toString());
+    assertEquals("00000000001000000000000000000000", new CharBuffer().appendBin(0x00200000).toString());
+    assertEquals("00000000010000000000000000000000", new CharBuffer().appendBin(0x00400000).toString());
+    assertEquals("00000000100000000000000000000000", new CharBuffer().appendBin(0x00800000).toString());
+    assertEquals("00000001000000000000000000000000", new CharBuffer().appendBin(0x01000000).toString());
+    assertEquals("00000010000000000000000000000000", new CharBuffer().appendBin(0x02000000).toString());
+    assertEquals("00000100000000000000000000000000", new CharBuffer().appendBin(0x04000000).toString());
+    assertEquals("00001000000000000000000000000000", new CharBuffer().appendBin(0x08000000).toString());
+    assertEquals("00010000000000000000000000000000", new CharBuffer().appendBin(0x10000000).toString());
+    assertEquals("00100000000000000000000000000000", new CharBuffer().appendBin(0x20000000).toString());
+    assertEquals("01000000000000000000000000000000", new CharBuffer().appendBin(0x40000000).toString());
+    assertEquals("10000000000000000000000000000000", new CharBuffer().appendBin(0x80000000).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendBin(long)} method.
+   */
+  @Test
+  public void test_appendBin_long() {
+    // @formatter:off
+    assertEquals("0000000000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000000000001", new CharBuffer().appendBin(0x0000000000000001L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000000000010", new CharBuffer().appendBin(0x0000000000000002L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000000000100", new CharBuffer().appendBin(0x0000000000000004L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000000001000", new CharBuffer().appendBin(0x0000000000000008L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000000010000", new CharBuffer().appendBin(0x0000000000000010L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000000100000", new CharBuffer().appendBin(0x0000000000000020L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000001000000", new CharBuffer().appendBin(0x0000000000000040L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000010000000", new CharBuffer().appendBin(0x0000000000000080L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000100000000", new CharBuffer().appendBin(0x0000000000000100L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000001000000000", new CharBuffer().appendBin(0x0000000000000200L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000010000000000", new CharBuffer().appendBin(0x0000000000000400L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000100000000000", new CharBuffer().appendBin(0x0000000000000800L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000001000000000000", new CharBuffer().appendBin(0x0000000000001000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000010000000000000", new CharBuffer().appendBin(0x0000000000002000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000100000000000000", new CharBuffer().appendBin(0x0000000000004000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000001000000000000000", new CharBuffer().appendBin(0x0000000000008000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000010000000000000000", new CharBuffer().appendBin(0x0000000000010000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000100000000000000000", new CharBuffer().appendBin(0x0000000000020000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000001000000000000000000", new CharBuffer().appendBin(0x0000000000040000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000010000000000000000000", new CharBuffer().appendBin(0x0000000000080000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000100000000000000000000", new CharBuffer().appendBin(0x0000000000100000L).toString());
+    assertEquals("0000000000000000000000000000000000000000001000000000000000000000", new CharBuffer().appendBin(0x0000000000200000L).toString());
+    assertEquals("0000000000000000000000000000000000000000010000000000000000000000", new CharBuffer().appendBin(0x0000000000400000L).toString());
+    assertEquals("0000000000000000000000000000000000000000100000000000000000000000", new CharBuffer().appendBin(0x0000000000800000L).toString());
+    assertEquals("0000000000000000000000000000000000000001000000000000000000000000", new CharBuffer().appendBin(0x0000000001000000L).toString());
+    assertEquals("0000000000000000000000000000000000000010000000000000000000000000", new CharBuffer().appendBin(0x0000000002000000L).toString());
+    assertEquals("0000000000000000000000000000000000000100000000000000000000000000", new CharBuffer().appendBin(0x0000000004000000L).toString());
+    assertEquals("0000000000000000000000000000000000001000000000000000000000000000", new CharBuffer().appendBin(0x0000000008000000L).toString());
+    assertEquals("0000000000000000000000000000000000010000000000000000000000000000", new CharBuffer().appendBin(0x0000000010000000L).toString());
+    assertEquals("0000000000000000000000000000000000100000000000000000000000000000", new CharBuffer().appendBin(0x0000000020000000L).toString());
+    assertEquals("0000000000000000000000000000000001000000000000000000000000000000", new CharBuffer().appendBin(0x0000000040000000L).toString());
+    assertEquals("0000000000000000000000000000000010000000000000000000000000000000", new CharBuffer().appendBin(0x0000000080000000L).toString());
+    assertEquals("0000000000000000000000000000000100000000000000000000000000000000", new CharBuffer().appendBin(0x0000000100000000L).toString());
+    assertEquals("0000000000000000000000000000001000000000000000000000000000000000", new CharBuffer().appendBin(0x0000000200000000L).toString());
+    assertEquals("0000000000000000000000000000010000000000000000000000000000000000", new CharBuffer().appendBin(0x0000000400000000L).toString());
+    assertEquals("0000000000000000000000000000100000000000000000000000000000000000", new CharBuffer().appendBin(0x0000000800000000L).toString());
+    assertEquals("0000000000000000000000000001000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000001000000000L).toString());
+    assertEquals("0000000000000000000000000010000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000002000000000L).toString());
+    assertEquals("0000000000000000000000000100000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000004000000000L).toString());
+    assertEquals("0000000000000000000000001000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000008000000000L).toString());
+    assertEquals("0000000000000000000000010000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000010000000000L).toString());
+    assertEquals("0000000000000000000000100000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000020000000000L).toString());
+    assertEquals("0000000000000000000001000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000040000000000L).toString());
+    assertEquals("0000000000000000000010000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000080000000000L).toString());
+    assertEquals("0000000000000000000100000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000100000000000L).toString());
+    assertEquals("0000000000000000001000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000200000000000L).toString());
+    assertEquals("0000000000000000010000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000400000000000L).toString());
+    assertEquals("0000000000000000100000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000800000000000L).toString());
+    assertEquals("0000000000000001000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0001000000000000L).toString());
+    assertEquals("0000000000000010000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0002000000000000L).toString());
+    assertEquals("0000000000000100000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0004000000000000L).toString());
+    assertEquals("0000000000001000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0008000000000000L).toString());
+    assertEquals("0000000000010000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0010000000000000L).toString());
+    assertEquals("0000000000100000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0020000000000000L).toString());
+    assertEquals("0000000001000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0040000000000000L).toString());
+    assertEquals("0000000010000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0080000000000000L).toString());
+    assertEquals("0000000100000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0100000000000000L).toString());
+    assertEquals("0000001000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0200000000000000L).toString());
+    assertEquals("0000010000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0400000000000000L).toString());
+    assertEquals("0000100000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0800000000000000L).toString());
+    assertEquals("0001000000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x1000000000000000L).toString());
+    assertEquals("0010000000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x2000000000000000L).toString());
+    assertEquals("0100000000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x4000000000000000L).toString());
+    assertEquals("1000000000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x8000000000000000L).toString());
+    // @formatter:on
+  }
+
 }

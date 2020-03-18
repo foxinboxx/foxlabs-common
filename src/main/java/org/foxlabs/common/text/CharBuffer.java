@@ -200,99 +200,85 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     return buffer[index] == null ? buffer[index] = new char[depth] : buffer[index];
   }
 
-  // Advanced operations
+  @Override
+  public char charAt(int index) {
+    require(this, checkCharSequenceIndex(index), ofIOOB(index));
+    return buffer[index / depth][index % depth];
+  }
 
-  /**
-   * An array of space sequences ({@code '\u0020'}) ranging from 4 to 16 in length, used by the
-   * {@link #appendIdent(int)} method.
-   */
-  private static final char[][] SPACES = {
-      {' ', ' ', ' ', ' '}, // 4
-      {' ', ' ', ' ', ' ', ' '}, // 5
-      {' ', ' ', ' ', ' ', ' ', ' '}, // 6
-      {' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 7
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 8
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 9
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 10
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 11
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 12
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 13
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 14
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 15
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 16
-  };
+  @Override
+  public CharSequence subSequence(int start, int end) {
+    return substring(start, end);
+  }
 
-  /**
-   * Appends an indentation of the specified length to the buffer using the {@code '\u0020'} space
-   * character.
-   *
-   * @param length The number of {@code '\u0020'} space characters to append.
-   * @throws IllegalArgumentException if the specified length is negative.
-   * @see #appendIndent(int, char)
-   * @see #appendIndent(int, int)
-   */
-  public final CharBuffer appendIndent(int length) {
-    if (require(length, INT_POSITIVE_OR_ZERO) > 0) {
-      ensureCapacity(length);
-      do {
-        if (length < 4) { // could be a bit faster
-          for (; length > 0; length--) {
-            append0(' ');
-          }
-        } else {
-          final char[] spaces = SPACES[Math.min(length, SPACES.length) - 4];
-          length -= spaces.length;
-          append(spaces);
-        }
-      } while (length > 0);
+  public String substring(int start) {
+    return substring(start, length);
+  }
+
+  public String substring(int start, int end) {
+    require(this, checkCharSequenceRange(start, end), ofIOOB(start, end));
+    final char[] value = new char[end - start];
+    copyChars(start, end, value, 0);
+    return new String(value);
+  }
+
+  @Override
+  public void getChars(int start, int end, char[] array, int index) {
+    require(this, checkCharSequenceRange(start, end), ofIOOB(start, end));
+    require(array, checkCharArrayIndex(index), ofIOOB(index));
+    copyChars(start, end, array, index);
+  }
+
+  @Override
+  public CharBuffer toString(CharBuffer buffer) {
+    // TODO
+    return buffer;
+  }
+
+  @Override
+  public String toString() {
+    if (length != 0) { // fast check
+      final char[] value = new char[length];
+      copyChars(0, length, value, 0);
+      return new String(value);
     }
-    return this;
+    return "";
+  }
+
+  protected final void copyChars(int start, int end, char[] target, int offset) {
+    while (start < end) {
+      final int index = start % depth;
+      final int remainder = Math.min(depth - index, end - start);
+      System.arraycopy(buffer[start / depth], index, target, offset, remainder);
+      start += remainder;
+      offset += remainder;
+    }
+  }
+
+  // Cleanup operations
+
+  /**
+   * Resets the buffer length to 0 but does not release allocated memory. This method is useful
+   * when the same buffer instance can be reused multiple times.
+   *
+   * @see #clear()
+   */
+  public final void reset() {
+    length = 0;
   }
 
   /**
-   * Appends an indentation of the specified length to the buffer using the specified character.
+   * Clears the buffer and releases allocated memory. This method is useful when the same buffer
+   * instance can be reused multiple times in a long term (for example, in an object pool).
    *
-   * @param length The number of indentation characters to append.
-   * @param ch The indentation character.
-   * @throws IllegalArgumentException if the specified length is negative.
-   * @see #appendIndent(int, int)
+   * @see #reset()
    */
-  public final CharBuffer appendIndent(int length, char ch) {
-    if (ch == ' ') { // who knows
-      return appendIndent(length);
+  public final void clear() {
+    final int nslots = (length - 1) / depth + 1;
+    for (int index = 0; index < nslots; index++) {
+      buffer[index] = null;
     }
-    if (require(length, INT_POSITIVE_OR_ZERO) > 0) {
-      ensureCapacity(length);
-      for (; length > 0; length--) {
-        append0(ch);
-      }
-    }
-    return this;
-  }
-
-  /**
-   * Does the same as the {@link #appendIndent(int, char)} but uses the specified character Unicode
-   * code point. Note that this method does not validate the specified character to be a valid
-   * Unicode code point.
-   *
-   * @param length The number of indentation characters to append.
-   * @param ch The Unicode code point of indentation character.
-   * @throws IllegalArgumentException if the specified length is negative.
-   * @see #appendIndent(int, char)
-   */
-  public final CharBuffer appendIndent(int length, int ch) {
-    if (Character.isBmpCodePoint(ch)) {
-      return appendIndent(length, (char) ch);
-    }
-    if (require(length, INT_POSITIVE_OR_ZERO) > 0) {
-      ensureCapacity(length * 2);
-      final char high = Character.highSurrogate(ch);
-      final char low = Character.lowSurrogate(ch);
-      for (; length > 0; length--) {
-        append0(high).append0(low);
-      }
-    }
-    return this;
+    length = 0;
   }
 
   // Number to string representation
@@ -536,8 +522,10 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   public final CharBuffer appendHex(short value) {
     ensureCapacity(4);
+    // high 8 bits
     append0(DIGITS[(value >>> 0x0c) & 0xf]);
     append0(DIGITS[(value >>> 0x08) & 0xf]);
+    // low 8 bits
     append0(DIGITS[(value >>> 0x04) & 0xf]);
     append0(DIGITS[(value >>> 0x00) & 0xf]);
     return this;
@@ -562,10 +550,12 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   public final CharBuffer appendHex(int value) {
     ensureCapacity(8);
+    // high 16 bits
     append0(DIGITS[(value >>> 0x1c) & 0xf]);
     append0(DIGITS[(value >>> 0x18) & 0xf]);
     append0(DIGITS[(value >>> 0x14) & 0xf]);
     append0(DIGITS[(value >>> 0x10) & 0xf]);
+    // low 16 bits
     append0(DIGITS[(value >>> 0x0c) & 0xf]);
     append0(DIGITS[(value >>> 0x08) & 0xf]);
     append0(DIGITS[(value >>> 0x04) & 0xf]);
@@ -594,6 +584,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   public final CharBuffer appendHex(long value) {
     ensureCapacity(16);
+    // high 32 bits
     append0(DIGITS[(int) ((value >>> 0x3c) & 0xfL)]);
     append0(DIGITS[(int) ((value >>> 0x38) & 0xfL)]);
     append0(DIGITS[(int) ((value >>> 0x34) & 0xfL)]);
@@ -602,6 +593,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     append0(DIGITS[(int) ((value >>> 0x28) & 0xfL)]);
     append0(DIGITS[(int) ((value >>> 0x24) & 0xfL)]);
     append0(DIGITS[(int) ((value >>> 0x20) & 0xfL)]);
+    // low 32 bits
     append0(DIGITS[(int) ((value >>> 0x1c) & 0xfL)]);
     append0(DIGITS[(int) ((value >>> 0x18) & 0xfL)]);
     append0(DIGITS[(int) ((value >>> 0x14) & 0xfL)]);
@@ -630,6 +622,152 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     }
     // 64 bits long
     return appendHex(value);
+  }
+
+  public final CharBuffer appendBin(byte value) {
+    ensureCapacity(8);
+    append0(DIGITS[(value >>> 0x07) & 0x1]);
+    append0(DIGITS[(value >>> 0x06) & 0x1]);
+    append0(DIGITS[(value >>> 0x05) & 0x1]);
+    append0(DIGITS[(value >>> 0x04) & 0x1]);
+    append0(DIGITS[(value >>> 0x03) & 0x1]);
+    append0(DIGITS[(value >>> 0x02) & 0x1]);
+    append0(DIGITS[(value >>> 0x01) & 0x1]);
+    append0(DIGITS[(value >>> 0x00) & 0x1]);
+    return this;
+  }
+
+  public final CharBuffer appendBin(short value) {
+    ensureCapacity(16);
+    // high 8 bits
+    append0(DIGITS[(value >>> 0x0f) & 0x1]);
+    append0(DIGITS[(value >>> 0x0e) & 0x1]);
+    append0(DIGITS[(value >>> 0x0d) & 0x1]);
+    append0(DIGITS[(value >>> 0x0c) & 0x1]);
+    append0(DIGITS[(value >>> 0x0b) & 0x1]);
+    append0(DIGITS[(value >>> 0x0a) & 0x1]);
+    append0(DIGITS[(value >>> 0x09) & 0x1]);
+    append0(DIGITS[(value >>> 0x08) & 0x1]);
+    // low 8 bits
+    append0(DIGITS[(value >>> 0x07) & 0x1]);
+    append0(DIGITS[(value >>> 0x06) & 0x1]);
+    append0(DIGITS[(value >>> 0x05) & 0x1]);
+    append0(DIGITS[(value >>> 0x04) & 0x1]);
+    append0(DIGITS[(value >>> 0x03) & 0x1]);
+    append0(DIGITS[(value >>> 0x02) & 0x1]);
+    append0(DIGITS[(value >>> 0x01) & 0x1]);
+    append0(DIGITS[(value >>> 0x00) & 0x1]);
+    return this;
+  }
+
+  public final CharBuffer appendBin(int value) {
+    ensureCapacity(32);
+    // high 16 bits
+    append0(DIGITS[(value >>> 0x1f) & 0x1]);
+    append0(DIGITS[(value >>> 0x1e) & 0x1]);
+    append0(DIGITS[(value >>> 0x1d) & 0x1]);
+    append0(DIGITS[(value >>> 0x1c) & 0x1]);
+    append0(DIGITS[(value >>> 0x1b) & 0x1]);
+    append0(DIGITS[(value >>> 0x1a) & 0x1]);
+    append0(DIGITS[(value >>> 0x19) & 0x1]);
+    append0(DIGITS[(value >>> 0x18) & 0x1]);
+    append0(DIGITS[(value >>> 0x17) & 0x1]);
+    append0(DIGITS[(value >>> 0x16) & 0x1]);
+    append0(DIGITS[(value >>> 0x15) & 0x1]);
+    append0(DIGITS[(value >>> 0x14) & 0x1]);
+    append0(DIGITS[(value >>> 0x13) & 0x1]);
+    append0(DIGITS[(value >>> 0x12) & 0x1]);
+    append0(DIGITS[(value >>> 0x11) & 0x1]);
+    append0(DIGITS[(value >>> 0x10) & 0x1]);
+    // low 16 bits
+    append0(DIGITS[(value >>> 0x0f) & 0x1]);
+    append0(DIGITS[(value >>> 0x0e) & 0x1]);
+    append0(DIGITS[(value >>> 0x0d) & 0x1]);
+    append0(DIGITS[(value >>> 0x0c) & 0x1]);
+    append0(DIGITS[(value >>> 0x0b) & 0x1]);
+    append0(DIGITS[(value >>> 0x0a) & 0x1]);
+    append0(DIGITS[(value >>> 0x09) & 0x1]);
+    append0(DIGITS[(value >>> 0x08) & 0x1]);
+    append0(DIGITS[(value >>> 0x07) & 0x1]);
+    append0(DIGITS[(value >>> 0x06) & 0x1]);
+    append0(DIGITS[(value >>> 0x05) & 0x1]);
+    append0(DIGITS[(value >>> 0x04) & 0x1]);
+    append0(DIGITS[(value >>> 0x03) & 0x1]);
+    append0(DIGITS[(value >>> 0x02) & 0x1]);
+    append0(DIGITS[(value >>> 0x01) & 0x1]);
+    append0(DIGITS[(value >>> 0x00) & 0x1]);
+    return this;
+  }
+
+  public final CharBuffer appendBin(long value) {
+    ensureCapacity(64);
+    // high 32 bits
+    append0(DIGITS[(int) ((value >>> 0x3f) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x3e) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x3d) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x3c) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x3b) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x3a) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x39) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x38) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x37) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x36) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x35) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x34) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x33) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x32) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x31) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x30) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x2f) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x2e) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x2d) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x2c) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x2b) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x2a) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x29) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x28) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x27) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x26) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x25) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x24) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x23) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x22) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x21) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x20) & 0x1L)]);
+    // low 32 bits
+    append0(DIGITS[(int) ((value >>> 0x1f) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x1e) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x1d) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x1c) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x1b) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x1a) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x19) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x18) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x17) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x16) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x15) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x14) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x13) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x12) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x11) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x10) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x0f) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x0e) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x0d) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x0c) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x0b) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x0a) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x09) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x08) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x07) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x06) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x05) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x04) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x03) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x02) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x01) & 0x1L)]);
+    append0(DIGITS[(int) ((value >>> 0x00) & 0x1L)]);
+    return this;
   }
 
   /**
@@ -1259,75 +1397,99 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     crossrefs.remove(object);
   }
 
-  // Cleanup operations
+  // Advanced operations
 
-  public final void reset() {
-    length = 0;
-  }
+  /**
+   * An array of space sequences ({@code '\u0020'}) ranging from 4 to 16 in length, used by the
+   * {@link #appendIdent(int)} method.
+   */
+  private static final char[][] SPACES = {
+      {' ', ' ', ' ', ' '}, // 4
+      {' ', ' ', ' ', ' ', ' '}, // 5
+      {' ', ' ', ' ', ' ', ' ', ' '}, // 6
+      {' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 7
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 8
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 9
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 10
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 11
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 12
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 13
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 14
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 15
+      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 16
+  };
 
-  public final void clear() {
-    final int nslots = (length - 1) / depth + 1;
-    for (int index = 0; index < nslots; index++) {
-      buffer[index] = null;
+  /**
+   * Appends an indentation of the specified length to the buffer using the {@code '\u0020'} space
+   * character.
+   *
+   * @param length The number of {@code '\u0020'} space characters to append.
+   * @throws IllegalArgumentException if the specified length is negative.
+   * @see #appendIndent(int, char)
+   * @see #appendIndent(int, int)
+   */
+  public final CharBuffer appendIndent(int length) {
+    if (require(length, INT_POSITIVE_OR_ZERO) > 0) {
+      ensureCapacity(length);
+      do {
+        if (length < 4) { // could be a bit faster
+          for (; length > 0; length--) {
+            append0(' ');
+          }
+        } else {
+          final char[] spaces = SPACES[Math.min(length, SPACES.length) - 4];
+          length -= spaces.length;
+          append(spaces);
+        }
+      } while (length > 0);
     }
-    length = 0;
+    return this;
   }
 
-  // Miscelanous
-
-  @Override
-  public char charAt(int index) {
-    require(this, checkCharSequenceIndex(index), ofIOOB(index));
-    return buffer[index / depth][index % depth];
-  }
-
-  @Override
-  public CharSequence subSequence(int start, int end) {
-    return substring(start, end);
-  }
-
-  public String substring(int start) {
-    return substring(start, length);
-  }
-
-  public String substring(int start, int end) {
-    require(this, checkCharSequenceRange(start, end), ofIOOB(start, end));
-    final char[] value = new char[end - start];
-    copyChars(start, end, value, 0);
-    return new String(value);
-  }
-
-  @Override
-  public void getChars(int start, int end, char[] array, int index) {
-    require(this, checkCharSequenceRange(start, end), ofIOOB(start, end));
-    require(array, checkCharArrayIndex(index), ofIOOB(index));
-    copyChars(start, end, array, index);
-  }
-
-  @Override
-  public CharBuffer toString(CharBuffer buffer) {
-    // TODO
-    return buffer;
-  }
-
-  @Override
-  public String toString() {
-    if (length != 0) { // fast check
-      final char[] value = new char[length];
-      copyChars(0, length, value, 0);
-      return new String(value);
+  /**
+   * Appends an indentation of the specified length to the buffer using the specified character.
+   *
+   * @param length The number of indentation characters to append.
+   * @param ch The indentation character.
+   * @throws IllegalArgumentException if the specified length is negative.
+   * @see #appendIndent(int, int)
+   */
+  public final CharBuffer appendIndent(int length, char ch) {
+    if (ch == ' ') { // who knows
+      return appendIndent(length);
     }
-    return "";
+    if (require(length, INT_POSITIVE_OR_ZERO) > 0) {
+      ensureCapacity(length);
+      for (; length > 0; length--) {
+        append0(ch);
+      }
+    }
+    return this;
   }
 
-  protected final void copyChars(int start, int end, char[] target, int offset) {
-    while (start < end) {
-      final int index = start % depth;
-      final int remainder = Math.min(depth - index, end - start);
-      System.arraycopy(buffer[start / depth], index, target, offset, remainder);
-      start += remainder;
-      offset += remainder;
+  /**
+   * Does the same as the {@link #appendIndent(int, char)} but uses the specified character Unicode
+   * code point. Note that this method does not validate the specified character to be a valid
+   * Unicode code point.
+   *
+   * @param length The number of indentation characters to append.
+   * @param ch The Unicode code point of indentation character.
+   * @throws IllegalArgumentException if the specified length is negative.
+   * @see #appendIndent(int, char)
+   */
+  public final CharBuffer appendIndent(int length, int ch) {
+    if (Character.isBmpCodePoint(ch)) {
+      return appendIndent(length, (char) ch);
     }
+    if (require(length, INT_POSITIVE_OR_ZERO) > 0) {
+      ensureCapacity(length * 2);
+      final char high = Character.highSurrogate(ch);
+      final char low = Character.lowSurrogate(ch);
+      for (; length > 0; length--) {
+        append0(high).append0(low);
+      }
+    }
+    return this;
   }
 
 }
