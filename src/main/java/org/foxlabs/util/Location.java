@@ -16,8 +16,8 @@
 
 package org.foxlabs.util;
 
-import org.foxlabs.common.function.ToString;
 import org.foxlabs.common.text.CharBuffer;
+import org.foxlabs.common.text.ToString;
 
 /**
  * This class represents text position in some abstract resource.

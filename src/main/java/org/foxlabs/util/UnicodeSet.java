@@ -19,8 +19,8 @@ package org.foxlabs.util;
 import java.util.Arrays;
 
 import org.foxlabs.common.Strings;
-import org.foxlabs.common.function.ToString;
 import org.foxlabs.common.text.CharBuffer;
+import org.foxlabs.common.text.ToString;
 
 /**
  * This class represents a set of unicode characters and provides operations

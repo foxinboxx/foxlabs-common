@@ -19,8 +19,8 @@ package org.foxlabs.util.counter;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.foxlabs.common.function.ToString;
 import org.foxlabs.common.text.CharBuffer;
+import org.foxlabs.common.text.ToString;
 
 /**
  * Factory class for all counters.

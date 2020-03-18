@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 
-import org.foxlabs.common.function.ToString;
 import org.foxlabs.common.function.GetChars;
 import org.foxlabs.common.exception.ThresholdReachedException;
 
@@ -506,6 +505,16 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
       append0(DIGITS[(int) (v / LONG_TENS[n])]);
     }
     return append0(DIGITS[(int) v]);
+  }
+
+  public final CharBuffer appendDec(float value) {
+    // not now!
+    return append(Float.toString(value));
+  }
+
+  public final CharBuffer appendDec(double value) {
+    // not now!
+    return append(Double.toString(value));
   }
 
   public final CharBuffer appendHex(byte value) {
