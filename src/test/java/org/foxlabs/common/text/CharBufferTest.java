@@ -53,6 +53,7 @@ public class CharBufferTest {
 
   // Number to string representation
 
+
   // Decimal representation
 
   /**
@@ -61,45 +62,45 @@ public class CharBufferTest {
   @Test
   public void test_appendDec_int() {
     // @formatter:off
-    assertEquals(          "0", new CharBuffer().appendDec(          0).toString());
-    assertEquals(          "9", new CharBuffer().appendDec(          9).toString());
-    assertEquals(         "10", new CharBuffer().appendDec(         10).toString());
-    assertEquals(         "99", new CharBuffer().appendDec(         99).toString());
-    assertEquals(        "100", new CharBuffer().appendDec(        100).toString());
-    assertEquals(        "999", new CharBuffer().appendDec(        999).toString());
-    assertEquals(       "1000", new CharBuffer().appendDec(       1000).toString());
-    assertEquals(       "9999", new CharBuffer().appendDec(       9999).toString());
-    assertEquals(      "10000", new CharBuffer().appendDec(      10000).toString());
-    assertEquals(      "99999", new CharBuffer().appendDec(      99999).toString());
-    assertEquals(     "100000", new CharBuffer().appendDec(     100000).toString());
-    assertEquals(     "999999", new CharBuffer().appendDec(     999999).toString());
-    assertEquals(    "1000000", new CharBuffer().appendDec(    1000000).toString());
-    assertEquals(    "9999999", new CharBuffer().appendDec(    9999999).toString());
-    assertEquals(   "10000000", new CharBuffer().appendDec(   10000000).toString());
-    assertEquals(   "99999999", new CharBuffer().appendDec(   99999999).toString());
-    assertEquals(  "100000000", new CharBuffer().appendDec(  100000000).toString());
-    assertEquals(  "999999999", new CharBuffer().appendDec(  999999999).toString());
-    assertEquals( "1000000000", new CharBuffer().appendDec( 1000000000).toString());
-    assertEquals( "2147483647", new CharBuffer().appendDec( 2147483647).toString());
-    assertEquals("-2147483648", new CharBuffer().appendDec(-2147483648).toString());
-    assertEquals("-1000000000", new CharBuffer().appendDec(-1000000000).toString());
-    assertEquals( "-999999999", new CharBuffer().appendDec( -999999999).toString());
-    assertEquals( "-100000000", new CharBuffer().appendDec( -100000000).toString());
-    assertEquals(  "-99999999", new CharBuffer().appendDec(  -99999999).toString());
-    assertEquals(  "-10000000", new CharBuffer().appendDec(  -10000000).toString());
-    assertEquals(   "-9999999", new CharBuffer().appendDec(   -9999999).toString());
-    assertEquals(   "-1000000", new CharBuffer().appendDec(   -1000000).toString());
-    assertEquals(    "-999999", new CharBuffer().appendDec(    -999999).toString());
-    assertEquals(    "-100000", new CharBuffer().appendDec(    -100000).toString());
-    assertEquals(     "-99999", new CharBuffer().appendDec(     -99999).toString());
-    assertEquals(     "-10000", new CharBuffer().appendDec(     -10000).toString());
-    assertEquals(      "-9999", new CharBuffer().appendDec(      -9999).toString());
-    assertEquals(      "-1000", new CharBuffer().appendDec(      -1000).toString());
-    assertEquals(       "-999", new CharBuffer().appendDec(       -999).toString());
-    assertEquals(       "-100", new CharBuffer().appendDec(       -100).toString());
-    assertEquals(        "-99", new CharBuffer().appendDec(        -99).toString());
-    assertEquals(        "-10", new CharBuffer().appendDec(        -10).toString());
-    assertEquals(         "-9", new CharBuffer().appendDec(         -9).toString());
+    assertEquals(          "0", new CharBuffer( 1).appendDec(          0).toString());
+    assertEquals(          "9", new CharBuffer( 1).appendDec(          9).toString());
+    assertEquals(         "10", new CharBuffer( 2).appendDec(         10).toString());
+    assertEquals(         "99", new CharBuffer( 2).appendDec(         99).toString());
+    assertEquals(        "100", new CharBuffer( 3).appendDec(        100).toString());
+    assertEquals(        "999", new CharBuffer( 3).appendDec(        999).toString());
+    assertEquals(       "1000", new CharBuffer( 4).appendDec(       1000).toString());
+    assertEquals(       "9999", new CharBuffer( 4).appendDec(       9999).toString());
+    assertEquals(      "10000", new CharBuffer( 5).appendDec(      10000).toString());
+    assertEquals(      "99999", new CharBuffer( 5).appendDec(      99999).toString());
+    assertEquals(     "100000", new CharBuffer( 6).appendDec(     100000).toString());
+    assertEquals(     "999999", new CharBuffer( 6).appendDec(     999999).toString());
+    assertEquals(    "1000000", new CharBuffer( 7).appendDec(    1000000).toString());
+    assertEquals(    "9999999", new CharBuffer( 7).appendDec(    9999999).toString());
+    assertEquals(   "10000000", new CharBuffer( 8).appendDec(   10000000).toString());
+    assertEquals(   "99999999", new CharBuffer( 8).appendDec(   99999999).toString());
+    assertEquals(  "100000000", new CharBuffer( 9).appendDec(  100000000).toString());
+    assertEquals(  "999999999", new CharBuffer( 9).appendDec(  999999999).toString());
+    assertEquals( "1000000000", new CharBuffer(10).appendDec( 1000000000).toString());
+    assertEquals( "2147483647", new CharBuffer(10).appendDec( 2147483647).toString());
+    assertEquals("-2147483648", new CharBuffer(11).appendDec(-2147483648).toString());
+    assertEquals("-1000000000", new CharBuffer(11).appendDec(-1000000000).toString());
+    assertEquals( "-999999999", new CharBuffer(10).appendDec( -999999999).toString());
+    assertEquals( "-100000000", new CharBuffer(10).appendDec( -100000000).toString());
+    assertEquals(  "-99999999", new CharBuffer( 9).appendDec(  -99999999).toString());
+    assertEquals(  "-10000000", new CharBuffer( 9).appendDec(  -10000000).toString());
+    assertEquals(   "-9999999", new CharBuffer( 8).appendDec(   -9999999).toString());
+    assertEquals(   "-1000000", new CharBuffer( 8).appendDec(   -1000000).toString());
+    assertEquals(    "-999999", new CharBuffer( 7).appendDec(    -999999).toString());
+    assertEquals(    "-100000", new CharBuffer( 7).appendDec(    -100000).toString());
+    assertEquals(     "-99999", new CharBuffer( 6).appendDec(     -99999).toString());
+    assertEquals(     "-10000", new CharBuffer( 6).appendDec(     -10000).toString());
+    assertEquals(      "-9999", new CharBuffer( 5).appendDec(      -9999).toString());
+    assertEquals(      "-1000", new CharBuffer( 5).appendDec(      -1000).toString());
+    assertEquals(       "-999", new CharBuffer( 4).appendDec(       -999).toString());
+    assertEquals(       "-100", new CharBuffer( 4).appendDec(       -100).toString());
+    assertEquals(        "-99", new CharBuffer( 3).appendDec(        -99).toString());
+    assertEquals(        "-10", new CharBuffer( 3).appendDec(        -10).toString());
+    assertEquals(         "-9", new CharBuffer( 2).appendDec(         -9).toString());
     // @formatter:on
   }
 
@@ -157,81 +158,81 @@ public class CharBufferTest {
   @Test
   public void test_appendDec_long() {
     // @formatter:off
-    assertEquals(                   "0", new CharBuffer().appendDec(                   0L).toString());
-    assertEquals(                   "9", new CharBuffer().appendDec(                   9L).toString());
-    assertEquals(                  "10", new CharBuffer().appendDec(                  10L).toString());
-    assertEquals(                  "99", new CharBuffer().appendDec(                  99L).toString());
-    assertEquals(                 "100", new CharBuffer().appendDec(                 100L).toString());
-    assertEquals(                 "999", new CharBuffer().appendDec(                 999L).toString());
-    assertEquals(                "1000", new CharBuffer().appendDec(                1000L).toString());
-    assertEquals(                "9999", new CharBuffer().appendDec(                9999L).toString());
-    assertEquals(               "10000", new CharBuffer().appendDec(               10000L).toString());
-    assertEquals(               "99999", new CharBuffer().appendDec(               99999L).toString());
-    assertEquals(              "100000", new CharBuffer().appendDec(              100000L).toString());
-    assertEquals(              "999999", new CharBuffer().appendDec(              999999L).toString());
-    assertEquals(             "1000000", new CharBuffer().appendDec(             1000000L).toString());
-    assertEquals(             "9999999", new CharBuffer().appendDec(             9999999L).toString());
-    assertEquals(            "10000000", new CharBuffer().appendDec(            10000000L).toString());
-    assertEquals(            "99999999", new CharBuffer().appendDec(            99999999L).toString());
-    assertEquals(           "100000000", new CharBuffer().appendDec(           100000000L).toString());
-    assertEquals(           "999999999", new CharBuffer().appendDec(           999999999L).toString());
-    assertEquals(          "1000000000", new CharBuffer().appendDec(          1000000000L).toString());
-    assertEquals(          "9999999999", new CharBuffer().appendDec(          9999999999L).toString());
-    assertEquals(         "10000000000", new CharBuffer().appendDec(         10000000000L).toString());
-    assertEquals(         "99999999999", new CharBuffer().appendDec(         99999999999L).toString());
-    assertEquals(        "100000000000", new CharBuffer().appendDec(        100000000000L).toString());
-    assertEquals(        "999999999999", new CharBuffer().appendDec(        999999999999L).toString());
-    assertEquals(       "1000000000000", new CharBuffer().appendDec(       1000000000000L).toString());
-    assertEquals(       "9999999999999", new CharBuffer().appendDec(       9999999999999L).toString());
-    assertEquals(      "10000000000000", new CharBuffer().appendDec(      10000000000000L).toString());
-    assertEquals(      "99999999999999", new CharBuffer().appendDec(      99999999999999L).toString());
-    assertEquals(     "100000000000000", new CharBuffer().appendDec(     100000000000000L).toString());
-    assertEquals(     "999999999999999", new CharBuffer().appendDec(     999999999999999L).toString());
-    assertEquals(    "1000000000000000", new CharBuffer().appendDec(    1000000000000000L).toString());
-    assertEquals(    "9999999999999999", new CharBuffer().appendDec(    9999999999999999L).toString());
-    assertEquals(   "10000000000000000", new CharBuffer().appendDec(   10000000000000000L).toString());
-    assertEquals(   "99999999999999999", new CharBuffer().appendDec(   99999999999999999L).toString());
-    assertEquals(  "100000000000000000", new CharBuffer().appendDec(  100000000000000000L).toString());
-    assertEquals(  "999999999999999999", new CharBuffer().appendDec(  999999999999999999L).toString());
-    assertEquals( "1000000000000000000", new CharBuffer().appendDec( 1000000000000000000L).toString());
-    assertEquals( "9223372036854775807", new CharBuffer().appendDec( 9223372036854775807L).toString());
-    assertEquals("-9223372036854775808", new CharBuffer().appendDec(-9223372036854775808L).toString());
-    assertEquals("-1000000000000000000", new CharBuffer().appendDec(-1000000000000000000L).toString());
-    assertEquals( "-999999999999999999", new CharBuffer().appendDec( -999999999999999999L).toString());
-    assertEquals( "-100000000000000000", new CharBuffer().appendDec( -100000000000000000L).toString());
-    assertEquals(  "-99999999999999999", new CharBuffer().appendDec(  -99999999999999999L).toString());
-    assertEquals(  "-10000000000000000", new CharBuffer().appendDec(  -10000000000000000L).toString());
-    assertEquals(   "-9999999999999999", new CharBuffer().appendDec(   -9999999999999999L).toString());
-    assertEquals(   "-1000000000000000", new CharBuffer().appendDec(   -1000000000000000L).toString());
-    assertEquals(    "-999999999999999", new CharBuffer().appendDec(    -999999999999999L).toString());
-    assertEquals(    "-100000000000000", new CharBuffer().appendDec(    -100000000000000L).toString());
-    assertEquals(     "-99999999999999", new CharBuffer().appendDec(     -99999999999999L).toString());
-    assertEquals(     "-10000000000000", new CharBuffer().appendDec(     -10000000000000L).toString());
-    assertEquals(      "-9999999999999", new CharBuffer().appendDec(      -9999999999999L).toString());
-    assertEquals(      "-1000000000000", new CharBuffer().appendDec(      -1000000000000L).toString());
-    assertEquals(       "-999999999999", new CharBuffer().appendDec(       -999999999999L).toString());
-    assertEquals(       "-100000000000", new CharBuffer().appendDec(       -100000000000L).toString());
-    assertEquals(        "-99999999999", new CharBuffer().appendDec(        -99999999999L).toString());
-    assertEquals(        "-10000000000", new CharBuffer().appendDec(        -10000000000L).toString());
-    assertEquals(         "-9999999999", new CharBuffer().appendDec(         -9999999999L).toString());
-    assertEquals(         "-1000000000", new CharBuffer().appendDec(         -1000000000L).toString());
-    assertEquals(          "-999999999", new CharBuffer().appendDec(          -999999999L).toString());
-    assertEquals(          "-100000000", new CharBuffer().appendDec(          -100000000L).toString());
-    assertEquals(           "-99999999", new CharBuffer().appendDec(           -99999999L).toString());
-    assertEquals(           "-10000000", new CharBuffer().appendDec(           -10000000L).toString());
-    assertEquals(            "-9999999", new CharBuffer().appendDec(            -9999999L).toString());
-    assertEquals(            "-1000000", new CharBuffer().appendDec(            -1000000L).toString());
-    assertEquals(             "-999999", new CharBuffer().appendDec(             -999999L).toString());
-    assertEquals(             "-100000", new CharBuffer().appendDec(             -100000L).toString());
-    assertEquals(              "-99999", new CharBuffer().appendDec(              -99999L).toString());
-    assertEquals(              "-10000", new CharBuffer().appendDec(              -10000L).toString());
-    assertEquals(               "-9999", new CharBuffer().appendDec(               -9999L).toString());
-    assertEquals(               "-1000", new CharBuffer().appendDec(               -1000L).toString());
-    assertEquals(                "-999", new CharBuffer().appendDec(                -999L).toString());
-    assertEquals(                "-100", new CharBuffer().appendDec(                -100L).toString());
-    assertEquals(                 "-99", new CharBuffer().appendDec(                 -99L).toString());
-    assertEquals(                 "-10", new CharBuffer().appendDec(                 -10L).toString());
-    assertEquals(                  "-9", new CharBuffer().appendDec(                  -9L).toString());
+    assertEquals(                   "0", new CharBuffer( 1).appendDec(                   0L).toString());
+    assertEquals(                   "9", new CharBuffer( 1).appendDec(                   9L).toString());
+    assertEquals(                  "10", new CharBuffer( 2).appendDec(                  10L).toString());
+    assertEquals(                  "99", new CharBuffer( 2).appendDec(                  99L).toString());
+    assertEquals(                 "100", new CharBuffer( 3).appendDec(                 100L).toString());
+    assertEquals(                 "999", new CharBuffer( 3).appendDec(                 999L).toString());
+    assertEquals(                "1000", new CharBuffer( 4).appendDec(                1000L).toString());
+    assertEquals(                "9999", new CharBuffer( 4).appendDec(                9999L).toString());
+    assertEquals(               "10000", new CharBuffer( 5).appendDec(               10000L).toString());
+    assertEquals(               "99999", new CharBuffer( 5).appendDec(               99999L).toString());
+    assertEquals(              "100000", new CharBuffer( 6).appendDec(              100000L).toString());
+    assertEquals(              "999999", new CharBuffer( 6).appendDec(              999999L).toString());
+    assertEquals(             "1000000", new CharBuffer( 7).appendDec(             1000000L).toString());
+    assertEquals(             "9999999", new CharBuffer( 7).appendDec(             9999999L).toString());
+    assertEquals(            "10000000", new CharBuffer( 8).appendDec(            10000000L).toString());
+    assertEquals(            "99999999", new CharBuffer( 8).appendDec(            99999999L).toString());
+    assertEquals(           "100000000", new CharBuffer( 9).appendDec(           100000000L).toString());
+    assertEquals(           "999999999", new CharBuffer( 9).appendDec(           999999999L).toString());
+    assertEquals(          "1000000000", new CharBuffer(10).appendDec(          1000000000L).toString());
+    assertEquals(          "9999999999", new CharBuffer(10).appendDec(          9999999999L).toString());
+    assertEquals(         "10000000000", new CharBuffer(11).appendDec(         10000000000L).toString());
+    assertEquals(         "99999999999", new CharBuffer(11).appendDec(         99999999999L).toString());
+    assertEquals(        "100000000000", new CharBuffer(12).appendDec(        100000000000L).toString());
+    assertEquals(        "999999999999", new CharBuffer(12).appendDec(        999999999999L).toString());
+    assertEquals(       "1000000000000", new CharBuffer(13).appendDec(       1000000000000L).toString());
+    assertEquals(       "9999999999999", new CharBuffer(13).appendDec(       9999999999999L).toString());
+    assertEquals(      "10000000000000", new CharBuffer(14).appendDec(      10000000000000L).toString());
+    assertEquals(      "99999999999999", new CharBuffer(14).appendDec(      99999999999999L).toString());
+    assertEquals(     "100000000000000", new CharBuffer(15).appendDec(     100000000000000L).toString());
+    assertEquals(     "999999999999999", new CharBuffer(15).appendDec(     999999999999999L).toString());
+    assertEquals(    "1000000000000000", new CharBuffer(16).appendDec(    1000000000000000L).toString());
+    assertEquals(    "9999999999999999", new CharBuffer(16).appendDec(    9999999999999999L).toString());
+    assertEquals(   "10000000000000000", new CharBuffer(17).appendDec(   10000000000000000L).toString());
+    assertEquals(   "99999999999999999", new CharBuffer(17).appendDec(   99999999999999999L).toString());
+    assertEquals(  "100000000000000000", new CharBuffer(18).appendDec(  100000000000000000L).toString());
+    assertEquals(  "999999999999999999", new CharBuffer(18).appendDec(  999999999999999999L).toString());
+    assertEquals( "1000000000000000000", new CharBuffer(19).appendDec( 1000000000000000000L).toString());
+    assertEquals( "9223372036854775807", new CharBuffer(19).appendDec( 9223372036854775807L).toString());
+    assertEquals("-9223372036854775808", new CharBuffer(20).appendDec(-9223372036854775808L).toString());
+    assertEquals("-1000000000000000000", new CharBuffer(20).appendDec(-1000000000000000000L).toString());
+    assertEquals( "-999999999999999999", new CharBuffer(19).appendDec( -999999999999999999L).toString());
+    assertEquals( "-100000000000000000", new CharBuffer(19).appendDec( -100000000000000000L).toString());
+    assertEquals(  "-99999999999999999", new CharBuffer(18).appendDec(  -99999999999999999L).toString());
+    assertEquals(  "-10000000000000000", new CharBuffer(18).appendDec(  -10000000000000000L).toString());
+    assertEquals(   "-9999999999999999", new CharBuffer(17).appendDec(   -9999999999999999L).toString());
+    assertEquals(   "-1000000000000000", new CharBuffer(17).appendDec(   -1000000000000000L).toString());
+    assertEquals(    "-999999999999999", new CharBuffer(16).appendDec(    -999999999999999L).toString());
+    assertEquals(    "-100000000000000", new CharBuffer(16).appendDec(    -100000000000000L).toString());
+    assertEquals(     "-99999999999999", new CharBuffer(15).appendDec(     -99999999999999L).toString());
+    assertEquals(     "-10000000000000", new CharBuffer(15).appendDec(     -10000000000000L).toString());
+    assertEquals(      "-9999999999999", new CharBuffer(14).appendDec(      -9999999999999L).toString());
+    assertEquals(      "-1000000000000", new CharBuffer(14).appendDec(      -1000000000000L).toString());
+    assertEquals(       "-999999999999", new CharBuffer(13).appendDec(       -999999999999L).toString());
+    assertEquals(       "-100000000000", new CharBuffer(13).appendDec(       -100000000000L).toString());
+    assertEquals(        "-99999999999", new CharBuffer(12).appendDec(        -99999999999L).toString());
+    assertEquals(        "-10000000000", new CharBuffer(12).appendDec(        -10000000000L).toString());
+    assertEquals(         "-9999999999", new CharBuffer(11).appendDec(         -9999999999L).toString());
+    assertEquals(         "-1000000000", new CharBuffer(11).appendDec(         -1000000000L).toString());
+    assertEquals(          "-999999999", new CharBuffer(10).appendDec(          -999999999L).toString());
+    assertEquals(          "-100000000", new CharBuffer(10).appendDec(          -100000000L).toString());
+    assertEquals(           "-99999999", new CharBuffer( 9).appendDec(           -99999999L).toString());
+    assertEquals(           "-10000000", new CharBuffer( 9).appendDec(           -10000000L).toString());
+    assertEquals(            "-9999999", new CharBuffer( 8).appendDec(            -9999999L).toString());
+    assertEquals(            "-1000000", new CharBuffer( 8).appendDec(            -1000000L).toString());
+    assertEquals(             "-999999", new CharBuffer( 7).appendDec(             -999999L).toString());
+    assertEquals(             "-100000", new CharBuffer( 7).appendDec(             -100000L).toString());
+    assertEquals(              "-99999", new CharBuffer( 6).appendDec(              -99999L).toString());
+    assertEquals(              "-10000", new CharBuffer( 6).appendDec(              -10000L).toString());
+    assertEquals(               "-9999", new CharBuffer( 5).appendDec(               -9999L).toString());
+    assertEquals(               "-1000", new CharBuffer( 5).appendDec(               -1000L).toString());
+    assertEquals(                "-999", new CharBuffer( 4).appendDec(                -999L).toString());
+    assertEquals(                "-100", new CharBuffer( 4).appendDec(                -100L).toString());
+    assertEquals(                 "-99", new CharBuffer( 3).appendDec(                 -99L).toString());
+    assertEquals(                 "-10", new CharBuffer( 3).appendDec(                 -10L).toString());
+    assertEquals(                  "-9", new CharBuffer( 2).appendDec(                  -9L).toString());
     // @formatter:on
   }
 
@@ -327,10 +328,10 @@ public class CharBufferTest {
   @Test
   public void test_appendHex_byte() {
     // @formatter:off
-    assertEquals("00", new CharBuffer().appendHex((byte) 0x00).toString());
-    assertEquals("0f", new CharBuffer().appendHex((byte) 0x0f).toString());
-    assertEquals("ff", new CharBuffer().appendHex((byte) 0xff).toString());
-    assertEquals("f0", new CharBuffer().appendHex((byte) 0xf0).toString());
+    assertEquals("00", new CharBuffer(2).appendHex((byte) 0x00).toString());
+    assertEquals("0f", new CharBuffer(2).appendHex((byte) 0x0f).toString());
+    assertEquals("ff", new CharBuffer(2).appendHex((byte) 0xff).toString());
+    assertEquals("f0", new CharBuffer(2).appendHex((byte) 0xf0).toString());
     // @formatter:on
   }
 
@@ -340,10 +341,10 @@ public class CharBufferTest {
   @Test
   public void test_appendHexTrimZeros_byte() {
     // @formatter:off
-    assertEquals( "0", new CharBuffer().appendHexTrimZeros((byte) 0x00).toString());
-    assertEquals( "f", new CharBuffer().appendHexTrimZeros((byte) 0x0f).toString());
-    assertEquals("ff", new CharBuffer().appendHexTrimZeros((byte) 0xff).toString());
-    assertEquals("f0", new CharBuffer().appendHexTrimZeros((byte) 0xf0).toString());
+    assertEquals( "0", new CharBuffer(1).appendHexTrimZeros((byte) 0x00).toString());
+    assertEquals( "f", new CharBuffer(1).appendHexTrimZeros((byte) 0x0f).toString());
+    assertEquals("ff", new CharBuffer(2).appendHexTrimZeros((byte) 0xff).toString());
+    assertEquals("f0", new CharBuffer(2).appendHexTrimZeros((byte) 0xf0).toString());
     // @formatter:on
   }
 
@@ -354,9 +355,14 @@ public class CharBufferTest {
   public void test_getHexCapacity_byte() {
     // @formatter:off
     assertEquals(1, CharBuffer.getHexCapacity((byte) 0x00));
-    assertEquals(1, CharBuffer.getHexCapacity((byte) 0x0f));
-    assertEquals(2, CharBuffer.getHexCapacity((byte) 0xff));
-    assertEquals(2, CharBuffer.getHexCapacity((byte) 0xf0));
+    assertEquals(1, CharBuffer.getHexCapacity((byte) 0x01));
+    assertEquals(1, CharBuffer.getHexCapacity((byte) 0x02));
+    assertEquals(1, CharBuffer.getHexCapacity((byte) 0x04));
+    assertEquals(1, CharBuffer.getHexCapacity((byte) 0x08));
+    assertEquals(2, CharBuffer.getHexCapacity((byte) 0x10));
+    assertEquals(2, CharBuffer.getHexCapacity((byte) 0x20));
+    assertEquals(2, CharBuffer.getHexCapacity((byte) 0x40));
+    assertEquals(2, CharBuffer.getHexCapacity((byte) 0x80));
     // @formatter:on
   }
 
@@ -366,14 +372,14 @@ public class CharBufferTest {
   @Test
   public void test_appendHex_short() {
     // @formatter:off
-    assertEquals("0000", new CharBuffer().appendHex((short) 0x0000).toString());
-    assertEquals("000f", new CharBuffer().appendHex((short) 0x000f).toString());
-    assertEquals("00ff", new CharBuffer().appendHex((short) 0x00ff).toString());
-    assertEquals("0fff", new CharBuffer().appendHex((short) 0x0fff).toString());
-    assertEquals("ffff", new CharBuffer().appendHex((short) 0xffff).toString());
-    assertEquals("fff0", new CharBuffer().appendHex((short) 0xfff0).toString());
-    assertEquals("ff00", new CharBuffer().appendHex((short) 0xff00).toString());
-    assertEquals("f000", new CharBuffer().appendHex((short) 0xf000).toString());
+    assertEquals("0000", new CharBuffer(4).appendHex((short) 0x0000).toString());
+    assertEquals("000f", new CharBuffer(4).appendHex((short) 0x000f).toString());
+    assertEquals("00ff", new CharBuffer(4).appendHex((short) 0x00ff).toString());
+    assertEquals("0fff", new CharBuffer(4).appendHex((short) 0x0fff).toString());
+    assertEquals("ffff", new CharBuffer(4).appendHex((short) 0xffff).toString());
+    assertEquals("fff0", new CharBuffer(4).appendHex((short) 0xfff0).toString());
+    assertEquals("ff00", new CharBuffer(4).appendHex((short) 0xff00).toString());
+    assertEquals("f000", new CharBuffer(4).appendHex((short) 0xf000).toString());
     // @formatter:on
   }
 
@@ -383,14 +389,14 @@ public class CharBufferTest {
   @Test
   public void test_appendHexTrimZeros_short() {
     // @formatter:off
-    assertEquals(   "0", new CharBuffer().appendHexTrimZeros((short) 0x0000).toString());
-    assertEquals(   "f", new CharBuffer().appendHexTrimZeros((short) 0x000f).toString());
-    assertEquals(  "ff", new CharBuffer().appendHexTrimZeros((short) 0x00ff).toString());
-    assertEquals( "fff", new CharBuffer().appendHexTrimZeros((short) 0x0fff).toString());
-    assertEquals("ffff", new CharBuffer().appendHexTrimZeros((short) 0xffff).toString());
-    assertEquals("fff0", new CharBuffer().appendHexTrimZeros((short) 0xfff0).toString());
-    assertEquals("ff00", new CharBuffer().appendHexTrimZeros((short) 0xff00).toString());
-    assertEquals("f000", new CharBuffer().appendHexTrimZeros((short) 0xf000).toString());
+    assertEquals(   "0", new CharBuffer(1).appendHexTrimZeros((short) 0x0000).toString());
+    assertEquals(   "f", new CharBuffer(1).appendHexTrimZeros((short) 0x000f).toString());
+    assertEquals(  "ff", new CharBuffer(2).appendHexTrimZeros((short) 0x00ff).toString());
+    assertEquals( "fff", new CharBuffer(3).appendHexTrimZeros((short) 0x0fff).toString());
+    assertEquals("ffff", new CharBuffer(4).appendHexTrimZeros((short) 0xffff).toString());
+    assertEquals("fff0", new CharBuffer(4).appendHexTrimZeros((short) 0xfff0).toString());
+    assertEquals("ff00", new CharBuffer(4).appendHexTrimZeros((short) 0xff00).toString());
+    assertEquals("f000", new CharBuffer(4).appendHexTrimZeros((short) 0xf000).toString());
     // @formatter:on
   }
 
@@ -401,13 +407,22 @@ public class CharBufferTest {
   public void test_getHexCapacity_short() {
     // @formatter:off
     assertEquals(1, CharBuffer.getHexCapacity((short) 0x0000));
-    assertEquals(1, CharBuffer.getHexCapacity((short) 0x000f));
-    assertEquals(2, CharBuffer.getHexCapacity((short) 0x00ff));
-    assertEquals(3, CharBuffer.getHexCapacity((short) 0x0fff));
-    assertEquals(4, CharBuffer.getHexCapacity((short) 0xffff));
-    assertEquals(4, CharBuffer.getHexCapacity((short) 0xfff0));
-    assertEquals(4, CharBuffer.getHexCapacity((short) 0xff00));
-    assertEquals(4, CharBuffer.getHexCapacity((short) 0xf000));
+    assertEquals(1, CharBuffer.getHexCapacity((short) 0x0001));
+    assertEquals(1, CharBuffer.getHexCapacity((short) 0x0002));
+    assertEquals(1, CharBuffer.getHexCapacity((short) 0x0004));
+    assertEquals(1, CharBuffer.getHexCapacity((short) 0x0008));
+    assertEquals(2, CharBuffer.getHexCapacity((short) 0x0010));
+    assertEquals(2, CharBuffer.getHexCapacity((short) 0x0020));
+    assertEquals(2, CharBuffer.getHexCapacity((short) 0x0040));
+    assertEquals(2, CharBuffer.getHexCapacity((short) 0x0080));
+    assertEquals(3, CharBuffer.getHexCapacity((short) 0x0100));
+    assertEquals(3, CharBuffer.getHexCapacity((short) 0x0200));
+    assertEquals(3, CharBuffer.getHexCapacity((short) 0x0400));
+    assertEquals(3, CharBuffer.getHexCapacity((short) 0x0800));
+    assertEquals(4, CharBuffer.getHexCapacity((short) 0x1000));
+    assertEquals(4, CharBuffer.getHexCapacity((short) 0x2000));
+    assertEquals(4, CharBuffer.getHexCapacity((short) 0x4000));
+    assertEquals(4, CharBuffer.getHexCapacity((short) 0x8000));
     // @formatter:on
   }
 
@@ -417,22 +432,22 @@ public class CharBufferTest {
   @Test
   public void test_appendHex_int() {
     // @formatter:off
-    assertEquals("00000000", new CharBuffer().appendHex(0x00000000).toString());
-    assertEquals("0000000f", new CharBuffer().appendHex(0x0000000f).toString());
-    assertEquals("000000ff", new CharBuffer().appendHex(0x000000ff).toString());
-    assertEquals("00000fff", new CharBuffer().appendHex(0x00000fff).toString());
-    assertEquals("0000ffff", new CharBuffer().appendHex(0x0000ffff).toString());
-    assertEquals("000fffff", new CharBuffer().appendHex(0x000fffff).toString());
-    assertEquals("00ffffff", new CharBuffer().appendHex(0x00ffffff).toString());
-    assertEquals("0fffffff", new CharBuffer().appendHex(0x0fffffff).toString());
-    assertEquals("ffffffff", new CharBuffer().appendHex(0xffffffff).toString());
-    assertEquals("fffffff0", new CharBuffer().appendHex(0xfffffff0).toString());
-    assertEquals("ffffff00", new CharBuffer().appendHex(0xffffff00).toString());
-    assertEquals("fffff000", new CharBuffer().appendHex(0xfffff000).toString());
-    assertEquals("ffff0000", new CharBuffer().appendHex(0xffff0000).toString());
-    assertEquals("fff00000", new CharBuffer().appendHex(0xfff00000).toString());
-    assertEquals("ff000000", new CharBuffer().appendHex(0xff000000).toString());
-    assertEquals("f0000000", new CharBuffer().appendHex(0xf0000000).toString());
+    assertEquals("00000000", new CharBuffer(8).appendHex(0x00000000).toString());
+    assertEquals("0000000f", new CharBuffer(8).appendHex(0x0000000f).toString());
+    assertEquals("000000ff", new CharBuffer(8).appendHex(0x000000ff).toString());
+    assertEquals("00000fff", new CharBuffer(8).appendHex(0x00000fff).toString());
+    assertEquals("0000ffff", new CharBuffer(8).appendHex(0x0000ffff).toString());
+    assertEquals("000fffff", new CharBuffer(8).appendHex(0x000fffff).toString());
+    assertEquals("00ffffff", new CharBuffer(8).appendHex(0x00ffffff).toString());
+    assertEquals("0fffffff", new CharBuffer(8).appendHex(0x0fffffff).toString());
+    assertEquals("ffffffff", new CharBuffer(8).appendHex(0xffffffff).toString());
+    assertEquals("fffffff0", new CharBuffer(8).appendHex(0xfffffff0).toString());
+    assertEquals("ffffff00", new CharBuffer(8).appendHex(0xffffff00).toString());
+    assertEquals("fffff000", new CharBuffer(8).appendHex(0xfffff000).toString());
+    assertEquals("ffff0000", new CharBuffer(8).appendHex(0xffff0000).toString());
+    assertEquals("fff00000", new CharBuffer(8).appendHex(0xfff00000).toString());
+    assertEquals("ff000000", new CharBuffer(8).appendHex(0xff000000).toString());
+    assertEquals("f0000000", new CharBuffer(8).appendHex(0xf0000000).toString());
     // @formatter:on
   }
 
@@ -442,23 +457,23 @@ public class CharBufferTest {
   @Test
   public void test_appendHexTrimZeros_int() {
     // @formatter:off
-    assertEquals(       "0", new CharBuffer().appendHexTrimZeros(0x00000000).toString());
-    assertEquals(       "f", new CharBuffer().appendHexTrimZeros(0x0000000f).toString());
-    assertEquals(      "ff", new CharBuffer().appendHexTrimZeros(0x000000ff).toString());
-    assertEquals(     "fff", new CharBuffer().appendHexTrimZeros(0x00000fff).toString());
-    assertEquals(    "ffff", new CharBuffer().appendHexTrimZeros(0x0000ffff).toString());
-    assertEquals(   "fffff", new CharBuffer().appendHexTrimZeros(0x000fffff).toString());
-    assertEquals(  "ffffff", new CharBuffer().appendHexTrimZeros(0x00ffffff).toString());
-    assertEquals( "fffffff", new CharBuffer().appendHexTrimZeros(0x0fffffff).toString());
-    assertEquals("ffffffff", new CharBuffer().appendHexTrimZeros(0xffffffff).toString());
-    assertEquals("fffffff0", new CharBuffer().appendHexTrimZeros(0xfffffff0).toString());
-    assertEquals("fffffff0", new CharBuffer().appendHexTrimZeros(0xfffffff0).toString());
-    assertEquals("ffffff00", new CharBuffer().appendHexTrimZeros(0xffffff00).toString());
-    assertEquals("fffff000", new CharBuffer().appendHexTrimZeros(0xfffff000).toString());
-    assertEquals("ffff0000", new CharBuffer().appendHexTrimZeros(0xffff0000).toString());
-    assertEquals("fff00000", new CharBuffer().appendHexTrimZeros(0xfff00000).toString());
-    assertEquals("ff000000", new CharBuffer().appendHexTrimZeros(0xff000000).toString());
-    assertEquals("f0000000", new CharBuffer().appendHexTrimZeros(0xf0000000).toString());
+    assertEquals(       "0", new CharBuffer(1).appendHexTrimZeros(0x00000000).toString());
+    assertEquals(       "f", new CharBuffer(1).appendHexTrimZeros(0x0000000f).toString());
+    assertEquals(      "ff", new CharBuffer(2).appendHexTrimZeros(0x000000ff).toString());
+    assertEquals(     "fff", new CharBuffer(3).appendHexTrimZeros(0x00000fff).toString());
+    assertEquals(    "ffff", new CharBuffer(4).appendHexTrimZeros(0x0000ffff).toString());
+    assertEquals(   "fffff", new CharBuffer(5).appendHexTrimZeros(0x000fffff).toString());
+    assertEquals(  "ffffff", new CharBuffer(6).appendHexTrimZeros(0x00ffffff).toString());
+    assertEquals( "fffffff", new CharBuffer(7).appendHexTrimZeros(0x0fffffff).toString());
+    assertEquals("ffffffff", new CharBuffer(8).appendHexTrimZeros(0xffffffff).toString());
+    assertEquals("fffffff0", new CharBuffer(8).appendHexTrimZeros(0xfffffff0).toString());
+    assertEquals("fffffff0", new CharBuffer(8).appendHexTrimZeros(0xfffffff0).toString());
+    assertEquals("ffffff00", new CharBuffer(8).appendHexTrimZeros(0xffffff00).toString());
+    assertEquals("fffff000", new CharBuffer(8).appendHexTrimZeros(0xfffff000).toString());
+    assertEquals("ffff0000", new CharBuffer(8).appendHexTrimZeros(0xffff0000).toString());
+    assertEquals("fff00000", new CharBuffer(8).appendHexTrimZeros(0xfff00000).toString());
+    assertEquals("ff000000", new CharBuffer(8).appendHexTrimZeros(0xff000000).toString());
+    assertEquals("f0000000", new CharBuffer(8).appendHexTrimZeros(0xf0000000).toString());
     // @formatter:on
   }
 
@@ -469,21 +484,38 @@ public class CharBufferTest {
   public void test_getHexCapacity_int() {
     // @formatter:off
     assertEquals(1, CharBuffer.getHexCapacity(0x00000000));
-    assertEquals(1, CharBuffer.getHexCapacity(0x0000000f));
-    assertEquals(2, CharBuffer.getHexCapacity(0x000000ff));
-    assertEquals(3, CharBuffer.getHexCapacity(0x00000fff));
-    assertEquals(4, CharBuffer.getHexCapacity(0x0000ffff));
-    assertEquals(5, CharBuffer.getHexCapacity(0x000fffff));
-    assertEquals(6, CharBuffer.getHexCapacity(0x00ffffff));
-    assertEquals(7, CharBuffer.getHexCapacity(0x0fffffff));
-    assertEquals(8, CharBuffer.getHexCapacity(0xffffffff));
-    assertEquals(8, CharBuffer.getHexCapacity(0xfffffff0));
-    assertEquals(8, CharBuffer.getHexCapacity(0xffffff00));
-    assertEquals(8, CharBuffer.getHexCapacity(0xfffff000));
-    assertEquals(8, CharBuffer.getHexCapacity(0xffff0000));
-    assertEquals(8, CharBuffer.getHexCapacity(0xfff00000));
-    assertEquals(8, CharBuffer.getHexCapacity(0xff000000));
-    assertEquals(8, CharBuffer.getHexCapacity(0xf0000000));
+    assertEquals(1, CharBuffer.getHexCapacity(0x00000001));
+    assertEquals(1, CharBuffer.getHexCapacity(0x00000002));
+    assertEquals(1, CharBuffer.getHexCapacity(0x00000004));
+    assertEquals(1, CharBuffer.getHexCapacity(0x00000008));
+    assertEquals(2, CharBuffer.getHexCapacity(0x00000010));
+    assertEquals(2, CharBuffer.getHexCapacity(0x00000020));
+    assertEquals(2, CharBuffer.getHexCapacity(0x00000040));
+    assertEquals(2, CharBuffer.getHexCapacity(0x00000080));
+    assertEquals(3, CharBuffer.getHexCapacity(0x00000100));
+    assertEquals(3, CharBuffer.getHexCapacity(0x00000200));
+    assertEquals(3, CharBuffer.getHexCapacity(0x00000400));
+    assertEquals(3, CharBuffer.getHexCapacity(0x00000800));
+    assertEquals(4, CharBuffer.getHexCapacity(0x00001000));
+    assertEquals(4, CharBuffer.getHexCapacity(0x00002000));
+    assertEquals(4, CharBuffer.getHexCapacity(0x00004000));
+    assertEquals(4, CharBuffer.getHexCapacity(0x00008000));
+    assertEquals(5, CharBuffer.getHexCapacity(0x00010000));
+    assertEquals(5, CharBuffer.getHexCapacity(0x00020000));
+    assertEquals(5, CharBuffer.getHexCapacity(0x00040000));
+    assertEquals(5, CharBuffer.getHexCapacity(0x00080000));
+    assertEquals(6, CharBuffer.getHexCapacity(0x00100000));
+    assertEquals(6, CharBuffer.getHexCapacity(0x00200000));
+    assertEquals(6, CharBuffer.getHexCapacity(0x00400000));
+    assertEquals(6, CharBuffer.getHexCapacity(0x00800000));
+    assertEquals(7, CharBuffer.getHexCapacity(0x01000000));
+    assertEquals(7, CharBuffer.getHexCapacity(0x02000000));
+    assertEquals(7, CharBuffer.getHexCapacity(0x04000000));
+    assertEquals(7, CharBuffer.getHexCapacity(0x08000000));
+    assertEquals(8, CharBuffer.getHexCapacity(0x10000000));
+    assertEquals(8, CharBuffer.getHexCapacity(0x20000000));
+    assertEquals(8, CharBuffer.getHexCapacity(0x40000000));
+    assertEquals(8, CharBuffer.getHexCapacity(0x80000000));
     // @formatter:on
   }
 
@@ -493,38 +525,38 @@ public class CharBufferTest {
   @Test
   public void test_appendHex_long() {
     // @formatter:off
-    assertEquals("0000000000000000", new CharBuffer().appendHex(0x0000000000000000L).toString());
-    assertEquals("000000000000000f", new CharBuffer().appendHex(0x000000000000000fL).toString());
-    assertEquals("00000000000000ff", new CharBuffer().appendHex(0x00000000000000ffL).toString());
-    assertEquals("0000000000000fff", new CharBuffer().appendHex(0x0000000000000fffL).toString());
-    assertEquals("000000000000ffff", new CharBuffer().appendHex(0x000000000000ffffL).toString());
-    assertEquals("00000000000fffff", new CharBuffer().appendHex(0x00000000000fffffL).toString());
-    assertEquals("0000000000ffffff", new CharBuffer().appendHex(0x0000000000ffffffL).toString());
-    assertEquals("000000000fffffff", new CharBuffer().appendHex(0x000000000fffffffL).toString());
-    assertEquals("00000000ffffffff", new CharBuffer().appendHex(0x00000000ffffffffL).toString());
-    assertEquals("0000000fffffffff", new CharBuffer().appendHex(0x0000000fffffffffL).toString());
-    assertEquals("000000ffffffffff", new CharBuffer().appendHex(0x000000ffffffffffL).toString());
-    assertEquals("00000fffffffffff", new CharBuffer().appendHex(0x00000fffffffffffL).toString());
-    assertEquals("0000ffffffffffff", new CharBuffer().appendHex(0x0000ffffffffffffL).toString());
-    assertEquals("000fffffffffffff", new CharBuffer().appendHex(0x000fffffffffffffL).toString());
-    assertEquals("00ffffffffffffff", new CharBuffer().appendHex(0x00ffffffffffffffL).toString());
-    assertEquals("0fffffffffffffff", new CharBuffer().appendHex(0x0fffffffffffffffL).toString());
-    assertEquals("ffffffffffffffff", new CharBuffer().appendHex(0xffffffffffffffffL).toString());
-    assertEquals("fffffffffffffff0", new CharBuffer().appendHex(0xfffffffffffffff0L).toString());
-    assertEquals("ffffffffffffff00", new CharBuffer().appendHex(0xffffffffffffff00L).toString());
-    assertEquals("fffffffffffff000", new CharBuffer().appendHex(0xfffffffffffff000L).toString());
-    assertEquals("ffffffffffff0000", new CharBuffer().appendHex(0xffffffffffff0000L).toString());
-    assertEquals("fffffffffff00000", new CharBuffer().appendHex(0xfffffffffff00000L).toString());
-    assertEquals("ffffffffff000000", new CharBuffer().appendHex(0xffffffffff000000L).toString());
-    assertEquals("fffffffff0000000", new CharBuffer().appendHex(0xfffffffff0000000L).toString());
-    assertEquals("ffffffff00000000", new CharBuffer().appendHex(0xffffffff00000000L).toString());
-    assertEquals("fffffff000000000", new CharBuffer().appendHex(0xfffffff000000000L).toString());
-    assertEquals("ffffff0000000000", new CharBuffer().appendHex(0xffffff0000000000L).toString());
-    assertEquals("fffff00000000000", new CharBuffer().appendHex(0xfffff00000000000L).toString());
-    assertEquals("ffff000000000000", new CharBuffer().appendHex(0xffff000000000000L).toString());
-    assertEquals("fff0000000000000", new CharBuffer().appendHex(0xfff0000000000000L).toString());
-    assertEquals("ff00000000000000", new CharBuffer().appendHex(0xff00000000000000L).toString());
-    assertEquals("f000000000000000", new CharBuffer().appendHex(0xf000000000000000L).toString());
+    assertEquals("0000000000000000", new CharBuffer(16).appendHex(0x0000000000000000L).toString());
+    assertEquals("000000000000000f", new CharBuffer(16).appendHex(0x000000000000000fL).toString());
+    assertEquals("00000000000000ff", new CharBuffer(16).appendHex(0x00000000000000ffL).toString());
+    assertEquals("0000000000000fff", new CharBuffer(16).appendHex(0x0000000000000fffL).toString());
+    assertEquals("000000000000ffff", new CharBuffer(16).appendHex(0x000000000000ffffL).toString());
+    assertEquals("00000000000fffff", new CharBuffer(16).appendHex(0x00000000000fffffL).toString());
+    assertEquals("0000000000ffffff", new CharBuffer(16).appendHex(0x0000000000ffffffL).toString());
+    assertEquals("000000000fffffff", new CharBuffer(16).appendHex(0x000000000fffffffL).toString());
+    assertEquals("00000000ffffffff", new CharBuffer(16).appendHex(0x00000000ffffffffL).toString());
+    assertEquals("0000000fffffffff", new CharBuffer(16).appendHex(0x0000000fffffffffL).toString());
+    assertEquals("000000ffffffffff", new CharBuffer(16).appendHex(0x000000ffffffffffL).toString());
+    assertEquals("00000fffffffffff", new CharBuffer(16).appendHex(0x00000fffffffffffL).toString());
+    assertEquals("0000ffffffffffff", new CharBuffer(16).appendHex(0x0000ffffffffffffL).toString());
+    assertEquals("000fffffffffffff", new CharBuffer(16).appendHex(0x000fffffffffffffL).toString());
+    assertEquals("00ffffffffffffff", new CharBuffer(16).appendHex(0x00ffffffffffffffL).toString());
+    assertEquals("0fffffffffffffff", new CharBuffer(16).appendHex(0x0fffffffffffffffL).toString());
+    assertEquals("ffffffffffffffff", new CharBuffer(16).appendHex(0xffffffffffffffffL).toString());
+    assertEquals("fffffffffffffff0", new CharBuffer(16).appendHex(0xfffffffffffffff0L).toString());
+    assertEquals("ffffffffffffff00", new CharBuffer(16).appendHex(0xffffffffffffff00L).toString());
+    assertEquals("fffffffffffff000", new CharBuffer(16).appendHex(0xfffffffffffff000L).toString());
+    assertEquals("ffffffffffff0000", new CharBuffer(16).appendHex(0xffffffffffff0000L).toString());
+    assertEquals("fffffffffff00000", new CharBuffer(16).appendHex(0xfffffffffff00000L).toString());
+    assertEquals("ffffffffff000000", new CharBuffer(16).appendHex(0xffffffffff000000L).toString());
+    assertEquals("fffffffff0000000", new CharBuffer(16).appendHex(0xfffffffff0000000L).toString());
+    assertEquals("ffffffff00000000", new CharBuffer(16).appendHex(0xffffffff00000000L).toString());
+    assertEquals("fffffff000000000", new CharBuffer(16).appendHex(0xfffffff000000000L).toString());
+    assertEquals("ffffff0000000000", new CharBuffer(16).appendHex(0xffffff0000000000L).toString());
+    assertEquals("fffff00000000000", new CharBuffer(16).appendHex(0xfffff00000000000L).toString());
+    assertEquals("ffff000000000000", new CharBuffer(16).appendHex(0xffff000000000000L).toString());
+    assertEquals("fff0000000000000", new CharBuffer(16).appendHex(0xfff0000000000000L).toString());
+    assertEquals("ff00000000000000", new CharBuffer(16).appendHex(0xff00000000000000L).toString());
+    assertEquals("f000000000000000", new CharBuffer(16).appendHex(0xf000000000000000L).toString());
     // @formatter:on
   }
 
@@ -534,38 +566,38 @@ public class CharBufferTest {
   @Test
   public void test_appendHexTrimZeros_long() {
     // @formatter:off
-    assertEquals(               "0", new CharBuffer().appendHexTrimZeros(0x0000000000000000L).toString());
-    assertEquals(               "f", new CharBuffer().appendHexTrimZeros(0x000000000000000fL).toString());
-    assertEquals(              "ff", new CharBuffer().appendHexTrimZeros(0x00000000000000ffL).toString());
-    assertEquals(             "fff", new CharBuffer().appendHexTrimZeros(0x0000000000000fffL).toString());
-    assertEquals(            "ffff", new CharBuffer().appendHexTrimZeros(0x000000000000ffffL).toString());
-    assertEquals(           "fffff", new CharBuffer().appendHexTrimZeros(0x00000000000fffffL).toString());
-    assertEquals(          "ffffff", new CharBuffer().appendHexTrimZeros(0x0000000000ffffffL).toString());
-    assertEquals(         "fffffff", new CharBuffer().appendHexTrimZeros(0x000000000fffffffL).toString());
-    assertEquals(        "ffffffff", new CharBuffer().appendHexTrimZeros(0x00000000ffffffffL).toString());
-    assertEquals(       "fffffffff", new CharBuffer().appendHexTrimZeros(0x0000000fffffffffL).toString());
-    assertEquals(      "ffffffffff", new CharBuffer().appendHexTrimZeros(0x000000ffffffffffL).toString());
-    assertEquals(     "fffffffffff", new CharBuffer().appendHexTrimZeros(0x00000fffffffffffL).toString());
-    assertEquals(    "ffffffffffff", new CharBuffer().appendHexTrimZeros(0x0000ffffffffffffL).toString());
-    assertEquals(   "fffffffffffff", new CharBuffer().appendHexTrimZeros(0x000fffffffffffffL).toString());
-    assertEquals(  "ffffffffffffff", new CharBuffer().appendHexTrimZeros(0x00ffffffffffffffL).toString());
-    assertEquals( "fffffffffffffff", new CharBuffer().appendHexTrimZeros(0x0fffffffffffffffL).toString());
-    assertEquals("ffffffffffffffff", new CharBuffer().appendHexTrimZeros(0xffffffffffffffffL).toString());
-    assertEquals("fffffffffffffff0", new CharBuffer().appendHexTrimZeros(0xfffffffffffffff0L).toString());
-    assertEquals("ffffffffffffff00", new CharBuffer().appendHexTrimZeros(0xffffffffffffff00L).toString());
-    assertEquals("fffffffffffff000", new CharBuffer().appendHexTrimZeros(0xfffffffffffff000L).toString());
-    assertEquals("ffffffffffff0000", new CharBuffer().appendHexTrimZeros(0xffffffffffff0000L).toString());
-    assertEquals("fffffffffff00000", new CharBuffer().appendHexTrimZeros(0xfffffffffff00000L).toString());
-    assertEquals("ffffffffff000000", new CharBuffer().appendHexTrimZeros(0xffffffffff000000L).toString());
-    assertEquals("fffffffff0000000", new CharBuffer().appendHexTrimZeros(0xfffffffff0000000L).toString());
-    assertEquals("ffffffff00000000", new CharBuffer().appendHexTrimZeros(0xffffffff00000000L).toString());
-    assertEquals("fffffff000000000", new CharBuffer().appendHexTrimZeros(0xfffffff000000000L).toString());
-    assertEquals("ffffff0000000000", new CharBuffer().appendHexTrimZeros(0xffffff0000000000L).toString());
-    assertEquals("fffff00000000000", new CharBuffer().appendHexTrimZeros(0xfffff00000000000L).toString());
-    assertEquals("ffff000000000000", new CharBuffer().appendHexTrimZeros(0xffff000000000000L).toString());
-    assertEquals("fff0000000000000", new CharBuffer().appendHexTrimZeros(0xfff0000000000000L).toString());
-    assertEquals("ff00000000000000", new CharBuffer().appendHexTrimZeros(0xff00000000000000L).toString());
-    assertEquals("f000000000000000", new CharBuffer().appendHexTrimZeros(0xf000000000000000L).toString());
+    assertEquals(               "0", new CharBuffer( 1).appendHexTrimZeros(0x0000000000000000L).toString());
+    assertEquals(               "f", new CharBuffer( 1).appendHexTrimZeros(0x000000000000000fL).toString());
+    assertEquals(              "ff", new CharBuffer( 2).appendHexTrimZeros(0x00000000000000ffL).toString());
+    assertEquals(             "fff", new CharBuffer( 3).appendHexTrimZeros(0x0000000000000fffL).toString());
+    assertEquals(            "ffff", new CharBuffer( 4).appendHexTrimZeros(0x000000000000ffffL).toString());
+    assertEquals(           "fffff", new CharBuffer( 5).appendHexTrimZeros(0x00000000000fffffL).toString());
+    assertEquals(          "ffffff", new CharBuffer( 6).appendHexTrimZeros(0x0000000000ffffffL).toString());
+    assertEquals(         "fffffff", new CharBuffer( 7).appendHexTrimZeros(0x000000000fffffffL).toString());
+    assertEquals(        "ffffffff", new CharBuffer( 8).appendHexTrimZeros(0x00000000ffffffffL).toString());
+    assertEquals(       "fffffffff", new CharBuffer( 9).appendHexTrimZeros(0x0000000fffffffffL).toString());
+    assertEquals(      "ffffffffff", new CharBuffer(10).appendHexTrimZeros(0x000000ffffffffffL).toString());
+    assertEquals(     "fffffffffff", new CharBuffer(11).appendHexTrimZeros(0x00000fffffffffffL).toString());
+    assertEquals(    "ffffffffffff", new CharBuffer(12).appendHexTrimZeros(0x0000ffffffffffffL).toString());
+    assertEquals(   "fffffffffffff", new CharBuffer(13).appendHexTrimZeros(0x000fffffffffffffL).toString());
+    assertEquals(  "ffffffffffffff", new CharBuffer(14).appendHexTrimZeros(0x00ffffffffffffffL).toString());
+    assertEquals( "fffffffffffffff", new CharBuffer(15).appendHexTrimZeros(0x0fffffffffffffffL).toString());
+    assertEquals("ffffffffffffffff", new CharBuffer(16).appendHexTrimZeros(0xffffffffffffffffL).toString());
+    assertEquals("fffffffffffffff0", new CharBuffer(16).appendHexTrimZeros(0xfffffffffffffff0L).toString());
+    assertEquals("ffffffffffffff00", new CharBuffer(16).appendHexTrimZeros(0xffffffffffffff00L).toString());
+    assertEquals("fffffffffffff000", new CharBuffer(16).appendHexTrimZeros(0xfffffffffffff000L).toString());
+    assertEquals("ffffffffffff0000", new CharBuffer(16).appendHexTrimZeros(0xffffffffffff0000L).toString());
+    assertEquals("fffffffffff00000", new CharBuffer(16).appendHexTrimZeros(0xfffffffffff00000L).toString());
+    assertEquals("ffffffffff000000", new CharBuffer(16).appendHexTrimZeros(0xffffffffff000000L).toString());
+    assertEquals("fffffffff0000000", new CharBuffer(16).appendHexTrimZeros(0xfffffffff0000000L).toString());
+    assertEquals("ffffffff00000000", new CharBuffer(16).appendHexTrimZeros(0xffffffff00000000L).toString());
+    assertEquals("fffffff000000000", new CharBuffer(16).appendHexTrimZeros(0xfffffff000000000L).toString());
+    assertEquals("ffffff0000000000", new CharBuffer(16).appendHexTrimZeros(0xffffff0000000000L).toString());
+    assertEquals("fffff00000000000", new CharBuffer(16).appendHexTrimZeros(0xfffff00000000000L).toString());
+    assertEquals("ffff000000000000", new CharBuffer(16).appendHexTrimZeros(0xffff000000000000L).toString());
+    assertEquals("fff0000000000000", new CharBuffer(16).appendHexTrimZeros(0xfff0000000000000L).toString());
+    assertEquals("ff00000000000000", new CharBuffer(16).appendHexTrimZeros(0xff00000000000000L).toString());
+    assertEquals("f000000000000000", new CharBuffer(16).appendHexTrimZeros(0xf000000000000000L).toString());
     // @formatter:on
   }
 
@@ -576,37 +608,472 @@ public class CharBufferTest {
   public void test_getHexCapacity_long() {
     // @formatter:off
     assertEquals( 1, CharBuffer.getHexCapacity(0x0000000000000000L));
-    assertEquals( 1, CharBuffer.getHexCapacity(0x000000000000000fL));
-    assertEquals( 2, CharBuffer.getHexCapacity(0x00000000000000ffL));
-    assertEquals( 3, CharBuffer.getHexCapacity(0x0000000000000fffL));
-    assertEquals( 4, CharBuffer.getHexCapacity(0x000000000000ffffL));
-    assertEquals( 5, CharBuffer.getHexCapacity(0x00000000000fffffL));
-    assertEquals( 6, CharBuffer.getHexCapacity(0x0000000000ffffffL));
-    assertEquals( 7, CharBuffer.getHexCapacity(0x000000000fffffffL));
-    assertEquals( 8, CharBuffer.getHexCapacity(0x00000000ffffffffL));
-    assertEquals( 9, CharBuffer.getHexCapacity(0x0000000fffffffffL));
-    assertEquals(10, CharBuffer.getHexCapacity(0x000000ffffffffffL));
-    assertEquals(11, CharBuffer.getHexCapacity(0x00000fffffffffffL));
-    assertEquals(12, CharBuffer.getHexCapacity(0x0000ffffffffffffL));
-    assertEquals(13, CharBuffer.getHexCapacity(0x000fffffffffffffL));
-    assertEquals(14, CharBuffer.getHexCapacity(0x00ffffffffffffffL));
-    assertEquals(15, CharBuffer.getHexCapacity(0x0fffffffffffffffL));
-    assertEquals(16, CharBuffer.getHexCapacity(0xffffffffffffffffL));
-    assertEquals(16, CharBuffer.getHexCapacity(0xfffffffffffffff0L));
-    assertEquals(16, CharBuffer.getHexCapacity(0xffffffffffffff00L));
-    assertEquals(16, CharBuffer.getHexCapacity(0xfffffffffffff000L));
-    assertEquals(16, CharBuffer.getHexCapacity(0xffffffffffff0000L));
-    assertEquals(16, CharBuffer.getHexCapacity(0xfffffffffff00000L));
-    assertEquals(16, CharBuffer.getHexCapacity(0xffffffffff000000L));
-    assertEquals(16, CharBuffer.getHexCapacity(0xfffffffff0000000L));
-    assertEquals(16, CharBuffer.getHexCapacity(0xffffffff00000000L));
-    assertEquals(16, CharBuffer.getHexCapacity(0xfffffff000000000L));
-    assertEquals(16, CharBuffer.getHexCapacity(0xffffff0000000000L));
-    assertEquals(16, CharBuffer.getHexCapacity(0xfffff00000000000L));
-    assertEquals(16, CharBuffer.getHexCapacity(0xffff000000000000L));
-    assertEquals(16, CharBuffer.getHexCapacity(0xfff0000000000000L));
-    assertEquals(16, CharBuffer.getHexCapacity(0xff00000000000000L));
-    assertEquals(16, CharBuffer.getHexCapacity(0xf000000000000000L));
+    assertEquals( 1, CharBuffer.getHexCapacity(0x0000000000000001L));
+    assertEquals( 1, CharBuffer.getHexCapacity(0x0000000000000002L));
+    assertEquals( 1, CharBuffer.getHexCapacity(0x0000000000000004L));
+    assertEquals( 1, CharBuffer.getHexCapacity(0x0000000000000008L));
+    assertEquals( 2, CharBuffer.getHexCapacity(0x0000000000000010L));
+    assertEquals( 2, CharBuffer.getHexCapacity(0x0000000000000020L));
+    assertEquals( 2, CharBuffer.getHexCapacity(0x0000000000000040L));
+    assertEquals( 2, CharBuffer.getHexCapacity(0x0000000000000080L));
+    assertEquals( 3, CharBuffer.getHexCapacity(0x0000000000000100L));
+    assertEquals( 3, CharBuffer.getHexCapacity(0x0000000000000200L));
+    assertEquals( 3, CharBuffer.getHexCapacity(0x0000000000000400L));
+    assertEquals( 3, CharBuffer.getHexCapacity(0x0000000000000800L));
+    assertEquals( 4, CharBuffer.getHexCapacity(0x0000000000001000L));
+    assertEquals( 4, CharBuffer.getHexCapacity(0x0000000000002000L));
+    assertEquals( 4, CharBuffer.getHexCapacity(0x0000000000004000L));
+    assertEquals( 4, CharBuffer.getHexCapacity(0x0000000000008000L));
+    assertEquals( 5, CharBuffer.getHexCapacity(0x0000000000010000L));
+    assertEquals( 5, CharBuffer.getHexCapacity(0x0000000000020000L));
+    assertEquals( 5, CharBuffer.getHexCapacity(0x0000000000040000L));
+    assertEquals( 5, CharBuffer.getHexCapacity(0x0000000000080000L));
+    assertEquals( 6, CharBuffer.getHexCapacity(0x0000000000100000L));
+    assertEquals( 6, CharBuffer.getHexCapacity(0x0000000000200000L));
+    assertEquals( 6, CharBuffer.getHexCapacity(0x0000000000400000L));
+    assertEquals( 6, CharBuffer.getHexCapacity(0x0000000000800000L));
+    assertEquals( 7, CharBuffer.getHexCapacity(0x0000000001000000L));
+    assertEquals( 7, CharBuffer.getHexCapacity(0x0000000002000000L));
+    assertEquals( 7, CharBuffer.getHexCapacity(0x0000000004000000L));
+    assertEquals( 7, CharBuffer.getHexCapacity(0x0000000008000000L));
+    assertEquals( 8, CharBuffer.getHexCapacity(0x0000000010000000L));
+    assertEquals( 8, CharBuffer.getHexCapacity(0x0000000020000000L));
+    assertEquals( 8, CharBuffer.getHexCapacity(0x0000000040000000L));
+    assertEquals( 8, CharBuffer.getHexCapacity(0x0000000080000000L));
+    assertEquals( 9, CharBuffer.getHexCapacity(0x0000000100000000L));
+    assertEquals( 9, CharBuffer.getHexCapacity(0x0000000200000000L));
+    assertEquals( 9, CharBuffer.getHexCapacity(0x0000000400000000L));
+    assertEquals( 9, CharBuffer.getHexCapacity(0x0000000800000000L));
+    assertEquals(10, CharBuffer.getHexCapacity(0x0000001000000000L));
+    assertEquals(10, CharBuffer.getHexCapacity(0x0000002000000000L));
+    assertEquals(10, CharBuffer.getHexCapacity(0x0000004000000000L));
+    assertEquals(10, CharBuffer.getHexCapacity(0x0000008000000000L));
+    assertEquals(11, CharBuffer.getHexCapacity(0x0000010000000000L));
+    assertEquals(11, CharBuffer.getHexCapacity(0x0000020000000000L));
+    assertEquals(11, CharBuffer.getHexCapacity(0x0000040000000000L));
+    assertEquals(11, CharBuffer.getHexCapacity(0x0000080000000000L));
+    assertEquals(12, CharBuffer.getHexCapacity(0x0000100000000000L));
+    assertEquals(12, CharBuffer.getHexCapacity(0x0000200000000000L));
+    assertEquals(12, CharBuffer.getHexCapacity(0x0000400000000000L));
+    assertEquals(12, CharBuffer.getHexCapacity(0x0000800000000000L));
+    assertEquals(13, CharBuffer.getHexCapacity(0x0001000000000000L));
+    assertEquals(13, CharBuffer.getHexCapacity(0x0002000000000000L));
+    assertEquals(13, CharBuffer.getHexCapacity(0x0004000000000000L));
+    assertEquals(13, CharBuffer.getHexCapacity(0x0008000000000000L));
+    assertEquals(14, CharBuffer.getHexCapacity(0x0010000000000000L));
+    assertEquals(14, CharBuffer.getHexCapacity(0x0020000000000000L));
+    assertEquals(14, CharBuffer.getHexCapacity(0x0040000000000000L));
+    assertEquals(14, CharBuffer.getHexCapacity(0x0080000000000000L));
+    assertEquals(15, CharBuffer.getHexCapacity(0x0100000000000000L));
+    assertEquals(15, CharBuffer.getHexCapacity(0x0200000000000000L));
+    assertEquals(15, CharBuffer.getHexCapacity(0x0400000000000000L));
+    assertEquals(15, CharBuffer.getHexCapacity(0x0800000000000000L));
+    assertEquals(16, CharBuffer.getHexCapacity(0x1000000000000000L));
+    assertEquals(16, CharBuffer.getHexCapacity(0x2000000000000000L));
+    assertEquals(16, CharBuffer.getHexCapacity(0x4000000000000000L));
+    assertEquals(16, CharBuffer.getHexCapacity(0x8000000000000000L));
+    // @formatter:on
+  }
+
+  // Octal representation
+
+  /**
+   * Tests the {@link CharBuffer#appendOct(byte)} method.
+   */
+  @Test
+  public void test_appendOct_byte() {
+    // @formatter:off
+    assertEquals("000", new CharBuffer(3).appendOct((byte) 0000).toString());
+    assertEquals("007", new CharBuffer(3).appendOct((byte) 0007).toString());
+    assertEquals("077", new CharBuffer(3).appendOct((byte) 0077).toString());
+    assertEquals("377", new CharBuffer(3).appendOct((byte) 0377).toString());
+    assertEquals("370", new CharBuffer(3).appendOct((byte) 0370).toString());
+    assertEquals("300", new CharBuffer(3).appendOct((byte) 0300).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendOctTrimZeros(byte)} method.
+   */
+  @Test
+  public void test_appendOctTrimZeros_byte() {
+    // @formatter:off
+    assertEquals(  "0", new CharBuffer(1).appendOctTrimZeros((byte) 0000).toString());
+    assertEquals(  "7", new CharBuffer(1).appendOctTrimZeros((byte) 0007).toString());
+    assertEquals( "77", new CharBuffer(2).appendOctTrimZeros((byte) 0077).toString());
+    assertEquals("377", new CharBuffer(3).appendOctTrimZeros((byte) 0377).toString());
+    assertEquals("370", new CharBuffer(3).appendOctTrimZeros((byte) 0370).toString());
+    assertEquals("300", new CharBuffer(3).appendOctTrimZeros((byte) 0300).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#getOctCapacity(byte)} method.
+   */
+  @Test
+  public void test_getOctCapacity_byte() {
+    // @formatter:off
+    assertEquals(1, CharBuffer.getOctCapacity((byte) 0000));
+    assertEquals(1, CharBuffer.getOctCapacity((byte) 0001));
+    assertEquals(1, CharBuffer.getOctCapacity((byte) 0002));
+    assertEquals(1, CharBuffer.getOctCapacity((byte) 0004));
+    assertEquals(2, CharBuffer.getOctCapacity((byte) 0010));
+    assertEquals(2, CharBuffer.getOctCapacity((byte) 0020));
+    assertEquals(2, CharBuffer.getOctCapacity((byte) 0040));
+    assertEquals(3, CharBuffer.getOctCapacity((byte) 0100));
+    assertEquals(3, CharBuffer.getOctCapacity((byte) 0200));
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendOct(short)} method.
+   */
+  @Test
+  public void test_appendOct_short() {
+    // @formatter:off
+    assertEquals("000000", new CharBuffer(6).appendOct((short) 0000000).toString());
+    assertEquals("000007", new CharBuffer(6).appendOct((short) 0000007).toString());
+    assertEquals("000077", new CharBuffer(6).appendOct((short) 0000077).toString());
+    assertEquals("000777", new CharBuffer(6).appendOct((short) 0000777).toString());
+    assertEquals("007777", new CharBuffer(6).appendOct((short) 0007777).toString());
+    assertEquals("077777", new CharBuffer(6).appendOct((short) 0077777).toString());
+    assertEquals("177777", new CharBuffer(6).appendOct((short) 0177777).toString());
+    assertEquals("177770", new CharBuffer(6).appendOct((short) 0177770).toString());
+    assertEquals("177700", new CharBuffer(6).appendOct((short) 0177700).toString());
+    assertEquals("177000", new CharBuffer(6).appendOct((short) 0177000).toString());
+    assertEquals("170000", new CharBuffer(6).appendOct((short) 0170000).toString());
+    assertEquals("100000", new CharBuffer(6).appendOct((short) 0100000).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendOctTrimZeros(short)} method.
+   */
+  @Test
+  public void test_appendOctTrimZeros_short() {
+    // @formatter:off
+    assertEquals(     "0", new CharBuffer(1).appendOctTrimZeros((short) 0000000).toString());
+    assertEquals(     "7", new CharBuffer(1).appendOctTrimZeros((short) 0000007).toString());
+    assertEquals(    "77", new CharBuffer(2).appendOctTrimZeros((short) 0000077).toString());
+    assertEquals(   "777", new CharBuffer(3).appendOctTrimZeros((short) 0000777).toString());
+    assertEquals(  "7777", new CharBuffer(4).appendOctTrimZeros((short) 0007777).toString());
+    assertEquals( "77777", new CharBuffer(5).appendOctTrimZeros((short) 0077777).toString());
+    assertEquals("177777", new CharBuffer(6).appendOctTrimZeros((short) 0177777).toString());
+    assertEquals("177770", new CharBuffer(6).appendOctTrimZeros((short) 0177770).toString());
+    assertEquals("177700", new CharBuffer(6).appendOctTrimZeros((short) 0177700).toString());
+    assertEquals("177000", new CharBuffer(6).appendOctTrimZeros((short) 0177000).toString());
+    assertEquals("170000", new CharBuffer(6).appendOctTrimZeros((short) 0170000).toString());
+    assertEquals("100000", new CharBuffer(6).appendOctTrimZeros((short) 0100000).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#getOctCapacity(short)} method.
+   */
+  @Test
+  public void test_getOctCapacity_short() {
+    // @formatter:off
+    assertEquals(1, CharBuffer.getOctCapacity((short) 0000000));
+    assertEquals(1, CharBuffer.getOctCapacity((short) 0000001));
+    assertEquals(1, CharBuffer.getOctCapacity((short) 0000002));
+    assertEquals(1, CharBuffer.getOctCapacity((short) 0000004));
+    assertEquals(2, CharBuffer.getOctCapacity((short) 0000010));
+    assertEquals(2, CharBuffer.getOctCapacity((short) 0000020));
+    assertEquals(2, CharBuffer.getOctCapacity((short) 0000040));
+    assertEquals(3, CharBuffer.getOctCapacity((short) 0000100));
+    assertEquals(3, CharBuffer.getOctCapacity((short) 0000200));
+    assertEquals(3, CharBuffer.getOctCapacity((short) 0000400));
+    assertEquals(4, CharBuffer.getOctCapacity((short) 0001000));
+    assertEquals(4, CharBuffer.getOctCapacity((short) 0002000));
+    assertEquals(4, CharBuffer.getOctCapacity((short) 0004000));
+    assertEquals(5, CharBuffer.getOctCapacity((short) 0010000));
+    assertEquals(5, CharBuffer.getOctCapacity((short) 0020000));
+    assertEquals(5, CharBuffer.getOctCapacity((short) 0040000));
+    assertEquals(6, CharBuffer.getOctCapacity((short) 0100000));
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendOct(int)} method.
+   */
+  @Test
+  public void test_appendOct_int() {
+    // @formatter:off
+    assertEquals("00000000000", new CharBuffer(11).appendOct(000000000000).toString());
+    assertEquals("00000000007", new CharBuffer(11).appendOct(000000000007).toString());
+    assertEquals("00000000077", new CharBuffer(11).appendOct(000000000077).toString());
+    assertEquals("00000000777", new CharBuffer(11).appendOct(000000000777).toString());
+    assertEquals("00000007777", new CharBuffer(11).appendOct(000000007777).toString());
+    assertEquals("00000077777", new CharBuffer(11).appendOct(000000077777).toString());
+    assertEquals("00000777777", new CharBuffer(11).appendOct(000000777777).toString());
+    assertEquals("00007777777", new CharBuffer(11).appendOct(000007777777).toString());
+    assertEquals("00077777777", new CharBuffer(11).appendOct(000077777777).toString());
+    assertEquals("00777777777", new CharBuffer(11).appendOct(000777777777).toString());
+    assertEquals("07777777777", new CharBuffer(11).appendOct(007777777777).toString());
+    assertEquals("37777777777", new CharBuffer(11).appendOct(037777777777).toString());
+    assertEquals("37777777770", new CharBuffer(11).appendOct(037777777770).toString());
+    assertEquals("37777777700", new CharBuffer(11).appendOct(037777777700).toString());
+    assertEquals("37777777000", new CharBuffer(11).appendOct(037777777000).toString());
+    assertEquals("37777770000", new CharBuffer(11).appendOct(037777770000).toString());
+    assertEquals("37777700000", new CharBuffer(11).appendOct(037777700000).toString());
+    assertEquals("37777000000", new CharBuffer(11).appendOct(037777000000).toString());
+    assertEquals("37770000000", new CharBuffer(11).appendOct(037770000000).toString());
+    assertEquals("37700000000", new CharBuffer(11).appendOct(037700000000).toString());
+    assertEquals("37000000000", new CharBuffer(11).appendOct(037000000000).toString());
+    assertEquals("30000000000", new CharBuffer(11).appendOct(030000000000).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendOctTrimZeros(int)} method.
+   */
+  @Test
+  public void test_appendOctTrimZeros_int() {
+    // @formatter:off
+    assertEquals(          "0", new CharBuffer( 1).appendOctTrimZeros(000000000000).toString());
+    assertEquals(          "7", new CharBuffer( 1).appendOctTrimZeros(000000000007).toString());
+    assertEquals(         "77", new CharBuffer( 2).appendOctTrimZeros(000000000077).toString());
+    assertEquals(        "777", new CharBuffer( 3).appendOctTrimZeros(000000000777).toString());
+    assertEquals(       "7777", new CharBuffer( 4).appendOctTrimZeros(000000007777).toString());
+    assertEquals(      "77777", new CharBuffer( 5).appendOctTrimZeros(000000077777).toString());
+    assertEquals(     "777777", new CharBuffer( 6).appendOctTrimZeros(000000777777).toString());
+    assertEquals(    "7777777", new CharBuffer( 7).appendOctTrimZeros(000007777777).toString());
+    assertEquals(   "77777777", new CharBuffer( 8).appendOctTrimZeros(000077777777).toString());
+    assertEquals(  "777777777", new CharBuffer( 9).appendOctTrimZeros(000777777777).toString());
+    assertEquals( "7777777777", new CharBuffer(10).appendOctTrimZeros(007777777777).toString());
+    assertEquals("37777777777", new CharBuffer(11).appendOctTrimZeros(037777777777).toString());
+    assertEquals("37777777770", new CharBuffer(11).appendOctTrimZeros(037777777770).toString());
+    assertEquals("37777777700", new CharBuffer(11).appendOctTrimZeros(037777777700).toString());
+    assertEquals("37777777000", new CharBuffer(11).appendOctTrimZeros(037777777000).toString());
+    assertEquals("37777770000", new CharBuffer(11).appendOctTrimZeros(037777770000).toString());
+    assertEquals("37777700000", new CharBuffer(11).appendOctTrimZeros(037777700000).toString());
+    assertEquals("37777000000", new CharBuffer(11).appendOctTrimZeros(037777000000).toString());
+    assertEquals("37770000000", new CharBuffer(11).appendOctTrimZeros(037770000000).toString());
+    assertEquals("37700000000", new CharBuffer(11).appendOctTrimZeros(037700000000).toString());
+    assertEquals("37000000000", new CharBuffer(11).appendOctTrimZeros(037000000000).toString());
+    assertEquals("30000000000", new CharBuffer(11).appendOctTrimZeros(030000000000).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#getOctCapacity(int)} method.
+   */
+  @Test
+  public void test_getOctCapacity_int() {
+    // @formatter:off
+    assertEquals( 1, CharBuffer.getOctCapacity(000000000000));
+    assertEquals( 1, CharBuffer.getOctCapacity(000000000001));
+    assertEquals( 1, CharBuffer.getOctCapacity(000000000002));
+    assertEquals( 1, CharBuffer.getOctCapacity(000000000004));
+    assertEquals( 2, CharBuffer.getOctCapacity(000000000010));
+    assertEquals( 2, CharBuffer.getOctCapacity(000000000020));
+    assertEquals( 2, CharBuffer.getOctCapacity(000000000040));
+    assertEquals( 3, CharBuffer.getOctCapacity(000000000100));
+    assertEquals( 3, CharBuffer.getOctCapacity(000000000200));
+    assertEquals( 3, CharBuffer.getOctCapacity(000000000400));
+    assertEquals( 4, CharBuffer.getOctCapacity(000000001000));
+    assertEquals( 4, CharBuffer.getOctCapacity(000000002000));
+    assertEquals( 4, CharBuffer.getOctCapacity(000000004000));
+    assertEquals( 5, CharBuffer.getOctCapacity(000000010000));
+    assertEquals( 5, CharBuffer.getOctCapacity(000000020000));
+    assertEquals( 5, CharBuffer.getOctCapacity(000000040000));
+    assertEquals( 6, CharBuffer.getOctCapacity(000000100000));
+    assertEquals( 6, CharBuffer.getOctCapacity(000000200000));
+    assertEquals( 6, CharBuffer.getOctCapacity(000000400000));
+    assertEquals( 7, CharBuffer.getOctCapacity(000001000000));
+    assertEquals( 7, CharBuffer.getOctCapacity(000002000000));
+    assertEquals( 7, CharBuffer.getOctCapacity(000004000000));
+    assertEquals( 8, CharBuffer.getOctCapacity(000010000000));
+    assertEquals( 8, CharBuffer.getOctCapacity(000020000000));
+    assertEquals( 8, CharBuffer.getOctCapacity(000040000000));
+    assertEquals( 9, CharBuffer.getOctCapacity(000100000000));
+    assertEquals( 9, CharBuffer.getOctCapacity(000200000000));
+    assertEquals( 9, CharBuffer.getOctCapacity(000400000000));
+    assertEquals(10, CharBuffer.getOctCapacity(001000000000));
+    assertEquals(10, CharBuffer.getOctCapacity(002000000000));
+    assertEquals(10, CharBuffer.getOctCapacity(004000000000));
+    assertEquals(11, CharBuffer.getOctCapacity(010000000000));
+    assertEquals(11, CharBuffer.getOctCapacity(020000000000));
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendOct(long)} method.
+   */
+  @Test
+  public void test_appendOct_long() {
+    // @formatter:off
+    assertEquals("0000000000000000000000", new CharBuffer(22).appendOct(00000000000000000000000L).toString());
+    assertEquals("0000000000000000000007", new CharBuffer(22).appendOct(00000000000000000000007L).toString());
+    assertEquals("0000000000000000000077", new CharBuffer(22).appendOct(00000000000000000000077L).toString());
+    assertEquals("0000000000000000000777", new CharBuffer(22).appendOct(00000000000000000000777L).toString());
+    assertEquals("0000000000000000007777", new CharBuffer(22).appendOct(00000000000000000007777L).toString());
+    assertEquals("0000000000000000077777", new CharBuffer(22).appendOct(00000000000000000077777L).toString());
+    assertEquals("0000000000000000777777", new CharBuffer(22).appendOct(00000000000000000777777L).toString());
+    assertEquals("0000000000000007777777", new CharBuffer(22).appendOct(00000000000000007777777L).toString());
+    assertEquals("0000000000000077777777", new CharBuffer(22).appendOct(00000000000000077777777L).toString());
+    assertEquals("0000000000000777777777", new CharBuffer(22).appendOct(00000000000000777777777L).toString());
+    assertEquals("0000000000007777777777", new CharBuffer(22).appendOct(00000000000007777777777L).toString());
+    assertEquals("0000000000077777777777", new CharBuffer(22).appendOct(00000000000077777777777L).toString());
+    assertEquals("0000000000777777777777", new CharBuffer(22).appendOct(00000000000777777777777L).toString());
+    assertEquals("0000000007777777777777", new CharBuffer(22).appendOct(00000000007777777777777L).toString());
+    assertEquals("0000000077777777777777", new CharBuffer(22).appendOct(00000000077777777777777L).toString());
+    assertEquals("0000000777777777777777", new CharBuffer(22).appendOct(00000000777777777777777L).toString());
+    assertEquals("0000007777777777777777", new CharBuffer(22).appendOct(00000007777777777777777L).toString());
+    assertEquals("0000077777777777777777", new CharBuffer(22).appendOct(00000077777777777777777L).toString());
+    assertEquals("0000777777777777777777", new CharBuffer(22).appendOct(00000777777777777777777L).toString());
+    assertEquals("0007777777777777777777", new CharBuffer(22).appendOct(00007777777777777777777L).toString());
+    assertEquals("0077777777777777777777", new CharBuffer(22).appendOct(00077777777777777777777L).toString());
+    assertEquals("0777777777777777777777", new CharBuffer(22).appendOct(00777777777777777777777L).toString());
+    assertEquals("1777777777777777777777", new CharBuffer(22).appendOct(01777777777777777777777L).toString());
+    assertEquals("1777777777777777777770", new CharBuffer(22).appendOct(01777777777777777777770L).toString());
+    assertEquals("1777777777777777777700", new CharBuffer(22).appendOct(01777777777777777777700L).toString());
+    assertEquals("1777777777777777777000", new CharBuffer(22).appendOct(01777777777777777777000L).toString());
+    assertEquals("1777777777777777770000", new CharBuffer(22).appendOct(01777777777777777770000L).toString());
+    assertEquals("1777777777777777700000", new CharBuffer(22).appendOct(01777777777777777700000L).toString());
+    assertEquals("1777777777777777000000", new CharBuffer(22).appendOct(01777777777777777000000L).toString());
+    assertEquals("1777777777777770000000", new CharBuffer(22).appendOct(01777777777777770000000L).toString());
+    assertEquals("1777777777777700000000", new CharBuffer(22).appendOct(01777777777777700000000L).toString());
+    assertEquals("1777777777777000000000", new CharBuffer(22).appendOct(01777777777777000000000L).toString());
+    assertEquals("1777777777770000000000", new CharBuffer(22).appendOct(01777777777770000000000L).toString());
+    assertEquals("1777777777700000000000", new CharBuffer(22).appendOct(01777777777700000000000L).toString());
+    assertEquals("1777777777000000000000", new CharBuffer(22).appendOct(01777777777000000000000L).toString());
+    assertEquals("1777777770000000000000", new CharBuffer(22).appendOct(01777777770000000000000L).toString());
+    assertEquals("1777777700000000000000", new CharBuffer(22).appendOct(01777777700000000000000L).toString());
+    assertEquals("1777777000000000000000", new CharBuffer(22).appendOct(01777777000000000000000L).toString());
+    assertEquals("1777770000000000000000", new CharBuffer(22).appendOct(01777770000000000000000L).toString());
+    assertEquals("1777700000000000000000", new CharBuffer(22).appendOct(01777700000000000000000L).toString());
+    assertEquals("1777000000000000000000", new CharBuffer(22).appendOct(01777000000000000000000L).toString());
+    assertEquals("1770000000000000000000", new CharBuffer(22).appendOct(01770000000000000000000L).toString());
+    assertEquals("1700000000000000000000", new CharBuffer(22).appendOct(01700000000000000000000L).toString());
+    assertEquals("1000000000000000000000", new CharBuffer(22).appendOct(01000000000000000000000L).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendOctTrimZeros(long)} method.
+   */
+  @Test
+  public void test_appendOctTrimZeros_long() {
+    // @formatter:off
+    assertEquals(                     "0", new CharBuffer( 1).appendOctTrimZeros(00000000000000000000000L).toString());
+    assertEquals(                     "7", new CharBuffer( 1).appendOctTrimZeros(00000000000000000000007L).toString());
+    assertEquals(                    "77", new CharBuffer( 2).appendOctTrimZeros(00000000000000000000077L).toString());
+    assertEquals(                   "777", new CharBuffer( 3).appendOctTrimZeros(00000000000000000000777L).toString());
+    assertEquals(                  "7777", new CharBuffer( 4).appendOctTrimZeros(00000000000000000007777L).toString());
+    assertEquals(                 "77777", new CharBuffer( 5).appendOctTrimZeros(00000000000000000077777L).toString());
+    assertEquals(                "777777", new CharBuffer( 6).appendOctTrimZeros(00000000000000000777777L).toString());
+    assertEquals(               "7777777", new CharBuffer( 7).appendOctTrimZeros(00000000000000007777777L).toString());
+    assertEquals(              "77777777", new CharBuffer( 8).appendOctTrimZeros(00000000000000077777777L).toString());
+    assertEquals(             "777777777", new CharBuffer( 9).appendOctTrimZeros(00000000000000777777777L).toString());
+    assertEquals(            "7777777777", new CharBuffer(10).appendOctTrimZeros(00000000000007777777777L).toString());
+    assertEquals(           "77777777777", new CharBuffer(11).appendOctTrimZeros(00000000000077777777777L).toString());
+    assertEquals(          "777777777777", new CharBuffer(12).appendOctTrimZeros(00000000000777777777777L).toString());
+    assertEquals(         "7777777777777", new CharBuffer(13).appendOctTrimZeros(00000000007777777777777L).toString());
+    assertEquals(        "77777777777777", new CharBuffer(14).appendOctTrimZeros(00000000077777777777777L).toString());
+    assertEquals(       "777777777777777", new CharBuffer(15).appendOctTrimZeros(00000000777777777777777L).toString());
+    assertEquals(      "7777777777777777", new CharBuffer(16).appendOctTrimZeros(00000007777777777777777L).toString());
+    assertEquals(     "77777777777777777", new CharBuffer(17).appendOctTrimZeros(00000077777777777777777L).toString());
+    assertEquals(    "777777777777777777", new CharBuffer(18).appendOctTrimZeros(00000777777777777777777L).toString());
+    assertEquals(   "7777777777777777777", new CharBuffer(19).appendOctTrimZeros(00007777777777777777777L).toString());
+    assertEquals(  "77777777777777777777", new CharBuffer(20).appendOctTrimZeros(00077777777777777777777L).toString());
+    assertEquals( "777777777777777777777", new CharBuffer(21).appendOctTrimZeros(00777777777777777777777L).toString());
+    assertEquals("1777777777777777777777", new CharBuffer(22).appendOctTrimZeros(01777777777777777777777L).toString());
+    assertEquals("1777777777777777777770", new CharBuffer(22).appendOctTrimZeros(01777777777777777777770L).toString());
+    assertEquals("1777777777777777777700", new CharBuffer(22).appendOctTrimZeros(01777777777777777777700L).toString());
+    assertEquals("1777777777777777777000", new CharBuffer(22).appendOctTrimZeros(01777777777777777777000L).toString());
+    assertEquals("1777777777777777770000", new CharBuffer(22).appendOctTrimZeros(01777777777777777770000L).toString());
+    assertEquals("1777777777777777700000", new CharBuffer(22).appendOctTrimZeros(01777777777777777700000L).toString());
+    assertEquals("1777777777777777000000", new CharBuffer(22).appendOctTrimZeros(01777777777777777000000L).toString());
+    assertEquals("1777777777777770000000", new CharBuffer(22).appendOctTrimZeros(01777777777777770000000L).toString());
+    assertEquals("1777777777777700000000", new CharBuffer(22).appendOctTrimZeros(01777777777777700000000L).toString());
+    assertEquals("1777777777777000000000", new CharBuffer(22).appendOctTrimZeros(01777777777777000000000L).toString());
+    assertEquals("1777777777770000000000", new CharBuffer(22).appendOctTrimZeros(01777777777770000000000L).toString());
+    assertEquals("1777777777700000000000", new CharBuffer(22).appendOctTrimZeros(01777777777700000000000L).toString());
+    assertEquals("1777777777000000000000", new CharBuffer(22).appendOctTrimZeros(01777777777000000000000L).toString());
+    assertEquals("1777777770000000000000", new CharBuffer(22).appendOctTrimZeros(01777777770000000000000L).toString());
+    assertEquals("1777777700000000000000", new CharBuffer(22).appendOctTrimZeros(01777777700000000000000L).toString());
+    assertEquals("1777777000000000000000", new CharBuffer(22).appendOctTrimZeros(01777777000000000000000L).toString());
+    assertEquals("1777770000000000000000", new CharBuffer(22).appendOctTrimZeros(01777770000000000000000L).toString());
+    assertEquals("1777700000000000000000", new CharBuffer(22).appendOctTrimZeros(01777700000000000000000L).toString());
+    assertEquals("1777000000000000000000", new CharBuffer(22).appendOctTrimZeros(01777000000000000000000L).toString());
+    assertEquals("1770000000000000000000", new CharBuffer(22).appendOctTrimZeros(01770000000000000000000L).toString());
+    assertEquals("1700000000000000000000", new CharBuffer(22).appendOctTrimZeros(01700000000000000000000L).toString());
+    assertEquals("1000000000000000000000", new CharBuffer(22).appendOctTrimZeros(01000000000000000000000L).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#getOctCapacity(short)} method.
+   */
+  @Test
+  public void test_getOctCapacity_long() {
+    // @formatter:off
+    assertEquals( 1, CharBuffer.getOctCapacity(00000000000000000000000L));
+    assertEquals( 1, CharBuffer.getOctCapacity(00000000000000000000001L));
+    assertEquals( 1, CharBuffer.getOctCapacity(00000000000000000000002L));
+    assertEquals( 1, CharBuffer.getOctCapacity(00000000000000000000004L));
+    assertEquals( 2, CharBuffer.getOctCapacity(00000000000000000000010L));
+    assertEquals( 2, CharBuffer.getOctCapacity(00000000000000000000020L));
+    assertEquals( 2, CharBuffer.getOctCapacity(00000000000000000000040L));
+    assertEquals( 3, CharBuffer.getOctCapacity(00000000000000000000100L));
+    assertEquals( 3, CharBuffer.getOctCapacity(00000000000000000000200L));
+    assertEquals( 3, CharBuffer.getOctCapacity(00000000000000000000400L));
+    assertEquals( 4, CharBuffer.getOctCapacity(00000000000000000001000L));
+    assertEquals( 4, CharBuffer.getOctCapacity(00000000000000000002000L));
+    assertEquals( 4, CharBuffer.getOctCapacity(00000000000000000004000L));
+    assertEquals( 5, CharBuffer.getOctCapacity(00000000000000000010000L));
+    assertEquals( 5, CharBuffer.getOctCapacity(00000000000000000020000L));
+    assertEquals( 5, CharBuffer.getOctCapacity(00000000000000000040000L));
+    assertEquals( 6, CharBuffer.getOctCapacity(00000000000000000100000L));
+    assertEquals( 6, CharBuffer.getOctCapacity(00000000000000000200000L));
+    assertEquals( 6, CharBuffer.getOctCapacity(00000000000000000400000L));
+    assertEquals( 7, CharBuffer.getOctCapacity(00000000000000001000000L));
+    assertEquals( 7, CharBuffer.getOctCapacity(00000000000000002000000L));
+    assertEquals( 7, CharBuffer.getOctCapacity(00000000000000004000000L));
+    assertEquals( 8, CharBuffer.getOctCapacity(00000000000000010000000L));
+    assertEquals( 8, CharBuffer.getOctCapacity(00000000000000020000000L));
+    assertEquals( 8, CharBuffer.getOctCapacity(00000000000000040000000L));
+    assertEquals( 9, CharBuffer.getOctCapacity(00000000000000100000000L));
+    assertEquals( 9, CharBuffer.getOctCapacity(00000000000000200000000L));
+    assertEquals( 9, CharBuffer.getOctCapacity(00000000000000400000000L));
+    assertEquals(10, CharBuffer.getOctCapacity(00000000000001000000000L));
+    assertEquals(10, CharBuffer.getOctCapacity(00000000000002000000000L));
+    assertEquals(10, CharBuffer.getOctCapacity(00000000000004000000000L));
+    assertEquals(11, CharBuffer.getOctCapacity(00000000000010000000000L));
+    assertEquals(11, CharBuffer.getOctCapacity(00000000000020000000000L));
+    assertEquals(11, CharBuffer.getOctCapacity(00000000000040000000000L));
+    assertEquals(12, CharBuffer.getOctCapacity(00000000000100000000000L));
+    assertEquals(12, CharBuffer.getOctCapacity(00000000000200000000000L));
+    assertEquals(12, CharBuffer.getOctCapacity(00000000000400000000000L));
+    assertEquals(13, CharBuffer.getOctCapacity(00000000001000000000000L));
+    assertEquals(13, CharBuffer.getOctCapacity(00000000002000000000000L));
+    assertEquals(13, CharBuffer.getOctCapacity(00000000004000000000000L));
+    assertEquals(14, CharBuffer.getOctCapacity(00000000010000000000000L));
+    assertEquals(14, CharBuffer.getOctCapacity(00000000020000000000000L));
+    assertEquals(14, CharBuffer.getOctCapacity(00000000040000000000000L));
+    assertEquals(15, CharBuffer.getOctCapacity(00000000100000000000000L));
+    assertEquals(15, CharBuffer.getOctCapacity(00000000200000000000000L));
+    assertEquals(15, CharBuffer.getOctCapacity(00000000400000000000000L));
+    assertEquals(16, CharBuffer.getOctCapacity(00000001000000000000000L));
+    assertEquals(16, CharBuffer.getOctCapacity(00000002000000000000000L));
+    assertEquals(16, CharBuffer.getOctCapacity(00000004000000000000000L));
+    assertEquals(17, CharBuffer.getOctCapacity(00000010000000000000000L));
+    assertEquals(17, CharBuffer.getOctCapacity(00000020000000000000000L));
+    assertEquals(17, CharBuffer.getOctCapacity(00000040000000000000000L));
+    assertEquals(18, CharBuffer.getOctCapacity(00000100000000000000000L));
+    assertEquals(18, CharBuffer.getOctCapacity(00000200000000000000000L));
+    assertEquals(18, CharBuffer.getOctCapacity(00000400000000000000000L));
+    assertEquals(19, CharBuffer.getOctCapacity(00001000000000000000000L));
+    assertEquals(19, CharBuffer.getOctCapacity(00002000000000000000000L));
+    assertEquals(19, CharBuffer.getOctCapacity(00004000000000000000000L));
+    assertEquals(20, CharBuffer.getOctCapacity(00010000000000000000000L));
+    assertEquals(20, CharBuffer.getOctCapacity(00020000000000000000000L));
+    assertEquals(20, CharBuffer.getOctCapacity(00040000000000000000000L));
+    assertEquals(21, CharBuffer.getOctCapacity(00100000000000000000000L));
+    assertEquals(21, CharBuffer.getOctCapacity(00200000000000000000000L));
+    assertEquals(21, CharBuffer.getOctCapacity(00400000000000000000000L));
+    assertEquals(22, CharBuffer.getOctCapacity(01000000000000000000000L));
     // @formatter:on
   }
 
@@ -618,15 +1085,15 @@ public class CharBufferTest {
   @Test
   public void test_appendBin_byte() {
     // @formatter:off
-    assertEquals("00000000", new CharBuffer().appendBin((byte) 0x00).toString());
-    assertEquals("00000001", new CharBuffer().appendBin((byte) 0x01).toString());
-    assertEquals("00000010", new CharBuffer().appendBin((byte) 0x02).toString());
-    assertEquals("00000100", new CharBuffer().appendBin((byte) 0x04).toString());
-    assertEquals("00001000", new CharBuffer().appendBin((byte) 0x08).toString());
-    assertEquals("00010000", new CharBuffer().appendBin((byte) 0x10).toString());
-    assertEquals("00100000", new CharBuffer().appendBin((byte) 0x20).toString());
-    assertEquals("01000000", new CharBuffer().appendBin((byte) 0x40).toString());
-    assertEquals("10000000", new CharBuffer().appendBin((byte) 0x80).toString());
+    assertEquals("00000000", new CharBuffer(8).appendBin((byte) 0b00000000).toString());
+    assertEquals("00000001", new CharBuffer(8).appendBin((byte) 0b00000001).toString());
+    assertEquals("00000010", new CharBuffer(8).appendBin((byte) 0b00000010).toString());
+    assertEquals("00000100", new CharBuffer(8).appendBin((byte) 0b00000100).toString());
+    assertEquals("00001000", new CharBuffer(8).appendBin((byte) 0b00001000).toString());
+    assertEquals("00010000", new CharBuffer(8).appendBin((byte) 0b00010000).toString());
+    assertEquals("00100000", new CharBuffer(8).appendBin((byte) 0b00100000).toString());
+    assertEquals("01000000", new CharBuffer(8).appendBin((byte) 0b01000000).toString());
+    assertEquals("10000000", new CharBuffer(8).appendBin((byte) 0b10000000).toString());
     // @formatter:on
   }
 
@@ -636,15 +1103,15 @@ public class CharBufferTest {
   @Test
   public void test_appendBinTrimZeros_byte() {
     // @formatter:off
-    assertEquals(       "0", new CharBuffer().appendBinTrimZeros((byte) 0x00).toString());
-    assertEquals(       "1", new CharBuffer().appendBinTrimZeros((byte) 0x01).toString());
-    assertEquals(      "10", new CharBuffer().appendBinTrimZeros((byte) 0x02).toString());
-    assertEquals(     "100", new CharBuffer().appendBinTrimZeros((byte) 0x04).toString());
-    assertEquals(    "1000", new CharBuffer().appendBinTrimZeros((byte) 0x08).toString());
-    assertEquals(   "10000", new CharBuffer().appendBinTrimZeros((byte) 0x10).toString());
-    assertEquals(  "100000", new CharBuffer().appendBinTrimZeros((byte) 0x20).toString());
-    assertEquals( "1000000", new CharBuffer().appendBinTrimZeros((byte) 0x40).toString());
-    assertEquals("10000000", new CharBuffer().appendBinTrimZeros((byte) 0x80).toString());
+    assertEquals(       "0", new CharBuffer(1).appendBinTrimZeros((byte) 0b00000000).toString());
+    assertEquals(       "1", new CharBuffer(1).appendBinTrimZeros((byte) 0b00000001).toString());
+    assertEquals(      "10", new CharBuffer(2).appendBinTrimZeros((byte) 0b00000010).toString());
+    assertEquals(     "100", new CharBuffer(3).appendBinTrimZeros((byte) 0b00000100).toString());
+    assertEquals(    "1000", new CharBuffer(4).appendBinTrimZeros((byte) 0b00001000).toString());
+    assertEquals(   "10000", new CharBuffer(5).appendBinTrimZeros((byte) 0b00010000).toString());
+    assertEquals(  "100000", new CharBuffer(6).appendBinTrimZeros((byte) 0b00100000).toString());
+    assertEquals( "1000000", new CharBuffer(7).appendBinTrimZeros((byte) 0b01000000).toString());
+    assertEquals("10000000", new CharBuffer(8).appendBinTrimZeros((byte) 0b10000000).toString());
     // @formatter:on
   }
 
@@ -654,15 +1121,15 @@ public class CharBufferTest {
   @Test
   public void test_getBinCapacity_byte() {
     // @formatter:off
-    assertEquals(1, CharBuffer.getBinCapacity((byte) 0x00));
-    assertEquals(1, CharBuffer.getBinCapacity((byte) 0x01));
-    assertEquals(2, CharBuffer.getBinCapacity((byte) 0x02));
-    assertEquals(3, CharBuffer.getBinCapacity((byte) 0x04));
-    assertEquals(4, CharBuffer.getBinCapacity((byte) 0x08));
-    assertEquals(5, CharBuffer.getBinCapacity((byte) 0x10));
-    assertEquals(6, CharBuffer.getBinCapacity((byte) 0x20));
-    assertEquals(7, CharBuffer.getBinCapacity((byte) 0x40));
-    assertEquals(8, CharBuffer.getBinCapacity((byte) 0x80));
+    assertEquals(1, CharBuffer.getBinCapacity((byte) 0b00000000));
+    assertEquals(1, CharBuffer.getBinCapacity((byte) 0b00000001));
+    assertEquals(2, CharBuffer.getBinCapacity((byte) 0b00000010));
+    assertEquals(3, CharBuffer.getBinCapacity((byte) 0b00000100));
+    assertEquals(4, CharBuffer.getBinCapacity((byte) 0b00001000));
+    assertEquals(5, CharBuffer.getBinCapacity((byte) 0b00010000));
+    assertEquals(6, CharBuffer.getBinCapacity((byte) 0b00100000));
+    assertEquals(7, CharBuffer.getBinCapacity((byte) 0b01000000));
+    assertEquals(8, CharBuffer.getBinCapacity((byte) 0b10000000));
     // @formatter:on
   }
 
@@ -672,23 +1139,23 @@ public class CharBufferTest {
   @Test
   public void test_appendBin_short() {
     // @formatter:off
-    assertEquals("0000000000000000", new CharBuffer().appendBin((short) 0x0000).toString());
-    assertEquals("0000000000000001", new CharBuffer().appendBin((short) 0x0001).toString());
-    assertEquals("0000000000000010", new CharBuffer().appendBin((short) 0x0002).toString());
-    assertEquals("0000000000000100", new CharBuffer().appendBin((short) 0x0004).toString());
-    assertEquals("0000000000001000", new CharBuffer().appendBin((short) 0x0008).toString());
-    assertEquals("0000000000010000", new CharBuffer().appendBin((short) 0x0010).toString());
-    assertEquals("0000000000100000", new CharBuffer().appendBin((short) 0x0020).toString());
-    assertEquals("0000000001000000", new CharBuffer().appendBin((short) 0x0040).toString());
-    assertEquals("0000000010000000", new CharBuffer().appendBin((short) 0x0080).toString());
-    assertEquals("0000000100000000", new CharBuffer().appendBin((short) 0x0100).toString());
-    assertEquals("0000001000000000", new CharBuffer().appendBin((short) 0x0200).toString());
-    assertEquals("0000010000000000", new CharBuffer().appendBin((short) 0x0400).toString());
-    assertEquals("0000100000000000", new CharBuffer().appendBin((short) 0x0800).toString());
-    assertEquals("0001000000000000", new CharBuffer().appendBin((short) 0x1000).toString());
-    assertEquals("0010000000000000", new CharBuffer().appendBin((short) 0x2000).toString());
-    assertEquals("0100000000000000", new CharBuffer().appendBin((short) 0x4000).toString());
-    assertEquals("1000000000000000", new CharBuffer().appendBin((short) 0x8000).toString());
+    assertEquals("0000000000000000", new CharBuffer(16).appendBin((short) 0b0000000000000000).toString());
+    assertEquals("0000000000000001", new CharBuffer(16).appendBin((short) 0b0000000000000001).toString());
+    assertEquals("0000000000000010", new CharBuffer(16).appendBin((short) 0b0000000000000010).toString());
+    assertEquals("0000000000000100", new CharBuffer(16).appendBin((short) 0b0000000000000100).toString());
+    assertEquals("0000000000001000", new CharBuffer(16).appendBin((short) 0b0000000000001000).toString());
+    assertEquals("0000000000010000", new CharBuffer(16).appendBin((short) 0b0000000000010000).toString());
+    assertEquals("0000000000100000", new CharBuffer(16).appendBin((short) 0b0000000000100000).toString());
+    assertEquals("0000000001000000", new CharBuffer(16).appendBin((short) 0b0000000001000000).toString());
+    assertEquals("0000000010000000", new CharBuffer(16).appendBin((short) 0b0000000010000000).toString());
+    assertEquals("0000000100000000", new CharBuffer(16).appendBin((short) 0b0000000100000000).toString());
+    assertEquals("0000001000000000", new CharBuffer(16).appendBin((short) 0b0000001000000000).toString());
+    assertEquals("0000010000000000", new CharBuffer(16).appendBin((short) 0b0000010000000000).toString());
+    assertEquals("0000100000000000", new CharBuffer(16).appendBin((short) 0b0000100000000000).toString());
+    assertEquals("0001000000000000", new CharBuffer(16).appendBin((short) 0b0001000000000000).toString());
+    assertEquals("0010000000000000", new CharBuffer(16).appendBin((short) 0b0010000000000000).toString());
+    assertEquals("0100000000000000", new CharBuffer(16).appendBin((short) 0b0100000000000000).toString());
+    assertEquals("1000000000000000", new CharBuffer(16).appendBin((short) 0b1000000000000000).toString());
     // @formatter:on
   }
 
@@ -698,23 +1165,23 @@ public class CharBufferTest {
   @Test
   public void test_appendBinTrimZeros_short() {
     // @formatter:off
-    assertEquals(               "0", new CharBuffer().appendBinTrimZeros((short) 0x0000).toString());
-    assertEquals(               "1", new CharBuffer().appendBinTrimZeros((short) 0x0001).toString());
-    assertEquals(              "10", new CharBuffer().appendBinTrimZeros((short) 0x0002).toString());
-    assertEquals(             "100", new CharBuffer().appendBinTrimZeros((short) 0x0004).toString());
-    assertEquals(            "1000", new CharBuffer().appendBinTrimZeros((short) 0x0008).toString());
-    assertEquals(           "10000", new CharBuffer().appendBinTrimZeros((short) 0x0010).toString());
-    assertEquals(          "100000", new CharBuffer().appendBinTrimZeros((short) 0x0020).toString());
-    assertEquals(         "1000000", new CharBuffer().appendBinTrimZeros((short) 0x0040).toString());
-    assertEquals(        "10000000", new CharBuffer().appendBinTrimZeros((short) 0x0080).toString());
-    assertEquals(       "100000000", new CharBuffer().appendBinTrimZeros((short) 0x0100).toString());
-    assertEquals(      "1000000000", new CharBuffer().appendBinTrimZeros((short) 0x0200).toString());
-    assertEquals(     "10000000000", new CharBuffer().appendBinTrimZeros((short) 0x0400).toString());
-    assertEquals(    "100000000000", new CharBuffer().appendBinTrimZeros((short) 0x0800).toString());
-    assertEquals(   "1000000000000", new CharBuffer().appendBinTrimZeros((short) 0x1000).toString());
-    assertEquals(  "10000000000000", new CharBuffer().appendBinTrimZeros((short) 0x2000).toString());
-    assertEquals( "100000000000000", new CharBuffer().appendBinTrimZeros((short) 0x4000).toString());
-    assertEquals("1000000000000000", new CharBuffer().appendBinTrimZeros((short) 0x8000).toString());
+    assertEquals(               "0", new CharBuffer( 1).appendBinTrimZeros((short) 0b0000000000000000).toString());
+    assertEquals(               "1", new CharBuffer( 1).appendBinTrimZeros((short) 0b0000000000000001).toString());
+    assertEquals(              "10", new CharBuffer( 2).appendBinTrimZeros((short) 0b0000000000000010).toString());
+    assertEquals(             "100", new CharBuffer( 3).appendBinTrimZeros((short) 0b0000000000000100).toString());
+    assertEquals(            "1000", new CharBuffer( 4).appendBinTrimZeros((short) 0b0000000000001000).toString());
+    assertEquals(           "10000", new CharBuffer( 5).appendBinTrimZeros((short) 0b0000000000010000).toString());
+    assertEquals(          "100000", new CharBuffer( 6).appendBinTrimZeros((short) 0b0000000000100000).toString());
+    assertEquals(         "1000000", new CharBuffer( 7).appendBinTrimZeros((short) 0b0000000001000000).toString());
+    assertEquals(        "10000000", new CharBuffer( 8).appendBinTrimZeros((short) 0b0000000010000000).toString());
+    assertEquals(       "100000000", new CharBuffer( 9).appendBinTrimZeros((short) 0b0000000100000000).toString());
+    assertEquals(      "1000000000", new CharBuffer(10).appendBinTrimZeros((short) 0b0000001000000000).toString());
+    assertEquals(     "10000000000", new CharBuffer(11).appendBinTrimZeros((short) 0b0000010000000000).toString());
+    assertEquals(    "100000000000", new CharBuffer(12).appendBinTrimZeros((short) 0b0000100000000000).toString());
+    assertEquals(   "1000000000000", new CharBuffer(13).appendBinTrimZeros((short) 0b0001000000000000).toString());
+    assertEquals(  "10000000000000", new CharBuffer(14).appendBinTrimZeros((short) 0b0010000000000000).toString());
+    assertEquals( "100000000000000", new CharBuffer(15).appendBinTrimZeros((short) 0b0100000000000000).toString());
+    assertEquals("1000000000000000", new CharBuffer(16).appendBinTrimZeros((short) 0b1000000000000000).toString());
     // @formatter:on
   }
 
@@ -724,23 +1191,23 @@ public class CharBufferTest {
   @Test
   public void test_getBinCapacity_short() {
     // @formatter:off
-    assertEquals( 1, CharBuffer.getBinCapacity((short) 0x0000));
-    assertEquals( 1, CharBuffer.getBinCapacity((short) 0x0001));
-    assertEquals( 2, CharBuffer.getBinCapacity((short) 0x0002));
-    assertEquals( 3, CharBuffer.getBinCapacity((short) 0x0004));
-    assertEquals( 4, CharBuffer.getBinCapacity((short) 0x0008));
-    assertEquals( 5, CharBuffer.getBinCapacity((short) 0x0010));
-    assertEquals( 6, CharBuffer.getBinCapacity((short) 0x0020));
-    assertEquals( 7, CharBuffer.getBinCapacity((short) 0x0040));
-    assertEquals( 8, CharBuffer.getBinCapacity((short) 0x0080));
-    assertEquals( 9, CharBuffer.getBinCapacity((short) 0x0100));
-    assertEquals(10, CharBuffer.getBinCapacity((short) 0x0200));
-    assertEquals(11, CharBuffer.getBinCapacity((short) 0x0400));
-    assertEquals(12, CharBuffer.getBinCapacity((short) 0x0800));
-    assertEquals(13, CharBuffer.getBinCapacity((short) 0x1000));
-    assertEquals(14, CharBuffer.getBinCapacity((short) 0x2000));
-    assertEquals(15, CharBuffer.getBinCapacity((short) 0x4000));
-    assertEquals(16, CharBuffer.getBinCapacity((short) 0x8000));
+    assertEquals( 1, CharBuffer.getBinCapacity((short) 0b0000000000000000));
+    assertEquals( 1, CharBuffer.getBinCapacity((short) 0b0000000000000001));
+    assertEquals( 2, CharBuffer.getBinCapacity((short) 0b0000000000000010));
+    assertEquals( 3, CharBuffer.getBinCapacity((short) 0b0000000000000100));
+    assertEquals( 4, CharBuffer.getBinCapacity((short) 0b0000000000001000));
+    assertEquals( 5, CharBuffer.getBinCapacity((short) 0b0000000000010000));
+    assertEquals( 6, CharBuffer.getBinCapacity((short) 0b0000000000100000));
+    assertEquals( 7, CharBuffer.getBinCapacity((short) 0b0000000001000000));
+    assertEquals( 8, CharBuffer.getBinCapacity((short) 0b0000000010000000));
+    assertEquals( 9, CharBuffer.getBinCapacity((short) 0b0000000100000000));
+    assertEquals(10, CharBuffer.getBinCapacity((short) 0b0000001000000000));
+    assertEquals(11, CharBuffer.getBinCapacity((short) 0b0000010000000000));
+    assertEquals(12, CharBuffer.getBinCapacity((short) 0b0000100000000000));
+    assertEquals(13, CharBuffer.getBinCapacity((short) 0b0001000000000000));
+    assertEquals(14, CharBuffer.getBinCapacity((short) 0b0010000000000000));
+    assertEquals(15, CharBuffer.getBinCapacity((short) 0b0100000000000000));
+    assertEquals(16, CharBuffer.getBinCapacity((short) 0b1000000000000000));
     // @formatter:on
   }
 
@@ -750,39 +1217,39 @@ public class CharBufferTest {
   @Test
   public void test_appendBin_int() {
     // @formatter:off
-    assertEquals("00000000000000000000000000000000", new CharBuffer().appendBin(0x00000000).toString());
-    assertEquals("00000000000000000000000000000001", new CharBuffer().appendBin(0x00000001).toString());
-    assertEquals("00000000000000000000000000000010", new CharBuffer().appendBin(0x00000002).toString());
-    assertEquals("00000000000000000000000000000100", new CharBuffer().appendBin(0x00000004).toString());
-    assertEquals("00000000000000000000000000001000", new CharBuffer().appendBin(0x00000008).toString());
-    assertEquals("00000000000000000000000000010000", new CharBuffer().appendBin(0x00000010).toString());
-    assertEquals("00000000000000000000000000100000", new CharBuffer().appendBin(0x00000020).toString());
-    assertEquals("00000000000000000000000001000000", new CharBuffer().appendBin(0x00000040).toString());
-    assertEquals("00000000000000000000000010000000", new CharBuffer().appendBin(0x00000080).toString());
-    assertEquals("00000000000000000000000100000000", new CharBuffer().appendBin(0x00000100).toString());
-    assertEquals("00000000000000000000001000000000", new CharBuffer().appendBin(0x00000200).toString());
-    assertEquals("00000000000000000000010000000000", new CharBuffer().appendBin(0x00000400).toString());
-    assertEquals("00000000000000000000100000000000", new CharBuffer().appendBin(0x00000800).toString());
-    assertEquals("00000000000000000001000000000000", new CharBuffer().appendBin(0x00001000).toString());
-    assertEquals("00000000000000000010000000000000", new CharBuffer().appendBin(0x00002000).toString());
-    assertEquals("00000000000000000100000000000000", new CharBuffer().appendBin(0x00004000).toString());
-    assertEquals("00000000000000001000000000000000", new CharBuffer().appendBin(0x00008000).toString());
-    assertEquals("00000000000000010000000000000000", new CharBuffer().appendBin(0x00010000).toString());
-    assertEquals("00000000000000100000000000000000", new CharBuffer().appendBin(0x00020000).toString());
-    assertEquals("00000000000001000000000000000000", new CharBuffer().appendBin(0x00040000).toString());
-    assertEquals("00000000000010000000000000000000", new CharBuffer().appendBin(0x00080000).toString());
-    assertEquals("00000000000100000000000000000000", new CharBuffer().appendBin(0x00100000).toString());
-    assertEquals("00000000001000000000000000000000", new CharBuffer().appendBin(0x00200000).toString());
-    assertEquals("00000000010000000000000000000000", new CharBuffer().appendBin(0x00400000).toString());
-    assertEquals("00000000100000000000000000000000", new CharBuffer().appendBin(0x00800000).toString());
-    assertEquals("00000001000000000000000000000000", new CharBuffer().appendBin(0x01000000).toString());
-    assertEquals("00000010000000000000000000000000", new CharBuffer().appendBin(0x02000000).toString());
-    assertEquals("00000100000000000000000000000000", new CharBuffer().appendBin(0x04000000).toString());
-    assertEquals("00001000000000000000000000000000", new CharBuffer().appendBin(0x08000000).toString());
-    assertEquals("00010000000000000000000000000000", new CharBuffer().appendBin(0x10000000).toString());
-    assertEquals("00100000000000000000000000000000", new CharBuffer().appendBin(0x20000000).toString());
-    assertEquals("01000000000000000000000000000000", new CharBuffer().appendBin(0x40000000).toString());
-    assertEquals("10000000000000000000000000000000", new CharBuffer().appendBin(0x80000000).toString());
+    assertEquals("00000000000000000000000000000000", new CharBuffer(32).appendBin(0b00000000000000000000000000000000).toString());
+    assertEquals("00000000000000000000000000000001", new CharBuffer(32).appendBin(0b00000000000000000000000000000001).toString());
+    assertEquals("00000000000000000000000000000010", new CharBuffer(32).appendBin(0b00000000000000000000000000000010).toString());
+    assertEquals("00000000000000000000000000000100", new CharBuffer(32).appendBin(0b00000000000000000000000000000100).toString());
+    assertEquals("00000000000000000000000000001000", new CharBuffer(32).appendBin(0b00000000000000000000000000001000).toString());
+    assertEquals("00000000000000000000000000010000", new CharBuffer(32).appendBin(0b00000000000000000000000000010000).toString());
+    assertEquals("00000000000000000000000000100000", new CharBuffer(32).appendBin(0b00000000000000000000000000100000).toString());
+    assertEquals("00000000000000000000000001000000", new CharBuffer(32).appendBin(0b00000000000000000000000001000000).toString());
+    assertEquals("00000000000000000000000010000000", new CharBuffer(32).appendBin(0b00000000000000000000000010000000).toString());
+    assertEquals("00000000000000000000000100000000", new CharBuffer(32).appendBin(0b00000000000000000000000100000000).toString());
+    assertEquals("00000000000000000000001000000000", new CharBuffer(32).appendBin(0b00000000000000000000001000000000).toString());
+    assertEquals("00000000000000000000010000000000", new CharBuffer(32).appendBin(0b00000000000000000000010000000000).toString());
+    assertEquals("00000000000000000000100000000000", new CharBuffer(32).appendBin(0b00000000000000000000100000000000).toString());
+    assertEquals("00000000000000000001000000000000", new CharBuffer(32).appendBin(0b00000000000000000001000000000000).toString());
+    assertEquals("00000000000000000010000000000000", new CharBuffer(32).appendBin(0b00000000000000000010000000000000).toString());
+    assertEquals("00000000000000000100000000000000", new CharBuffer(32).appendBin(0b00000000000000000100000000000000).toString());
+    assertEquals("00000000000000001000000000000000", new CharBuffer(32).appendBin(0b00000000000000001000000000000000).toString());
+    assertEquals("00000000000000010000000000000000", new CharBuffer(32).appendBin(0b00000000000000010000000000000000).toString());
+    assertEquals("00000000000000100000000000000000", new CharBuffer(32).appendBin(0b00000000000000100000000000000000).toString());
+    assertEquals("00000000000001000000000000000000", new CharBuffer(32).appendBin(0b00000000000001000000000000000000).toString());
+    assertEquals("00000000000010000000000000000000", new CharBuffer(32).appendBin(0b00000000000010000000000000000000).toString());
+    assertEquals("00000000000100000000000000000000", new CharBuffer(32).appendBin(0b00000000000100000000000000000000).toString());
+    assertEquals("00000000001000000000000000000000", new CharBuffer(32).appendBin(0b00000000001000000000000000000000).toString());
+    assertEquals("00000000010000000000000000000000", new CharBuffer(32).appendBin(0b00000000010000000000000000000000).toString());
+    assertEquals("00000000100000000000000000000000", new CharBuffer(32).appendBin(0b00000000100000000000000000000000).toString());
+    assertEquals("00000001000000000000000000000000", new CharBuffer(32).appendBin(0b00000001000000000000000000000000).toString());
+    assertEquals("00000010000000000000000000000000", new CharBuffer(32).appendBin(0b00000010000000000000000000000000).toString());
+    assertEquals("00000100000000000000000000000000", new CharBuffer(32).appendBin(0b00000100000000000000000000000000).toString());
+    assertEquals("00001000000000000000000000000000", new CharBuffer(32).appendBin(0b00001000000000000000000000000000).toString());
+    assertEquals("00010000000000000000000000000000", new CharBuffer(32).appendBin(0b00010000000000000000000000000000).toString());
+    assertEquals("00100000000000000000000000000000", new CharBuffer(32).appendBin(0b00100000000000000000000000000000).toString());
+    assertEquals("01000000000000000000000000000000", new CharBuffer(32).appendBin(0b01000000000000000000000000000000).toString());
+    assertEquals("10000000000000000000000000000000", new CharBuffer(32).appendBin(0b10000000000000000000000000000000).toString());
     // @formatter:on
   }
 
@@ -792,39 +1259,39 @@ public class CharBufferTest {
   @Test
   public void test_appendBinTrimZeros_int() {
     // @formatter:off
-    assertEquals(                               "0", new CharBuffer().appendBinTrimZeros(0x00000000).toString());
-    assertEquals(                               "1", new CharBuffer().appendBinTrimZeros(0x00000001).toString());
-    assertEquals(                              "10", new CharBuffer().appendBinTrimZeros(0x00000002).toString());
-    assertEquals(                             "100", new CharBuffer().appendBinTrimZeros(0x00000004).toString());
-    assertEquals(                            "1000", new CharBuffer().appendBinTrimZeros(0x00000008).toString());
-    assertEquals(                           "10000", new CharBuffer().appendBinTrimZeros(0x00000010).toString());
-    assertEquals(                          "100000", new CharBuffer().appendBinTrimZeros(0x00000020).toString());
-    assertEquals(                         "1000000", new CharBuffer().appendBinTrimZeros(0x00000040).toString());
-    assertEquals(                        "10000000", new CharBuffer().appendBinTrimZeros(0x00000080).toString());
-    assertEquals(                       "100000000", new CharBuffer().appendBinTrimZeros(0x00000100).toString());
-    assertEquals(                      "1000000000", new CharBuffer().appendBinTrimZeros(0x00000200).toString());
-    assertEquals(                     "10000000000", new CharBuffer().appendBinTrimZeros(0x00000400).toString());
-    assertEquals(                    "100000000000", new CharBuffer().appendBinTrimZeros(0x00000800).toString());
-    assertEquals(                   "1000000000000", new CharBuffer().appendBinTrimZeros(0x00001000).toString());
-    assertEquals(                  "10000000000000", new CharBuffer().appendBinTrimZeros(0x00002000).toString());
-    assertEquals(                 "100000000000000", new CharBuffer().appendBinTrimZeros(0x00004000).toString());
-    assertEquals(                "1000000000000000", new CharBuffer().appendBinTrimZeros(0x00008000).toString());
-    assertEquals(               "10000000000000000", new CharBuffer().appendBinTrimZeros(0x00010000).toString());
-    assertEquals(              "100000000000000000", new CharBuffer().appendBinTrimZeros(0x00020000).toString());
-    assertEquals(             "1000000000000000000", new CharBuffer().appendBinTrimZeros(0x00040000).toString());
-    assertEquals(            "10000000000000000000", new CharBuffer().appendBinTrimZeros(0x00080000).toString());
-    assertEquals(           "100000000000000000000", new CharBuffer().appendBinTrimZeros(0x00100000).toString());
-    assertEquals(          "1000000000000000000000", new CharBuffer().appendBinTrimZeros(0x00200000).toString());
-    assertEquals(         "10000000000000000000000", new CharBuffer().appendBinTrimZeros(0x00400000).toString());
-    assertEquals(        "100000000000000000000000", new CharBuffer().appendBinTrimZeros(0x00800000).toString());
-    assertEquals(       "1000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x01000000).toString());
-    assertEquals(      "10000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x02000000).toString());
-    assertEquals(     "100000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x04000000).toString());
-    assertEquals(    "1000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x08000000).toString());
-    assertEquals(   "10000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x10000000).toString());
-    assertEquals(  "100000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x20000000).toString());
-    assertEquals( "1000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x40000000).toString());
-    assertEquals("10000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x80000000).toString());
+    assertEquals(                               "0", new CharBuffer( 1).appendBinTrimZeros(0b00000000000000000000000000000000).toString());
+    assertEquals(                               "1", new CharBuffer( 1).appendBinTrimZeros(0b00000000000000000000000000000001).toString());
+    assertEquals(                              "10", new CharBuffer( 2).appendBinTrimZeros(0b00000000000000000000000000000010).toString());
+    assertEquals(                             "100", new CharBuffer( 3).appendBinTrimZeros(0b00000000000000000000000000000100).toString());
+    assertEquals(                            "1000", new CharBuffer( 4).appendBinTrimZeros(0b00000000000000000000000000001000).toString());
+    assertEquals(                           "10000", new CharBuffer( 5).appendBinTrimZeros(0b00000000000000000000000000010000).toString());
+    assertEquals(                          "100000", new CharBuffer( 6).appendBinTrimZeros(0b00000000000000000000000000100000).toString());
+    assertEquals(                         "1000000", new CharBuffer( 7).appendBinTrimZeros(0b00000000000000000000000001000000).toString());
+    assertEquals(                        "10000000", new CharBuffer( 8).appendBinTrimZeros(0b00000000000000000000000010000000).toString());
+    assertEquals(                       "100000000", new CharBuffer( 9).appendBinTrimZeros(0b00000000000000000000000100000000).toString());
+    assertEquals(                      "1000000000", new CharBuffer(10).appendBinTrimZeros(0b00000000000000000000001000000000).toString());
+    assertEquals(                     "10000000000", new CharBuffer(11).appendBinTrimZeros(0b00000000000000000000010000000000).toString());
+    assertEquals(                    "100000000000", new CharBuffer(12).appendBinTrimZeros(0b00000000000000000000100000000000).toString());
+    assertEquals(                   "1000000000000", new CharBuffer(13).appendBinTrimZeros(0b00000000000000000001000000000000).toString());
+    assertEquals(                  "10000000000000", new CharBuffer(14).appendBinTrimZeros(0b00000000000000000010000000000000).toString());
+    assertEquals(                 "100000000000000", new CharBuffer(15).appendBinTrimZeros(0b00000000000000000100000000000000).toString());
+    assertEquals(                "1000000000000000", new CharBuffer(16).appendBinTrimZeros(0b00000000000000001000000000000000).toString());
+    assertEquals(               "10000000000000000", new CharBuffer(17).appendBinTrimZeros(0b00000000000000010000000000000000).toString());
+    assertEquals(              "100000000000000000", new CharBuffer(18).appendBinTrimZeros(0b00000000000000100000000000000000).toString());
+    assertEquals(             "1000000000000000000", new CharBuffer(19).appendBinTrimZeros(0b00000000000001000000000000000000).toString());
+    assertEquals(            "10000000000000000000", new CharBuffer(20).appendBinTrimZeros(0b00000000000010000000000000000000).toString());
+    assertEquals(           "100000000000000000000", new CharBuffer(21).appendBinTrimZeros(0b00000000000100000000000000000000).toString());
+    assertEquals(          "1000000000000000000000", new CharBuffer(22).appendBinTrimZeros(0b00000000001000000000000000000000).toString());
+    assertEquals(         "10000000000000000000000", new CharBuffer(23).appendBinTrimZeros(0b00000000010000000000000000000000).toString());
+    assertEquals(        "100000000000000000000000", new CharBuffer(24).appendBinTrimZeros(0b00000000100000000000000000000000).toString());
+    assertEquals(       "1000000000000000000000000", new CharBuffer(25).appendBinTrimZeros(0b00000001000000000000000000000000).toString());
+    assertEquals(      "10000000000000000000000000", new CharBuffer(26).appendBinTrimZeros(0b00000010000000000000000000000000).toString());
+    assertEquals(     "100000000000000000000000000", new CharBuffer(27).appendBinTrimZeros(0b00000100000000000000000000000000).toString());
+    assertEquals(    "1000000000000000000000000000", new CharBuffer(28).appendBinTrimZeros(0b00001000000000000000000000000000).toString());
+    assertEquals(   "10000000000000000000000000000", new CharBuffer(29).appendBinTrimZeros(0b00010000000000000000000000000000).toString());
+    assertEquals(  "100000000000000000000000000000", new CharBuffer(30).appendBinTrimZeros(0b00100000000000000000000000000000).toString());
+    assertEquals( "1000000000000000000000000000000", new CharBuffer(31).appendBinTrimZeros(0b01000000000000000000000000000000).toString());
+    assertEquals("10000000000000000000000000000000", new CharBuffer(32).appendBinTrimZeros(0b10000000000000000000000000000000).toString());
     // @formatter:on
   }
 
@@ -834,39 +1301,39 @@ public class CharBufferTest {
   @Test
   public void test_getBinCapacity_int() {
     // @formatter:off
-    assertEquals( 1, CharBuffer.getBinCapacity(0x00000000));
-    assertEquals( 1, CharBuffer.getBinCapacity(0x00000001));
-    assertEquals( 2, CharBuffer.getBinCapacity(0x00000002));
-    assertEquals( 3, CharBuffer.getBinCapacity(0x00000004));
-    assertEquals( 4, CharBuffer.getBinCapacity(0x00000008));
-    assertEquals( 5, CharBuffer.getBinCapacity(0x00000010));
-    assertEquals( 6, CharBuffer.getBinCapacity(0x00000020));
-    assertEquals( 7, CharBuffer.getBinCapacity(0x00000040));
-    assertEquals( 8, CharBuffer.getBinCapacity(0x00000080));
-    assertEquals( 9, CharBuffer.getBinCapacity(0x00000100));
-    assertEquals(10, CharBuffer.getBinCapacity(0x00000200));
-    assertEquals(11, CharBuffer.getBinCapacity(0x00000400));
-    assertEquals(12, CharBuffer.getBinCapacity(0x00000800));
-    assertEquals(13, CharBuffer.getBinCapacity(0x00001000));
-    assertEquals(14, CharBuffer.getBinCapacity(0x00002000));
-    assertEquals(15, CharBuffer.getBinCapacity(0x00004000));
-    assertEquals(16, CharBuffer.getBinCapacity(0x00008000));
-    assertEquals(17, CharBuffer.getBinCapacity(0x00010000));
-    assertEquals(18, CharBuffer.getBinCapacity(0x00020000));
-    assertEquals(19, CharBuffer.getBinCapacity(0x00040000));
-    assertEquals(20, CharBuffer.getBinCapacity(0x00080000));
-    assertEquals(21, CharBuffer.getBinCapacity(0x00100000));
-    assertEquals(22, CharBuffer.getBinCapacity(0x00200000));
-    assertEquals(23, CharBuffer.getBinCapacity(0x00400000));
-    assertEquals(24, CharBuffer.getBinCapacity(0x00800000));
-    assertEquals(25, CharBuffer.getBinCapacity(0x01000000));
-    assertEquals(26, CharBuffer.getBinCapacity(0x02000000));
-    assertEquals(27, CharBuffer.getBinCapacity(0x04000000));
-    assertEquals(28, CharBuffer.getBinCapacity(0x08000000));
-    assertEquals(29, CharBuffer.getBinCapacity(0x10000000));
-    assertEquals(30, CharBuffer.getBinCapacity(0x20000000));
-    assertEquals(31, CharBuffer.getBinCapacity(0x40000000));
-    assertEquals(32, CharBuffer.getBinCapacity(0x80000000));
+    assertEquals( 1, CharBuffer.getBinCapacity(0b00000000000000000000000000000000));
+    assertEquals( 1, CharBuffer.getBinCapacity(0b00000000000000000000000000000001));
+    assertEquals( 2, CharBuffer.getBinCapacity(0b00000000000000000000000000000010));
+    assertEquals( 3, CharBuffer.getBinCapacity(0b00000000000000000000000000000100));
+    assertEquals( 4, CharBuffer.getBinCapacity(0b00000000000000000000000000001000));
+    assertEquals( 5, CharBuffer.getBinCapacity(0b00000000000000000000000000010000));
+    assertEquals( 6, CharBuffer.getBinCapacity(0b00000000000000000000000000100000));
+    assertEquals( 7, CharBuffer.getBinCapacity(0b00000000000000000000000001000000));
+    assertEquals( 8, CharBuffer.getBinCapacity(0b00000000000000000000000010000000));
+    assertEquals( 9, CharBuffer.getBinCapacity(0b00000000000000000000000100000000));
+    assertEquals(10, CharBuffer.getBinCapacity(0b00000000000000000000001000000000));
+    assertEquals(11, CharBuffer.getBinCapacity(0b00000000000000000000010000000000));
+    assertEquals(12, CharBuffer.getBinCapacity(0b00000000000000000000100000000000));
+    assertEquals(13, CharBuffer.getBinCapacity(0b00000000000000000001000000000000));
+    assertEquals(14, CharBuffer.getBinCapacity(0b00000000000000000010000000000000));
+    assertEquals(15, CharBuffer.getBinCapacity(0b00000000000000000100000000000000));
+    assertEquals(16, CharBuffer.getBinCapacity(0b00000000000000001000000000000000));
+    assertEquals(17, CharBuffer.getBinCapacity(0b00000000000000010000000000000000));
+    assertEquals(18, CharBuffer.getBinCapacity(0b00000000000000100000000000000000));
+    assertEquals(19, CharBuffer.getBinCapacity(0b00000000000001000000000000000000));
+    assertEquals(20, CharBuffer.getBinCapacity(0b00000000000010000000000000000000));
+    assertEquals(21, CharBuffer.getBinCapacity(0b00000000000100000000000000000000));
+    assertEquals(22, CharBuffer.getBinCapacity(0b00000000001000000000000000000000));
+    assertEquals(23, CharBuffer.getBinCapacity(0b00000000010000000000000000000000));
+    assertEquals(24, CharBuffer.getBinCapacity(0b00000000100000000000000000000000));
+    assertEquals(25, CharBuffer.getBinCapacity(0b00000001000000000000000000000000));
+    assertEquals(26, CharBuffer.getBinCapacity(0b00000010000000000000000000000000));
+    assertEquals(27, CharBuffer.getBinCapacity(0b00000100000000000000000000000000));
+    assertEquals(28, CharBuffer.getBinCapacity(0b00001000000000000000000000000000));
+    assertEquals(29, CharBuffer.getBinCapacity(0b00010000000000000000000000000000));
+    assertEquals(30, CharBuffer.getBinCapacity(0b00100000000000000000000000000000));
+    assertEquals(31, CharBuffer.getBinCapacity(0b01000000000000000000000000000000));
+    assertEquals(32, CharBuffer.getBinCapacity(0b10000000000000000000000000000000));
     // @formatter:on
   }
 
@@ -876,71 +1343,71 @@ public class CharBufferTest {
   @Test
   public void test_appendBin_long() {
     // @formatter:off
-    assertEquals("0000000000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000000000000000L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000000000000000000001", new CharBuffer().appendBin(0x0000000000000001L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000000000000000000010", new CharBuffer().appendBin(0x0000000000000002L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000000000000000000100", new CharBuffer().appendBin(0x0000000000000004L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000000000000000001000", new CharBuffer().appendBin(0x0000000000000008L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000000000000000010000", new CharBuffer().appendBin(0x0000000000000010L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000000000000000100000", new CharBuffer().appendBin(0x0000000000000020L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000000000000001000000", new CharBuffer().appendBin(0x0000000000000040L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000000000000010000000", new CharBuffer().appendBin(0x0000000000000080L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000000000000100000000", new CharBuffer().appendBin(0x0000000000000100L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000000000001000000000", new CharBuffer().appendBin(0x0000000000000200L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000000000010000000000", new CharBuffer().appendBin(0x0000000000000400L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000000000100000000000", new CharBuffer().appendBin(0x0000000000000800L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000000001000000000000", new CharBuffer().appendBin(0x0000000000001000L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000000010000000000000", new CharBuffer().appendBin(0x0000000000002000L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000000100000000000000", new CharBuffer().appendBin(0x0000000000004000L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000001000000000000000", new CharBuffer().appendBin(0x0000000000008000L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000010000000000000000", new CharBuffer().appendBin(0x0000000000010000L).toString());
-    assertEquals("0000000000000000000000000000000000000000000000100000000000000000", new CharBuffer().appendBin(0x0000000000020000L).toString());
-    assertEquals("0000000000000000000000000000000000000000000001000000000000000000", new CharBuffer().appendBin(0x0000000000040000L).toString());
-    assertEquals("0000000000000000000000000000000000000000000010000000000000000000", new CharBuffer().appendBin(0x0000000000080000L).toString());
-    assertEquals("0000000000000000000000000000000000000000000100000000000000000000", new CharBuffer().appendBin(0x0000000000100000L).toString());
-    assertEquals("0000000000000000000000000000000000000000001000000000000000000000", new CharBuffer().appendBin(0x0000000000200000L).toString());
-    assertEquals("0000000000000000000000000000000000000000010000000000000000000000", new CharBuffer().appendBin(0x0000000000400000L).toString());
-    assertEquals("0000000000000000000000000000000000000000100000000000000000000000", new CharBuffer().appendBin(0x0000000000800000L).toString());
-    assertEquals("0000000000000000000000000000000000000001000000000000000000000000", new CharBuffer().appendBin(0x0000000001000000L).toString());
-    assertEquals("0000000000000000000000000000000000000010000000000000000000000000", new CharBuffer().appendBin(0x0000000002000000L).toString());
-    assertEquals("0000000000000000000000000000000000000100000000000000000000000000", new CharBuffer().appendBin(0x0000000004000000L).toString());
-    assertEquals("0000000000000000000000000000000000001000000000000000000000000000", new CharBuffer().appendBin(0x0000000008000000L).toString());
-    assertEquals("0000000000000000000000000000000000010000000000000000000000000000", new CharBuffer().appendBin(0x0000000010000000L).toString());
-    assertEquals("0000000000000000000000000000000000100000000000000000000000000000", new CharBuffer().appendBin(0x0000000020000000L).toString());
-    assertEquals("0000000000000000000000000000000001000000000000000000000000000000", new CharBuffer().appendBin(0x0000000040000000L).toString());
-    assertEquals("0000000000000000000000000000000010000000000000000000000000000000", new CharBuffer().appendBin(0x0000000080000000L).toString());
-    assertEquals("0000000000000000000000000000000100000000000000000000000000000000", new CharBuffer().appendBin(0x0000000100000000L).toString());
-    assertEquals("0000000000000000000000000000001000000000000000000000000000000000", new CharBuffer().appendBin(0x0000000200000000L).toString());
-    assertEquals("0000000000000000000000000000010000000000000000000000000000000000", new CharBuffer().appendBin(0x0000000400000000L).toString());
-    assertEquals("0000000000000000000000000000100000000000000000000000000000000000", new CharBuffer().appendBin(0x0000000800000000L).toString());
-    assertEquals("0000000000000000000000000001000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000001000000000L).toString());
-    assertEquals("0000000000000000000000000010000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000002000000000L).toString());
-    assertEquals("0000000000000000000000000100000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000004000000000L).toString());
-    assertEquals("0000000000000000000000001000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000008000000000L).toString());
-    assertEquals("0000000000000000000000010000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000010000000000L).toString());
-    assertEquals("0000000000000000000000100000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000020000000000L).toString());
-    assertEquals("0000000000000000000001000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000040000000000L).toString());
-    assertEquals("0000000000000000000010000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000080000000000L).toString());
-    assertEquals("0000000000000000000100000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000100000000000L).toString());
-    assertEquals("0000000000000000001000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000200000000000L).toString());
-    assertEquals("0000000000000000010000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000400000000000L).toString());
-    assertEquals("0000000000000000100000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0000800000000000L).toString());
-    assertEquals("0000000000000001000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0001000000000000L).toString());
-    assertEquals("0000000000000010000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0002000000000000L).toString());
-    assertEquals("0000000000000100000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0004000000000000L).toString());
-    assertEquals("0000000000001000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0008000000000000L).toString());
-    assertEquals("0000000000010000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0010000000000000L).toString());
-    assertEquals("0000000000100000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0020000000000000L).toString());
-    assertEquals("0000000001000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0040000000000000L).toString());
-    assertEquals("0000000010000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0080000000000000L).toString());
-    assertEquals("0000000100000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0100000000000000L).toString());
-    assertEquals("0000001000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0200000000000000L).toString());
-    assertEquals("0000010000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0400000000000000L).toString());
-    assertEquals("0000100000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x0800000000000000L).toString());
-    assertEquals("0001000000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x1000000000000000L).toString());
-    assertEquals("0010000000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x2000000000000000L).toString());
-    assertEquals("0100000000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x4000000000000000L).toString());
-    assertEquals("1000000000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBin(0x8000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000000000001", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000000000000000000001L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000000000010", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000000000000000000010L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000000000100", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000000000000000000100L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000000001000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000000000000000001000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000000010000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000000000000000010000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000000100000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000000000000000100000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000001000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000000000000001000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000010000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000000000000010000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000000100000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000000000000100000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000001000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000000000001000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000010000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000000000010000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000000100000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000000000100000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000001000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000000001000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000010000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000000010000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000000100000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000000100000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000001000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000001000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000010000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000010000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000000100000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000000100000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000001000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000001000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000010000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000010000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000000100000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000000100000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000001000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000001000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000010000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000010000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000000100000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000000100000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000001000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000001000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000010000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000010000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000000100000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000000100000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000001000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000001000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000010000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000010000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000000100000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000000100000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000001000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000001000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000010000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000010000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000000100000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000000100000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000001000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000001000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000010000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000010000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000000100000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000000100000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000001000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000001000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000010000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000010000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000000100000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000000100000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000001000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000001000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000010000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000010000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000000100000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000000100000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000001000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000001000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000010000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000010000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000000100000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000000100000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000001000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000001000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000010000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000010000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000000100000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000000100000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000001000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000001000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000010000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000010000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000000100000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000000100000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000001000000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000001000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000010000000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000010000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000000100000000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000000100000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000001000000000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000001000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000010000000000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000010000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000000100000000000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000000100000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000001000000000000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000001000000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000010000000000000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000010000000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0000100000000000000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0000100000000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0001000000000000000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0001000000000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0010000000000000000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0010000000000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("0100000000000000000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b0100000000000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("1000000000000000000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBin(0b1000000000000000000000000000000000000000000000000000000000000000L).toString());
     // @formatter:on
   }
 
@@ -950,71 +1417,71 @@ public class CharBufferTest {
   @Test
   public void test_appendBinTrimZeros_long() {
     // @formatter:off
-    assertEquals(                                                               "0", new CharBuffer().appendBinTrimZeros(0x0000000000000000L).toString());
-    assertEquals(                                                               "1", new CharBuffer().appendBinTrimZeros(0x0000000000000001L).toString());
-    assertEquals(                                                              "10", new CharBuffer().appendBinTrimZeros(0x0000000000000002L).toString());
-    assertEquals(                                                             "100", new CharBuffer().appendBinTrimZeros(0x0000000000000004L).toString());
-    assertEquals(                                                            "1000", new CharBuffer().appendBinTrimZeros(0x0000000000000008L).toString());
-    assertEquals(                                                           "10000", new CharBuffer().appendBinTrimZeros(0x0000000000000010L).toString());
-    assertEquals(                                                          "100000", new CharBuffer().appendBinTrimZeros(0x0000000000000020L).toString());
-    assertEquals(                                                         "1000000", new CharBuffer().appendBinTrimZeros(0x0000000000000040L).toString());
-    assertEquals(                                                        "10000000", new CharBuffer().appendBinTrimZeros(0x0000000000000080L).toString());
-    assertEquals(                                                       "100000000", new CharBuffer().appendBinTrimZeros(0x0000000000000100L).toString());
-    assertEquals(                                                      "1000000000", new CharBuffer().appendBinTrimZeros(0x0000000000000200L).toString());
-    assertEquals(                                                     "10000000000", new CharBuffer().appendBinTrimZeros(0x0000000000000400L).toString());
-    assertEquals(                                                    "100000000000", new CharBuffer().appendBinTrimZeros(0x0000000000000800L).toString());
-    assertEquals(                                                   "1000000000000", new CharBuffer().appendBinTrimZeros(0x0000000000001000L).toString());
-    assertEquals(                                                  "10000000000000", new CharBuffer().appendBinTrimZeros(0x0000000000002000L).toString());
-    assertEquals(                                                 "100000000000000", new CharBuffer().appendBinTrimZeros(0x0000000000004000L).toString());
-    assertEquals(                                                "1000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000000008000L).toString());
-    assertEquals(                                               "10000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000000010000L).toString());
-    assertEquals(                                              "100000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000000020000L).toString());
-    assertEquals(                                             "1000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000000040000L).toString());
-    assertEquals(                                            "10000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000000080000L).toString());
-    assertEquals(                                           "100000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000000100000L).toString());
-    assertEquals(                                          "1000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000000200000L).toString());
-    assertEquals(                                         "10000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000000400000L).toString());
-    assertEquals(                                        "100000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000000800000L).toString());
-    assertEquals(                                       "1000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000001000000L).toString());
-    assertEquals(                                      "10000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000002000000L).toString());
-    assertEquals(                                     "100000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000004000000L).toString());
-    assertEquals(                                    "1000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000008000000L).toString());
-    assertEquals(                                   "10000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000010000000L).toString());
-    assertEquals(                                  "100000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000020000000L).toString());
-    assertEquals(                                 "1000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000040000000L).toString());
-    assertEquals(                                "10000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000080000000L).toString());
-    assertEquals(                               "100000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000100000000L).toString());
-    assertEquals(                              "1000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000200000000L).toString());
-    assertEquals(                             "10000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000400000000L).toString());
-    assertEquals(                            "100000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000000800000000L).toString());
-    assertEquals(                           "1000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000001000000000L).toString());
-    assertEquals(                          "10000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000002000000000L).toString());
-    assertEquals(                         "100000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000004000000000L).toString());
-    assertEquals(                        "1000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000008000000000L).toString());
-    assertEquals(                       "10000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000010000000000L).toString());
-    assertEquals(                      "100000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000020000000000L).toString());
-    assertEquals(                     "1000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000040000000000L).toString());
-    assertEquals(                    "10000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000080000000000L).toString());
-    assertEquals(                   "100000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000100000000000L).toString());
-    assertEquals(                  "1000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000200000000000L).toString());
-    assertEquals(                 "10000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000400000000000L).toString());
-    assertEquals(                "100000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0000800000000000L).toString());
-    assertEquals(               "1000000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0001000000000000L).toString());
-    assertEquals(              "10000000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0002000000000000L).toString());
-    assertEquals(             "100000000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0004000000000000L).toString());
-    assertEquals(            "1000000000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0008000000000000L).toString());
-    assertEquals(           "10000000000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0010000000000000L).toString());
-    assertEquals(          "100000000000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0020000000000000L).toString());
-    assertEquals(         "1000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0040000000000000L).toString());
-    assertEquals(        "10000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0080000000000000L).toString());
-    assertEquals(       "100000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0100000000000000L).toString());
-    assertEquals(      "1000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0200000000000000L).toString());
-    assertEquals(     "10000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0400000000000000L).toString());
-    assertEquals(    "100000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x0800000000000000L).toString());
-    assertEquals(   "1000000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x1000000000000000L).toString());
-    assertEquals(  "10000000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x2000000000000000L).toString());
-    assertEquals( "100000000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x4000000000000000L).toString());
-    assertEquals("1000000000000000000000000000000000000000000000000000000000000000", new CharBuffer().appendBinTrimZeros(0x8000000000000000L).toString());
+    assertEquals(                                                               "0", new CharBuffer( 1).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals(                                                               "1", new CharBuffer( 1).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000000000000000000001L).toString());
+    assertEquals(                                                              "10", new CharBuffer( 2).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000000000000000000010L).toString());
+    assertEquals(                                                             "100", new CharBuffer( 3).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000000000000000000100L).toString());
+    assertEquals(                                                            "1000", new CharBuffer( 4).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000000000000000001000L).toString());
+    assertEquals(                                                           "10000", new CharBuffer( 5).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000000000000000010000L).toString());
+    assertEquals(                                                          "100000", new CharBuffer( 6).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000000000000000100000L).toString());
+    assertEquals(                                                         "1000000", new CharBuffer( 7).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000000000000001000000L).toString());
+    assertEquals(                                                        "10000000", new CharBuffer( 8).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000000000000010000000L).toString());
+    assertEquals(                                                       "100000000", new CharBuffer( 9).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000000000000100000000L).toString());
+    assertEquals(                                                      "1000000000", new CharBuffer(10).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000000000001000000000L).toString());
+    assertEquals(                                                     "10000000000", new CharBuffer(11).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000000000010000000000L).toString());
+    assertEquals(                                                    "100000000000", new CharBuffer(12).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000000000100000000000L).toString());
+    assertEquals(                                                   "1000000000000", new CharBuffer(13).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000000001000000000000L).toString());
+    assertEquals(                                                  "10000000000000", new CharBuffer(14).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000000010000000000000L).toString());
+    assertEquals(                                                 "100000000000000", new CharBuffer(15).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000000100000000000000L).toString());
+    assertEquals(                                                "1000000000000000", new CharBuffer(16).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000001000000000000000L).toString());
+    assertEquals(                                               "10000000000000000", new CharBuffer(17).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000010000000000000000L).toString());
+    assertEquals(                                              "100000000000000000", new CharBuffer(18).appendBinTrimZeros(0b0000000000000000000000000000000000000000000000100000000000000000L).toString());
+    assertEquals(                                             "1000000000000000000", new CharBuffer(19).appendBinTrimZeros(0b0000000000000000000000000000000000000000000001000000000000000000L).toString());
+    assertEquals(                                            "10000000000000000000", new CharBuffer(20).appendBinTrimZeros(0b0000000000000000000000000000000000000000000010000000000000000000L).toString());
+    assertEquals(                                           "100000000000000000000", new CharBuffer(21).appendBinTrimZeros(0b0000000000000000000000000000000000000000000100000000000000000000L).toString());
+    assertEquals(                                          "1000000000000000000000", new CharBuffer(22).appendBinTrimZeros(0b0000000000000000000000000000000000000000001000000000000000000000L).toString());
+    assertEquals(                                         "10000000000000000000000", new CharBuffer(23).appendBinTrimZeros(0b0000000000000000000000000000000000000000010000000000000000000000L).toString());
+    assertEquals(                                        "100000000000000000000000", new CharBuffer(24).appendBinTrimZeros(0b0000000000000000000000000000000000000000100000000000000000000000L).toString());
+    assertEquals(                                       "1000000000000000000000000", new CharBuffer(25).appendBinTrimZeros(0b0000000000000000000000000000000000000001000000000000000000000000L).toString());
+    assertEquals(                                      "10000000000000000000000000", new CharBuffer(26).appendBinTrimZeros(0b0000000000000000000000000000000000000010000000000000000000000000L).toString());
+    assertEquals(                                     "100000000000000000000000000", new CharBuffer(27).appendBinTrimZeros(0b0000000000000000000000000000000000000100000000000000000000000000L).toString());
+    assertEquals(                                    "1000000000000000000000000000", new CharBuffer(28).appendBinTrimZeros(0b0000000000000000000000000000000000001000000000000000000000000000L).toString());
+    assertEquals(                                   "10000000000000000000000000000", new CharBuffer(29).appendBinTrimZeros(0b0000000000000000000000000000000000010000000000000000000000000000L).toString());
+    assertEquals(                                  "100000000000000000000000000000", new CharBuffer(30).appendBinTrimZeros(0b0000000000000000000000000000000000100000000000000000000000000000L).toString());
+    assertEquals(                                 "1000000000000000000000000000000", new CharBuffer(31).appendBinTrimZeros(0b0000000000000000000000000000000001000000000000000000000000000000L).toString());
+    assertEquals(                                "10000000000000000000000000000000", new CharBuffer(32).appendBinTrimZeros(0b0000000000000000000000000000000010000000000000000000000000000000L).toString());
+    assertEquals(                               "100000000000000000000000000000000", new CharBuffer(33).appendBinTrimZeros(0b0000000000000000000000000000000100000000000000000000000000000000L).toString());
+    assertEquals(                              "1000000000000000000000000000000000", new CharBuffer(34).appendBinTrimZeros(0b0000000000000000000000000000001000000000000000000000000000000000L).toString());
+    assertEquals(                             "10000000000000000000000000000000000", new CharBuffer(35).appendBinTrimZeros(0b0000000000000000000000000000010000000000000000000000000000000000L).toString());
+    assertEquals(                            "100000000000000000000000000000000000", new CharBuffer(36).appendBinTrimZeros(0b0000000000000000000000000000100000000000000000000000000000000000L).toString());
+    assertEquals(                           "1000000000000000000000000000000000000", new CharBuffer(37).appendBinTrimZeros(0b0000000000000000000000000001000000000000000000000000000000000000L).toString());
+    assertEquals(                          "10000000000000000000000000000000000000", new CharBuffer(38).appendBinTrimZeros(0b0000000000000000000000000010000000000000000000000000000000000000L).toString());
+    assertEquals(                         "100000000000000000000000000000000000000", new CharBuffer(39).appendBinTrimZeros(0b0000000000000000000000000100000000000000000000000000000000000000L).toString());
+    assertEquals(                        "1000000000000000000000000000000000000000", new CharBuffer(40).appendBinTrimZeros(0b0000000000000000000000001000000000000000000000000000000000000000L).toString());
+    assertEquals(                       "10000000000000000000000000000000000000000", new CharBuffer(41).appendBinTrimZeros(0b0000000000000000000000010000000000000000000000000000000000000000L).toString());
+    assertEquals(                      "100000000000000000000000000000000000000000", new CharBuffer(42).appendBinTrimZeros(0b0000000000000000000000100000000000000000000000000000000000000000L).toString());
+    assertEquals(                     "1000000000000000000000000000000000000000000", new CharBuffer(43).appendBinTrimZeros(0b0000000000000000000001000000000000000000000000000000000000000000L).toString());
+    assertEquals(                    "10000000000000000000000000000000000000000000", new CharBuffer(44).appendBinTrimZeros(0b0000000000000000000010000000000000000000000000000000000000000000L).toString());
+    assertEquals(                   "100000000000000000000000000000000000000000000", new CharBuffer(45).appendBinTrimZeros(0b0000000000000000000100000000000000000000000000000000000000000000L).toString());
+    assertEquals(                  "1000000000000000000000000000000000000000000000", new CharBuffer(46).appendBinTrimZeros(0b0000000000000000001000000000000000000000000000000000000000000000L).toString());
+    assertEquals(                 "10000000000000000000000000000000000000000000000", new CharBuffer(47).appendBinTrimZeros(0b0000000000000000010000000000000000000000000000000000000000000000L).toString());
+    assertEquals(                "100000000000000000000000000000000000000000000000", new CharBuffer(48).appendBinTrimZeros(0b0000000000000000100000000000000000000000000000000000000000000000L).toString());
+    assertEquals(               "1000000000000000000000000000000000000000000000000", new CharBuffer(49).appendBinTrimZeros(0b0000000000000001000000000000000000000000000000000000000000000000L).toString());
+    assertEquals(              "10000000000000000000000000000000000000000000000000", new CharBuffer(50).appendBinTrimZeros(0b0000000000000010000000000000000000000000000000000000000000000000L).toString());
+    assertEquals(             "100000000000000000000000000000000000000000000000000", new CharBuffer(51).appendBinTrimZeros(0b0000000000000100000000000000000000000000000000000000000000000000L).toString());
+    assertEquals(            "1000000000000000000000000000000000000000000000000000", new CharBuffer(52).appendBinTrimZeros(0b0000000000001000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals(           "10000000000000000000000000000000000000000000000000000", new CharBuffer(53).appendBinTrimZeros(0b0000000000010000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals(          "100000000000000000000000000000000000000000000000000000", new CharBuffer(54).appendBinTrimZeros(0b0000000000100000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals(         "1000000000000000000000000000000000000000000000000000000", new CharBuffer(55).appendBinTrimZeros(0b0000000001000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals(        "10000000000000000000000000000000000000000000000000000000", new CharBuffer(56).appendBinTrimZeros(0b0000000010000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals(       "100000000000000000000000000000000000000000000000000000000", new CharBuffer(57).appendBinTrimZeros(0b0000000100000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals(      "1000000000000000000000000000000000000000000000000000000000", new CharBuffer(58).appendBinTrimZeros(0b0000001000000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals(     "10000000000000000000000000000000000000000000000000000000000", new CharBuffer(59).appendBinTrimZeros(0b0000010000000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals(    "100000000000000000000000000000000000000000000000000000000000", new CharBuffer(60).appendBinTrimZeros(0b0000100000000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals(   "1000000000000000000000000000000000000000000000000000000000000", new CharBuffer(61).appendBinTrimZeros(0b0001000000000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals(  "10000000000000000000000000000000000000000000000000000000000000", new CharBuffer(62).appendBinTrimZeros(0b0010000000000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals( "100000000000000000000000000000000000000000000000000000000000000", new CharBuffer(63).appendBinTrimZeros(0b0100000000000000000000000000000000000000000000000000000000000000L).toString());
+    assertEquals("1000000000000000000000000000000000000000000000000000000000000000", new CharBuffer(64).appendBinTrimZeros(0b1000000000000000000000000000000000000000000000000000000000000000L).toString());
     // @formatter:on
   }
 
@@ -1024,71 +1491,71 @@ public class CharBufferTest {
   @Test
   public void test_getBinCapacity_long() {
     // @formatter:off
-    assertEquals( 1, CharBuffer.getBinCapacity(0x0000000000000000L));
-    assertEquals( 1, CharBuffer.getBinCapacity(0x0000000000000001L));
-    assertEquals( 2, CharBuffer.getBinCapacity(0x0000000000000002L));
-    assertEquals( 3, CharBuffer.getBinCapacity(0x0000000000000004L));
-    assertEquals( 4, CharBuffer.getBinCapacity(0x0000000000000008L));
-    assertEquals( 5, CharBuffer.getBinCapacity(0x0000000000000010L));
-    assertEquals( 6, CharBuffer.getBinCapacity(0x0000000000000020L));
-    assertEquals( 7, CharBuffer.getBinCapacity(0x0000000000000040L));
-    assertEquals( 8, CharBuffer.getBinCapacity(0x0000000000000080L));
-    assertEquals( 9, CharBuffer.getBinCapacity(0x0000000000000100L));
-    assertEquals(10, CharBuffer.getBinCapacity(0x0000000000000200L));
-    assertEquals(11, CharBuffer.getBinCapacity(0x0000000000000400L));
-    assertEquals(12, CharBuffer.getBinCapacity(0x0000000000000800L));
-    assertEquals(13, CharBuffer.getBinCapacity(0x0000000000001000L));
-    assertEquals(14, CharBuffer.getBinCapacity(0x0000000000002000L));
-    assertEquals(15, CharBuffer.getBinCapacity(0x0000000000004000L));
-    assertEquals(16, CharBuffer.getBinCapacity(0x0000000000008000L));
-    assertEquals(17, CharBuffer.getBinCapacity(0x0000000000010000L));
-    assertEquals(18, CharBuffer.getBinCapacity(0x0000000000020000L));
-    assertEquals(19, CharBuffer.getBinCapacity(0x0000000000040000L));
-    assertEquals(20, CharBuffer.getBinCapacity(0x0000000000080000L));
-    assertEquals(21, CharBuffer.getBinCapacity(0x0000000000100000L));
-    assertEquals(22, CharBuffer.getBinCapacity(0x0000000000200000L));
-    assertEquals(23, CharBuffer.getBinCapacity(0x0000000000400000L));
-    assertEquals(24, CharBuffer.getBinCapacity(0x0000000000800000L));
-    assertEquals(25, CharBuffer.getBinCapacity(0x0000000001000000L));
-    assertEquals(26, CharBuffer.getBinCapacity(0x0000000002000000L));
-    assertEquals(27, CharBuffer.getBinCapacity(0x0000000004000000L));
-    assertEquals(28, CharBuffer.getBinCapacity(0x0000000008000000L));
-    assertEquals(29, CharBuffer.getBinCapacity(0x0000000010000000L));
-    assertEquals(30, CharBuffer.getBinCapacity(0x0000000020000000L));
-    assertEquals(31, CharBuffer.getBinCapacity(0x0000000040000000L));
-    assertEquals(32, CharBuffer.getBinCapacity(0x0000000080000000L));
-    assertEquals(33, CharBuffer.getBinCapacity(0x0000000100000000L));
-    assertEquals(34, CharBuffer.getBinCapacity(0x0000000200000000L));
-    assertEquals(35, CharBuffer.getBinCapacity(0x0000000400000000L));
-    assertEquals(36, CharBuffer.getBinCapacity(0x0000000800000000L));
-    assertEquals(37, CharBuffer.getBinCapacity(0x0000001000000000L));
-    assertEquals(38, CharBuffer.getBinCapacity(0x0000002000000000L));
-    assertEquals(39, CharBuffer.getBinCapacity(0x0000004000000000L));
-    assertEquals(40, CharBuffer.getBinCapacity(0x0000008000000000L));
-    assertEquals(41, CharBuffer.getBinCapacity(0x0000010000000000L));
-    assertEquals(42, CharBuffer.getBinCapacity(0x0000020000000000L));
-    assertEquals(43, CharBuffer.getBinCapacity(0x0000040000000000L));
-    assertEquals(44, CharBuffer.getBinCapacity(0x0000080000000000L));
-    assertEquals(45, CharBuffer.getBinCapacity(0x0000100000000000L));
-    assertEquals(46, CharBuffer.getBinCapacity(0x0000200000000000L));
-    assertEquals(47, CharBuffer.getBinCapacity(0x0000400000000000L));
-    assertEquals(48, CharBuffer.getBinCapacity(0x0000800000000000L));
-    assertEquals(49, CharBuffer.getBinCapacity(0x0001000000000000L));
-    assertEquals(50, CharBuffer.getBinCapacity(0x0002000000000000L));
-    assertEquals(51, CharBuffer.getBinCapacity(0x0004000000000000L));
-    assertEquals(52, CharBuffer.getBinCapacity(0x0008000000000000L));
-    assertEquals(53, CharBuffer.getBinCapacity(0x0010000000000000L));
-    assertEquals(54, CharBuffer.getBinCapacity(0x0020000000000000L));
-    assertEquals(55, CharBuffer.getBinCapacity(0x0040000000000000L));
-    assertEquals(56, CharBuffer.getBinCapacity(0x0080000000000000L));
-    assertEquals(57, CharBuffer.getBinCapacity(0x0100000000000000L));
-    assertEquals(58, CharBuffer.getBinCapacity(0x0200000000000000L));
-    assertEquals(59, CharBuffer.getBinCapacity(0x0400000000000000L));
-    assertEquals(60, CharBuffer.getBinCapacity(0x0800000000000000L));
-    assertEquals(61, CharBuffer.getBinCapacity(0x1000000000000000L));
-    assertEquals(62, CharBuffer.getBinCapacity(0x2000000000000000L));
-    assertEquals(63, CharBuffer.getBinCapacity(0x4000000000000000L));
-    assertEquals(64, CharBuffer.getBinCapacity(0x8000000000000000L));
+    assertEquals( 1, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000000000000000000000L));
+    assertEquals( 1, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000000000000000000001L));
+    assertEquals( 2, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000000000000000000010L));
+    assertEquals( 3, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000000000000000000100L));
+    assertEquals( 4, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000000000000000001000L));
+    assertEquals( 5, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000000000000000010000L));
+    assertEquals( 6, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000000000000000100000L));
+    assertEquals( 7, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000000000000001000000L));
+    assertEquals( 8, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000000000000010000000L));
+    assertEquals( 9, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000000000000100000000L));
+    assertEquals(10, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000000000001000000000L));
+    assertEquals(11, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000000000010000000000L));
+    assertEquals(12, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000000000100000000000L));
+    assertEquals(13, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000000001000000000000L));
+    assertEquals(14, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000000010000000000000L));
+    assertEquals(15, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000000100000000000000L));
+    assertEquals(16, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000001000000000000000L));
+    assertEquals(17, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000010000000000000000L));
+    assertEquals(18, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000000100000000000000000L));
+    assertEquals(19, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000001000000000000000000L));
+    assertEquals(20, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000010000000000000000000L));
+    assertEquals(21, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000000100000000000000000000L));
+    assertEquals(22, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000001000000000000000000000L));
+    assertEquals(23, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000010000000000000000000000L));
+    assertEquals(24, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000000100000000000000000000000L));
+    assertEquals(25, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000001000000000000000000000000L));
+    assertEquals(26, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000010000000000000000000000000L));
+    assertEquals(27, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000000100000000000000000000000000L));
+    assertEquals(28, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000001000000000000000000000000000L));
+    assertEquals(29, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000010000000000000000000000000000L));
+    assertEquals(30, CharBuffer.getBinCapacity(0b0000000000000000000000000000000000100000000000000000000000000000L));
+    assertEquals(31, CharBuffer.getBinCapacity(0b0000000000000000000000000000000001000000000000000000000000000000L));
+    assertEquals(32, CharBuffer.getBinCapacity(0b0000000000000000000000000000000010000000000000000000000000000000L));
+    assertEquals(33, CharBuffer.getBinCapacity(0b0000000000000000000000000000000100000000000000000000000000000000L));
+    assertEquals(34, CharBuffer.getBinCapacity(0b0000000000000000000000000000001000000000000000000000000000000000L));
+    assertEquals(35, CharBuffer.getBinCapacity(0b0000000000000000000000000000010000000000000000000000000000000000L));
+    assertEquals(36, CharBuffer.getBinCapacity(0b0000000000000000000000000000100000000000000000000000000000000000L));
+    assertEquals(37, CharBuffer.getBinCapacity(0b0000000000000000000000000001000000000000000000000000000000000000L));
+    assertEquals(38, CharBuffer.getBinCapacity(0b0000000000000000000000000010000000000000000000000000000000000000L));
+    assertEquals(39, CharBuffer.getBinCapacity(0b0000000000000000000000000100000000000000000000000000000000000000L));
+    assertEquals(40, CharBuffer.getBinCapacity(0b0000000000000000000000001000000000000000000000000000000000000000L));
+    assertEquals(41, CharBuffer.getBinCapacity(0b0000000000000000000000010000000000000000000000000000000000000000L));
+    assertEquals(42, CharBuffer.getBinCapacity(0b0000000000000000000000100000000000000000000000000000000000000000L));
+    assertEquals(43, CharBuffer.getBinCapacity(0b0000000000000000000001000000000000000000000000000000000000000000L));
+    assertEquals(44, CharBuffer.getBinCapacity(0b0000000000000000000010000000000000000000000000000000000000000000L));
+    assertEquals(45, CharBuffer.getBinCapacity(0b0000000000000000000100000000000000000000000000000000000000000000L));
+    assertEquals(46, CharBuffer.getBinCapacity(0b0000000000000000001000000000000000000000000000000000000000000000L));
+    assertEquals(47, CharBuffer.getBinCapacity(0b0000000000000000010000000000000000000000000000000000000000000000L));
+    assertEquals(48, CharBuffer.getBinCapacity(0b0000000000000000100000000000000000000000000000000000000000000000L));
+    assertEquals(49, CharBuffer.getBinCapacity(0b0000000000000001000000000000000000000000000000000000000000000000L));
+    assertEquals(50, CharBuffer.getBinCapacity(0b0000000000000010000000000000000000000000000000000000000000000000L));
+    assertEquals(51, CharBuffer.getBinCapacity(0b0000000000000100000000000000000000000000000000000000000000000000L));
+    assertEquals(52, CharBuffer.getBinCapacity(0b0000000000001000000000000000000000000000000000000000000000000000L));
+    assertEquals(53, CharBuffer.getBinCapacity(0b0000000000010000000000000000000000000000000000000000000000000000L));
+    assertEquals(54, CharBuffer.getBinCapacity(0b0000000000100000000000000000000000000000000000000000000000000000L));
+    assertEquals(55, CharBuffer.getBinCapacity(0b0000000001000000000000000000000000000000000000000000000000000000L));
+    assertEquals(56, CharBuffer.getBinCapacity(0b0000000010000000000000000000000000000000000000000000000000000000L));
+    assertEquals(57, CharBuffer.getBinCapacity(0b0000000100000000000000000000000000000000000000000000000000000000L));
+    assertEquals(58, CharBuffer.getBinCapacity(0b0000001000000000000000000000000000000000000000000000000000000000L));
+    assertEquals(59, CharBuffer.getBinCapacity(0b0000010000000000000000000000000000000000000000000000000000000000L));
+    assertEquals(60, CharBuffer.getBinCapacity(0b0000100000000000000000000000000000000000000000000000000000000000L));
+    assertEquals(61, CharBuffer.getBinCapacity(0b0001000000000000000000000000000000000000000000000000000000000000L));
+    assertEquals(62, CharBuffer.getBinCapacity(0b0010000000000000000000000000000000000000000000000000000000000000L));
+    assertEquals(63, CharBuffer.getBinCapacity(0b0100000000000000000000000000000000000000000000000000000000000000L));
+    assertEquals(64, CharBuffer.getBinCapacity(0b1000000000000000000000000000000000000000000000000000000000000000L));
     // @formatter:on
   }
 
@@ -1100,42 +1567,44 @@ public class CharBufferTest {
   @Test
   public void test_appendIdent_int() {
     assertThrows(IllegalArgumentException.class, () -> new CharBuffer().appendIndent(-1));
-    assertEquals("", new CharBuffer().appendIndent(0).toString());
-    assertEquals(" ", new CharBuffer().appendIndent(1).toString());
-    assertEquals("  ", new CharBuffer().appendIndent(2).toString());
-    assertEquals("   ", new CharBuffer().appendIndent(3).toString());
-    assertEquals("    ", new CharBuffer().appendIndent(4).toString());
-    assertEquals("     ", new CharBuffer().appendIndent(5).toString());
-    assertEquals("      ", new CharBuffer().appendIndent(6).toString());
-    assertEquals("       ", new CharBuffer().appendIndent(7).toString());
-    assertEquals("        ", new CharBuffer().appendIndent(8).toString());
-    assertEquals("         ", new CharBuffer().appendIndent(9).toString());
-    assertEquals("          ", new CharBuffer().appendIndent(10).toString());
-    assertEquals("           ", new CharBuffer().appendIndent(11).toString());
-    assertEquals("            ", new CharBuffer().appendIndent(12).toString());
-    assertEquals("             ", new CharBuffer().appendIndent(13).toString());
-    assertEquals("              ", new CharBuffer().appendIndent(14).toString());
-    assertEquals("               ", new CharBuffer().appendIndent(15).toString());
-    assertEquals("                ", new CharBuffer().appendIndent(16).toString());
-    assertEquals("                 ", new CharBuffer().appendIndent(17).toString());
-    assertEquals("                  ", new CharBuffer().appendIndent(18).toString());
-    assertEquals("                   ", new CharBuffer().appendIndent(19).toString());
-    assertEquals("                    ", new CharBuffer().appendIndent(20).toString());
-    assertEquals("                     ", new CharBuffer().appendIndent(21).toString());
-    assertEquals("                      ", new CharBuffer().appendIndent(22).toString());
-    assertEquals("                       ", new CharBuffer().appendIndent(23).toString());
-    assertEquals("                        ", new CharBuffer().appendIndent(24).toString());
-    assertEquals("                         ", new CharBuffer().appendIndent(25).toString());
-    assertEquals("                          ", new CharBuffer().appendIndent(26).toString());
-    assertEquals("                           ", new CharBuffer().appendIndent(27).toString());
-    assertEquals("                            ", new CharBuffer().appendIndent(28).toString());
-    assertEquals("                             ", new CharBuffer().appendIndent(29).toString());
-    assertEquals("                              ", new CharBuffer().appendIndent(30).toString());
-    assertEquals("                               ", new CharBuffer().appendIndent(31).toString());
-    assertEquals("                                ", new CharBuffer().appendIndent(32).toString());
-    assertEquals("                                 ", new CharBuffer().appendIndent(33).toString());
-    assertEquals("                                  ", new CharBuffer().appendIndent(34).toString());
-    assertEquals("                                   ", new CharBuffer().appendIndent(35).toString());
+    // @formatter:off
+    assertEquals("",                                    new CharBuffer( 1).appendIndent( 0).toString());
+    assertEquals(" ",                                   new CharBuffer( 1).appendIndent( 1).toString());
+    assertEquals("  ",                                  new CharBuffer( 2).appendIndent( 2).toString());
+    assertEquals("   ",                                 new CharBuffer( 3).appendIndent( 3).toString());
+    assertEquals("    ",                                new CharBuffer( 4).appendIndent( 4).toString());
+    assertEquals("     ",                               new CharBuffer( 5).appendIndent( 5).toString());
+    assertEquals("      ",                              new CharBuffer( 6).appendIndent( 6).toString());
+    assertEquals("       ",                             new CharBuffer( 7).appendIndent( 7).toString());
+    assertEquals("        ",                            new CharBuffer( 8).appendIndent( 8).toString());
+    assertEquals("         ",                           new CharBuffer( 9).appendIndent( 9).toString());
+    assertEquals("          ",                          new CharBuffer(10).appendIndent(10).toString());
+    assertEquals("           ",                         new CharBuffer(11).appendIndent(11).toString());
+    assertEquals("            ",                        new CharBuffer(12).appendIndent(12).toString());
+    assertEquals("             ",                       new CharBuffer(13).appendIndent(13).toString());
+    assertEquals("              ",                      new CharBuffer(14).appendIndent(14).toString());
+    assertEquals("               ",                     new CharBuffer(15).appendIndent(15).toString());
+    assertEquals("                ",                    new CharBuffer(16).appendIndent(16).toString());
+    assertEquals("                 ",                   new CharBuffer(17).appendIndent(17).toString());
+    assertEquals("                  ",                  new CharBuffer(18).appendIndent(18).toString());
+    assertEquals("                   ",                 new CharBuffer(19).appendIndent(19).toString());
+    assertEquals("                    ",                new CharBuffer(20).appendIndent(20).toString());
+    assertEquals("                     ",               new CharBuffer(21).appendIndent(21).toString());
+    assertEquals("                      ",              new CharBuffer(22).appendIndent(22).toString());
+    assertEquals("                       ",             new CharBuffer(23).appendIndent(23).toString());
+    assertEquals("                        ",            new CharBuffer(24).appendIndent(24).toString());
+    assertEquals("                         ",           new CharBuffer(25).appendIndent(25).toString());
+    assertEquals("                          ",          new CharBuffer(26).appendIndent(26).toString());
+    assertEquals("                           ",         new CharBuffer(27).appendIndent(27).toString());
+    assertEquals("                            ",        new CharBuffer(28).appendIndent(28).toString());
+    assertEquals("                             ",       new CharBuffer(29).appendIndent(29).toString());
+    assertEquals("                              ",      new CharBuffer(30).appendIndent(30).toString());
+    assertEquals("                               ",     new CharBuffer(31).appendIndent(31).toString());
+    assertEquals("                                ",    new CharBuffer(32).appendIndent(32).toString());
+    assertEquals("                                 ",   new CharBuffer(33).appendIndent(33).toString());
+    assertEquals("                                  ",  new CharBuffer(34).appendIndent(34).toString());
+    assertEquals("                                   ", new CharBuffer(35).appendIndent(35).toString());
+    // @formatter:on
   }
 
   /**
@@ -1144,42 +1613,44 @@ public class CharBufferTest {
   @Test
   public void test_appendIdent_int_char() {
     assertThrows(IllegalArgumentException.class, () -> new CharBuffer().appendIndent(-1, '_'));
-    assertEquals("", new CharBuffer().appendIndent(0, '0').toString());
-    assertEquals("1", new CharBuffer().appendIndent(1, '1').toString());
-    assertEquals("22", new CharBuffer().appendIndent(2, '2').toString());
-    assertEquals("333", new CharBuffer().appendIndent(3, '3').toString());
-    assertEquals("4444", new CharBuffer().appendIndent(4, '4').toString());
-    assertEquals("55555", new CharBuffer().appendIndent(5, '5').toString());
-    assertEquals("666666", new CharBuffer().appendIndent(6, '6').toString());
-    assertEquals("7777777", new CharBuffer().appendIndent(7, '7').toString());
-    assertEquals("88888888", new CharBuffer().appendIndent(8, '8').toString());
-    assertEquals("999999999", new CharBuffer().appendIndent(9, '9').toString());
-    assertEquals("aaaaaaaaaa", new CharBuffer().appendIndent(10, 'a').toString());
-    assertEquals("bbbbbbbbbbb", new CharBuffer().appendIndent(11, 'b').toString());
-    assertEquals("cccccccccccc", new CharBuffer().appendIndent(12, 'c').toString());
-    assertEquals("ddddddddddddd", new CharBuffer().appendIndent(13, 'd').toString());
-    assertEquals("eeeeeeeeeeeeee", new CharBuffer().appendIndent(14, 'e').toString());
-    assertEquals("fffffffffffffff", new CharBuffer().appendIndent(15, 'f').toString());
-    assertEquals("gggggggggggggggg", new CharBuffer().appendIndent(16, 'g').toString());
-    assertEquals("hhhhhhhhhhhhhhhhh", new CharBuffer().appendIndent(17, 'h').toString());
-    assertEquals("iiiiiiiiiiiiiiiiii", new CharBuffer().appendIndent(18, 'i').toString());
-    assertEquals("jjjjjjjjjjjjjjjjjjj", new CharBuffer().appendIndent(19, 'j').toString());
-    assertEquals("kkkkkkkkkkkkkkkkkkkk", new CharBuffer().appendIndent(20, 'k').toString());
-    assertEquals("lllllllllllllllllllll", new CharBuffer().appendIndent(21, 'l').toString());
-    assertEquals("mmmmmmmmmmmmmmmmmmmmmm", new CharBuffer().appendIndent(22, 'm').toString());
-    assertEquals("nnnnnnnnnnnnnnnnnnnnnnn", new CharBuffer().appendIndent(23, 'n').toString());
-    assertEquals("oooooooooooooooooooooooo", new CharBuffer().appendIndent(24, 'o').toString());
-    assertEquals("ppppppppppppppppppppppppp", new CharBuffer().appendIndent(25, 'p').toString());
-    assertEquals("qqqqqqqqqqqqqqqqqqqqqqqqqq", new CharBuffer().appendIndent(26, 'q').toString());
-    assertEquals("rrrrrrrrrrrrrrrrrrrrrrrrrrr", new CharBuffer().appendIndent(27, 'r').toString());
-    assertEquals("ssssssssssssssssssssssssssss", new CharBuffer().appendIndent(28, 's').toString());
-    assertEquals("ttttttttttttttttttttttttttttt", new CharBuffer().appendIndent(29, 't').toString());
-    assertEquals("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu", new CharBuffer().appendIndent(30, 'u').toString());
-    assertEquals("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv", new CharBuffer().appendIndent(31, 'v').toString());
-    assertEquals("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", new CharBuffer().appendIndent(32, 'w').toString());
-    assertEquals("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", new CharBuffer().appendIndent(33, 'x').toString());
-    assertEquals("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", new CharBuffer().appendIndent(34, 'y').toString());
-    assertEquals("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", new CharBuffer().appendIndent(35, 'z').toString());
+    // @formatter:off
+    assertEquals("",                                    new CharBuffer( 1).appendIndent( 0, '0').toString());
+    assertEquals("1",                                   new CharBuffer( 1).appendIndent( 1, '1').toString());
+    assertEquals("22",                                  new CharBuffer( 2).appendIndent( 2, '2').toString());
+    assertEquals("333",                                 new CharBuffer( 3).appendIndent( 3, '3').toString());
+    assertEquals("4444",                                new CharBuffer( 4).appendIndent( 4, '4').toString());
+    assertEquals("55555",                               new CharBuffer( 5).appendIndent( 5, '5').toString());
+    assertEquals("666666",                              new CharBuffer( 6).appendIndent( 6, '6').toString());
+    assertEquals("7777777",                             new CharBuffer( 7).appendIndent( 7, '7').toString());
+    assertEquals("88888888",                            new CharBuffer( 8).appendIndent( 8, '8').toString());
+    assertEquals("999999999",                           new CharBuffer( 9).appendIndent( 9, '9').toString());
+    assertEquals("aaaaaaaaaa",                          new CharBuffer(10).appendIndent(10, 'a').toString());
+    assertEquals("bbbbbbbbbbb",                         new CharBuffer(11).appendIndent(11, 'b').toString());
+    assertEquals("cccccccccccc",                        new CharBuffer(12).appendIndent(12, 'c').toString());
+    assertEquals("ddddddddddddd",                       new CharBuffer(13).appendIndent(13, 'd').toString());
+    assertEquals("eeeeeeeeeeeeee",                      new CharBuffer(14).appendIndent(14, 'e').toString());
+    assertEquals("fffffffffffffff",                     new CharBuffer(15).appendIndent(15, 'f').toString());
+    assertEquals("gggggggggggggggg",                    new CharBuffer(16).appendIndent(16, 'g').toString());
+    assertEquals("hhhhhhhhhhhhhhhhh",                   new CharBuffer(17).appendIndent(17, 'h').toString());
+    assertEquals("iiiiiiiiiiiiiiiiii",                  new CharBuffer(18).appendIndent(18, 'i').toString());
+    assertEquals("jjjjjjjjjjjjjjjjjjj",                 new CharBuffer(19).appendIndent(19, 'j').toString());
+    assertEquals("kkkkkkkkkkkkkkkkkkkk",                new CharBuffer(20).appendIndent(20, 'k').toString());
+    assertEquals("lllllllllllllllllllll",               new CharBuffer(21).appendIndent(21, 'l').toString());
+    assertEquals("mmmmmmmmmmmmmmmmmmmmmm",              new CharBuffer(22).appendIndent(22, 'm').toString());
+    assertEquals("nnnnnnnnnnnnnnnnnnnnnnn",             new CharBuffer(23).appendIndent(23, 'n').toString());
+    assertEquals("oooooooooooooooooooooooo",            new CharBuffer(24).appendIndent(24, 'o').toString());
+    assertEquals("ppppppppppppppppppppppppp",           new CharBuffer(25).appendIndent(25, 'p').toString());
+    assertEquals("qqqqqqqqqqqqqqqqqqqqqqqqqq",          new CharBuffer(26).appendIndent(26, 'q').toString());
+    assertEquals("rrrrrrrrrrrrrrrrrrrrrrrrrrr",         new CharBuffer(27).appendIndent(27, 'r').toString());
+    assertEquals("ssssssssssssssssssssssssssss",        new CharBuffer(28).appendIndent(28, 's').toString());
+    assertEquals("ttttttttttttttttttttttttttttt",       new CharBuffer(29).appendIndent(29, 't').toString());
+    assertEquals("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",      new CharBuffer(30).appendIndent(30, 'u').toString());
+    assertEquals("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",     new CharBuffer(31).appendIndent(31, 'v').toString());
+    assertEquals("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",    new CharBuffer(32).appendIndent(32, 'w').toString());
+    assertEquals("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",   new CharBuffer(33).appendIndent(33, 'x').toString());
+    assertEquals("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",  new CharBuffer(34).appendIndent(34, 'y').toString());
+    assertEquals("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", new CharBuffer(35).appendIndent(35, 'z').toString());
+    // @formatter:on
   }
 
   /**
@@ -1190,32 +1661,32 @@ public class CharBufferTest {
     final int ch = 0x2070e;
     // @formatter:off
     assertThrows(IllegalArgumentException.class, () -> new CharBuffer().appendIndent(-1, ch));
-    assertEquals( 0, new CharBuffer().appendIndent( 0, ch).length());
-    assertEquals( 2, new CharBuffer().appendIndent( 1, ch).length());
-    assertEquals( 4, new CharBuffer().appendIndent( 2, ch).length());
-    assertEquals( 6, new CharBuffer().appendIndent( 3, ch).length());
-    assertEquals( 8, new CharBuffer().appendIndent( 4, ch).length());
-    assertEquals(10, new CharBuffer().appendIndent( 5, ch).length());
-    assertEquals(12, new CharBuffer().appendIndent( 6, ch).length());
-    assertEquals(14, new CharBuffer().appendIndent( 7, ch).length());
-    assertEquals(16, new CharBuffer().appendIndent( 8, ch).length());
-    assertEquals(18, new CharBuffer().appendIndent( 9, ch).length());
-    assertEquals(20, new CharBuffer().appendIndent(10, ch).length());
-    assertEquals(22, new CharBuffer().appendIndent(11, ch).length());
-    assertEquals(24, new CharBuffer().appendIndent(12, ch).length());
-    assertEquals(26, new CharBuffer().appendIndent(13, ch).length());
-    assertEquals(28, new CharBuffer().appendIndent(14, ch).length());
-    assertEquals(30, new CharBuffer().appendIndent(15, ch).length());
-    assertEquals(32, new CharBuffer().appendIndent(16, ch).length());
-    assertEquals(34, new CharBuffer().appendIndent(17, ch).length());
-    assertEquals(36, new CharBuffer().appendIndent(18, ch).length());
-    assertEquals(38, new CharBuffer().appendIndent(19, ch).length());
-    assertEquals(40, new CharBuffer().appendIndent(20, ch).length());
-    assertEquals(42, new CharBuffer().appendIndent(21, ch).length());
-    assertEquals(44, new CharBuffer().appendIndent(22, ch).length());
-    assertEquals(46, new CharBuffer().appendIndent(23, ch).length());
-    assertEquals(48, new CharBuffer().appendIndent(24, ch).length());
-    assertEquals(50, new CharBuffer().appendIndent(25, ch).length());
+    assertEquals( 0, new CharBuffer( 1).appendIndent( 0, ch).length());
+    assertEquals( 2, new CharBuffer( 2).appendIndent( 1, ch).length());
+    assertEquals( 4, new CharBuffer( 4).appendIndent( 2, ch).length());
+    assertEquals( 6, new CharBuffer( 6).appendIndent( 3, ch).length());
+    assertEquals( 8, new CharBuffer( 8).appendIndent( 4, ch).length());
+    assertEquals(10, new CharBuffer(10).appendIndent( 5, ch).length());
+    assertEquals(12, new CharBuffer(12).appendIndent( 6, ch).length());
+    assertEquals(14, new CharBuffer(14).appendIndent( 7, ch).length());
+    assertEquals(16, new CharBuffer(16).appendIndent( 8, ch).length());
+    assertEquals(18, new CharBuffer(18).appendIndent( 9, ch).length());
+    assertEquals(20, new CharBuffer(20).appendIndent(10, ch).length());
+    assertEquals(22, new CharBuffer(22).appendIndent(11, ch).length());
+    assertEquals(24, new CharBuffer(24).appendIndent(12, ch).length());
+    assertEquals(26, new CharBuffer(26).appendIndent(13, ch).length());
+    assertEquals(28, new CharBuffer(28).appendIndent(14, ch).length());
+    assertEquals(30, new CharBuffer(30).appendIndent(15, ch).length());
+    assertEquals(32, new CharBuffer(32).appendIndent(16, ch).length());
+    assertEquals(34, new CharBuffer(34).appendIndent(17, ch).length());
+    assertEquals(36, new CharBuffer(36).appendIndent(18, ch).length());
+    assertEquals(38, new CharBuffer(38).appendIndent(19, ch).length());
+    assertEquals(40, new CharBuffer(40).appendIndent(20, ch).length());
+    assertEquals(42, new CharBuffer(42).appendIndent(21, ch).length());
+    assertEquals(44, new CharBuffer(44).appendIndent(22, ch).length());
+    assertEquals(46, new CharBuffer(46).appendIndent(23, ch).length());
+    assertEquals(48, new CharBuffer(48).appendIndent(24, ch).length());
+    assertEquals(50, new CharBuffer(50).appendIndent(25, ch).length());
     // @formatter:on
   }
 

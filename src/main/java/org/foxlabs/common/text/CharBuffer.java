@@ -414,14 +414,14 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *         value as a signed decimal string.
    */
   private static int getDecCapacity0(int value) {
-    if (value < 1000) {
+    if (value < 1_000) {
       return value < 100 ? value < 10 ? 1 : 2 : 3;
     }
-    if (value < 1000000) {
-      return value < 100000 ? value < 10000 ? 4 : 5 : 6;
+    if (value < 1_000_000) {
+      return value < 100_000 ? value < 10_000 ? 4 : 5 : 6;
     }
-    if (value < 1000000000) {
-      return value < 100000000 ? value < 10000000 ? 7 : 8 : 9;
+    if (value < 1_000_000_000) {
+      return value < 100_000_000 ? value < 10_000_000 ? 7 : 8 : 9;
     }
     return 10;
   }
@@ -475,17 +475,17 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @see #getDecCapacity0(int)
    */
   private static int getDecCapacity0(long value) {
-    if (value < 1000000000L) {
+    if (value < 1_000_000_000L) {
       return getDecCapacity0((int) value);
     }
-    if (value < 1000000000000L) {
-      return value < 100000000000L ? value < 10000000000L ? 10 : 11 : 12;
+    if (value < 1_000_000_000_000L) {
+      return value < 100_000_000_000L ? value < 10_000_000_000L ? 10 : 11 : 12;
     }
-    if (value < 1000000000000000L) {
-      return value < 100000000000000L ? value < 10000000000000L ? 13 : 14 : 15;
+    if (value < 1_000_000_000_000_000L) {
+      return value < 100_000_000_000_000L ? value < 10_000_000_000_000L ? 13 : 14 : 15;
     }
-    if (value < 1000000000000000000L) {
-      return value < 100000000000000000L ? value < 10000000000000000L ? 16 : 17 : 18;
+    if (value < 1_000_000_000_000_000_000L) {
+      return value < 100_000_000_000_000_000L ? value < 10_000_000_000_000_000L ? 16 : 17 : 18;
     }
     return 19;
   }
@@ -539,8 +539,10 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public final CharBuffer appendHex(byte value) {
     ensureCapacity(2);
-    append0(DIGITS[(value >>> 0x04) & 0x0f]);
-    append0(DIGITS[(value >>> 0x00) & 0x0f]);
+    // @formatter:off
+    append0(DIGITS[(value >>> 4) & 0x0f]);
+    append0(DIGITS[(value >>> 0) & 0x0f]);
+    // @formatter:on
     return this;
   }
 
@@ -558,9 +560,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     // 4 or less bits long?
     if ((value & 0x0f) == value) {
       ensureCapacity(1);
-      return append0(DIGITS[(value >>> 0x00) & 0x0f]);
+      return append0(DIGITS[value]);
     }
-    // 8 bits long
+    // from 5 to 8 bits long
     return appendHex(value);
   }
 
@@ -587,12 +589,12 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public final CharBuffer appendHex(short value) {
     ensureCapacity(4);
-    // high 8 bits
-    append0(DIGITS[(value >>> 0x0c) & 0x0f]);
-    append0(DIGITS[(value >>> 0x08) & 0x0f]);
-    // low 8 bits
-    append0(DIGITS[(value >>> 0x04) & 0x0f]);
-    append0(DIGITS[(value >>> 0x00) & 0x0f]);
+    // @formatter:off
+    append0(DIGITS[(value >>> 12) & 0x0f]);
+    append0(DIGITS[(value >>>  8) & 0x0f]);
+    append0(DIGITS[(value >>>  4) & 0x0f]);
+    append0(DIGITS[(value >>>  0) & 0x0f]);
+    // @formatter:on
     return this;
   }
 
@@ -608,18 +610,19 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public final CharBuffer appendHexTrimZeros(short value) {
     // 8 or less bits long?
-    if ((value & 0xff) == value) {
+    if ((value & 0x00_ff) == value) {
       return appendHexTrimZeros((byte) value);
     }
-    // less than 16 bits long?
+    // 12 or less bits long?
     if ((value & 0x0fff) == value) {
+      // from 9 to 12 bits long
       ensureCapacity(3);
-      append0(DIGITS[(value >>> 0x08) & 0x0f]);
-      append0(DIGITS[(value >>> 0x04) & 0x0f]);
-      append0(DIGITS[(value >>> 0x00) & 0x0f]);
+      append0(DIGITS[(value >>> 8) & 0x0f]);
+      append0(DIGITS[(value >>> 4) & 0x0f]);
+      append0(DIGITS[(value >>> 0) & 0x0f]);
       return this;
     }
-    // 16 bits long
+    // from 13 to 16 bits long
     return appendHex(value);
   }
 
@@ -634,7 +637,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public static int getHexCapacity(short value) {
     // low 8 bits
-    if ((value & 0xff) == value) {
+    if ((value & 0x00_ff) == value) {
       return getHexCapacity((byte) value);
     }
     // high 8 bits
@@ -651,16 +654,16 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public final CharBuffer appendHex(int value) {
     ensureCapacity(8);
-    // high 16 bits
-    append0(DIGITS[(value >>> 0x1c) & 0x0f]);
-    append0(DIGITS[(value >>> 0x18) & 0x0f]);
-    append0(DIGITS[(value >>> 0x14) & 0x0f]);
-    append0(DIGITS[(value >>> 0x10) & 0x0f]);
-    // low 16 bits
-    append0(DIGITS[(value >>> 0x0c) & 0x0f]);
-    append0(DIGITS[(value >>> 0x08) & 0x0f]);
-    append0(DIGITS[(value >>> 0x04) & 0x0f]);
-    append0(DIGITS[(value >>> 0x00) & 0x0f]);
+    // @formatter:off
+    append0(DIGITS[(value >>> 28) & 0x0f]);
+    append0(DIGITS[(value >>> 24) & 0x0f]);
+    append0(DIGITS[(value >>> 20) & 0x0f]);
+    append0(DIGITS[(value >>> 16) & 0x0f]);
+    append0(DIGITS[(value >>> 12) & 0x0f]);
+    append0(DIGITS[(value >>>  8) & 0x0f]);
+    append0(DIGITS[(value >>>  4) & 0x0f]);
+    append0(DIGITS[(value >>>  0) & 0x0f]);
+    // @formatter:on
     return this;
   }
 
@@ -676,20 +679,20 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public final CharBuffer appendHexTrimZeros(int value) {
     // 16 or less bits long?
-    if ((value & 0xffff) == value) {
+    if ((value & 0x0000_ffff) == value) {
       return appendHexTrimZeros((short) value);
     }
     int n = getHexCapacity(value);
-    // less than 32 bits long?
+    // 28 or less bits long?
     if (n < 8) {
-      // from 20 to 28 bits long
-      ensureCapacity(n);
-      for (n = (n - 1) << 2; n >= 0; n -= 4) {
+      // from 17 to 28 bits long
+      ensureCapacity(n--);
+      for (n <<= 2; n >= 0; n -= 4) {
         append0(DIGITS[(value >>> n) & 0x0f]);
       }
       return this;
     }
-    // 32 bits long
+    // from 29 to 32 bits long
     return appendHex(value);
   }
 
@@ -704,7 +707,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public static int getHexCapacity(int value) {
     // low 16 bits
-    if ((value & 0xffff) == value) {
+    if ((value & 0x0000_ffff) == value) {
       return getHexCapacity((short) value);
     }
     // high 16 bits
@@ -721,24 +724,24 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public final CharBuffer appendHex(long value) {
     ensureCapacity(16);
-    // high 32 bits
-    append0(DIGITS[(int) ((value >>> 0x3c) & 0x0fL)]);
-    append0(DIGITS[(int) ((value >>> 0x38) & 0x0fL)]);
-    append0(DIGITS[(int) ((value >>> 0x34) & 0x0fL)]);
-    append0(DIGITS[(int) ((value >>> 0x30) & 0x0fL)]);
-    append0(DIGITS[(int) ((value >>> 0x2c) & 0x0fL)]);
-    append0(DIGITS[(int) ((value >>> 0x28) & 0x0fL)]);
-    append0(DIGITS[(int) ((value >>> 0x24) & 0x0fL)]);
-    append0(DIGITS[(int) ((value >>> 0x20) & 0x0fL)]);
-    // low 32 bits
-    append0(DIGITS[(int) ((value >>> 0x1c) & 0x0fL)]);
-    append0(DIGITS[(int) ((value >>> 0x18) & 0x0fL)]);
-    append0(DIGITS[(int) ((value >>> 0x14) & 0x0fL)]);
-    append0(DIGITS[(int) ((value >>> 0x10) & 0x0fL)]);
-    append0(DIGITS[(int) ((value >>> 0x0c) & 0x0fL)]);
-    append0(DIGITS[(int) ((value >>> 0x08) & 0x0fL)]);
-    append0(DIGITS[(int) ((value >>> 0x04) & 0x0fL)]);
-    append0(DIGITS[(int) ((value >>> 0x00) & 0x0fL)]);
+    // @formatter:off
+    append0(DIGITS[(int) ((value >>> 60) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 56) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 52) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 48) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 44) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 40) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 36) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 32) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 28) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 24) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 20) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 16) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 12) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>>  8) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>>  4) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>>  0) & 0x0fL)]);
+    // @formatter:on
     return this;
   }
 
@@ -754,20 +757,20 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public final CharBuffer appendHexTrimZeros(long value) {
     // 32 or less bits long?
-    if ((value & 0xffffffffL) == value) {
+    if ((value & 0x00000000_ffffffffL) == value) {
       return appendHexTrimZeros((int) value);
     }
     int n = getHexCapacity(value);
-    // less than 64 bits long?
+    // 60 or less bits long?
     if (n < 16) {
-      // from 36 to 60 bits long
-      ensureCapacity(n);
-      for (n = (n - 1) << 2; n >= 0; n -= 4) {
+      // from 33 to 60 bits long
+      ensureCapacity(n--);
+      for (n <<= 2; n >= 0; n -= 4) {
         append0(DIGITS[(int) ((value >>> n) & 0x0fL)]);
       }
       return this;
     }
-    // 64 bits long
+    // from 61 to 64 bits long
     return appendHex(value);
   }
 
@@ -782,11 +785,315 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public static int getHexCapacity(long value) {
     // low 32 bits
-    if ((value & 0xffffffffL) == value) {
+    if ((value & 0x00000000_ffffffffL) == value) {
       return getHexCapacity((int) value);
     }
     // high 32 bits
     return 8 + getHexCapacity((int) (value >>> 32));
+  }
+
+  // Octal representation
+
+  /**
+   * Appends an unsigned octal string representation of the specified {@code byte} value with
+   * leading zeros to the buffer. The format is <code>[0-7]{3}</code> (regular expression).
+   *
+   * @param value The {@code byte} value to be converted to an unsigned octal string.
+   * @return A reference to this buffer.
+   * @see #appendOctTrimZeros(byte)
+   */
+  public final CharBuffer appendOct(byte value) {
+    ensureCapacity(3);
+    // @formatter:off
+    append0(DIGITS[(value >>> 6) & 0x03]);
+    append0(DIGITS[(value >>> 3) & 0x07]);
+    append0(DIGITS[(value >>> 0) & 0x07]);
+    // @formatter:on
+    return this;
+  }
+
+  /**
+   * Appends an unsigned octal string representation of the specified {@code byte} value without
+   * leading zeros to the buffer. The format is <code>[0-7]{1, 3}</code> (regular expression).
+   *
+   * @param value The {@code byte} value to be converted to an unsigned octal string.
+   * @return A reference to this buffer.
+   * @see #getOctCapacity(byte)
+   * @see #appendOct(byte)
+   */
+  public final CharBuffer appendOctTrimZeros(byte value) {
+    // 3 or less bits long?
+    if ((value & 0x07) == value) {
+      ensureCapacity(1);
+      return append0(DIGITS[value]);
+    }
+    // 6 or less bits long?
+    if ((value & 0x3f) == value) {
+      // from 4 to 6 bits long
+      ensureCapacity(2);
+      append0(DIGITS[(value >>> 3) & 0x07]);
+      append0(DIGITS[(value >>> 0) & 0x07]);
+      return this;
+    }
+    // from 7 to 8 bits long
+    return appendOct(value);
+  }
+
+  /**
+   * Returns the number of characters required to represent the specified {@code byte} value as an
+   * unsigned octal string without leading zeros.
+   *
+   * @param value The {@code byte} value to be converted to an unsigned octal string.
+   * @return The number of characters required to represent the specified {@code byte} value as an
+   *         unsigned octal string without leading zeros.
+   * @see #appendOctTrimZeros(byte)
+   */
+  public static int getOctCapacity(byte value) {
+    return (value & 0x3f) == value ? (value & 0x7) == value ? 1 : 2 : 3;
+  }
+
+  /**
+   * Appends an unsigned octal string representation of the specified {@code short} value with
+   * leading zeros to the buffer. The format is <code>[0-7]{6}</code> (regular expression).
+   *
+   * @param value The {@code short} value to be converted to an unsigned octal string.
+   * @return A reference to this buffer.
+   * @see #appendOctTrimZeros(short)
+   */
+  public final CharBuffer appendOct(short value) {
+    ensureCapacity(6);
+    // @formatter:off
+    append0(DIGITS[(value >>> 15) & 0x01]);
+    append0(DIGITS[(value >>> 12) & 0x07]);
+    append0(DIGITS[(value >>>  9) & 0x07]);
+    append0(DIGITS[(value >>>  6) & 0x07]);
+    append0(DIGITS[(value >>>  3) & 0x07]);
+    append0(DIGITS[(value >>>  0) & 0x07]);
+    // @formatter:on
+    return this;
+  }
+
+  /**
+   * Appends an unsigned octal string representation of the specified {@code short} value without
+   * leading zeros to the buffer. The format is <code>[0-7]{1, 6}</code> (regular expression).
+   *
+   * @param value The {@code short} value to be converted to an unsigned octal string.
+   * @return A reference to this buffer.
+   * @see #getOctCapacity(short)
+   * @see #appendOct(short)
+   */
+  public final CharBuffer appendOctTrimZeros(short value) {
+    // 8 or less bits long?
+    if ((value & 0x00_ff) == value) {
+      return appendOctTrimZeros((byte) value);
+    }
+    int n = getOctCapacity(value);
+    // 15 or less bits long?
+    if (n < 6) {
+      // from 9 to 15 bits long
+      ensureCapacity(n--);
+      for (n *= 3; n >= 0; n -= 3) {
+        append0(DIGITS[(value >>> n) & 0x07]);
+      }
+      return this;
+    }
+    // 16 bits long
+    return appendOct(value);
+  }
+
+  /**
+   * Returns the number of characters required to represent the specified {@code short} value as an
+   * unsigned octal string without leading zeros.
+   *
+   * @param value The {@code short} value to be converted to an unsigned octal string.
+   * @return The number of characters required to represent the specified {@code short} value as an
+   *         unsigned octal string without leading zeros.
+   * @see #appendOctTrimZeros(short)
+   */
+  public static int getOctCapacity(short value) {
+    // low 8 bits
+    if ((value & 0x00_ff) == value) {
+      return getOctCapacity((byte) value);
+    }
+    // high 8 bits
+    if ((value & 0x0f_ff) == value) {
+      return (value & 0x01_ff) == value ? 3 : 4;
+    }
+    return (value & 0x7f_ff) == value ? 5 : 6;
+  }
+
+  /**
+   * Appends an unsigned octal string representation of the specified {@code int} value with
+   * leading zeros to the buffer. The format is <code>[0-7]{11}</code> (regular expression).
+   *
+   * @param value The {@code int} value to be converted to an unsigned octal string.
+   * @return A reference to this buffer.
+   * @see #appendOctTrimZeros(int)
+   */
+  public final CharBuffer appendOct(int value) {
+    ensureCapacity(11);
+    // @formatter:off
+    append0(DIGITS[(value >>> 30) & 0x03]);
+    append0(DIGITS[(value >>> 27) & 0x07]);
+    append0(DIGITS[(value >>> 24) & 0x07]);
+    append0(DIGITS[(value >>> 21) & 0x07]);
+    append0(DIGITS[(value >>> 18) & 0x07]);
+    append0(DIGITS[(value >>> 15) & 0x07]);
+    append0(DIGITS[(value >>> 12) & 0x07]);
+    append0(DIGITS[(value >>>  9) & 0x07]);
+    append0(DIGITS[(value >>>  6) & 0x07]);
+    append0(DIGITS[(value >>>  3) & 0x07]);
+    append0(DIGITS[(value >>>  0) & 0x07]);
+    // @formatter:on
+    return this;
+  }
+
+  /**
+   * Appends an unsigned octal string representation of the specified {@code int} value without
+   * leading zeros to the buffer. The format is <code>[0-7]{1, 11}</code> (regular expression).
+   *
+   * @param value The {@code int} value to be converted to an unsigned octal string.
+   * @return A reference to this buffer.
+   * @see #getOctCapacity(int)
+   * @see #appendOct(int)
+   */
+  public final CharBuffer appendOctTrimZeros(int value) {
+    // 16 or less bits long?
+    if ((value & 0x0000_ffff) == value) {
+      return appendOctTrimZeros((short) value);
+    }
+    int n = getOctCapacity(value);
+    // 30 or less bits long?
+    if (n < 11) {
+      // from 17 to 30 bits long
+      ensureCapacity(n--);
+      for (n *= 3; n >= 0; n -= 3) {
+        append0(DIGITS[(value >>> n) & 0x07]);
+      }
+      return this;
+    }
+    // from 31 to 32 bits long
+    return appendOct(value);
+  }
+
+  /**
+   * Returns the number of characters required to represent the specified {@code int} value as an
+   * unsigned octal string without leading zeros.
+   *
+   * @param value The {@code int} value to be converted to an unsigned octal string.
+   * @return The number of characters required to represent the specified {@code int} value as an
+   *         unsigned octal string without leading zeros.
+   * @see #appendOctTrimZeros(int)
+   */
+  public static int getOctCapacity(int value) {
+    // low 16 bits
+    if ((value & 0x0000_ffff) == value) {
+      return getOctCapacity((short) value);
+    }
+    // high 16 bits
+    if ((value & 0x00ff_ffff) == value) {
+      return (value & 0x001f_ffff) == value ? (value & 0x0003_ffff) == value ? 6 : 7 : 8;
+    }
+    return (value & 0x3fff_ffff) == value ? (value & 0x07ff_ffff) == value ? 9: 10 : 11;
+  }
+
+  /**
+   * Appends an unsigned octal string representation of the specified {@code long} value with
+   * leading zeros to the buffer. The format is <code>[0-7]{22}</code> (regular expression).
+   *
+   * @param value The {@code long} value to be converted to an unsigned octal string.
+   * @return A reference to this buffer.
+   * @see #appendOctTrimZeros(long)
+   */
+  public final CharBuffer appendOct(long value) {
+    ensureCapacity(22);
+    // @formatter:off
+    append0(DIGITS[(int) ((value >>> 63) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 60) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>> 57) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>> 54) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>> 51) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>> 48) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>> 45) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>> 42) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>> 39) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>> 36) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>> 33) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>> 30) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>> 27) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>> 24) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>> 21) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>> 18) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>> 15) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>> 12) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>>  9) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>>  6) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>>  3) & 0x07L)]);
+    append0(DIGITS[(int) ((value >>>  0) & 0x07L)]);
+    // @formatter:on
+    return this;
+  }
+
+  /**
+   * Appends an unsigned octal string representation of the specified {@code long} value without
+   * leading zeros to the buffer. The format is <code>[0-7]{1, 22}</code> (regular expression).
+   *
+   * @param value The {@code long} value to be converted to an unsigned octal string.
+   * @return A reference to this buffer.
+   * @see #getOctCapacity(long)
+   * @see #appendOct(long)
+   */
+  public final CharBuffer appendOctTrimZeros(long value) {
+    // 32 or less bits long?
+    if ((value & 0x00000000_ffffffffL) == value) {
+      return appendOctTrimZeros((int) value);
+    }
+    int n = getOctCapacity(value);
+    // 63 or less bits long?
+    if (n < 22) {
+      // from 33 to 63 bits long
+      ensureCapacity(n--);
+      for (n *= 3; n >= 0; n -= 3) {
+        append0(DIGITS[(int) ((value >>> n) & 0x07L)]);
+      }
+      return this;
+    }
+    // 64 bits long
+    return appendOct(value);
+  }
+
+  /**
+   * Returns the number of characters required to represent the specified {@code long} value as an
+   * unsigned octal string without leading zeros.
+   *
+   * @param value The {@code long} value to be converted to an unsigned octal string.
+   * @return The number of characters required to represent the specified {@code long} value as an
+   *         unsigned octal string without leading zeros.
+   * @see #appendOctTrimZeros(long)
+   */
+  public static int getOctCapacity(long value) {
+    // low 32 bits
+    if ((value & 0x0000_0000_ffffffffL) == value) {
+      return getOctCapacity((int) value);
+    }
+    // 48 or less bits?
+    if ((value & 0x0000_ffff_ffffffffL) == value) {
+      // 39 or less bits?
+      if ((value & 0x0000_007f_ffffffffL) == value) {
+        // 36 or less bits?
+        return (value & 0x0000_000f_ffffffffL) == value ? 12 : 13;
+      }
+      // 42 or less bits?
+      return (value & 0x0000_03ff_ffffffffL) == value ? 14 : 15;
+    }
+    // 54 or less bits?
+    if ((value & 0x003f_ffff_ffffffffL) == value) {
+      //
+      return (value & 0x0007_ffff_ffffffffL) == value ? 16 : 17;
+    }
+
+
+    return (value & 0x0000000fffffffffL) == value ? 14 : 15;
   }
 
   // Binary representation
@@ -801,14 +1108,16 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public final CharBuffer appendBin(byte value) {
     ensureCapacity(8);
-    append0(DIGITS[(value >>> 0x07) & 0x01]);
-    append0(DIGITS[(value >>> 0x06) & 0x01]);
-    append0(DIGITS[(value >>> 0x05) & 0x01]);
-    append0(DIGITS[(value >>> 0x04) & 0x01]);
-    append0(DIGITS[(value >>> 0x03) & 0x01]);
-    append0(DIGITS[(value >>> 0x02) & 0x01]);
-    append0(DIGITS[(value >>> 0x01) & 0x01]);
-    append0(DIGITS[(value >>> 0x00) & 0x01]);
+    // @formatter:off
+    append0(DIGITS[(value >>> 7) & 0x01]);
+    append0(DIGITS[(value >>> 6) & 0x01]);
+    append0(DIGITS[(value >>> 5) & 0x01]);
+    append0(DIGITS[(value >>> 4) & 0x01]);
+    append0(DIGITS[(value >>> 3) & 0x01]);
+    append0(DIGITS[(value >>> 2) & 0x01]);
+    append0(DIGITS[(value >>> 1) & 0x01]);
+    append0(DIGITS[(value >>> 0) & 0x01]);
+    // @formatter:on
     return this;
   }
 
@@ -864,24 +1173,24 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public final CharBuffer appendBin(short value) {
     ensureCapacity(16);
-    // high 8 bits
-    append0(DIGITS[(value >>> 0x0f) & 0x01]);
-    append0(DIGITS[(value >>> 0x0e) & 0x01]);
-    append0(DIGITS[(value >>> 0x0d) & 0x01]);
-    append0(DIGITS[(value >>> 0x0c) & 0x01]);
-    append0(DIGITS[(value >>> 0x0b) & 0x01]);
-    append0(DIGITS[(value >>> 0x0a) & 0x01]);
-    append0(DIGITS[(value >>> 0x09) & 0x01]);
-    append0(DIGITS[(value >>> 0x08) & 0x01]);
-    // low 8 bits
-    append0(DIGITS[(value >>> 0x07) & 0x01]);
-    append0(DIGITS[(value >>> 0x06) & 0x01]);
-    append0(DIGITS[(value >>> 0x05) & 0x01]);
-    append0(DIGITS[(value >>> 0x04) & 0x01]);
-    append0(DIGITS[(value >>> 0x03) & 0x01]);
-    append0(DIGITS[(value >>> 0x02) & 0x01]);
-    append0(DIGITS[(value >>> 0x01) & 0x01]);
-    append0(DIGITS[(value >>> 0x00) & 0x01]);
+    // @formatter:off
+    append0(DIGITS[(value >>> 15) & 0x01]);
+    append0(DIGITS[(value >>> 14) & 0x01]);
+    append0(DIGITS[(value >>> 13) & 0x01]);
+    append0(DIGITS[(value >>> 12) & 0x01]);
+    append0(DIGITS[(value >>> 11) & 0x01]);
+    append0(DIGITS[(value >>> 10) & 0x01]);
+    append0(DIGITS[(value >>>  9) & 0x01]);
+    append0(DIGITS[(value >>>  8) & 0x01]);
+    append0(DIGITS[(value >>>  7) & 0x01]);
+    append0(DIGITS[(value >>>  6) & 0x01]);
+    append0(DIGITS[(value >>>  5) & 0x01]);
+    append0(DIGITS[(value >>>  4) & 0x01]);
+    append0(DIGITS[(value >>>  3) & 0x01]);
+    append0(DIGITS[(value >>>  2) & 0x01]);
+    append0(DIGITS[(value >>>  1) & 0x01]);
+    append0(DIGITS[(value >>>  0) & 0x01]);
+    // @formatter:on
     return this;
   }
 
@@ -914,7 +1223,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public static int getBinCapacity(short value) {
     // low 8 bits
-    if ((value & 0xff) == value) {
+    if ((value & 0x00ff) == value) {
       return getBinCapacity((byte) value);
     }
     // high 8 bits
@@ -931,40 +1240,40 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public final CharBuffer appendBin(int value) {
     ensureCapacity(32);
-    // high 16 bits
-    append0(DIGITS[(value >>> 0x1f) & 0x01]);
-    append0(DIGITS[(value >>> 0x1e) & 0x01]);
-    append0(DIGITS[(value >>> 0x1d) & 0x01]);
-    append0(DIGITS[(value >>> 0x1c) & 0x01]);
-    append0(DIGITS[(value >>> 0x1b) & 0x01]);
-    append0(DIGITS[(value >>> 0x1a) & 0x01]);
-    append0(DIGITS[(value >>> 0x19) & 0x01]);
-    append0(DIGITS[(value >>> 0x18) & 0x01]);
-    append0(DIGITS[(value >>> 0x17) & 0x01]);
-    append0(DIGITS[(value >>> 0x16) & 0x01]);
-    append0(DIGITS[(value >>> 0x15) & 0x01]);
-    append0(DIGITS[(value >>> 0x14) & 0x01]);
-    append0(DIGITS[(value >>> 0x13) & 0x01]);
-    append0(DIGITS[(value >>> 0x12) & 0x01]);
-    append0(DIGITS[(value >>> 0x11) & 0x01]);
-    append0(DIGITS[(value >>> 0x10) & 0x01]);
-    // low 16 bits
-    append0(DIGITS[(value >>> 0x0f) & 0x01]);
-    append0(DIGITS[(value >>> 0x0e) & 0x01]);
-    append0(DIGITS[(value >>> 0x0d) & 0x01]);
-    append0(DIGITS[(value >>> 0x0c) & 0x01]);
-    append0(DIGITS[(value >>> 0x0b) & 0x01]);
-    append0(DIGITS[(value >>> 0x0a) & 0x01]);
-    append0(DIGITS[(value >>> 0x09) & 0x01]);
-    append0(DIGITS[(value >>> 0x08) & 0x01]);
-    append0(DIGITS[(value >>> 0x07) & 0x01]);
-    append0(DIGITS[(value >>> 0x06) & 0x01]);
-    append0(DIGITS[(value >>> 0x05) & 0x01]);
-    append0(DIGITS[(value >>> 0x04) & 0x01]);
-    append0(DIGITS[(value >>> 0x03) & 0x01]);
-    append0(DIGITS[(value >>> 0x02) & 0x01]);
-    append0(DIGITS[(value >>> 0x01) & 0x01]);
-    append0(DIGITS[(value >>> 0x00) & 0x01]);
+    // @formatter:off
+    append0(DIGITS[(value >>> 31) & 0x01]);
+    append0(DIGITS[(value >>> 30) & 0x01]);
+    append0(DIGITS[(value >>> 29) & 0x01]);
+    append0(DIGITS[(value >>> 28) & 0x01]);
+    append0(DIGITS[(value >>> 27) & 0x01]);
+    append0(DIGITS[(value >>> 26) & 0x01]);
+    append0(DIGITS[(value >>> 25) & 0x01]);
+    append0(DIGITS[(value >>> 24) & 0x01]);
+    append0(DIGITS[(value >>> 23) & 0x01]);
+    append0(DIGITS[(value >>> 22) & 0x01]);
+    append0(DIGITS[(value >>> 21) & 0x01]);
+    append0(DIGITS[(value >>> 20) & 0x01]);
+    append0(DIGITS[(value >>> 19) & 0x01]);
+    append0(DIGITS[(value >>> 18) & 0x01]);
+    append0(DIGITS[(value >>> 17) & 0x01]);
+    append0(DIGITS[(value >>> 16) & 0x01]);
+    append0(DIGITS[(value >>> 15) & 0x01]);
+    append0(DIGITS[(value >>> 14) & 0x01]);
+    append0(DIGITS[(value >>> 13) & 0x01]);
+    append0(DIGITS[(value >>> 12) & 0x01]);
+    append0(DIGITS[(value >>> 11) & 0x01]);
+    append0(DIGITS[(value >>> 10) & 0x01]);
+    append0(DIGITS[(value >>>  9) & 0x01]);
+    append0(DIGITS[(value >>>  8) & 0x01]);
+    append0(DIGITS[(value >>>  7) & 0x01]);
+    append0(DIGITS[(value >>>  6) & 0x01]);
+    append0(DIGITS[(value >>>  5) & 0x01]);
+    append0(DIGITS[(value >>>  4) & 0x01]);
+    append0(DIGITS[(value >>>  3) & 0x01]);
+    append0(DIGITS[(value >>>  2) & 0x01]);
+    append0(DIGITS[(value >>>  1) & 0x01]);
+    append0(DIGITS[(value >>>  0) & 0x01]);
+    // @formatter:on
     return this;
   }
 
@@ -997,7 +1306,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public static int getBinCapacity(int value) {
     // low 16 bits
-    if ((value & 0xffff) == value) {
+    if ((value & 0x0000ffff) == value) {
       return getBinCapacity((short) value);
     }
     // high 16 bits
@@ -1014,72 +1323,72 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public final CharBuffer appendBin(long value) {
     ensureCapacity(64);
-    // high 32 bits
-    append0(DIGITS[(int) ((value >>> 0x3f) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x3e) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x3d) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x3c) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x3b) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x3a) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x39) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x38) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x37) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x36) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x35) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x34) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x33) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x32) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x31) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x30) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x2f) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x2e) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x2d) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x2c) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x2b) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x2a) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x29) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x28) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x27) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x26) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x25) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x24) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x23) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x22) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x21) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x20) & 0x01L)]);
-    // low 32 bits
-    append0(DIGITS[(int) ((value >>> 0x1f) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x1e) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x1d) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x1c) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x1b) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x1a) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x19) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x18) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x17) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x16) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x15) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x14) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x13) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x12) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x11) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x10) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x0f) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x0e) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x0d) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x0c) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x0b) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x0a) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x09) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x08) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x07) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x06) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x05) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x04) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x03) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x02) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x01) & 0x01L)]);
-    append0(DIGITS[(int) ((value >>> 0x00) & 0x01L)]);
+    // @formatter:off
+    append0(DIGITS[(int) ((value >>> 63) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 62) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 61) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 60) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 59) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 58) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 57) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 56) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 55) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 54) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 53) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 52) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 51) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 50) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 49) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 48) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 47) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 46) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 45) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 44) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 43) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 42) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 41) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 40) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 39) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 38) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 37) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 36) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 35) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 34) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 33) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 32) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 31) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 30) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 29) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 28) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 27) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 26) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 25) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 24) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 23) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 22) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 21) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 20) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 19) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 18) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 17) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 16) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 15) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 14) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 13) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 12) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 11) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 10) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>>  9) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>>  8) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>>  7) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>>  6) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>>  5) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>>  4) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>>  3) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>>  2) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>>  1) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>>  0) & 0x01L)]);
+    // @formatter:on
     return this;
   }
 
@@ -1112,7 +1421,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public static int getBinCapacity(long value) {
     // low 32 bits
-    if ((value & 0xffffffffL) == value) {
+    if ((value & 0x00000000ffffffffL) == value) {
       return getBinCapacity((int) value);
     }
     // high 32 bits
