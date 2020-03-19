@@ -322,12 +322,15 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
       1000000000000000L, 10000000000000000L, 100000000000000000L, 1000000000000000000L
   };
 
+  // Decimal representation
+
   /**
    * Returns a number of characters required to represent the specified signed {@code int} value
    * without leading zeros in the decimal system.
    *
    * @param value The signed {@code int} value to be converted to a decimal string.
-   * @return A number of characters required to represent the specified signed {@code int} value.
+   * @return A number of characters required to represent the specified signed {@code int} value
+   *         without leading zeros in the decimal system.
    * @see #appendDec(byte)
    * @see #appendDec(short)
    * @see #appendDec(int)
@@ -345,7 +348,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param value The signed non-negative {@code int} value to be converted to a decimal string.
    * @return A number of characters required to represent the specified positive signed {@code int}
-   *         value.
+   *         value without leading zeros in the decimal system.
    */
   private static int getDecCapacity0(int value) {
     if (value < 1000) {
@@ -365,7 +368,8 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * without leading zeros in the decimal system.
    *
    * @param value The signed {@code long} value to be converted to a decimal string.
-   * @return A number of characters required to represent the specified signed {@code long} value.
+   * @return A number of characters required to represent the specified signed {@code long} value
+   *         without leading zeros in the decimal system.
    * @see #appendDec(long)
    */
   public static int getDecCapacity(long value) {
@@ -381,7 +385,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param value The signed non-negative {@code long} value to be converted to a decimal string.
    * @return A number of characters required to represent the specified positive signed
-   *         {@code long} value.
+   *         {@code long} value without leading zeros in the decimal system.
    */
   private static int getDecCapacity0(long value) {
     if (value < 1000000000L) {
@@ -397,48 +401,6 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
       return value < 100000000000000000L ? value < 10000000000000000L ? 16 : 17 : 18;
     }
     return 19;
-  }
-
-  /**
-   * Returns a number of characters required to represent the specified unsigned {@code int} value
-   * without leading zeros in the hexadecimal system.
-   *
-   * @param value The unsigned {@code int} value to be converted to a hexadecimal string.
-   * @return A number of characters required to represent the specified unsigned {@code int} value.
-   * @see #appendHexTrimZeros(byte)
-   * @see #appendHexTrimZeros(short)
-   * @see #appendHexTrimZeros(int)
-   */
-  public static int getHexCapacity(int value) {
-    // low 16 bits
-    if ((value & 0xffff) == value) {
-      if ((value & 0xff) == value) {
-        return (value & 0xf) == value ? 1 : 2;
-      }
-      return (value & 0xfff) == value ? 3 : 4;
-    }
-    // high 16 bits
-    if ((value & 0xffffff) == value) {
-      return (value & 0xfffff) == value ? 5 : 6;
-    }
-    return (value & 0xfffffff) == value ? 7 : 8;
-  }
-
-  /**
-   * Returns a number of characters required to represent the specified unsigned {@code long} value
-   * without leading zeros in the hexadecimal system.
-   *
-   * @param value The unsigned {@code long} value to be converted to a hexadecimal string.
-   * @return A number of characters required to represent the specified unsigned {@code long} value.
-   * @see #appendHexTrimZeros(long)
-   */
-  public static int getHexCapacity(long value) {
-    // low 32 bits
-    if ((value & 0xffffffffL) == value) {
-      return getHexCapacity((int) value);
-    }
-    // high 32 bits
-    return 8 + getHexCapacity((int) (value >>> 32));
   }
 
   public final CharBuffer appendDec(byte value) {
@@ -501,6 +463,63 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   public final CharBuffer appendDec(double value) {
     // not now!
     return append(Double.toString(value));
+  }
+
+  /**
+   * Appends the {@code '-'} sign to the buffer if the specified sign flag is not {@code 0}.
+   *
+   * @param sign The sign flag ({@code 0} for zero or positive number; negative number otherwise).
+   */
+  private final void appendSign(int sign) {
+    if (sign != 0) {
+      append0('-');
+    }
+  }
+
+  // Hexadecimal representation
+
+  /**
+   * Returns a number of characters required to represent the specified unsigned {@code int} value
+   * without leading zeros in the hexadecimal system.
+   *
+   * @param value The unsigned {@code int} value to be converted to a hexadecimal string.
+   * @return A number of characters required to represent the specified unsigned {@code int} value
+   *         without leading zeros in the hexadecimal system.
+   * @see #appendHexTrimZeros(byte)
+   * @see #appendHexTrimZeros(short)
+   * @see #appendHexTrimZeros(int)
+   */
+  public static int getHexCapacity(int value) {
+    // low 16 bits
+    if ((value & 0xffff) == value) {
+      if ((value & 0xff) == value) {
+        return (value & 0xf) == value ? 1 : 2;
+      }
+      return (value & 0xfff) == value ? 3 : 4;
+    }
+    // high 16 bits
+    if ((value & 0xffffff) == value) {
+      return (value & 0xfffff) == value ? 5 : 6;
+    }
+    return (value & 0xfffffff) == value ? 7 : 8;
+  }
+
+  /**
+   * Returns a number of characters required to represent the specified unsigned {@code long} value
+   * without leading zeros in the hexadecimal system.
+   *
+   * @param value The unsigned {@code long} value to be converted to a hexadecimal string.
+   * @return A number of characters required to represent the specified unsigned {@code long} value
+   *         without leading zeros in the hexadecimal system.
+   * @see #appendHexTrimZeros(long)
+   */
+  public static int getHexCapacity(long value) {
+    // low 32 bits
+    if ((value & 0xffffffffL) == value) {
+      return getHexCapacity((int) value);
+    }
+    // high 32 bits
+    return 8 + getHexCapacity((int) (value >>> 32));
   }
 
   public final CharBuffer appendHex(byte value) {
@@ -624,161 +643,334 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     return appendHex(value);
   }
 
+  // Binary representation
+
+  /**
+   * Appends an unsigned binary string representation of the specified {@code byte} value with
+   * leading zeros to the buffer. The format is <code>[0-1]{8}</code>.
+   *
+   * @param value The {@code byte} value to be converted to an unsigned binary string.
+   * @return A reference to this buffer.
+   * @see #appendBinTrimZeros(byte)
+   */
   public final CharBuffer appendBin(byte value) {
     ensureCapacity(8);
-    append0(DIGITS[(value >>> 0x07) & 0x1]);
-    append0(DIGITS[(value >>> 0x06) & 0x1]);
-    append0(DIGITS[(value >>> 0x05) & 0x1]);
-    append0(DIGITS[(value >>> 0x04) & 0x1]);
-    append0(DIGITS[(value >>> 0x03) & 0x1]);
-    append0(DIGITS[(value >>> 0x02) & 0x1]);
-    append0(DIGITS[(value >>> 0x01) & 0x1]);
-    append0(DIGITS[(value >>> 0x00) & 0x1]);
-    return this;
-  }
-
-  public final CharBuffer appendBin(short value) {
-    ensureCapacity(16);
-    // high 8 bits
-    append0(DIGITS[(value >>> 0x0f) & 0x1]);
-    append0(DIGITS[(value >>> 0x0e) & 0x1]);
-    append0(DIGITS[(value >>> 0x0d) & 0x1]);
-    append0(DIGITS[(value >>> 0x0c) & 0x1]);
-    append0(DIGITS[(value >>> 0x0b) & 0x1]);
-    append0(DIGITS[(value >>> 0x0a) & 0x1]);
-    append0(DIGITS[(value >>> 0x09) & 0x1]);
-    append0(DIGITS[(value >>> 0x08) & 0x1]);
-    // low 8 bits
-    append0(DIGITS[(value >>> 0x07) & 0x1]);
-    append0(DIGITS[(value >>> 0x06) & 0x1]);
-    append0(DIGITS[(value >>> 0x05) & 0x1]);
-    append0(DIGITS[(value >>> 0x04) & 0x1]);
-    append0(DIGITS[(value >>> 0x03) & 0x1]);
-    append0(DIGITS[(value >>> 0x02) & 0x1]);
-    append0(DIGITS[(value >>> 0x01) & 0x1]);
-    append0(DIGITS[(value >>> 0x00) & 0x1]);
-    return this;
-  }
-
-  public final CharBuffer appendBin(int value) {
-    ensureCapacity(32);
-    // high 16 bits
-    append0(DIGITS[(value >>> 0x1f) & 0x1]);
-    append0(DIGITS[(value >>> 0x1e) & 0x1]);
-    append0(DIGITS[(value >>> 0x1d) & 0x1]);
-    append0(DIGITS[(value >>> 0x1c) & 0x1]);
-    append0(DIGITS[(value >>> 0x1b) & 0x1]);
-    append0(DIGITS[(value >>> 0x1a) & 0x1]);
-    append0(DIGITS[(value >>> 0x19) & 0x1]);
-    append0(DIGITS[(value >>> 0x18) & 0x1]);
-    append0(DIGITS[(value >>> 0x17) & 0x1]);
-    append0(DIGITS[(value >>> 0x16) & 0x1]);
-    append0(DIGITS[(value >>> 0x15) & 0x1]);
-    append0(DIGITS[(value >>> 0x14) & 0x1]);
-    append0(DIGITS[(value >>> 0x13) & 0x1]);
-    append0(DIGITS[(value >>> 0x12) & 0x1]);
-    append0(DIGITS[(value >>> 0x11) & 0x1]);
-    append0(DIGITS[(value >>> 0x10) & 0x1]);
-    // low 16 bits
-    append0(DIGITS[(value >>> 0x0f) & 0x1]);
-    append0(DIGITS[(value >>> 0x0e) & 0x1]);
-    append0(DIGITS[(value >>> 0x0d) & 0x1]);
-    append0(DIGITS[(value >>> 0x0c) & 0x1]);
-    append0(DIGITS[(value >>> 0x0b) & 0x1]);
-    append0(DIGITS[(value >>> 0x0a) & 0x1]);
-    append0(DIGITS[(value >>> 0x09) & 0x1]);
-    append0(DIGITS[(value >>> 0x08) & 0x1]);
-    append0(DIGITS[(value >>> 0x07) & 0x1]);
-    append0(DIGITS[(value >>> 0x06) & 0x1]);
-    append0(DIGITS[(value >>> 0x05) & 0x1]);
-    append0(DIGITS[(value >>> 0x04) & 0x1]);
-    append0(DIGITS[(value >>> 0x03) & 0x1]);
-    append0(DIGITS[(value >>> 0x02) & 0x1]);
-    append0(DIGITS[(value >>> 0x01) & 0x1]);
-    append0(DIGITS[(value >>> 0x00) & 0x1]);
-    return this;
-  }
-
-  public final CharBuffer appendBin(long value) {
-    ensureCapacity(64);
-    // high 32 bits
-    append0(DIGITS[(int) ((value >>> 0x3f) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x3e) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x3d) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x3c) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x3b) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x3a) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x39) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x38) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x37) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x36) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x35) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x34) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x33) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x32) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x31) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x30) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x2f) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x2e) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x2d) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x2c) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x2b) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x2a) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x29) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x28) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x27) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x26) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x25) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x24) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x23) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x22) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x21) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x20) & 0x1L)]);
-    // low 32 bits
-    append0(DIGITS[(int) ((value >>> 0x1f) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x1e) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x1d) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x1c) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x1b) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x1a) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x19) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x18) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x17) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x16) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x15) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x14) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x13) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x12) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x11) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x10) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x0f) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x0e) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x0d) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x0c) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x0b) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x0a) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x09) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x08) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x07) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x06) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x05) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x04) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x03) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x02) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x01) & 0x1L)]);
-    append0(DIGITS[(int) ((value >>> 0x00) & 0x1L)]);
+    append0(DIGITS[(value >>> 0x07) & 0x01]);
+    append0(DIGITS[(value >>> 0x06) & 0x01]);
+    append0(DIGITS[(value >>> 0x05) & 0x01]);
+    append0(DIGITS[(value >>> 0x04) & 0x01]);
+    append0(DIGITS[(value >>> 0x03) & 0x01]);
+    append0(DIGITS[(value >>> 0x02) & 0x01]);
+    append0(DIGITS[(value >>> 0x01) & 0x01]);
+    append0(DIGITS[(value >>> 0x00) & 0x01]);
     return this;
   }
 
   /**
-   * Appends the {@code '-'} sign to the buffer if the specified sign flag is not {@code 0}.
+   * Appends an unsigned binary string representation of the specified {@code byte} value without
+   * leading zeros to the buffer. The format is <code>[0-1]{1, 8}</code>.
    *
-   * @param sign The sign flag ({@code 0} for zero or positive number; negative number otherwise).
+   * @param value The {@code byte} value to be converted to an unsigned binary string.
+   * @return A reference to this buffer.
+   * @see #getBinCapacity(byte)
+   * @see #appendBin(byte)
    */
-  private final void appendSign(int sign) {
-    if (sign != 0) {
-      append0('-');
+  public final CharBuffer appendBinTrimZeros(byte value) {
+    int n = getBinCapacity(value);
+    ensureCapacity(n--);
+    for (; n > 0; n--) {
+      append0(DIGITS[(value >>> n) & 0x01]);
     }
+    return append0(DIGITS[value & 0x01]);
+  }
+
+  /**
+   * Returns the number of characters required to represent the specified {@code byte} value as an
+   * unsigned binary string without leading zeros.
+   *
+   * @param value The {@code byte} value to be converted to an unsigned binary string.
+   * @return The number of characters required to represent the specified {@code byte} value as an
+   *         unsigned binary string without leading zeros.
+   * @see #appendBinTrimZeros(byte)
+   */
+  public static int getBinCapacity(byte value) {
+    // low 4 bits
+    if ((value & 0x0f) == value) {
+      if ((value & 0x03) == value) {
+        return (value & 0x01) == value ? 1 : 2;
+      }
+      return (value & 0x07) == value ? 3 : 4;
+    }
+    // high 4 bits
+    if ((value & 0x3f) == value) {
+      return (value & 0x1f) == value ? 5 : 6;
+    }
+    return (value & 0x7f) == value ? 7 : 8;
+  }
+
+  /**
+   * Appends an unsigned binary string representation of the specified {@code short} value with
+   * leading zeros to the buffer. The format is <code>[0-1]{16}</code>.
+   *
+   * @param value The {@code short} value to be converted to an unsigned binary string.
+   * @return A reference to this buffer.
+   * @see #appendBinTrimZeros(short)
+   */
+  public final CharBuffer appendBin(short value) {
+    ensureCapacity(16);
+    // high 8 bits
+    append0(DIGITS[(value >>> 0x0f) & 0x01]);
+    append0(DIGITS[(value >>> 0x0e) & 0x01]);
+    append0(DIGITS[(value >>> 0x0d) & 0x01]);
+    append0(DIGITS[(value >>> 0x0c) & 0x01]);
+    append0(DIGITS[(value >>> 0x0b) & 0x01]);
+    append0(DIGITS[(value >>> 0x0a) & 0x01]);
+    append0(DIGITS[(value >>> 0x09) & 0x01]);
+    append0(DIGITS[(value >>> 0x08) & 0x01]);
+    // low 8 bits
+    append0(DIGITS[(value >>> 0x07) & 0x01]);
+    append0(DIGITS[(value >>> 0x06) & 0x01]);
+    append0(DIGITS[(value >>> 0x05) & 0x01]);
+    append0(DIGITS[(value >>> 0x04) & 0x01]);
+    append0(DIGITS[(value >>> 0x03) & 0x01]);
+    append0(DIGITS[(value >>> 0x02) & 0x01]);
+    append0(DIGITS[(value >>> 0x01) & 0x01]);
+    append0(DIGITS[(value >>> 0x00) & 0x01]);
+    return this;
+  }
+
+  /**
+   * Appends an unsigned binary string representation of the specified {@code short} value without
+   * leading zeros to the buffer. The format is <code>[0-1]{1, 16}</code>.
+   *
+   * @param value The {@code short} value to be converted to an unsigned binary string.
+   * @return A reference to this buffer.
+   * @see #getBinCapacity(short)
+   * @see #appendBin(short)
+   */
+  public final CharBuffer appendBinTrimZeros(short value) {
+    int n = getBinCapacity(value);
+    ensureCapacity(n--);
+    for (; n > 0; n--) {
+      append0(DIGITS[(value >>> n) & 0x01]);
+    }
+    return append0(DIGITS[value & 0x01]);
+  }
+
+  /**
+   * Returns the number of characters required to represent the specified {@code short} value as an
+   * unsigned binary string without leading zeros.
+   *
+   * @param value The {@code short} value to be converted to an unsigned binary string.
+   * @return The number of characters required to represent the specified {@code short} value as an
+   *         unsigned binary string without leading zeros.
+   * @see #appendBinTrimZeros(short)
+   */
+  public static int getBinCapacity(short value) {
+    // low 8 bits
+    if ((value & 0xff) == value) {
+      return getBinCapacity((byte) value);
+    }
+    // high 8 bits
+    return 8 + getBinCapacity((byte) (value >>> 8));
+  }
+
+  /**
+   * Appends an unsigned binary string representation of the specified {@code int} value with
+   * leading zeros to the buffer. The format is <code>[0-1]{32}</code>.
+   *
+   * @param value The {@code int} value to be converted to an unsigned binary string.
+   * @return A reference to this buffer.
+   * @see #appendBinTrimZeros(int)
+   */
+  public final CharBuffer appendBin(int value) {
+    ensureCapacity(32);
+    // high 16 bits
+    append0(DIGITS[(value >>> 0x1f) & 0x01]);
+    append0(DIGITS[(value >>> 0x1e) & 0x01]);
+    append0(DIGITS[(value >>> 0x1d) & 0x01]);
+    append0(DIGITS[(value >>> 0x1c) & 0x01]);
+    append0(DIGITS[(value >>> 0x1b) & 0x01]);
+    append0(DIGITS[(value >>> 0x1a) & 0x01]);
+    append0(DIGITS[(value >>> 0x19) & 0x01]);
+    append0(DIGITS[(value >>> 0x18) & 0x01]);
+    append0(DIGITS[(value >>> 0x17) & 0x01]);
+    append0(DIGITS[(value >>> 0x16) & 0x01]);
+    append0(DIGITS[(value >>> 0x15) & 0x01]);
+    append0(DIGITS[(value >>> 0x14) & 0x01]);
+    append0(DIGITS[(value >>> 0x13) & 0x01]);
+    append0(DIGITS[(value >>> 0x12) & 0x01]);
+    append0(DIGITS[(value >>> 0x11) & 0x01]);
+    append0(DIGITS[(value >>> 0x10) & 0x01]);
+    // low 16 bits
+    append0(DIGITS[(value >>> 0x0f) & 0x01]);
+    append0(DIGITS[(value >>> 0x0e) & 0x01]);
+    append0(DIGITS[(value >>> 0x0d) & 0x01]);
+    append0(DIGITS[(value >>> 0x0c) & 0x01]);
+    append0(DIGITS[(value >>> 0x0b) & 0x01]);
+    append0(DIGITS[(value >>> 0x0a) & 0x01]);
+    append0(DIGITS[(value >>> 0x09) & 0x01]);
+    append0(DIGITS[(value >>> 0x08) & 0x01]);
+    append0(DIGITS[(value >>> 0x07) & 0x01]);
+    append0(DIGITS[(value >>> 0x06) & 0x01]);
+    append0(DIGITS[(value >>> 0x05) & 0x01]);
+    append0(DIGITS[(value >>> 0x04) & 0x01]);
+    append0(DIGITS[(value >>> 0x03) & 0x01]);
+    append0(DIGITS[(value >>> 0x02) & 0x01]);
+    append0(DIGITS[(value >>> 0x01) & 0x01]);
+    append0(DIGITS[(value >>> 0x00) & 0x01]);
+    return this;
+  }
+
+  /**
+   * Appends an unsigned binary string representation of the specified {@code int} value without
+   * leading zeros to the buffer. The format is <code>[0-1]{1, 32}</code>.
+   *
+   * @param value The {@code int} value to be converted to an unsigned binary string.
+   * @return A reference to this buffer.
+   * @see #getBinCapacity(int)
+   * @see #appendBin(int)
+   */
+  public final CharBuffer appendBinTrimZeros(int value) {
+    int n = getBinCapacity(value);
+    ensureCapacity(n--);
+    for (; n > 0; n--) {
+      append0(DIGITS[(value >>> n) & 0x01]);
+    }
+    return append0(DIGITS[value & 0x01]);
+  }
+
+  /**
+   * Returns the number of characters required to represent the specified {@code int} value as an
+   * unsigned binary string without leading zeros.
+   *
+   * @param value The {@code int} value to be converted to an unsigned binary string.
+   * @return The number of characters required to represent the specified {@code int} value as an
+   *         unsigned binary string without leading zeros.
+   * @see #appendBinTrimZeros(int)
+   */
+  public static int getBinCapacity(int value) {
+    // low 16 bits
+    if ((value & 0xffff) == value) {
+      return getBinCapacity((short) value);
+    }
+    // high 16 bits
+    return 16 + getBinCapacity((short) (value >>> 16));
+  }
+
+  /**
+   * Appends an unsigned binary string representation of the specified {@code long} value with
+   * leading zeros to the buffer. The format is <code>[0-1]{64}</code>.
+   *
+   * @param value The {@code long} value to be converted to an unsigned binary string.
+   * @return A reference to this buffer.
+   * @see #appendBinTrimZeros(long)
+   */
+  public final CharBuffer appendBin(long value) {
+    ensureCapacity(64);
+    // high 32 bits
+    append0(DIGITS[(int) ((value >>> 0x3f) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x3e) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x3d) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x3c) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x3b) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x3a) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x39) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x38) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x37) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x36) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x35) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x34) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x33) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x32) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x31) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x30) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x2f) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x2e) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x2d) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x2c) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x2b) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x2a) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x29) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x28) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x27) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x26) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x25) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x24) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x23) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x22) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x21) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x20) & 0x01L)]);
+    // low 32 bits
+    append0(DIGITS[(int) ((value >>> 0x1f) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x1e) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x1d) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x1c) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x1b) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x1a) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x19) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x18) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x17) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x16) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x15) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x14) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x13) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x12) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x11) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x10) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x0f) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x0e) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x0d) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x0c) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x0b) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x0a) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x09) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x08) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x07) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x06) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x05) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x04) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x03) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x02) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x01) & 0x01L)]);
+    append0(DIGITS[(int) ((value >>> 0x00) & 0x01L)]);
+    return this;
+  }
+
+  /**
+   * Appends an unsigned binary string representation of the specified {@code long} value without
+   * leading zeros to the buffer. The format is <code>[0-1]{1, 64}</code>.
+   *
+   * @param value The {@code long} value to be converted to an unsigned binary string.
+   * @return A reference to this buffer.
+   * @see #getBinCapacity(long)
+   * @see #appendBin(long)
+   */
+  public final CharBuffer appendBinTrimZeros(long value) {
+    int n = getBinCapacity(value);
+    ensureCapacity(n--);
+    for (; n > 0; n--) {
+      append0(DIGITS[(int) ((value >>> n) & 0x01L)]);
+    }
+    return append0(DIGITS[(int) (value & 0x01L)]);
+  }
+
+  /**
+   * Returns the number of characters required to represent the specified {@code long} value as an
+   * unsigned binary string without leading zeros.
+   *
+   * @param value The {@code long} value to be converted to an unsigned binary string.
+   * @return The number of characters required to represent the specified {@code long} value as an
+   *         unsigned binary string without leading zeros.
+   * @see #appendBinTrimZeros(long)
+   */
+  public static int getBinCapacity(long value) {
+    // low 32 bits
+    if ((value & 0xffffffffL) == value) {
+      return getBinCapacity((int) value);
+    }
+    // high 32 bits
+    return 32 + getBinCapacity((int) (value >>> 32));
   }
 
   // Object to string representation
@@ -1424,6 +1616,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * character.
    *
    * @param length The number of {@code '\u0020'} space characters to append.
+   * @return A reference to this buffer.
    * @throws IllegalArgumentException if the specified length is negative.
    * @see #appendIndent(int, char)
    * @see #appendIndent(int, int)
@@ -1451,6 +1644,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param length The number of indentation characters to append.
    * @param ch The indentation character.
+   * @return A reference to this buffer.
    * @throws IllegalArgumentException if the specified length is negative.
    * @see #appendIndent(int, int)
    */
@@ -1474,6 +1668,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param length The number of indentation characters to append.
    * @param ch The Unicode code point of indentation character.
+   * @return A reference to this buffer.
    * @throws IllegalArgumentException if the specified length is negative.
    * @see #appendIndent(int, char)
    */

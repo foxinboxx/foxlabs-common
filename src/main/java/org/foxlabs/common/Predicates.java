@@ -1626,6 +1626,7 @@ public final class Predicates {
       ExceptionProvider.OfSequence<I, T, E> exception) throws E {
     if (iterable != null) {
       final Iterator<T> itr = iterable.iterator();
+      // NPE is possible but it is better than ignore it
       for (int index = 0; itr.hasNext(); index++) {
         if (itr.next() == null) {
           throw exception.create(iterable, index, null);
@@ -1704,6 +1705,7 @@ public final class Predicates {
       Predicate<? super T> condition, ExceptionProvider.OfSequence<I, T, E> exception) throws E {
     if (iterable != null) {
       final Iterator<T> itr = iterable.iterator();
+      // NPE is possible but it is better than ignore it
       for (int index = 0; itr.hasNext(); index++) {
         final T element = itr.next();
         if (!condition.test(element)) {
