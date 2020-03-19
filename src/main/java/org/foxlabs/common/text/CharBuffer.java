@@ -17,6 +17,7 @@
 package org.foxlabs.common.text;
 
 import java.util.Set;
+import java.util.function.Function;
 import java.util.Map;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
@@ -366,14 +367,35 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   // Decimal representation
 
   /**
-   * Returns a number of characters required to represent the specified signed {@code int} value
-   * without leading zeros in the decimal system.
+   * Appends a signed decimal string representation of the specified {@code int} value to the
+   * buffer. The format is <code>\-?[0-9]{1, 10}</code> (regular expression).
    *
-   * @param value The signed {@code int} value to be converted to a decimal string.
-   * @return A number of characters required to represent the specified signed {@code int} value
-   *         without leading zeros in the decimal system.
-   * @see #appendDec(byte)
-   * @see #appendDec(short)
+   * @param value The {@code int} value to be converted to a signed decimal string.
+   * @return A reference to this buffer.
+   * @see #getDecCapacity(int)
+   */
+  public final CharBuffer appendDec(int value) {
+    if (value == Integer.MIN_VALUE) {
+      // special case - sign inversion does not work for -2147483648
+      return append(MIN_INT_DIGITS);
+    }
+    final int sign = value >>> 31;
+    int v = value < 0 ? -value : value;
+    int n = getDecCapacity0(v);
+    ensureCapacity(sign + n--);
+    for (appendSign(sign); n > 0; v %= INT_TENS[n--]) {
+      append0(DIGITS[v / INT_TENS[n]]);
+    }
+    return append0(DIGITS[v]);
+  }
+
+  /**
+   * Returns the number of characters required to represent the specified {@code int} value as a
+   * signed decimal string.
+   *
+   * @param value The {@code int} value to be converted to a signed decimal string.
+   * @return The number of characters required to represent the specified {@code int} value as a
+   *         signed decimal string.
    * @see #appendDec(int)
    */
   public static int getDecCapacity(int value) {
@@ -384,12 +406,12 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   }
 
   /**
-   * Returns a number of characters required to represent the specified positive signed {@code int}
-   * value without leading zeros in the decimal system.
+   * Returns the number of characters required to represent the specified non-negative {@code int}
+   * value as a signed decimal string.
    *
-   * @param value The signed non-negative {@code int} value to be converted to a decimal string.
-   * @return A number of characters required to represent the specified positive signed {@code int}
-   *         value without leading zeros in the decimal system.
+   * @param value The non-negative {@code int} value to be converted to a signed decimal string.
+   * @return The number of characters required to represent the specified non-negative {@code int}
+   *         value as a signed decimal string.
    */
   private static int getDecCapacity0(int value) {
     if (value < 1000) {
@@ -405,12 +427,35 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   }
 
   /**
-   * Returns a number of characters required to represent the specified signed {@code long} value
-   * without leading zeros in the decimal system.
+   * Appends a signed decimal string representation of the specified {@code long} value to the
+   * buffer. The format is <code>\-?[0-9]{1, 19}</code> (regular expression).
    *
-   * @param value The signed {@code long} value to be converted to a decimal string.
-   * @return A number of characters required to represent the specified signed {@code long} value
-   *         without leading zeros in the decimal system.
+   * @param value The {@code long} value to be converted to a signed decimal string.
+   * @return A reference to this buffer.
+   * @see #getDecCapacity(long)
+   */
+  public final CharBuffer appendDec(long value) {
+    if (value == Long.MIN_VALUE) {
+      // special case - sign inversion does not work for -9223372036854775808
+      return append(MIN_LONG_DIGITS);
+    }
+    final int sign = (int) (value >>> 63);
+    long v = value < 0L ? -value : value;
+    int n = getDecCapacity0(v);
+    ensureCapacity(sign + n--);
+    for (appendSign(sign); n > 0; v %= LONG_TENS[n--]) {
+      append0(DIGITS[(int) (v / LONG_TENS[n])]);
+    }
+    return append0(DIGITS[(int) v]);
+  }
+
+  /**
+   * Returns the number of characters required to represent the specified {@code long} value as a
+   * signed decimal string.
+   *
+   * @param value The {@code long} value to be converted to a signed decimal string.
+   * @return The number of characters required to represent the specified {@code long} value as a
+   *         signed decimal string.
    * @see #appendDec(long)
    */
   public static int getDecCapacity(long value) {
@@ -421,12 +466,13 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   }
 
   /**
-   * Returns a number of characters required to represent the specified positive signed
-   * {@code long} value without leading zeros in the decimal system.
+   * Returns the number of characters required to represent the specified non-negative {@code long}
+   * value as a signed decimal string.
    *
-   * @param value The signed non-negative {@code long} value to be converted to a decimal string.
-   * @return A number of characters required to represent the specified positive signed
-   *         {@code long} value without leading zeros in the decimal system.
+   * @param value The non-negative {@code long} value to be converted to a signed decimal string.
+   * @return The number of characters required to represent the specified non-negative {@code long}
+   *         value as a signed decimal string.
+   * @see #getDecCapacity0(int)
    */
   private static int getDecCapacity0(long value) {
     if (value < 1000000000L) {
@@ -444,65 +490,29 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     return 19;
   }
 
-  public final CharBuffer appendDec(byte value) {
-    final int sign = value >>> 31;
-    int v = value < 0 ? -value : value;
-    int n = getDecCapacity0(v);
-    ensureCapacity(sign + n--);
-    for (appendSign(sign); n > 0; v %= INT_TENS[n--]) {
-      append0(DIGITS[v / INT_TENS[n]]);
-    }
-    return append0(DIGITS[v]);
-  }
-
-  public final CharBuffer appendDec(short value) {
-    final int sign = value >>> 31;
-    int v = value < 0 ? -value : value;
-    int n = getDecCapacity0(v);
-    ensureCapacity(sign + n--);
-    for (appendSign(sign); n > 0; v %= INT_TENS[n--]) {
-      append0(DIGITS[v / INT_TENS[n]]);
-    }
-    return append0(DIGITS[v]);
-  }
-
-  public final CharBuffer appendDec(int value) {
-    if (value == Integer.MIN_VALUE) {
-      // special case - sign inversion does not work for -2147483648
-      return append(MIN_INT_DIGITS);
-    }
-    final int sign = value >>> 31;
-    int v = value < 0 ? -value : value;
-    int n = getDecCapacity0(v);
-    ensureCapacity(sign + n--);
-    for (appendSign(sign); n > 0; v %= INT_TENS[n--]) {
-      append0(DIGITS[v / INT_TENS[n]]);
-    }
-    return append0(DIGITS[v]);
-  }
-
-  public final CharBuffer appendDec(long value) {
-    if (value == Long.MIN_VALUE) {
-      // special case - sign inversion does not work for -9223372036854775808
-      return append(MIN_LONG_DIGITS);
-    }
-    final int sign = (int) (value >>> 63);
-    long v = value < 0L ? -value : value;
-    int n = getDecCapacity0(v);
-    ensureCapacity(sign + n--);
-    for (appendSign(sign); n > 0; v %= LONG_TENS[n--]) {
-      append0(DIGITS[(int) (v / LONG_TENS[n])]);
-    }
-    return append0(DIGITS[(int) v]);
-  }
-
+  /**
+   * Appends a decimal string representation of the specified {@code float} value to the buffer.
+   * This is a shortcut for the {@code append(Float.toString(value))}.
+   *
+   * @param value The {@code float} value to be converted to a decimal string.
+   * @return A reference to this buffer.
+   * @see Float#toString(float)
+   */
   public final CharBuffer appendDec(float value) {
-    // not now!
+    // TODO not now, but in the near future!
     return append(Float.toString(value));
   }
 
+  /**
+   * Appends a decimal string representation of the specified {@code double} value to the buffer.
+   * This is a shortcut for the {@code append(Double.toString(value))}.
+   *
+   * @param value The {@code double} value to be converted to a decimal string.
+   * @return A reference to this buffer.
+   * @see Double#toString(double)
+   */
   public final CharBuffer appendDec(double value) {
-    // not now!
+    // TODO not now, but in the near future!
     return append(Double.toString(value));
   }
 
@@ -1737,6 +1747,8 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
       {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 16
   };
 
+  // Indentation
+
   /**
    * Appends an indentation of the specified length to the buffer using the {@code '\u0020'} space
    * character.
@@ -1811,6 +1823,36 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
       }
     }
     return this;
+  }
+
+  // Joining
+
+  public final CharBuffer appendJoin(CharSequence delimiter, CharSequence... elements) {
+    // TODO
+    return this;
+  }
+
+  public final <T> CharBuffer appendJoin(CharSequence delimiter, Function<T, CharSequence> mapper,
+      CharSequence... elements) {
+    // TODO
+    return this;
+  }
+
+  public final CharBuffer appendJoin(CharSequence delimiter, Iterable<CharSequence> elements) {
+    // TODO
+    return this;
+  }
+
+  public final <T> CharBuffer appendJoin(CharSequence delimiter, Function<T, CharSequence> mapper,
+      Iterable<CharSequence> elements) {
+    // TODO
+    return this;
+  }
+
+  // Encoding
+
+  public final CharBuffer appendEncoded(CharSequence sequence, CharEncoder encoder) {
+    return encoder.encode(sequence, this);
   }
 
 }
