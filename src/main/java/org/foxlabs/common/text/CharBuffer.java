@@ -281,6 +281,47 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     length = 0;
   }
 
+  // Boolean to string representation
+
+  /**
+   * The string representation of the {@code true} constant.
+   */
+  private static final char[] TRUE_CONSTANT = {
+      't', 'r', 'u', 'e'
+  };
+
+  /**
+   * The string representation of the {@code false} constant.
+   */
+  private static final char[] FALSE_CONSTANT = {
+      'f', 'a', 'l', 's', 'e'
+  };
+
+  /**
+   * Appends a string representation of the specified {@code boolean} value with. The format is
+   * <code>(true)|(false)</code> (regular expression).
+   *
+   * @param value The {@code boolean} value to be converted to a string.
+   * @return A reference to this buffer.
+   * @see #getBoolCapacity(boolean)
+   */
+  public final CharBuffer appendBool(boolean value) {
+    return value ? append(TRUE_CONSTANT) : append(FALSE_CONSTANT);
+  }
+
+  /**
+   * Returns the number of characters required to represent the specified {@code boolean} value as
+   * a string.
+   *
+   * @param value The {@code boolean} value to be converted to a string.
+   * @return The number of characters required to represent the specified {@code boolean} value as
+   *         a string.
+   * @see #appendBool(boolean)
+   */
+  public static final int getBoolCapacity(boolean value) {
+    return value ? TRUE_CONSTANT.length : FALSE_CONSTANT.length;
+  }
+
   // Number to string representation
 
   /**
@@ -292,14 +333,14 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   };
 
   /**
-   * The string representation of the {@code int} minimum value ({@code -2147483648}).
+   * The decimal string representation of the {@code int} min value ({@code -2147483648}).
    */
   private static final char[] MIN_INT_DIGITS = {
       '-', '2', '1', '4', '7', '4', '8', '3', '6', '4', '8'
   };
 
   /**
-   * The string representation of the {@code long} minimum value ({@code -9223372036854775808}).
+   * The decimal string representation of the {@code long} min value ({@code -9223372036854775808}).
    */
   private static final char[] MIN_LONG_DIGITS = {
       '-', '9', '2', '2', '3', '3', '7', '2', '0', '3',
@@ -479,109 +520,150 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   // Hexadecimal representation
 
   /**
-   * Returns a number of characters required to represent the specified unsigned {@code int} value
-   * without leading zeros in the hexadecimal system.
+   * Appends an unsigned hexadecimal string representation of the specified {@code byte} value with
+   * leading zeros to the buffer. The format is <code>[0-9a-f]{2}</code> (regular expression).
    *
-   * @param value The unsigned {@code int} value to be converted to a hexadecimal string.
-   * @return A number of characters required to represent the specified unsigned {@code int} value
-   *         without leading zeros in the hexadecimal system.
+   * @param value The {@code byte} value to be converted to an unsigned hexadecimal string.
+   * @return A reference to this buffer.
    * @see #appendHexTrimZeros(byte)
-   * @see #appendHexTrimZeros(short)
-   * @see #appendHexTrimZeros(int)
    */
-  public static int getHexCapacity(int value) {
-    // low 16 bits
-    if ((value & 0xffff) == value) {
-      if ((value & 0xff) == value) {
-        return (value & 0xf) == value ? 1 : 2;
-      }
-      return (value & 0xfff) == value ? 3 : 4;
-    }
-    // high 16 bits
-    if ((value & 0xffffff) == value) {
-      return (value & 0xfffff) == value ? 5 : 6;
-    }
-    return (value & 0xfffffff) == value ? 7 : 8;
-  }
-
-  /**
-   * Returns a number of characters required to represent the specified unsigned {@code long} value
-   * without leading zeros in the hexadecimal system.
-   *
-   * @param value The unsigned {@code long} value to be converted to a hexadecimal string.
-   * @return A number of characters required to represent the specified unsigned {@code long} value
-   *         without leading zeros in the hexadecimal system.
-   * @see #appendHexTrimZeros(long)
-   */
-  public static int getHexCapacity(long value) {
-    // low 32 bits
-    if ((value & 0xffffffffL) == value) {
-      return getHexCapacity((int) value);
-    }
-    // high 32 bits
-    return 8 + getHexCapacity((int) (value >>> 32));
-  }
-
   public final CharBuffer appendHex(byte value) {
     ensureCapacity(2);
-    append0(DIGITS[(value >>> 0x04) & 0xf]);
-    append0(DIGITS[(value >>> 0x00) & 0xf]);
+    append0(DIGITS[(value >>> 0x04) & 0x0f]);
+    append0(DIGITS[(value >>> 0x00) & 0x0f]);
     return this;
   }
 
+  /**
+   * Appends an unsigned hexadecimal string representation of the specified {@code byte} value
+   * without leading zeros to the buffer. The format is <code>[0-9a-f]{1, 2}</code> (regular
+   * expression).
+   *
+   * @param value The {@code byte} value to be converted to an unsigned hexadecimal string.
+   * @return A reference to this buffer.
+   * @see #getHexCapacity(byte)
+   * @see #appendHex(byte)
+   */
   public final CharBuffer appendHexTrimZeros(byte value) {
     // 4 or less bits long?
-    if ((value & 0xf) == value) {
+    if ((value & 0x0f) == value) {
       ensureCapacity(1);
-      return append0(DIGITS[(value >>> 0x00) & 0xf]);
+      return append0(DIGITS[(value >>> 0x00) & 0x0f]);
     }
     // 8 bits long
     return appendHex(value);
   }
 
+  /**
+   * Returns the number of characters required to represent the specified {@code byte} value as an
+   * unsigned hexadecimal string without leading zeros.
+   *
+   * @param value The {@code byte} value to be converted to an unsigned hexadecimal string.
+   * @return The number of characters required to represent the specified {@code byte} value as an
+   *         unsigned hexadecimal string without leading zeros.
+   * @see #appendHexTrimZeros(byte)
+   */
+  public static int getHexCapacity(byte value) {
+    return (value & 0x0f) == value ? 1 : 2;
+  }
+
+  /**
+   * Appends an unsigned hexadecimal string representation of the specified {@code short} value
+   * with leading zeros to the buffer. The format is <code>[0-9a-f]{4}</code> (regular expression).
+   *
+   * @param value The {@code short} value to be converted to an unsigned hexadecimal string.
+   * @return A reference to this buffer.
+   * @see #appendHexTrimZeros(short)
+   */
   public final CharBuffer appendHex(short value) {
     ensureCapacity(4);
     // high 8 bits
-    append0(DIGITS[(value >>> 0x0c) & 0xf]);
-    append0(DIGITS[(value >>> 0x08) & 0xf]);
+    append0(DIGITS[(value >>> 0x0c) & 0x0f]);
+    append0(DIGITS[(value >>> 0x08) & 0x0f]);
     // low 8 bits
-    append0(DIGITS[(value >>> 0x04) & 0xf]);
-    append0(DIGITS[(value >>> 0x00) & 0xf]);
+    append0(DIGITS[(value >>> 0x04) & 0x0f]);
+    append0(DIGITS[(value >>> 0x00) & 0x0f]);
     return this;
   }
 
+  /**
+   * Appends an unsigned hexadecimal string representation of the specified {@code short} value
+   * without leading zeros to the buffer. The format is <code>[0-9a-f]{1, 4}</code> (regular
+   * expression).
+   *
+   * @param value The {@code short} value to be converted to an unsigned hexadecimal string.
+   * @return A reference to this buffer.
+   * @see #getHexCapacity(short)
+   * @see #appendHex(short)
+   */
   public final CharBuffer appendHexTrimZeros(short value) {
     // 8 or less bits long?
     if ((value & 0xff) == value) {
       return appendHexTrimZeros((byte) value);
     }
     // less than 16 bits long?
-    if ((value & 0xfff) == value) {
+    if ((value & 0x0fff) == value) {
       ensureCapacity(3);
-      append0(DIGITS[(value >>> 0x08) & 0xf]);
-      append0(DIGITS[(value >>> 0x04) & 0xf]);
-      append0(DIGITS[(value >>> 0x00) & 0xf]);
+      append0(DIGITS[(value >>> 0x08) & 0x0f]);
+      append0(DIGITS[(value >>> 0x04) & 0x0f]);
+      append0(DIGITS[(value >>> 0x00) & 0x0f]);
       return this;
     }
     // 16 bits long
     return appendHex(value);
   }
 
+  /**
+   * Returns the number of characters required to represent the specified {@code short} value as an
+   * unsigned hexadecimal string without leading zeros.
+   *
+   * @param value The {@code short} value to be converted to an unsigned hexadecimal string.
+   * @return The number of characters required to represent the specified {@code short} value as an
+   *         unsigned hexadecimal string without leading zeros.
+   * @see #appendHexTrimZeros(short)
+   */
+  public static int getHexCapacity(short value) {
+    // low 8 bits
+    if ((value & 0xff) == value) {
+      return getHexCapacity((byte) value);
+    }
+    // high 8 bits
+    return 2 + getHexCapacity((byte) (value >>> 8));
+  }
+
+  /**
+   * Appends an unsigned hexadecimal string representation of the specified {@code int} value with
+   * leading zeros to the buffer. The format is <code>[0-9a-f]{8}</code> (regular expression).
+   *
+   * @param value The {@code int} value to be converted to an unsigned hexadecimal string.
+   * @return A reference to this buffer.
+   * @see #appendHexTrimZeros(int)
+   */
   public final CharBuffer appendHex(int value) {
     ensureCapacity(8);
     // high 16 bits
-    append0(DIGITS[(value >>> 0x1c) & 0xf]);
-    append0(DIGITS[(value >>> 0x18) & 0xf]);
-    append0(DIGITS[(value >>> 0x14) & 0xf]);
-    append0(DIGITS[(value >>> 0x10) & 0xf]);
+    append0(DIGITS[(value >>> 0x1c) & 0x0f]);
+    append0(DIGITS[(value >>> 0x18) & 0x0f]);
+    append0(DIGITS[(value >>> 0x14) & 0x0f]);
+    append0(DIGITS[(value >>> 0x10) & 0x0f]);
     // low 16 bits
-    append0(DIGITS[(value >>> 0x0c) & 0xf]);
-    append0(DIGITS[(value >>> 0x08) & 0xf]);
-    append0(DIGITS[(value >>> 0x04) & 0xf]);
-    append0(DIGITS[(value >>> 0x00) & 0xf]);
+    append0(DIGITS[(value >>> 0x0c) & 0x0f]);
+    append0(DIGITS[(value >>> 0x08) & 0x0f]);
+    append0(DIGITS[(value >>> 0x04) & 0x0f]);
+    append0(DIGITS[(value >>> 0x00) & 0x0f]);
     return this;
   }
 
+  /**
+   * Appends an unsigned hexadecimal string representation of the specified {@code int} value
+   * without leading zeros to the buffer. The format is <code>[0-9a-f]{1, 8}</code> (regular
+   * expression).
+   *
+   * @param value The {@code int} value to be converted to an unsigned hexadecimal string.
+   * @return A reference to this buffer.
+   * @see #getHexCapacity(int)
+   * @see #appendHex(int)
+   */
   public final CharBuffer appendHexTrimZeros(int value) {
     // 16 or less bits long?
     if ((value & 0xffff) == value) {
@@ -593,7 +675,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
       // from 20 to 28 bits long
       ensureCapacity(n);
       for (n = (n - 1) << 2; n >= 0; n -= 4) {
-        append0(DIGITS[(value >>> n) & 0xf]);
+        append0(DIGITS[(value >>> n) & 0x0f]);
       }
       return this;
     }
@@ -601,29 +683,65 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     return appendHex(value);
   }
 
+  /**
+   * Returns the number of characters required to represent the specified {@code int} value as an
+   * unsigned hexadecimal string without leading zeros.
+   *
+   * @param value The {@code int} value to be converted to an unsigned hexadecimal string.
+   * @return The number of characters required to represent the specified {@code int} value as an
+   *         unsigned hexadecimal string without leading zeros.
+   * @see #appendHexTrimZeros(int)
+   */
+  public static int getHexCapacity(int value) {
+    // low 16 bits
+    if ((value & 0xffff) == value) {
+      return getHexCapacity((short) value);
+    }
+    // high 16 bits
+    return 4 + getHexCapacity((short) (value >>> 16));
+  }
+
+  /**
+   * Appends an unsigned hexadecimal string representation of the specified {@code long} value with
+   * leading zeros to the buffer. The format is <code>[0-9a-f]{16}</code> (regular expression).
+   *
+   * @param value The {@code long} value to be converted to an unsigned hexadecimal string.
+   * @return A reference to this buffer.
+   * @see #appendHexTrimZeros(long)
+   */
   public final CharBuffer appendHex(long value) {
     ensureCapacity(16);
     // high 32 bits
-    append0(DIGITS[(int) ((value >>> 0x3c) & 0xfL)]);
-    append0(DIGITS[(int) ((value >>> 0x38) & 0xfL)]);
-    append0(DIGITS[(int) ((value >>> 0x34) & 0xfL)]);
-    append0(DIGITS[(int) ((value >>> 0x30) & 0xfL)]);
-    append0(DIGITS[(int) ((value >>> 0x2c) & 0xfL)]);
-    append0(DIGITS[(int) ((value >>> 0x28) & 0xfL)]);
-    append0(DIGITS[(int) ((value >>> 0x24) & 0xfL)]);
-    append0(DIGITS[(int) ((value >>> 0x20) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x3c) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 0x38) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 0x34) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 0x30) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 0x2c) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 0x28) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 0x24) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 0x20) & 0x0fL)]);
     // low 32 bits
-    append0(DIGITS[(int) ((value >>> 0x1c) & 0xfL)]);
-    append0(DIGITS[(int) ((value >>> 0x18) & 0xfL)]);
-    append0(DIGITS[(int) ((value >>> 0x14) & 0xfL)]);
-    append0(DIGITS[(int) ((value >>> 0x10) & 0xfL)]);
-    append0(DIGITS[(int) ((value >>> 0x0c) & 0xfL)]);
-    append0(DIGITS[(int) ((value >>> 0x08) & 0xfL)]);
-    append0(DIGITS[(int) ((value >>> 0x04) & 0xfL)]);
-    append0(DIGITS[(int) ((value >>> 0x00) & 0xfL)]);
+    append0(DIGITS[(int) ((value >>> 0x1c) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 0x18) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 0x14) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 0x10) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 0x0c) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 0x08) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 0x04) & 0x0fL)]);
+    append0(DIGITS[(int) ((value >>> 0x00) & 0x0fL)]);
     return this;
   }
 
+  /**
+   * Appends an unsigned hexadecimal string representation of the specified {@code long} value
+   * without leading zeros to the buffer. The format is <code>[0-9a-f]{1, 16}</code> (regular
+   * expression).
+   *
+   * @param value The {@code long} value to be converted to an unsigned hexadecimal string.
+   * @return A reference to this buffer.
+   * @see #getHexCapacity(long)
+   * @see #appendHex(long)
+   */
   public final CharBuffer appendHexTrimZeros(long value) {
     // 32 or less bits long?
     if ((value & 0xffffffffL) == value) {
@@ -635,7 +753,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
       // from 36 to 60 bits long
       ensureCapacity(n);
       for (n = (n - 1) << 2; n >= 0; n -= 4) {
-        append0(DIGITS[(int) ((value >>> n) & 0xfL)]);
+        append0(DIGITS[(int) ((value >>> n) & 0x0fL)]);
       }
       return this;
     }
@@ -643,11 +761,29 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     return appendHex(value);
   }
 
+  /**
+   * Returns the number of characters required to represent the specified {@code long} value as an
+   * unsigned hexadecimal string without leading zeros.
+   *
+   * @param value The {@code long} value to be converted to an unsigned hexadecimal string.
+   * @return The number of characters required to represent the specified {@code long} value as an
+   *         unsigned hexadecimal string without leading zeros.
+   * @see #appendHexTrimZeros(long)
+   */
+  public static int getHexCapacity(long value) {
+    // low 32 bits
+    if ((value & 0xffffffffL) == value) {
+      return getHexCapacity((int) value);
+    }
+    // high 32 bits
+    return 8 + getHexCapacity((int) (value >>> 32));
+  }
+
   // Binary representation
 
   /**
    * Appends an unsigned binary string representation of the specified {@code byte} value with
-   * leading zeros to the buffer. The format is <code>[0-1]{8}</code>.
+   * leading zeros to the buffer. The format is <code>[0-1]{8}</code> (regular expression).
    *
    * @param value The {@code byte} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
@@ -668,7 +804,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned binary string representation of the specified {@code byte} value without
-   * leading zeros to the buffer. The format is <code>[0-1]{1, 8}</code>.
+   * leading zeros to the buffer. The format is <code>[0-1]{1, 8}</code> (regular expression).
    *
    * @param value The {@code byte} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
@@ -710,7 +846,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned binary string representation of the specified {@code short} value with
-   * leading zeros to the buffer. The format is <code>[0-1]{16}</code>.
+   * leading zeros to the buffer. The format is <code>[0-1]{16}</code> (regular expression).
    *
    * @param value The {@code short} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
@@ -741,7 +877,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned binary string representation of the specified {@code short} value without
-   * leading zeros to the buffer. The format is <code>[0-1]{1, 16}</code>.
+   * leading zeros to the buffer. The format is <code>[0-1]{1, 16}</code> (regular expression).
    *
    * @param value The {@code short} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
@@ -777,7 +913,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned binary string representation of the specified {@code int} value with
-   * leading zeros to the buffer. The format is <code>[0-1]{32}</code>.
+   * leading zeros to the buffer. The format is <code>[0-1]{32}</code> (regular expression).
    *
    * @param value The {@code int} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
@@ -824,7 +960,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned binary string representation of the specified {@code int} value without
-   * leading zeros to the buffer. The format is <code>[0-1]{1, 32}</code>.
+   * leading zeros to the buffer. The format is <code>[0-1]{1, 32}</code> (regular expression).
    *
    * @param value The {@code int} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
@@ -860,7 +996,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned binary string representation of the specified {@code long} value with
-   * leading zeros to the buffer. The format is <code>[0-1]{64}</code>.
+   * leading zeros to the buffer. The format is <code>[0-1]{64}</code> (regular expression).
    *
    * @param value The {@code long} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
@@ -939,7 +1075,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned binary string representation of the specified {@code long} value without
-   * leading zeros to the buffer. The format is <code>[0-1]{1, 64}</code>.
+   * leading zeros to the buffer. The format is <code>[0-1]{1, 64}</code> (regular expression).
    *
    * @param value The {@code long} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
@@ -979,16 +1115,6 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * The string representation of the {@code null} reference.
    */
   private static final char[] NULL_REFERENCE = {'n', 'u', 'l', 'l'};
-
-  /**
-   * The string representation of the {@code true} constant.
-   */
-  private static final char[] TRUE_CONSTANT = {'t', 'r', 'u', 'e'};
-
-  /**
-   * The string representation of the {@code false} constant.
-   */
-  private static final char[] FALSE_CONSTANT = {'f', 'a', 'l', 's', 'e'};
 
   /**
    * The objects cross-reference map to detect circular references.
@@ -1157,10 +1283,10 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param value The {@code boolean} value to append to the buffer.
    * @return A reference to this buffer.
-   * @see #append(char...)
+   * @see #appendBool(boolean)
    */
   public CharBuffer appendBoolean(boolean value) {
-    return value ? append(TRUE_CONSTANT) : append(FALSE_CONSTANT);
+    return appendBool(value);
   }
 
   /**
