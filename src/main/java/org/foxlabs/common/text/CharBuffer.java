@@ -17,10 +17,10 @@
 package org.foxlabs.common.text;
 
 import java.util.Set;
-import java.util.function.Function;
 import java.util.Map;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.function.Function;
 
 import org.foxlabs.common.function.GetChars;
 import org.foxlabs.common.exception.ThresholdReachedException;
@@ -99,7 +99,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     return threshold - length;
   }
 
-  // Core operations
+  // Basic operations
 
   @Override
   public final CharBuffer append(char value) {
@@ -299,8 +299,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   };
 
   /**
-   * Appends a string representation of the specified {@code boolean} value with. The format is
-   * <code>(true)|(false)</code> (regular expression).
+   * Appends a string representation of the specified {@code boolean} value with.
+   *
+   * <p>The format is <code>(true)|(false)</code>.</p>
    *
    * @param value The {@code boolean} value to be converted to a string.
    * @return A reference to this buffer.
@@ -368,7 +369,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends a signed decimal string representation of the specified {@code int} value to the
-   * buffer. The format is <code>\-?[0-9]{1, 10}</code> (regular expression).
+   * buffer.
+   *
+   * <p>The format is <code>\-?[0-9]{1,10}</code>.</p>
    *
    * @param value The {@code int} value to be converted to a signed decimal string.
    * @return A reference to this buffer.
@@ -429,7 +432,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends a signed decimal string representation of the specified {@code long} value to the
-   * buffer. The format is <code>\-?[0-9]{1, 19}</code> (regular expression).
+   * buffer.
+   *
+   * <p>The format is <code>\-?[0-9]{1,19}</code>.</p>
    *
    * @param value The {@code long} value to be converted to a signed decimal string.
    * @return A reference to this buffer.
@@ -502,7 +507,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public final CharBuffer appendDec(float value) {
     // the float-to-string algorithm is hard enough
-    // so let's use Float.toString()
+    // so let's use Float.toString() for now
     return append(Float.toString(value));
   }
 
@@ -516,7 +521,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    */
   public final CharBuffer appendDec(double value) {
     // the double-to-string algorithm is hard enough
-    // so let's use Double.toString()
+    // so let's use Double.toString() for now
     return append(Double.toString(value));
   }
 
@@ -535,7 +540,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned hexadecimal string representation of the specified {@code byte} value with
-   * leading zeros to the buffer. The format is <code>[0-9a-f]{2}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-9a-f]{2}</code>.</p>
    *
    * @param value The {@code byte} value to be converted to an unsigned hexadecimal string.
    * @return A reference to this buffer.
@@ -552,8 +559,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned hexadecimal string representation of the specified {@code byte} value
-   * without leading zeros to the buffer. The format is <code>[0-9a-f]{1, 2}</code> (regular
-   * expression).
+   * without leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-9a-f]{1,2}</code>.</p>
    *
    * @param value The {@code byte} value to be converted to an unsigned hexadecimal string.
    * @return A reference to this buffer.
@@ -585,7 +593,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned hexadecimal string representation of the specified {@code short} value
-   * with leading zeros to the buffer. The format is <code>[0-9a-f]{4}</code> (regular expression).
+   * with leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-9a-f]{4}</code>.</p>
    *
    * @param value The {@code short} value to be converted to an unsigned hexadecimal string.
    * @return A reference to this buffer.
@@ -604,8 +614,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned hexadecimal string representation of the specified {@code short} value
-   * without leading zeros to the buffer. The format is <code>[0-9a-f]{1, 4}</code> (regular
-   * expression).
+   * without leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-9a-f]{1,4}</code>.</p>
    *
    * @param value The {@code short} value to be converted to an unsigned hexadecimal string.
    * @return A reference to this buffer.
@@ -648,7 +659,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned hexadecimal string representation of the specified {@code int} value with
-   * leading zeros to the buffer. The format is <code>[0-9a-f]{8}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-9a-f]{8}</code>.</p>
    *
    * @param value The {@code int} value to be converted to an unsigned hexadecimal string.
    * @return A reference to this buffer.
@@ -671,8 +684,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned hexadecimal string representation of the specified {@code int} value
-   * without leading zeros to the buffer. The format is <code>[0-9a-f]{1, 8}</code> (regular
-   * expression).
+   * without leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-9a-f]{1,8}</code>.</p>
    *
    * @param value The {@code int} value to be converted to an unsigned hexadecimal string.
    * @return A reference to this buffer.
@@ -716,7 +730,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned hexadecimal string representation of the specified {@code long} value with
-   * leading zeros to the buffer. The format is <code>[0-9a-f]{16}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-9a-f]{16}</code>.</p>
    *
    * @param value The {@code long} value to be converted to an unsigned hexadecimal string.
    * @return A reference to this buffer.
@@ -747,8 +763,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned hexadecimal string representation of the specified {@code long} value
-   * without leading zeros to the buffer. The format is <code>[0-9a-f]{1, 16}</code> (regular
-   * expression).
+   * without leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-9a-f]{1,16}</code></p>.
    *
    * @param value The {@code long} value to be converted to an unsigned hexadecimal string.
    * @return A reference to this buffer.
@@ -794,7 +811,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned octal string representation of the specified {@code byte} value with
-   * leading zeros to the buffer. The format is <code>[0-7]{3}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-7]{3}</code>.</p>
    *
    * @param value The {@code byte} value to be converted to an unsigned octal string.
    * @return A reference to this buffer.
@@ -812,7 +831,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned octal string representation of the specified {@code byte} value without
-   * leading zeros to the buffer. The format is <code>[0-7]{1, 3}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-7]{1,3}</code>.</p>
    *
    * @param value The {@code byte} value to be converted to an unsigned octal string.
    * @return A reference to this buffer.
@@ -852,7 +873,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned octal string representation of the specified {@code short} value with
-   * leading zeros to the buffer. The format is <code>[0-7]{6}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-7]{6}</code>.</p>
    *
    * @param value The {@code short} value to be converted to an unsigned octal string.
    * @return A reference to this buffer.
@@ -873,7 +896,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned octal string representation of the specified {@code short} value without
-   * leading zeros to the buffer. The format is <code>[0-7]{1, 6}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-7]{1,6}</code>.</p>
    *
    * @param value The {@code short} value to be converted to an unsigned octal string.
    * @return A reference to this buffer.
@@ -920,7 +945,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned octal string representation of the specified {@code int} value with
-   * leading zeros to the buffer. The format is <code>[0-7]{11}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-7]{11}</code>.</p>
    *
    * @param value The {@code int} value to be converted to an unsigned octal string.
    * @return A reference to this buffer.
@@ -946,7 +973,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned octal string representation of the specified {@code int} value without
-   * leading zeros to the buffer. The format is <code>[0-7]{1, 11}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-7]{1,11}</code>.</p>
    *
    * @param value The {@code int} value to be converted to an unsigned octal string.
    * @return A reference to this buffer.
@@ -993,7 +1022,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned octal string representation of the specified {@code long} value with
-   * leading zeros to the buffer. The format is <code>[0-7]{22}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-7]{22}</code>.</p>
    *
    * @param value The {@code long} value to be converted to an unsigned octal string.
    * @return A reference to this buffer.
@@ -1030,7 +1061,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned octal string representation of the specified {@code long} value without
-   * leading zeros to the buffer. The format is <code>[0-7]{1, 22}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-7]{1,22}</code>.</p>
    *
    * @param value The {@code long} value to be converted to an unsigned octal string.
    * @return A reference to this buffer.
@@ -1085,7 +1118,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned binary string representation of the specified {@code byte} value with
-   * leading zeros to the buffer. The format is <code>[0-1]{8}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-1]{8}</code>.</p>
    *
    * @param value The {@code byte} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
@@ -1108,7 +1143,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned binary string representation of the specified {@code byte} value without
-   * leading zeros to the buffer. The format is <code>[0-1]{1, 8}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-1]{1,8}</code>.</p>
    *
    * @param value The {@code byte} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
@@ -1148,7 +1185,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned binary string representation of the specified {@code short} value with
-   * leading zeros to the buffer. The format is <code>[0-1]{16}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-1]{16}</code>.</p>
    *
    * @param value The {@code short} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
@@ -1179,7 +1218,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned binary string representation of the specified {@code short} value without
-   * leading zeros to the buffer. The format is <code>[0-1]{1, 16}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-1]{1,16}</code>.</p>
    *
    * @param value The {@code short} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
@@ -1213,7 +1254,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned binary string representation of the specified {@code int} value with
-   * leading zeros to the buffer. The format is <code>[0-1]{32}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-1]{32}</code>.</p>
    *
    * @param value The {@code int} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
@@ -1260,7 +1303,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned binary string representation of the specified {@code int} value without
-   * leading zeros to the buffer. The format is <code>[0-1]{1, 32}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-1]{1,32}</code>.</p>
    *
    * @param value The {@code int} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
@@ -1294,7 +1339,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned binary string representation of the specified {@code long} value with
-   * leading zeros to the buffer. The format is <code>[0-1]{64}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-1]{64}</code>.</p>
    *
    * @param value The {@code long} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
@@ -1373,7 +1420,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
 
   /**
    * Appends an unsigned binary string representation of the specified {@code long} value without
-   * leading zeros to the buffer. The format is <code>[0-1]{1, 64}</code> (regular expression).
+   * leading zeros to the buffer.
+   *
+   * <p>The format is <code>[0-1]{1,64}</code>.</p>
    *
    * @param value The {@code long} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
@@ -1420,6 +1469,8 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   /**
    * Appends string representation of the {@code null} reference to the buffer.
    *
+   * <p>The format is <code>(null)</code>.</p>
+   *
    * @return A reference to this buffer.
    */
   public CharBuffer appendNull() {
@@ -1429,50 +1480,15 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   /**
    * Appends string representation of the specified object to the buffer.
    *
-   * <p>
-   * Note that this method may produce an infinite loop and cause the {@link StackOverflowError}
-   * if the specified object does not implement the {@code ToString} interface and object's graph
-   * has circular references.
-   *
-   * For example:
-   * <pre>
-   * public class CircularReferenceTest {
-   *
-   *   static class Foo {
-   *     public Bar bar;
-   *     &#64;Override public String toString() {
-   *       return "Bar: " + bar.toString();
-   *     }
-   *   }
-   *
-   *   static class Bar {
-   *     public Foo foo;
-   *     &#64;Override public String toString() {
-   *       return "Foo: " + foo.toString();
-   *     }
-   *   }
-   *
-   *   public static void main(String[] args) {
-   *     Foo foo = new Foo();
-   *     Bar bar = new Bar();
-   *     foo.bar = bar;
-   *     bar.foo = foo;
-   *     // Infinite loop
-   *     foo.toString();
-   *   }
-   *
-   * }
-   * </pre>
-   * </p>
-   *
    * @param object The object to append to the buffer.
    * @return A reference to this buffer.
    */
   public CharBuffer appendObject(Object object) {
-    // append the object depending on its type (in order of probability)
+    // discard null reference
     if (object == null) {
       return appendNull();
     }
+    // append the object depending on its type (in order of probability)
     if (object instanceof CharSequence) {
       return appendString((CharSequence) object);
     }
@@ -1541,20 +1557,28 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   }
 
   /**
-   * Appends string representation of all the elements of the specified {@code Object[]} array to
-   * the buffer. The format is {@code [E0, E1, ...]}. If the specified array reference is
-   * {@code null} then result of the {@link #appendNull()} will be appended.
+   * Appends a string representation of all elements of the specified {@code Object[]} array to the
+   * buffer. If the specified array reference is {@code null} then the resulting string
+   * representation will be provided by the {@link #appendNull()} method.
    *
-   * @param array The {@code Object[]} array which elements to append to the buffer.
+   * <p>The format is <code>\[(E<sub>0</sub>(, E<sub>n={0 &lt; n &lt; L}</sub>)*)?\]</code>, where
+   * {@code L} is length of the array, <code>E<sub>0</sub></code> and <code>E<sub>n</sub></code>
+   * are string representations of the first and n<sup>th</sup> elements of the array respectively,
+   * appended to the buffer by the {@link #appendObject(Object)} method.</p>
+   *
+   * @param array The {@code Object[]} array which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #appendObject(Object)
+   * @see #appendNull()
    */
   public CharBuffer appendObjectArray(Object[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
+      ensureCapacity(2);
       return append0('[').append0(']');
     }
+    ensureCapacity(array.length * 4); // guessing
     append0('[');
     // remember reference to the array and check for cross-reference
     if (pushReference(array)) {
@@ -1565,19 +1589,22 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     try {
       appendObject(array[0]);
       for (int index = 1; index < array.length; index++) {
-        append0(',').append0(' ').appendObject(array[index]);
+        append(',').append(' ').appendObject(array[index]);
       }
     } finally {
       // forget reference to the array
       popReference(array);
     }
-    return append0(']');
+    return append(']');
   }
 
   /**
-   * Appends string representation of the specified {@code boolean} value to the buffer.
+   * Appends a string representation of the specified {@code boolean} value to the buffer. Default
+   * implementation uses the {@link #appendBool(boolean)} method.
    *
-   * @param value The {@code boolean} value to append to the buffer.
+   * <p>The format is <code>(true)|(false)</code>.</p>
+   *
+   * @param value The {@code boolean} value which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #appendBool(boolean)
    */
@@ -1586,100 +1613,131 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   }
 
   /**
-   * Appends string representation of all the elements of the specified {@code boolean[]} array to
-   * the buffer. The format is {@code [E0, E1, ...]}. If the specified array reference is
-   * {@code null} then result of the {@link #appendNull()} will be appended.
+   * Appends a string representation of all elements of the specified {@code boolean[]} array to
+   * the buffer. If the specified array reference is {@code null} then the resulting string
+   * representation will be provided by the {@link #appendNull()} method.
    *
-   * @param array The {@code boolean[]} array which elements to append to the buffer.
+   * <p>The format is <code>\[(E<sub>0</sub>(, E<sub>n={0 &lt; n &lt; L}</sub>)*)?\]</code>, where
+   * {@code L} is length of the array, <code>E<sub>0</sub></code> and <code>E<sub>n</sub></code>
+   * are string representations of the first and n<sup>th</sup> elements of the array respectively,
+   * appended to the buffer by the {@link #appendBoolean(boolean)} method.</p>
+   *
+   * @param array The {@code boolean[]} array which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #appendBoolean(boolean)
+   * @see #appendNull()
    */
   public CharBuffer appendBooleanArray(boolean[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
+      ensureCapacity(2);
       return append0('[').append0(']');
     }
+    ensureCapacity(array.length * FALSE_CONSTANT.length); // almost guessing
     append0('[').appendBoolean(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append0(',').append0(' ').appendBoolean(array[index]);
+      // cannot use append0() because appendBoolean() may be overridden
+      append(',').append(' ').appendBoolean(array[index]);
     }
-    return append0(']');
+    return append(']');
   }
 
   /**
-   * Appends string representation of the specified {@code byte} value to the buffer using the
-   * {@link Integer#toString(int)} method.
+   * Appends string representation of the specified {@code byte} value to the buffer. Default
+   * implementation uses the {@link #appendDec(int)} method.
    *
-   * @param value The {@code byte} value to append to the buffer.
+   * <p>The format is <code>\-?[0-9]{1,3}</code>.</p>
+   *
+   * @param value The {@code byte} value which string representation to append to the buffer.
    * @return A reference to this buffer.
-   * @see #appendDec(byte)
+   * @see #appendDec(int)
    */
   public CharBuffer appendByte(byte value) {
     return appendDec(value);
   }
 
   /**
-   * Appends string representation of all the elements of the specified {@code byte[]} array to
-   * the buffer. The format is {@code [E0, E1, ...]}. If the specified array reference is
-   * {@code null} then result of the {@link #appendNull()} will be appended.
+   * Appends a string representation of all elements of the specified {@code byte[]} array to the
+   * buffer. If the specified array reference is {@code null} then the resulting string
+   * representation will be provided by the {@link #appendNull()} method.
    *
-   * @param array The {@code byte[]} array which elements to append to the buffer.
+   * <p>The format is <code>\[(E<sub>0</sub>(, E<sub>n={0 &lt; n &lt; L}</sub>)*)?\]</code>, where
+   * {@code L} is length of the array, <code>E<sub>0</sub></code> and <code>E<sub>n</sub></code>
+   * are string representations of the first and n<sup>th</sup> elements of the array respectively,
+   * appended to the buffer by the {@link #appendByte(byte)} method.</p>
+   *
+   * @param array The {@code byte[]} array which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #appendByte(byte)
+   * @see #appendNull()
    */
   public CharBuffer appendByteArray(byte[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
+      ensureCapacity(2);
       return append0('[').append0(']');
     }
+    ensureCapacity(array.length * 4); // guessing
     append0('[').appendByte(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append0(',').append0(' ').appendByte(array[index]);
+      append(',').append(' ').appendByte(array[index]);
     }
-    return append0(']');
+    return append(']');
   }
 
   /**
-   * Appends string representation of the specified {@code short} value to the buffer using the
-   * {@link Integer#toString(int)} method.
+   * Appends string representation of the specified {@code short} value to the buffer. Default
+   * implementation uses the {@link #appendDec(int)} method.
    *
-   * @param value The {@code short} value to append to the buffer.
+   * <p>The format is <code>\-?[0-9]{1,5}</code>.</p>
+   *
+   * @param value The {@code short} value which string representation to append to the buffer.
    * @return A reference to this buffer.
-   * @see #appendDec(short)
+   * @see #appendDec(int)
    */
   public CharBuffer appendShort(short value) {
     return appendDec(value);
   }
 
   /**
-   * Appends string representation of all the elements of the specified {@code short[]} array to
-   * the buffer. The format is {@code [E0, E1, ...]}. If the specified array reference is
-   * {@code null} then result of the {@link #appendNull()} will be appended.
+   * Appends a string representation of all elements of the specified {@code short[]} array to the
+   * buffer. If the specified array reference is {@code null} then the resulting string
+   * representation will be provided by the {@link #appendNull()} method.
    *
-   * @param array The {@code short[]} array which elements to append to the buffer.
+   * <p>The format is <code>\[(E<sub>0</sub>(, E<sub>n={0 &lt; n &lt; L}</sub>)*)?\]</code>, where
+   * {@code L} is length of the array, <code>E<sub>0</sub></code> and <code>E<sub>n</sub></code>
+   * are string representations of the first and n<sup>th</sup> elements of the array respectively,
+   * appended to the buffer by the {@link #appendShort(short)} method.</p>
+   *
+   * @param array The {@code short[]} array which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #appendShort(short)
+   * @see #appendNull()
    */
   public CharBuffer appendShortArray(short[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
+      ensureCapacity(2);
       return append0('[').append0(']');
     }
+    ensureCapacity(array.length * 4); // guessing
     append0('[').appendShort(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append0(',').append0(' ').appendShort(array[index]);
+      append(',').append(' ').appendShort(array[index]);
     }
-    return append0(']');
+    return append(']');
   }
 
   /**
-   * Appends string representation of the specified {@code int} value to the buffer using the
-   * {@link Integer#toString(int)} method.
+   * Appends string representation of the specified {@code int} value to the buffer. Default
+   * implementation uses the {@link #appendDec(int)} method.
    *
-   * @param value The {@code int} value to append to the buffer.
+   * <p>The format is <code>\-?[0-9]{1,10}</code>.</p>
+   *
+   * @param value The {@code int} value which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #appendDec(int)
    */
@@ -1688,32 +1746,42 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   }
 
   /**
-   * Appends string representation of all the elements of the specified {@code int[]} array to the
-   * buffer. The format is {@code [E0, E1, ...]}. If the specified array reference is {@code null}
-   * then result of the {@link #appendNull()} will be appended.
+   * Appends a string representation of all elements of the specified {@code int[]} array to the
+   * buffer. If the specified array reference is {@code null} then the resulting string
+   * representation will be provided by the {@link #appendNull()} method.
    *
-   * @param array The {@code int[]} array which elements to append to the buffer.
+   * <p>The format is <code>\[(E<sub>0</sub>(, E<sub>n={0 &lt; n &lt; L}</sub>)*)?\]</code>, where
+   * {@code L} is length of the array, <code>E<sub>0</sub></code> and <code>E<sub>n</sub></code>
+   * are string representations of the first and n<sup>th</sup> elements of the array respectively,
+   * appended to the buffer by the {@link #appendInt(int)} method.</p>
+   *
+   * @param array The {@code int[]} array which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #appendInt(int)
+   * @see #appendNull()
    */
   public CharBuffer appendIntArray(int[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
+      ensureCapacity(2);
       return append0('[').append0(']');
     }
+    ensureCapacity(array.length * 4); // guessing
     append0('[').appendInt(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append0(',').append0(' ').appendInt(array[index]);
+      append(',').append(' ').appendInt(array[index]);
     }
-    return append0(']');
+    return append(']');
   }
 
   /**
-   * Appends string representation of the specified {@code long} value to the buffer using the
-   * {@link Long#toString(long)} method. The format is {@code <LONG>L}.
+   * Appends string representation of the specified {@code long} value to the buffer. Default
+   * implementation uses the {@link #appendDec(long)} method.
    *
-   * @param value The {@code long} value to append to the buffer.
+   * <p>The format is <code>\-?[0-9]{1,19}L</code>.</p>
+   *
+   * @param value The {@code long} value which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #appendDec(long)
    */
@@ -1722,163 +1790,221 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   }
 
   /**
-   * Appends string representation of all the elements of the specified {@code long[]} array to the
-   * buffer. The format is {@code [E0, E1, ...]}. If the specified array reference is {@code null}
-   * then result of the {@link #appendNull()} will be appended.
+   * Appends a string representation of all elements of the specified {@code long[]} array to the
+   * buffer. If the specified array reference is {@code null} then the resulting string
+   * representation will be provided by the {@link #appendNull()} method.
    *
-   * @param array The {@code long[]} array which elements to append to the buffer.
+   * <p>The format is <code>\[(E<sub>0</sub>(, E<sub>n={0 &lt; n &lt; L}</sub>)*)?\]</code>, where
+   * {@code L} is length of the array, <code>E<sub>0</sub></code> and <code>E<sub>n</sub></code>
+   * are string representations of the first and n<sup>th</sup> elements of the array respectively,
+   * appended to the buffer by the {@link #appendLong(long)} method.</p>
+   *
+   * @param array The {@code long[]} array which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #appendLong(long)
+   * @see #appendNull()
    */
   public CharBuffer appendLongArray(long[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
+      ensureCapacity(2);
       return append0('[').append0(']');
     }
+    ensureCapacity(array.length * 4); // guessing
     append0('[').appendLong(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append0(',').append0(' ').appendLong(array[index]);
+      append(',').append(' ').appendLong(array[index]);
     }
-    return append0(']');
+    return append(']');
   }
 
   /**
-   * Appends string representation of the specified {@code float} value to the buffer using the
-   * {@link Float#toString(float)} method. The format is {@code <FLOAT>F}.
+   * Appends string representation of the specified {@code float} value to the buffer. Default
+   * implementation uses the {@link #appendDec(float)} method.
    *
-   * @param value The {@code float} value to append to the buffer.
+   * <p>The format is <code>FPSf</code>, where {@code FPS} is a result of the
+   * {@link Float#toString(float)} method.</p>
+   *
+   * @param value The {@code float} value which string representation to append to the buffer.
    * @return A reference to this buffer.
-   * @see #append(CharSequence)
+   * @see #appendDec(float)
    */
   public CharBuffer appendFloat(float value) {
-    return append(Float.toString(value)).append('f');
+    return appendDec(value).append('f');
   }
 
   /**
-   * Appends string representation of all the elements of the specified {@code float[]} array to
-   * the buffer. The format is {@code [E0, E1, ...]}. If the specified array reference is
-   * {@code null} then result of the {@link #appendNull()} will be appended.
+   * Appends a string representation of all elements of the specified {@code float[]} array to the
+   * buffer. If the specified array reference is {@code null} then the resulting string
+   * representation will be provided by the {@link #appendNull()} method.
    *
-   * @param array The {@code float[]} array which elements to append to the buffer.
+   * <p>The format is <code>\[(E<sub>0</sub>(, E<sub>n={0 &lt; n &lt; L}</sub>)*)?\]</code>, where
+   * {@code L} is length of the array, <code>E<sub>0</sub></code> and <code>E<sub>n</sub></code>
+   * are string representations of the first and n<sup>th</sup> elements of the array respectively,
+   * appended to the buffer by the {@link #appendFloat(float)} method.</p>
+   *
+   * @param array The {@code float[]} array which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #appendFloat(float)
+   * @see #appendNull()
    */
   public CharBuffer appendFloatArray(float[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
+      ensureCapacity(2);
       return append0('[').append0(']');
     }
+    ensureCapacity(array.length * 6); // guessing
     append0('[').appendFloat(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append0(',').append0(' ').appendFloat(array[index]);
+      append(',').append(' ').appendFloat(array[index]);
     }
-    return append0(']');
+    return append(']');
   }
 
   /**
-   * Appends string representation of the specified {@code double} value to the buffer using the
-   * {@link Double#toString(double)} method. The format is {@code <DOUBLE>D}.
+   * Appends string representation of the specified {@code double} value to the buffer. Default
+   * implementation uses the {@link #appendDec(double)} method.
    *
-   * @param value The {@code double} value to append to the buffer.
+   * <p>The format is <code>FPSd</code>, where {@code FPS} is a result of the
+   * {@link Double#toString(double)} method.</p>
+   *
+   * @param value The {@code double} value which string representation to append to the buffer.
    * @return A reference to this buffer.
-   * @see #append(CharSequence)
+   * @see #appendDec(double)
    */
   public CharBuffer appendDouble(double value) {
-    return append(Double.toString(value)).append('d');
+    return appendDec(value).append('d');
   }
 
   /**
-   * Appends string representation of all the elements of the specified {@code double[]} array to
-   * the buffer. The format is {@code [E0, E1, ...]}. If the specified array reference is
-   * {@code null} then result of the {@link #appendNull()} will be appended.
+   * Appends a string representation of all elements of the specified {@code double[]} array to the
+   * buffer. If the specified array reference is {@code null} then the resulting string
+   * representation will be provided by the {@link #appendNull()} method.
    *
-   * @param array The {@code double[]} array which elements to append to the buffer.
+   * <p>The format is <code>\[(E<sub>0</sub>(, E<sub>n={0 &lt; n &lt; L}</sub>)*)?\]</code>, where
+   * {@code L} is length of the array, <code>E<sub>0</sub></code> and <code>E<sub>n</sub></code>
+   * are string representations of the first and n<sup>th</sup> elements of the array respectively,
+   * appended to the buffer by the {@link #appendDouble(double)} method.</p>
+   *
+   * @param array The {@code double[]} array which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #appendDouble(double)
+   * @see #appendNull()
    */
   public CharBuffer appendDoubleArray(double[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
+      ensureCapacity(2);
       return append0('[').append0(']');
     }
+    ensureCapacity(array.length * 6); // guessing
     append0('[').appendDouble(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append0(',').append0(' ').appendDouble(array[index]);
+      append(',').append(' ').appendDouble(array[index]);
     }
-    return append0(']');
+    return append(']');
   }
 
   /**
-   * Appends string representation of the specified {@code char} value to the buffer. The format is
-   * {@code '<CHAR>'}.
+   * Appends string representation of the specified {@code char} value to the buffer.
    *
-   * @param value The {@code char} value to append to the buffer.
+   * <p>The format is <code>'C'</code>, where {@code C} is a result of character encoding applied
+   * by the {@link CharEncoder#JAVA} to the specified character.</p>
+   *
+   * @param value The {@code char} value which string representation to append to the buffer.
    * @return A reference to this buffer.
-   * @see #append(char)
    * @see CharEncoder#JAVA
    */
   public CharBuffer appendChar(char value) {
-    return CharEncoder.JAVA.encode(value, append0('\'')).append0('\'');
+    return CharEncoder.JAVA.encode(value, append('\'')).append('\'');
   }
 
   /**
-   * Appends string representation of all the elements of the specified {@code char[]} array to the
-   * buffer. The format is {@code [E0, E1, ...]}. If the specified array reference is {@code null}
-   * then result of the {@link #appendNull()} will be appended.
+   * Appends a string representation of all elements of the specified {@code char[]} array to the
+   * buffer. If the specified array reference is {@code null} then the resulting string
+   * representation will be provided by the {@link #appendNull()} method.
    *
-   * @param array The {@code char[]} array which elements to append to the buffer.
+   * <p>The format is <code>\[(E<sub>0</sub>(, E<sub>n={0 &lt; n &lt; L}</sub>)*)?\]</code>, where
+   * {@code L} is length of the array, <code>E<sub>0</sub></code> and <code>E<sub>n</sub></code>
+   * are string representations of the first and n<sup>th</sup> elements of the array respectively,
+   * appended to the buffer by the {@link #appendChar(char)} method.</p>
+   *
+   * @param array The {@code char[]} array which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #appendChar(char)
+   * @see #appendNull()
    */
   public CharBuffer appendCharArray(char[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
+      ensureCapacity(2);
       return append0('[').append0(']');
     }
+    ensureCapacity(array.length * 5); // guessing
     append0('[').appendChar(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append0(',').append0(' ').appendChar(array[index]);
+      append(',').append(' ').appendChar(array[index]);
     }
-    return append0(']');
+    return append(']');
   }
 
   /**
-   * Appends string representation of the specified {@code CharSequence} value to the buffer. The
-   * format is {@code "<SEQUENCE>"}.
+   * Appends string representation of the specified {@code CharSequence} value to the buffer. If
+   * the specified {@code CharSequence} reference is {@code null} then the resulting string
+   * representation will be provided by the {@link #appendNull()} method.
    *
-   * @param value The {@code CharSequence} value to append to the buffer.
+   * <p>The format is <code>"(C<sub>n={0 &lt;= n &lt; L</sub>)*"</code>, where {@code L} is length
+   * of the character sequence and <code>C<sub>n</sub></code> is a result of character encoding
+   * applied by the {@link CharEncoder#JAVA} to n<sup>th</sup> character in the specified character
+   * sequence.</p>
+   *
+   * @param value The character sequence which string representation to append to the buffer.
    * @return A reference to this buffer.
-   * @see #append(char)
    * @see CharEncoder#JAVA
+   * @see #appendNull()
    */
   public CharBuffer appendString(CharSequence value) {
-    return value != null ? CharEncoder.JAVA.encode(value, append0('\"')).append0('\"') : appendNull();
+    if (value == null) {
+      return appendNull();
+    }
+    ensureCapacity(value.length() + 2); // guessing
+    return CharEncoder.JAVA.encode(value, append('\"')).append('\"');
   }
 
   /**
-   * Appends string representation of the specified {@code Enum<?>} value to the buffer using the
-   * {@link Enum#name()} method.
+   * Appends string representation of the specified {@code Enum<?>} value to the buffer. Default
+   * implementation just appends result of the {@link Enum#name()} method to the buffer. If the
+   * specified {@code Enum<?>} reference is {@code null} then the resulting string representation
+   * will be provided by the {@link #appendNull()} method.
    *
-   * @param value The {@code Enum<?>} value to append to the buffer.
+   * @param value The enumeration constant which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #append(CharSequence)
+   * @see #appendNull()
    */
   public CharBuffer appendEnum(Enum<?> value) {
     return value != null ? append(value.name()) : appendNull();
   }
 
   /**
-   * Appends string representation of all the elements of the specified {@code Iterable} sequence
-   * to the buffer. The format is {@code [E0, E1, ...]}. If the specified {@code Iterable}
-   * reference is {@code null} then result of the {@link #appendNull()} will be appended.
+   * Appends a string representation of all elements of the specified {@code Iterable} sequence to
+   * the buffer. If the specified sequence reference is {@code null} then the resulting string
+   * representation will be provided by the {@link #appendNull()} method.
    *
-   * @param array The {@code Iterable} sequence which elements to append to the buffer.
+   * <p>The format is <code>\[(E<sub>0</sub>(, E<sub>n={0 &lt; n &lt; L}</sub>)*)?\]</code>, where
+   * {@code L} is length of the sequence, <code>E<sub>0</sub></code> and <code>E<sub>n</sub></code>
+   * are string representations of the first and n<sup>th</sup> elements of the sequence
+   * respectively, appended to the buffer by the {@link #appendObject(Object)} method.</p>
+   *
+   * @param array The {@code Iterable} sequence which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #appendObject(Object)
+   * @see #appendNull()
    */
   public CharBuffer appendIterable(Iterable<?> iterable) {
     // make sure that nothing is null to avoid NPE
@@ -1888,9 +2014,10 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     if (itr == null) {
       return appendNull();
     } else if (!itr.hasNext()) { // fast check
+      ensureCapacity(2);
       return append0('[').append0(']');
     }
-    append0('[');
+    append('[');
     // remember reference to the iteration and check for cross-reference
     if (pushReference(iterable)) {
       // cross-reference detected!
@@ -1900,23 +2027,31 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     try {
       appendObject(itr.next());
       while (itr.hasNext()) {
-        append0(',').append0(' ').appendObject(itr.next());
+        append(',').append(' ').appendObject(itr.next());
       }
     } finally {
       // forget reference to the iteration
       popReference(iterable);
     }
-    return append0(']');
+    return append(']');
   }
 
   /**
-   * Appends string representation of all the entries of the specified {@code Map} table to the
-   * buffer. The format is <code>{K0: V0, K1: V1, ...}</code>. If the specified {@code Map}
-   * reference is {@code null} then result of the {@link #appendNull()} will be appended.
+   * Appends a string representation of all entries of the specified {@code Map} table to the
+   * buffer. If the specified map reference is {@code null} then the resulting string
+   * representation will be provided by the {@link #appendNull()} method.
    *
-   * @param array The {@code Map} table which entries to append to the buffer.
+   * <p>The format is <code>\{(K<sub>0</sub>: V<sub>0</sub>(, K<sub>n={0 &lt; n &lt; L}</sub>:
+   * V<sub>n</sub>)*)?\}</code>, where {@code L} is size of the map, <code>K<sub>0</sub></code>,
+   * <code>V<sub>0</sub></code> are string representations of the first key value pair of the map
+   * respectively, <code>K<sub>n</sub></code>, <code>V<sub>n</sub></code> are string
+   * representations of the n<sup>th</sup> key value pairs of the map respectively, appended to the
+   * buffer by the {@link #appendObject(Object)} method.</p>
+   *
+   * @param map The {@code Map} table which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #appendObject(Object)
+   * @see #appendNull()
    */
   public CharBuffer appendMap(Map<?, ?> map) {
     // make sure that nothing is null to avoid NPE
@@ -1929,8 +2064,10 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     if (itr == null) {
       return appendNull();
     } else if (!itr.hasNext()) { // fast check
+      ensureCapacity(2);
       return append0('{').append0('}');
     }
+    ensureCapacity(map.size() * 10); // guessing
     append0('{');
     // remember reference to the map and check for cross-reference
     if (pushReference(map)) {
@@ -1944,17 +2081,17 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
         appendNull();
       } else {
         appendObject(entry.getKey());
-        append0(':').append0(' ');
+        append(':').append(' ');
         appendObject(entry.getValue());
       }
       while (itr.hasNext()) {
         entry = itr.next();
-        append0(',').append0(' ');
+        append(',').append(' ');
         if (entry == null) { // who knows
           appendNull();
         } else {
           appendObject(entry.getKey());
-          append0(':').append0(' ');
+          append(':').append(' ');
           appendObject(entry.getValue());
         }
       }
@@ -1962,7 +2099,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
       // forget reference to the map
       popReference(map);
     }
-    return append0('}');
+    return append('}');
   }
 
   public CharBuffer appendPlain(Object object) {
