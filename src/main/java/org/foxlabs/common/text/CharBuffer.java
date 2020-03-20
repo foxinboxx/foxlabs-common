@@ -501,7 +501,8 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @see Float#toString(float)
    */
   public final CharBuffer appendDec(float value) {
-    // TODO not now, but in the near future!
+    // the float-to-string algorithm is hard enough
+    // so let's use Float.toString()
     return append(Float.toString(value));
   }
 
@@ -514,7 +515,8 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @see Double#toString(double)
    */
   public final CharBuffer appendDec(double value) {
-    // TODO not now, but in the near future!
+    // the double-to-string algorithm is hard enough
+    // so let's use Double.toString()
     return append(Double.toString(value));
   }
 
@@ -537,7 +539,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param value The {@code byte} value to be converted to an unsigned hexadecimal string.
    * @return A reference to this buffer.
-   * @see #appendHexTrimZeros(byte)
+   * @see #appendHexStripLeadingZeros(byte)
    */
   public final CharBuffer appendHex(byte value) {
     ensureCapacity(2);
@@ -558,7 +560,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @see #getHexCapacity(byte)
    * @see #appendHex(byte)
    */
-  public final CharBuffer appendHexTrimZeros(byte value) {
+  public final CharBuffer appendHexStripLeadingZeros(byte value) {
     // 4 or less bits long?
     if (value >>> 4 == 0) {
       ensureCapacity(1);
@@ -575,7 +577,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @param value The {@code byte} value to be converted to an unsigned hexadecimal string.
    * @return The number of characters required to represent the specified {@code byte} value as an
    *         unsigned hexadecimal string without leading zeros.
-   * @see #appendHexTrimZeros(byte)
+   * @see #appendHexStripLeadingZeros(byte)
    */
   public static int getHexCapacity(byte value) {
     return value >>> 4 == 0 ? 1 : 2;
@@ -587,7 +589,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param value The {@code short} value to be converted to an unsigned hexadecimal string.
    * @return A reference to this buffer.
-   * @see #appendHexTrimZeros(short)
+   * @see #appendHexStripLeadingZeros(short)
    */
   public final CharBuffer appendHex(short value) {
     ensureCapacity(4);
@@ -610,10 +612,10 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @see #getHexCapacity(short)
    * @see #appendHex(short)
    */
-  public final CharBuffer appendHexTrimZeros(short value) {
+  public final CharBuffer appendHexStripLeadingZeros(short value) {
     // 8 or less bits long?
     if (value >>> 8 == 0) {
-      return appendHexTrimZeros((byte) value);
+      return appendHexStripLeadingZeros((byte) value);
     }
     // 12 or less bits long?
     if (value >>> 12 == 0) {
@@ -635,7 +637,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @param value The {@code short} value to be converted to an unsigned hexadecimal string.
    * @return The number of characters required to represent the specified {@code short} value as an
    *         unsigned hexadecimal string without leading zeros.
-   * @see #appendHexTrimZeros(short)
+   * @see #appendHexStripLeadingZeros(short)
    */
   public static int getHexCapacity(short value) {
     if (value >>> 8 == 0) {
@@ -650,7 +652,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param value The {@code int} value to be converted to an unsigned hexadecimal string.
    * @return A reference to this buffer.
-   * @see #appendHexTrimZeros(int)
+   * @see #appendHexStripLeadingZeros(int)
    */
   public final CharBuffer appendHex(int value) {
     ensureCapacity(8);
@@ -677,10 +679,10 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @see #getHexCapacity(int)
    * @see #appendHex(int)
    */
-  public final CharBuffer appendHexTrimZeros(int value) {
+  public final CharBuffer appendHexStripLeadingZeros(int value) {
     // 16 or less bits long?
     if (value >>> 16 == 0) {
-      return appendHexTrimZeros((short) value);
+      return appendHexStripLeadingZeros((short) value);
     }
     int n = getHexCapacity(value);
     // 28 or less bits long?
@@ -703,7 +705,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @param value The {@code int} value to be converted to an unsigned hexadecimal string.
    * @return The number of characters required to represent the specified {@code int} value as an
    *         unsigned hexadecimal string without leading zeros.
-   * @see #appendHexTrimZeros(int)
+   * @see #appendHexStripLeadingZeros(int)
    */
   public static int getHexCapacity(int value) {
     if (value >>> 16 == 0) {
@@ -718,7 +720,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param value The {@code long} value to be converted to an unsigned hexadecimal string.
    * @return A reference to this buffer.
-   * @see #appendHexTrimZeros(long)
+   * @see #appendHexStripLeadingZeros(long)
    */
   public final CharBuffer appendHex(long value) {
     ensureCapacity(16);
@@ -753,10 +755,10 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @see #getHexCapacity(long)
    * @see #appendHex(long)
    */
-  public final CharBuffer appendHexTrimZeros(long value) {
+  public final CharBuffer appendHexStripLeadingZeros(long value) {
     // 32 or less bits long?
     if (value >>> 32 == 0) {
-      return appendHexTrimZeros((int) value);
+      return appendHexStripLeadingZeros((int) value);
     }
     int n = getHexCapacity(value);
     // 60 or less bits long?
@@ -779,7 +781,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @param value The {@code long} value to be converted to an unsigned hexadecimal string.
    * @return The number of characters required to represent the specified {@code long} value as an
    *         unsigned hexadecimal string without leading zeros.
-   * @see #appendHexTrimZeros(long)
+   * @see #appendHexStripLeadingZeros(long)
    */
   public static int getHexCapacity(long value) {
     if (value >>> 32 == 0) {
@@ -796,7 +798,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param value The {@code byte} value to be converted to an unsigned octal string.
    * @return A reference to this buffer.
-   * @see #appendOctTrimZeros(byte)
+   * @see #appendOctStripLeadingZeros(byte)
    */
   public final CharBuffer appendOct(byte value) {
     ensureCapacity(3);
@@ -817,7 +819,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @see #getOctCapacity(byte)
    * @see #appendOct(byte)
    */
-  public final CharBuffer appendOctTrimZeros(byte value) {
+  public final CharBuffer appendOctStripLeadingZeros(byte value) {
     // 3 or less bits long?
     if (value >>> 3 == 0) {
       ensureCapacity(1);
@@ -842,7 +844,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @param value The {@code byte} value to be converted to an unsigned octal string.
    * @return The number of characters required to represent the specified {@code byte} value as an
    *         unsigned octal string without leading zeros.
-   * @see #appendOctTrimZeros(byte)
+   * @see #appendOctStripLeadingZeros(byte)
    */
   public static int getOctCapacity(byte value) {
     return value >>> 6 == 0 ? value >>> 3 == 0 ? 1 : 2 : 3;
@@ -854,7 +856,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param value The {@code short} value to be converted to an unsigned octal string.
    * @return A reference to this buffer.
-   * @see #appendOctTrimZeros(short)
+   * @see #appendOctStripLeadingZeros(short)
    */
   public final CharBuffer appendOct(short value) {
     ensureCapacity(6);
@@ -878,10 +880,10 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @see #getOctCapacity(short)
    * @see #appendOct(short)
    */
-  public final CharBuffer appendOctTrimZeros(short value) {
+  public final CharBuffer appendOctStripLeadingZeros(short value) {
     // 8 or less bits long?
     if (value >>> 8 == 0) {
-      return appendOctTrimZeros((byte) value);
+      return appendOctStripLeadingZeros((byte) value);
     }
     int n = getOctCapacity(value);
     // 15 or less bits long?
@@ -904,7 +906,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @param value The {@code short} value to be converted to an unsigned octal string.
    * @return The number of characters required to represent the specified {@code short} value as an
    *         unsigned octal string without leading zeros.
-   * @see #appendOctTrimZeros(short)
+   * @see #appendOctStripLeadingZeros(short)
    */
   public static int getOctCapacity(short value) {
     if (value >>> 8 == 0) {
@@ -922,7 +924,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param value The {@code int} value to be converted to an unsigned octal string.
    * @return A reference to this buffer.
-   * @see #appendOctTrimZeros(int)
+   * @see #appendOctStripLeadingZeros(int)
    */
   public final CharBuffer appendOct(int value) {
     ensureCapacity(11);
@@ -951,10 +953,10 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @see #getOctCapacity(int)
    * @see #appendOct(int)
    */
-  public final CharBuffer appendOctTrimZeros(int value) {
+  public final CharBuffer appendOctStripLeadingZeros(int value) {
     // 16 or less bits long?
     if (value >>> 16 == 0) {
-      return appendOctTrimZeros((short) value);
+      return appendOctStripLeadingZeros((short) value);
     }
     int n = getOctCapacity(value);
     // 30 or less bits long?
@@ -977,7 +979,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @param value The {@code int} value to be converted to an unsigned octal string.
    * @return The number of characters required to represent the specified {@code int} value as an
    *         unsigned octal string without leading zeros.
-   * @see #appendOctTrimZeros(int)
+   * @see #appendOctStripLeadingZeros(int)
    */
   public static int getOctCapacity(int value) {
     if (value >>> 16 == 0) {
@@ -995,7 +997,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param value The {@code long} value to be converted to an unsigned octal string.
    * @return A reference to this buffer.
-   * @see #appendOctTrimZeros(long)
+   * @see #appendOctStripLeadingZeros(long)
    */
   public final CharBuffer appendOct(long value) {
     ensureCapacity(22);
@@ -1035,10 +1037,10 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @see #getOctCapacity(long)
    * @see #appendOct(long)
    */
-  public final CharBuffer appendOctTrimZeros(long value) {
+  public final CharBuffer appendOctStripLeadingZeros(long value) {
     // 32 or less bits long?
     if (value >>> 32 == 0L) {
-      return appendOctTrimZeros((int) value);
+      return appendOctStripLeadingZeros((int) value);
     }
     int n = getOctCapacity(value);
     // 63 or less bits long?
@@ -1061,7 +1063,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @param value The {@code long} value to be converted to an unsigned octal string.
    * @return The number of characters required to represent the specified {@code long} value as an
    *         unsigned octal string without leading zeros.
-   * @see #appendOctTrimZeros(long)
+   * @see #appendOctStripLeadingZeros(long)
    */
   public static int getOctCapacity(long value) {
     if (value >>> 32 == 0L) {
@@ -1087,7 +1089,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param value The {@code byte} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
-   * @see #appendBinTrimZeros(byte)
+   * @see #appendBinStripLeadingZeros(byte)
    */
   public final CharBuffer appendBin(byte value) {
     ensureCapacity(8);
@@ -1113,7 +1115,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @see #getBinCapacity(byte)
    * @see #appendBin(byte)
    */
-  public final CharBuffer appendBinTrimZeros(byte value) {
+  public final CharBuffer appendBinStripLeadingZeros(byte value) {
     int n = getBinCapacity(value);
     ensureCapacity(n--);
     for (; n > 0; n--) {
@@ -1129,7 +1131,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @param value The {@code byte} value to be converted to an unsigned binary string.
    * @return The number of characters required to represent the specified {@code byte} value as an
    *         unsigned binary string without leading zeros.
-   * @see #appendBinTrimZeros(byte)
+   * @see #appendBinStripLeadingZeros(byte)
    */
   public static int getBinCapacity(byte value) {
     if (value >>> 4 == 0) {
@@ -1150,7 +1152,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param value The {@code short} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
-   * @see #appendBinTrimZeros(short)
+   * @see #appendBinStripLeadingZeros(short)
    */
   public final CharBuffer appendBin(short value) {
     ensureCapacity(16);
@@ -1184,7 +1186,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @see #getBinCapacity(short)
    * @see #appendBin(short)
    */
-  public final CharBuffer appendBinTrimZeros(short value) {
+  public final CharBuffer appendBinStripLeadingZeros(short value) {
     int n = getBinCapacity(value);
     ensureCapacity(n--);
     for (; n > 0; n--) {
@@ -1200,7 +1202,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @param value The {@code short} value to be converted to an unsigned binary string.
    * @return The number of characters required to represent the specified {@code short} value as an
    *         unsigned binary string without leading zeros.
-   * @see #appendBinTrimZeros(short)
+   * @see #appendBinStripLeadingZeros(short)
    */
   public static int getBinCapacity(short value) {
     if (value >>> 8 == 0) {
@@ -1215,7 +1217,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param value The {@code int} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
-   * @see #appendBinTrimZeros(int)
+   * @see #appendBinStripLeadingZeros(int)
    */
   public final CharBuffer appendBin(int value) {
     ensureCapacity(32);
@@ -1265,7 +1267,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @see #getBinCapacity(int)
    * @see #appendBin(int)
    */
-  public final CharBuffer appendBinTrimZeros(int value) {
+  public final CharBuffer appendBinStripLeadingZeros(int value) {
     int n = getBinCapacity(value);
     ensureCapacity(n--);
     for (; n > 0; n--) {
@@ -1281,7 +1283,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @param value The {@code int} value to be converted to an unsigned binary string.
    * @return The number of characters required to represent the specified {@code int} value as an
    *         unsigned binary string without leading zeros.
-   * @see #appendBinTrimZeros(int)
+   * @see #appendBinStripLeadingZeros(int)
    */
   public static int getBinCapacity(int value) {
     if (value >>> 16 == 0) {
@@ -1296,7 +1298,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    *
    * @param value The {@code long} value to be converted to an unsigned binary string.
    * @return A reference to this buffer.
-   * @see #appendBinTrimZeros(long)
+   * @see #appendBinStripLeadingZeros(long)
    */
   public final CharBuffer appendBin(long value) {
     ensureCapacity(64);
@@ -1378,7 +1380,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @see #getBinCapacity(long)
    * @see #appendBin(long)
    */
-  public final CharBuffer appendBinTrimZeros(long value) {
+  public final CharBuffer appendBinStripLeadingZeros(long value) {
     int n = getBinCapacity(value);
     ensureCapacity(n--);
     for (; n > 0; n--) {
@@ -1394,7 +1396,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * @param value The {@code long} value to be converted to an unsigned binary string.
    * @return The number of characters required to represent the specified {@code long} value as an
    *         unsigned binary string without leading zeros.
-   * @see #appendBinTrimZeros(long)
+   * @see #appendBinStripLeadingZeros(long)
    */
   public static int getBinCapacity(long value) {
     if (value >>> 32 == 0L) {
@@ -2062,46 +2064,47 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   }
 
   /**
-   * Appends an indentation of the specified length to the buffer using the specified character.
+   * Appends an indentation of the specified length to the buffer using the specified indentation
+   * character.
    *
    * @param length The number of indentation characters to append.
-   * @param ch The indentation character.
+   * @param indent The indentation character.
    * @return A reference to this buffer.
    * @throws IllegalArgumentException if the specified length is negative.
    * @see #appendIndent(int, int)
    */
-  public final CharBuffer appendIndent(int length, char ch) {
-    if (ch == ' ') { // who knows
+  public final CharBuffer appendIndent(int length, char indent) {
+    if (indent == ' ') { // who knows
       return appendIndent(length);
     }
     if (require(length, INT_POSITIVE_OR_ZERO) > 0) {
       ensureCapacity(length);
       for (; length > 0; length--) {
-        append0(ch);
+        append0(indent);
       }
     }
     return this;
   }
 
   /**
-   * Does the same as the {@link #appendIndent(int, char)} but uses the specified character Unicode
-   * code point. Note that this method does not validate the specified character to be a valid
-   * Unicode code point.
+   * Does the same as the {@link #appendIndent(int, char)} but uses the specified Unicode code
+   * point of indentation character. Note that this method does not validate the specified
+   * character to be a valid Unicode code point.
    *
    * @param length The number of indentation characters to append.
-   * @param ch The Unicode code point of indentation character.
+   * @param indent The Unicode code point of indentation character.
    * @return A reference to this buffer.
    * @throws IllegalArgumentException if the specified length is negative.
    * @see #appendIndent(int, char)
    */
-  public final CharBuffer appendIndent(int length, int ch) {
-    if (Character.isBmpCodePoint(ch)) {
-      return appendIndent(length, (char) ch);
+  public final CharBuffer appendIndent(int length, int indent) {
+    if (Character.isBmpCodePoint(indent)) {
+      return appendIndent(length, (char) indent);
     }
     if (require(length, INT_POSITIVE_OR_ZERO) > 0) {
       ensureCapacity(length * 2);
-      final char high = Character.highSurrogate(ch);
-      final char low = Character.lowSurrogate(ch);
+      final char high = Character.highSurrogate(indent);
+      final char low = Character.lowSurrogate(indent);
       for (; length > 0; length--) {
         append0(high).append0(low);
       }
