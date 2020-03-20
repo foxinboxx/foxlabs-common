@@ -501,6 +501,8 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * Appends a decimal string representation of the specified {@code float} value to the buffer.
    * This is a shortcut for the {@code append(Float.toString(value))}.
    *
+   * <p>The format is<code>(NaN)|(\-?Infinity)|(\-?[0-9]*\.?[0-9]+([eE]\-?[0-9]+)?)</code>.</p>
+   *
    * @param value The {@code float} value to be converted to a decimal string.
    * @return A reference to this buffer.
    * @see Float#toString(float)
@@ -514,6 +516,8 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   /**
    * Appends a decimal string representation of the specified {@code double} value to the buffer.
    * This is a shortcut for the {@code append(Double.toString(value))}.
+   *
+   * <p>The format is<code>(NaN)|(\-?Infinity)|(\-?[0-9]*\.?[0-9]+([eE]\-?[0-9]+)?)</code>.</p>
    *
    * @param value The {@code double} value to be converted to a decimal string.
    * @return A reference to this buffer.
@@ -1459,7 +1463,9 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   /**
    * The string representation of the {@code null} reference.
    */
-  private static final char[] NULL_REFERENCE = {'n', 'u', 'l', 'l'};
+  private static final char[] NULL_REFERENCE = {
+      'n', 'u', 'l', 'l'
+  };
 
   /**
    * The objects cross-reference map to detect circular references.
@@ -1823,15 +1829,14 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * Appends string representation of the specified {@code float} value to the buffer. Default
    * implementation uses the {@link #appendDec(float)} method.
    *
-   * <p>The format is <code>FPSf</code>, where {@code FPS} is a result of the
-   * {@link Float#toString(float)} method.</p>
+   * <p>The format is<code>(NaN)|(\-?Infinity)|(\-?[0-9]*\.?[0-9]+([eE]\-?[0-9]+)?f)</code>.</p>
    *
    * @param value The {@code float} value which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #appendDec(float)
    */
   public CharBuffer appendFloat(float value) {
-    return appendDec(value).append('f');
+    return Float.isFinite(value) ? appendDec(value).append('f') : appendDec(value);
   }
 
   /**
@@ -1868,15 +1873,14 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * Appends string representation of the specified {@code double} value to the buffer. Default
    * implementation uses the {@link #appendDec(double)} method.
    *
-   * <p>The format is <code>FPSd</code>, where {@code FPS} is a result of the
-   * {@link Double#toString(double)} method.</p>
+   * <p>The format is<code>(NaN)|(\-?Infinity)|(\-?[0-9]*\.?[0-9]+([eE]\-?[0-9]+)?d)</code>.</p>
    *
    * @param value The {@code double} value which string representation to append to the buffer.
    * @return A reference to this buffer.
    * @see #appendDec(double)
    */
   public CharBuffer appendDouble(double value) {
-    return appendDec(value).append('d');
+    return Double.isFinite(value) ? appendDec(value).append('d') : appendDec(value);
   }
 
   /**

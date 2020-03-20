@@ -34,10 +34,8 @@ public class CharBufferTest {
    */
   @Test
   public void test_appendBool() {
-    // @formatter:off
-    assertEquals("true",  new CharBuffer().appendBool(true ).toString());
-    assertEquals("false", new CharBuffer().appendBool(false).toString());
-    // @formatter:on
+    assertEquals("true", new CharBuffer(4).appendBool(true).toString());
+    assertEquals("false", new CharBuffer(5).appendBool(false).toString());
   }
 
   /**
@@ -45,10 +43,8 @@ public class CharBufferTest {
    */
   @Test
   public void test_getBoolCapacity() {
-    // @formatter:off
-    assertEquals(4, CharBuffer.getBoolCapacity(true ));
+    assertEquals(4, CharBuffer.getBoolCapacity(true));
     assertEquals(5, CharBuffer.getBoolCapacity(false));
-    // @formatter:on
   }
 
   // Number to string representation
@@ -1555,6 +1551,212 @@ public class CharBufferTest {
     assertEquals(62, CharBuffer.getBinCapacity(0b0010000000000000000000000000000000000000000000000000000000000000L));
     assertEquals(63, CharBuffer.getBinCapacity(0b0100000000000000000000000000000000000000000000000000000000000000L));
     assertEquals(64, CharBuffer.getBinCapacity(0b1000000000000000000000000000000000000000000000000000000000000000L));
+    // @formatter:on
+  }
+
+  // Object to string representation
+
+  /**
+   * Tests the {@link CharBuffer#appendNull()} method.
+   */
+  @Test
+  public void test_appendNull() {
+    assertEquals("null", new CharBuffer(4).appendNull().toString());
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendBoolean(boolean)} method.
+   */
+  @Test
+  public void test_appendBoolean() {
+    assertEquals("true", new CharBuffer(4).appendBoolean(true).toString());
+    assertEquals("false", new CharBuffer(5).appendBoolean(false).toString());
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendBooleanArray(boolean[])} method.
+   */
+  @Test
+  public void test_appendBooleanArray() {
+    // @formatter:off
+    assertEquals("null", new CharBuffer(4).appendBooleanArray(null).toString());
+    assertEquals("[]", new CharBuffer(2).appendBooleanArray(new boolean[0]).toString());
+    assertEquals("[true]", new CharBuffer(6).appendBooleanArray(new boolean[]{true}).toString());
+    assertEquals("[false]", new CharBuffer(7).appendBooleanArray(new boolean[]{false}).toString());
+    assertEquals("[false, true, false]", new CharBuffer(20).appendBooleanArray(new boolean[]{false, true, false}).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendByte(byte)} method.
+   */
+  @Test
+  public void test_appendByte() {
+    assertEquals("0", new CharBuffer(1).appendByte((byte) 0).toString());
+    assertEquals("91", new CharBuffer(2).appendByte((byte) 91).toString());
+    assertEquals("127", new CharBuffer(3).appendByte((byte) 127).toString());
+    assertEquals("-128", new CharBuffer(4).appendByte((byte) -128).toString());
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendByteArray(byte[])} method.
+   */
+  @Test
+  public void test_appendByteArray() {
+    // @formatter:off
+    assertEquals("null", new CharBuffer(4).appendByteArray(null).toString());
+    assertEquals("[]", new CharBuffer(2).appendByteArray(new byte[0]).toString());
+    assertEquals("[32]", new CharBuffer(4).appendByteArray(new byte[]{32}).toString());
+    assertEquals("[32, -64, 96]", new CharBuffer(13).appendByteArray(new byte[]{32, -64, 96}).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendShort(short)} method.
+   */
+  @Test
+  public void test_appendShort() {
+    assertEquals("0", new CharBuffer(1).appendShort((short) 0).toString());
+    assertEquals("-2759", new CharBuffer(5).appendShort((short) -2759).toString());
+    assertEquals("32767", new CharBuffer(5).appendShort((short) 32767).toString());
+    assertEquals("-32768", new CharBuffer(6).appendShort((short) -32768).toString());
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendShortArray(short[])} method.
+   */
+  @Test
+  public void test_appendShortArray() {
+    // @formatter:off
+    assertEquals("null", new CharBuffer(4).appendShortArray(null).toString());
+    assertEquals("[]", new CharBuffer(2).appendShortArray(new short[0]).toString());
+    assertEquals("[1096]", new CharBuffer(6).appendShortArray(new short[]{1096}).toString());
+    assertEquals("[12345, -756, 3742]", new CharBuffer(19).appendShortArray(new short[]{12345, -756, 3742}).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendInt(int)} method.
+   */
+  @Test
+  public void test_appendInt() {
+    assertEquals("0", new CharBuffer(1).appendInt(0).toString());
+    assertEquals("2775298", new CharBuffer(7).appendInt(2775298).toString());
+    assertEquals("2147483647", new CharBuffer(10).appendInt(2147483647).toString());
+    assertEquals("-2147483648", new CharBuffer(11).appendInt(-2147483648).toString());
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendIntArray(int[])} method.
+   */
+  @Test
+  public void test_appendIntArray() {
+    // @formatter:off
+    assertEquals("null", new CharBuffer(4).appendIntArray(null).toString());
+    assertEquals("[]", new CharBuffer(2).appendIntArray(new int[0]).toString());
+    assertEquals("[-92723782]", new CharBuffer(11).appendIntArray(new int[]{-92723782}).toString());
+    assertEquals("[-82785, 86, -2825698]", new CharBuffer(22).appendIntArray(new int[]{-82785, 86, -2825698}).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendLong(long)} method.
+   */
+  @Test
+  public void test_appendLong() {
+    assertEquals("0L", new CharBuffer(2).appendLong(0L).toString());
+    assertEquals("298671262137512L", new CharBuffer(16).appendLong(298671262137512L).toString());
+    assertEquals("9223372036854775807L", new CharBuffer(20).appendLong(9223372036854775807L).toString());
+    assertEquals("-9223372036854775808L", new CharBuffer(21).appendLong(-9223372036854775808L).toString());
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendLongArray(long[])} method.
+   */
+  @Test
+  public void test_appendLongArray() {
+    // @formatter:off
+    assertEquals("null", new CharBuffer(4).appendLongArray(null).toString());
+    assertEquals("[]", new CharBuffer(2).appendLongArray(new long[0]).toString());
+    assertEquals("[2986792751L]", new CharBuffer(13).appendLongArray(new long[]{2986792751L}).toString());
+    assertEquals("[-296L, 9965448L, 297520954000L]", new CharBuffer(32).appendLongArray(new long[]{-296L, 9965448L, 297520954000L}).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendFloat(float)} method.
+   */
+  @Test
+  public void test_appendFloat() {
+    assertEquals("NaN", new CharBuffer(3).appendFloat(Float.NaN).toString());
+    assertEquals("-Infinity", new CharBuffer(9).appendFloat(Float.NEGATIVE_INFINITY).toString());
+    assertEquals("Infinity", new CharBuffer(8).appendFloat(Float.POSITIVE_INFINITY).toString());
+    assertEquals("0.0f", new CharBuffer(4).appendFloat(0.0f).toString());
+    assertEquals("-0.0f", new CharBuffer(5).appendFloat(-0.0f).toString());
+    assertEquals("16.77777f", new CharBuffer(9).appendFloat(16.77777f).toString());
+    assertEquals("-98.0f", new CharBuffer(6).appendFloat(-98.0f).toString());
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendFloatArray(float[])} method.
+   */
+  @Test
+  public void test_appendFloatArray() {
+    // @formatter:off
+    assertEquals("null", new CharBuffer(4).appendFloatArray(null).toString());
+    assertEquals("[]", new CharBuffer(2).appendFloatArray(new float[0]).toString());
+    assertEquals("[1.88655f]", new CharBuffer(10).appendFloatArray(new float[]{1.88655f}).toString());
+    assertEquals("[-75654.22f, NaN, 0.004f]", new CharBuffer(28).appendFloatArray(new float[]{-75654.22f, 0.0f / 0.0f, 0.004f}).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendDouble(double)} method.
+   */
+  @Test
+  public void test_appendDouble() {
+    assertEquals("NaN", new CharBuffer(3).appendDouble(Double.NaN).toString());
+    assertEquals("-Infinity", new CharBuffer(9).appendDouble(Double.NEGATIVE_INFINITY).toString());
+    assertEquals("Infinity", new CharBuffer(8).appendDouble(Double.POSITIVE_INFINITY).toString());
+    assertEquals("0.0d", new CharBuffer(4).appendDouble(0.0d).toString());
+    assertEquals("-0.0d", new CharBuffer(5).appendDouble(-0.0d).toString());
+    assertEquals("-0.987579d", new CharBuffer(10).appendDouble(-0.987579d).toString());
+    assertEquals("2964298.27557d", new CharBuffer(14).appendDouble(2964298.27557d).toString());
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendDoubleArray(double[])} method.
+   */
+  @Test
+  public void test_appendDoubleArray() {
+    // @formatter:off
+    assertEquals("null", new CharBuffer(4).appendDoubleArray(null).toString());
+    assertEquals("[]", new CharBuffer(2).appendDoubleArray(new double[0]).toString());
+    assertEquals("[1.88655d]", new CharBuffer(10).appendDoubleArray(new double[]{1.88655d}).toString());
+    assertEquals("[NaN, -7.5E-5d, 5437.007d]", new CharBuffer(26).appendDoubleArray(new double[]{0.0d / 0.0d, -7.5E-5d, 5437.007d}).toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendChar(char)} method.
+   */
+  @Test
+  public void test_appendChar() {
+    assertEquals("'a'", new CharBuffer(3).appendChar('a').toString());
+    assertEquals("'\\n'", new CharBuffer(4).appendChar('\n').toString());
+    assertEquals("'\\u001f'", new CharBuffer(8).appendChar('\u001f').toString());
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendCharArray(char[])} method.
+   */
+  @Test
+  public void test_appendCharArray() {
+    // @formatter:off
+    assertEquals("null", new CharBuffer(4).appendCharArray(null).toString());
+    assertEquals("[]", new CharBuffer(2).appendCharArray(new char[0]).toString());
+    assertEquals("['a']", new CharBuffer(10).appendCharArray(new char[]{'a'}).toString());
+    assertEquals("['a', '\\t', 'b']", new CharBuffer(26).appendCharArray(new char[]{'a', '\t', 'b'}).toString());
     // @formatter:on
   }
 
