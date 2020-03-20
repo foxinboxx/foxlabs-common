@@ -1760,6 +1760,30 @@ public class CharBufferTest {
     // @formatter:on
   }
 
+  /**
+   * Tests the {@link CharBuffer#appendString(CharSequence)} method.
+   */
+  @Test
+  public void test_appendString() {
+    // @formatter:off
+    assertEquals("null", new CharBuffer(4).appendString(null).toString());
+    assertEquals("\"\"", new CharBuffer(2).appendString("").toString());
+    assertEquals("\"a\"", new CharBuffer(3).appendString("a").toString());
+    assertEquals("\"abc \\u001f \\t\\n\\f\"", new CharBuffer(19).appendString("abc \u001f \t\n\f").toString());
+    // @formatter:on
+  }
+
+  /**
+   * Tests the {@link CharBuffer#appendEnum(Enum)} method.
+   */
+  @Test
+  public void test_appendEnum() {
+    // @formatter:off
+    assertEquals("null", new CharBuffer(4).appendEnum(null).toString());
+    assertEquals("TYPE", new CharBuffer(4).appendEnum(java.lang.annotation.ElementType.TYPE).toString());
+    // @formatter:on
+  }
+
   // Advanced operations
 
   /**
