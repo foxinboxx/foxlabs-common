@@ -1487,7 +1487,7 @@ public abstract class Counters {
    * @param rate Rate value.
    * @return String representation of the specified rate value.
    * @throws IllegalArgumentException if the specified rate is not in range [0..1].
-   * @see #formatRate(double, StringBuilder)
+   * @see #formatRate(double, CharBuffer)
    */
   public static String formatRate(double rate) {
     return formatRate(rate, new CharBuffer()).toString();
@@ -1528,7 +1528,7 @@ public abstract class Counters {
    * @param latency Latency time in milliseconds.
    * @return String representation of the specified latency time.
    * @throws IllegalArgumentException if the specified latency time is negative.
-   * @see #formatLatency(long, StringBuilder)
+   * @see #formatLatency(long, CharBuffer)
    */
   public static String formatLatency(long latency) {
     return formatLatency(latency, new CharBuffer()).toString();

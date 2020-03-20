@@ -1486,6 +1486,8 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
   /**
    * Appends string representation of the specified object to the buffer.
    *
+   * <p>The cross-reference map is used to detect circular references between objects.</p>
+   *
    * @param object The object to append to the buffer.
    * @return A reference to this buffer.
    */
@@ -1494,7 +1496,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     if (object == null) {
       return appendNull();
     }
-    // append the object depending on its type (in order of probability)
+    // check known types (in order of probability)
     if (object instanceof CharSequence) {
       return appendString((CharSequence) object);
     }
@@ -1586,7 +1588,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     }
     ensureCapacity(array.length * 4); // guessing
     append0('[');
-    // remember reference to the array and check for cross-reference
+    // remember reference to the object and check for circular reference
     if (pushReference(array)) {
       // cross-reference detected!
       // reference has already been appended to the buffer
@@ -2005,7 +2007,8 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
    * are string representations of the first and n<sup>th</sup> elements of the sequence
    * respectively, appended to the buffer by the {@link #appendObject(Object)} method.</p>
    *
-   * @param array The {@code Iterable} sequence which string representation to append to the buffer.
+   * @param iterable The {@code Iterable} sequence which string representation to append to the
+   *        buffer.
    * @return A reference to this buffer.
    * @see #appendObject(Object)
    * @see #appendNull()
@@ -2022,7 +2025,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
       return append0('[').append0(']');
     }
     append('[');
-    // remember reference to the iteration and check for cross-reference
+    // remember reference to the object and check for circular reference
     if (pushReference(iterable)) {
       // cross-reference detected!
       // reference has already been appended to the buffer
@@ -2073,7 +2076,7 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     }
     ensureCapacity(map.size() * 10); // guessing
     append0('{');
-    // remember reference to the map and check for cross-reference
+    // remember reference to the object and check for circular reference
     if (pushReference(map)) {
       // cross-reference detected!
       // reference has already been appended to the buffer
@@ -2106,29 +2109,78 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     return append('}');
   }
 
+  /**
+   * Appends a string representation of the specified object to the buffer using the
+   * {@code Object#toString()} method or the {@link ToString#toString(CharBuffer)} method if the
+   * specified object implements {@code ToString} interface. If the specified object or its string
+   * representation is {@code null} then the resulting string representation will be provided by
+   * the {@link #appendNull()} method.
+   *
+   * @param object The object which string representation to append to the buffer.
+   * @return A reference to this buffer.
+   */
   public CharBuffer appendPlain(Object object) {
     if (object == null) {
       return appendNull();
     }
-    // remember reference to the object and check for cross-reference
+    // remember reference to the object and check for circular reference
     if (pushReference(object)) {
-      // cross-reference detected!
-      // reference has already been added to the underlying buffer
+      // circular reference detected!
+      // reference has already been appended to the buffer
       return this;
     }
     try {
+      // check ToString interface first
       if (object instanceof ToString) {
         ((ToString) object).toString(this);
-      } else {
-        append(object.toString());
+        // avoid potential buffer swapping
+        return this;
       }
-      return this;
+      final String string = object.toString();
+      if (string == null) {
+        return appendNull();
+      }
+      return append(string);
     } finally {
       // forget reference to the object
       popReference(object);
     }
   }
 
+  /**
+   * Adds a reference to the specified object to the cross-reference map. If the specified object
+   * reference appears for the first time then it will be added to the cross-reference map and
+   * {@code false} will be returned, which means that there is no circular reference yet. But if
+   * the cross-reference map already contains the specified reference then circular reference takes
+   * place. In that case this method will create a string representation of the circular reference,
+   * save it in the cross-reference map (multiple circular references are also possible), append
+   * the reference string to the buffer and return {@code true}. The format of circular reference
+   * is <code>!CLASS@HASH</code>, where {@code CLASS} is the full name of the object's class and
+   * {@code HASH} is the object's hash code created by the {@link System#identityHashCode(Object)}
+   * method.
+   *
+   * <p>Typical usage:</p>
+   * <pre>
+   * // remember reference to the object and check for circular reference
+   * if (pushReference(object)) {
+   *   // circular reference detected!
+   *   // reference has already been appended to the buffer
+   *   return this;
+   * }
+   * try {
+   *   // calls to the appendObject(), appendObjectArray(), etc.
+   * } finally {
+   *   // forget reference to the object
+   *   popReference(object);
+   * }
+   * </pre>
+   *
+   * @param object An object reference to be added to the cross-reference map.
+   * @return {@code true} if the cross-reference map already contains the specified reference to an
+   *         object (circular reference detected); {@code false} if the specified reference appears
+   *         for the first time during while traversing a graph of objects.
+   * @see #popReference(Object)
+   */
   protected final boolean pushReference(Object object) {
     if (crossrefs == null) {
       crossrefs = new IdentityHashMap<>();
@@ -2148,6 +2200,13 @@ public class CharBuffer implements Appendable, CharSequence, GetChars, ToString 
     return false;
   }
 
+  /**
+   * Removes the specified object reference previously added by the {@link #pushReference(Object)}
+   * method from the cross-reference map.
+   *
+   * @param object An object reference to be removed from the cross-reference map.
+   * @see #pushReference(Object)
+   */
   protected final void popReference(Object object) {
     crossrefs.remove(object);
   }
