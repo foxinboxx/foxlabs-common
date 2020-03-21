@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.foxlabs.common.function;
+package org.foxlabs.common.text;
 
 /**
  *

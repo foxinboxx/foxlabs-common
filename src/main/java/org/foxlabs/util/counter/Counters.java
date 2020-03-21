@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.foxlabs.common.text.CharBuffer;
+import org.foxlabs.common.text.SimpleCharBuffer;
 import org.foxlabs.common.text.ToString;
 
 /**
@@ -1490,7 +1491,7 @@ public abstract class Counters {
    * @see #formatRate(double, CharBuffer)
    */
   public static String formatRate(double rate) {
-    return formatRate(rate, new CharBuffer()).toString();
+    return formatRate(rate, new SimpleCharBuffer()).toString();
   }
 
   /**
@@ -1531,7 +1532,7 @@ public abstract class Counters {
    * @see #formatLatency(long, CharBuffer)
    */
   public static String formatLatency(long latency) {
-    return formatLatency(latency, new CharBuffer()).toString();
+    return formatLatency(latency, new SimpleCharBuffer()).toString();
   }
 
   /**
