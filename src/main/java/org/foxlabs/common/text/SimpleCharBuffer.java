@@ -30,6 +30,7 @@ public class SimpleCharBuffer extends CharBuffer {
 
   public SimpleCharBuffer(int threshold) {
     super(Math.min(threshold, MAX_THRESHOLD));
+    this.buffer = new char[Math.min(threshold, 32)];
   }
 
   @Override
@@ -64,7 +65,9 @@ public class SimpleCharBuffer extends CharBuffer {
 
   @Override
   protected CharBuffer appendSequence(GetChars sequence, int start, int end) {
-    // TODO Auto-generated method stub
+    final int count = ensureCapacity(end - start);
+    sequence.getChars(start, end, buffer, length);
+    length += count;
     return this;
   }
 

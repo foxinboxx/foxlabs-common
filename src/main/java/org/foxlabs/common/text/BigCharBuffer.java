@@ -75,7 +75,7 @@ public class BigCharBuffer extends CharBuffer {
 
   @Override
   protected CharBuffer appendChar(char ch) {
-    nextSlot()[length++] = ch;
+    nextSlot()[length++ % depth] = ch;
     return this;
   }
 
