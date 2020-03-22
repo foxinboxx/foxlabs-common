@@ -1636,26 +1636,26 @@ public class CharBufferTest {
   }
 
   /**
-   * Tests the {@link CharBuffer#appendInt(int)} method.
+   * Tests the {@link CharBuffer#appendInteger(int)} method.
    */
   @Test
   public void test_appendInt() {
-    assertEquals("0", new BigCharBuffer(1).appendInt(0).toString());
-    assertEquals("2775298", new BigCharBuffer(7).appendInt(2775298).toString());
-    assertEquals("2147483647", new BigCharBuffer(10).appendInt(2147483647).toString());
-    assertEquals("-2147483648", new BigCharBuffer(11).appendInt(-2147483648).toString());
+    assertEquals("0", new BigCharBuffer(1).appendInteger(0).toString());
+    assertEquals("2775298", new BigCharBuffer(7).appendInteger(2775298).toString());
+    assertEquals("2147483647", new BigCharBuffer(10).appendInteger(2147483647).toString());
+    assertEquals("-2147483648", new BigCharBuffer(11).appendInteger(-2147483648).toString());
   }
 
   /**
-   * Tests the {@link CharBuffer#appendIntArray(int[])} method.
+   * Tests the {@link CharBuffer#appendIntegerArray(int[])} method.
    */
   @Test
   public void test_appendIntArray() {
     // @formatter:off
-    assertEquals("null", new BigCharBuffer(4).appendIntArray(null).toString());
-    assertEquals("[]", new BigCharBuffer(2).appendIntArray(new int[0]).toString());
-    assertEquals("[-92723782]", new BigCharBuffer(11).appendIntArray(new int[]{-92723782}).toString());
-    assertEquals("[-82785, 86, -2825698]", new BigCharBuffer(22).appendIntArray(new int[]{-82785, 86, -2825698}).toString());
+    assertEquals("null", new BigCharBuffer(4).appendIntegerArray(null).toString());
+    assertEquals("[]", new BigCharBuffer(2).appendIntegerArray(new int[0]).toString());
+    assertEquals("[-92723782]", new BigCharBuffer(11).appendIntegerArray(new int[]{-92723782}).toString());
+    assertEquals("[-82785, 86, -2825698]", new BigCharBuffer(22).appendIntegerArray(new int[]{-82785, 86, -2825698}).toString());
     // @formatter:on
   }
 
@@ -1738,25 +1738,25 @@ public class CharBufferTest {
   }
 
   /**
-   * Tests the {@link CharBuffer#appendChar(char)} method.
+   * Tests the {@link CharBuffer#appendCharacter(char)} method.
    */
   @Test
   public void test_appendChar() {
-    assertEquals("'a'", new BigCharBuffer(3).appendChar('a').toString());
-    assertEquals("'\\n'", new BigCharBuffer(4).appendChar('\n').toString());
-    assertEquals("'\\u001f'", new BigCharBuffer(8).appendChar('\u001f').toString());
+    assertEquals("'a'", new BigCharBuffer(3).appendCharacter('a').toString());
+    assertEquals("'\\n'", new BigCharBuffer(4).appendCharacter('\n').toString());
+    assertEquals("'\\u001f'", new BigCharBuffer(8).appendCharacter('\u001f').toString());
   }
 
   /**
-   * Tests the {@link CharBuffer#appendCharArray(char[])} method.
+   * Tests the {@link CharBuffer#appendCharacterArray(char[])} method.
    */
   @Test
   public void test_appendCharArray() {
     // @formatter:off
-    assertEquals("null", new BigCharBuffer(4).appendCharArray(null).toString());
-    assertEquals("[]", new BigCharBuffer(2).appendCharArray(new char[0]).toString());
-    assertEquals("['a']", new BigCharBuffer(10).appendCharArray(new char[]{'a'}).toString());
-    assertEquals("['a', '\\t', 'b']", new BigCharBuffer(26).appendCharArray(new char[]{'a', '\t', 'b'}).toString());
+    assertEquals("null", new BigCharBuffer(4).appendCharacterArray(null).toString());
+    assertEquals("[]", new BigCharBuffer(2).appendCharacterArray(new char[0]).toString());
+    assertEquals("['a']", new BigCharBuffer(10).appendCharacterArray(new char[]{'a'}).toString());
+    assertEquals("['a', '\\t', 'b']", new BigCharBuffer(26).appendCharacterArray(new char[]{'a', '\t', 'b'}).toString());
     // @formatter:on
   }
 

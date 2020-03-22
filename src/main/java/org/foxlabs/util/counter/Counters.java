@@ -1514,11 +1514,11 @@ public abstract class Counters {
       if (integer < 10) {
         buf.append('0');
       }
-      buf.appendInt(integer).append('.');
+      buf.appendInteger(integer).append('.');
       if (decimal < 10) {
         buf.append('0');
       }
-      return buf.appendInt(decimal).append('%');
+      return buf.appendInteger(decimal).append('%');
     }
   }
 

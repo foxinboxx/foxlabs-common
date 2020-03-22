@@ -22,7 +22,8 @@ import org.foxlabs.common.exception.ThresholdReachedException;
  * An interface that allows to build a long sequence of text data avoiding string concatenations
  * with less memory consumption. It is designed primarily to replace the {@link Object#toString()}
  * method which is not ideal when the string representation of an object consists of string
- * representations of other objects or primitives.
+ * representations of other objects or primitives. Although it is defined as the functional
+ * interface, it is better to avoid such usage.
  *
  * <p>
  * For example:
@@ -130,57 +131,59 @@ public interface ToString {
      * Appends string representation of the specified {@link java.net.URI} to the specified buffer
      * replacing password field with {@code ***} characters from the user info part if any.
      */
-    Overrider<java.net.URI> URI = (uri, buffer) -> {
-      // the algorithm is taken from the URI.defineString() private method
-      if (uri.getScheme() != null) {
-        buffer.append(uri.getScheme()).append(':');
-      }
-      if (uri.isOpaque()) {
-        buffer.append(uri.getSchemeSpecificPart());
-      } else {
-        final String host = uri.getHost();
-        if (host != null) {
-          buffer.append('/').append('/');
-          final String userInfo = uri.getUserInfo();
-          if (userInfo != null) {
-            final int index = userInfo.indexOf(':');
-            if (index < 0) {
-              buffer.append(userInfo);
-            } else {
-              if (index > 0) {
-                buffer.append(userInfo.substring(0, index));
+    Overrider<java.net.URI> URI = new Overrider<java.net.URI>() {
+      @Override public CharBuffer toString(java.net.URI uri, CharBuffer buffer) {
+        // the algorithm is taken from the URI.defineString() private method
+        if (uri.getScheme() != null) {
+          buffer.append(uri.getScheme()).append(':');
+        }
+        if (uri.isOpaque()) {
+          buffer.append(uri.getSchemeSpecificPart());
+        } else {
+          final String host = uri.getHost();
+          if (host != null) {
+            buffer.append('/').append('/');
+            final String userInfo = uri.getUserInfo();
+            if (userInfo != null) {
+              final int index = userInfo.indexOf(':');
+              if (index < 0) {
+                buffer.append(userInfo);
+              } else {
+                if (index > 0) {
+                  buffer.append(userInfo.substring(0, index));
+                }
+                buffer.append(":***");
               }
-              buffer.append(":***");
+              buffer.append('@');
             }
-            buffer.append('@');
+            boolean needBrackets = host.indexOf(':') >= 0
+                && !host.startsWith("[")
+                && !host.endsWith("]");
+            if (needBrackets) {
+              buffer.append('[');
+            }
+            buffer.append(host);
+            if (needBrackets) {
+              buffer.append(']');
+            }
+            if (uri.getPort() != -1) {
+              buffer.append(':').appendDec(uri.getPort());
+            }
+          } else if (uri.getAuthority() != null) {
+            buffer.append('/').append('/').append(uri.getAuthority());
           }
-          boolean needBrackets = host.indexOf(':') >= 0
-              && !host.startsWith("[")
-              && !host.endsWith("]");
-          if (needBrackets) {
-            buffer.append('[');
+          if (uri.getPath() != null) {
+            buffer.append(uri.getPath());
           }
-          buffer.append(host);
-          if (needBrackets) {
-            buffer.append(']');
+          if (uri.getQuery() != null) {
+            buffer.append('?').append(uri.getQuery());
           }
-          if (uri.getPort() != -1) {
-            buffer.append(':').appendDec(uri.getPort());
-          }
-        } else if (uri.getAuthority() != null) {
-          buffer.append('/').append('/').append(uri.getAuthority());
         }
-        if (uri.getPath() != null) {
-          buffer.append(uri.getPath());
+        if (uri.getFragment() != null) {
+          buffer.append('#').append(uri.getFragment());
         }
-        if (uri.getQuery() != null) {
-          buffer.append('?').append(uri.getQuery());
-        }
+        return buffer;
       }
-      if (uri.getFragment() != null) {
-        buffer.append('#').append(uri.getFragment());
-      }
-      return buffer;
     };
 
   }

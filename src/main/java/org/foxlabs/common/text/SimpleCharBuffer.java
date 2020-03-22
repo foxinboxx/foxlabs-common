@@ -29,13 +29,7 @@ public class SimpleCharBuffer extends CharBuffer {
   }
 
   public SimpleCharBuffer(int threshold) {
-    super(threshold);
-  }
-
-  @Override
-  public char charAt(int index) {
-    // TODO Auto-generated method stub
-    return 0;
+    super(Math.min(threshold, MAX_THRESHOLD));
   }
 
   @Override
@@ -44,26 +38,34 @@ public class SimpleCharBuffer extends CharBuffer {
   }
 
   @Override
-  protected void doGetChars(int start, int end, char[] target, int offset) {
-    // TODO Auto-generated method stub
+  protected char getChar(int index) {
+    return buffer[index];
   }
 
   @Override
-  public int ensureCapacity(int count) {
-    // TODO Auto-generated method stub
-    return 0;
+  protected void copyChars(int start, int end, char[] target, int offset) {
+    System.arraycopy(buffer, start, target, offset, end - start);
   }
 
   @Override
-  protected CharBuffer doAppend(char ch) {
-    // TODO Auto-generated method stub
-    return null;
+  protected void extendCapacity(int nlength) {
+    if (nlength > buffer.length) {
+      final char[] copy = new char[Math.min(nlength << 2, threshold)];
+      System.arraycopy(buffer, 0, copy, 0, buffer.length);
+      buffer = copy;
+    }
   }
 
   @Override
-  protected CharBuffer doAppend(GetChars sequence, int start, int end) {
+  protected CharBuffer appendChar(char ch) {
+    buffer[length++] = ch;
+    return this;
+  }
+
+  @Override
+  protected CharBuffer appendSequence(GetChars sequence, int start, int end) {
     // TODO Auto-generated method stub
-    return null;
+    return this;
   }
 
   @Override
@@ -74,6 +76,11 @@ public class SimpleCharBuffer extends CharBuffer {
   @Override
   public void clear() {
     length = 0;
+  }
+
+  @Override
+  protected String toString(int start, int end) {
+    return new String(buffer, start, end);
   }
 
 }

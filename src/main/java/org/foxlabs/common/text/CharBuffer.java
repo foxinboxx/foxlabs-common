@@ -27,7 +27,6 @@ import org.foxlabs.common.Strings;
 import org.foxlabs.common.exception.ThresholdReachedException;
 
 import static org.foxlabs.common.Predicates.*;
-import static org.foxlabs.common.Predicates.ExceptionProvider.*;
 
 public abstract class CharBuffer implements CharSequence, Appendable, GetChars, ToString {
 
@@ -83,13 +82,44 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   }
 
   /**
+   * Returns a character at the specified index in the buffer contents.
+   *
+   * <p>The index is zero-based and must be less than {@link #length()} (i.e.
+   * {@code 0 <= index < length()}).</p>
+   *
+   * @param index The index of a character to return.
+   * @return A character at the specified index in the buffer contents.
+   * @throws IndexOutOfBoundsException if the specified index is out of range.
+   * @see #getChar(int)
+   */
+  @Override
+  public final char charAt(int index) {
+    return checkIndex(this, index).getChar(index);
+  }
+
+  /**
+   * Does an actual character retrieval at the specified index in the buffer contents.
+   *
+   * <p>Subclasses should not worry about correctness of the index provided since it should already
+   * be verified by the {@code public} methods.</p>
+   *
+   * @param index The index of a character to return.
+   * @return A character at the specified index in the buffer contents.
+   */
+  protected abstract char getChar(int index);
+
+  /**
    * Returns a sequence that is a copy of the buffer contents in the specified range (i.e.
    * {@code substring(start, end)}.
    *
-   * @param start The starting position in the buffer (inclusive).
-   * @param end The ending position in the buffer (exclusive).
+   * <p>The start and end positions are zero-based and must not be greater than {@link #length()},
+   * the start position must not be greater than the end position (i.e.
+   * {@code 0 <= start <= end <= length()}).</p>
+   *
+   * @param start The start position in the buffer contents.
+   * @param end The end position in the buffer contents.
    * @return A sequence that is a copy of the buffer contents in the specified range.
-   * @throws IndexOutOfBoundsException if the specified starting or ending position is invalid.
+   * @throws IndexOutOfBoundsException if the specified start or end position is out of range.
    * @see #substring(int, int)
    */
   @Override
@@ -98,13 +128,15 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   }
 
   /**
-   * Returns a string that is a copy of the buffer contents from the specified starting position
+   * Returns a string that is a copy of the buffer contents from the specified start position
    * (i.e. {@code substring(start, length())}.
    *
-   * @param start The starting position in the buffer (inclusive).
-   * @param end The ending position in the buffer (exclusive).
-   * @return A string that is a copy of the buffer contents from the specified starting position.
-   * @throws IndexOutOfBoundsException if the specified starting position is invalid.
+   * <p>The start position is zero-based and must not be greater than {@link #length()} (i.e.
+   * {@code 0 <= start <= length()}).</p>
+   *
+   * @param start The start position in the buffer contents.
+   * @return A string that is a copy of the buffer contents from the specified start position.
+   * @throws IndexOutOfBoundsException if the specified start position is out of range.
    * @see #substring(int, int)
    */
   public final String substring(int start) {
@@ -114,250 +146,300 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   /**
    * Returns a string that is a copy of the buffer contents in the specified range.
    *
-   * @param start The starting position in the buffer (inclusive).
-   * @param end The ending position in the buffer (exclusive).
+   * <p>The start and end positions are zero-based and must not be greater than {@link #length()},
+   * the start position must not be greater than the end position (i.e.
+   * {@code 0 <= start <= end <= length()}).</p>
+   *
+   * @param start The start position in the buffer contents.
+   * @param end The end position in the buffer contents.
    * @return A string that is a copy of the buffer contents in the specified range.
-   * @throws IndexOutOfBoundsException if the specified starting or ending position is invalid.
-   * @see #doGetChars(int, int, char[], int)
+   * @throws IndexOutOfBoundsException if the specified start or end position is out of range.
+   * @see #toString(int, int)
    */
   public final String substring(int start, int end) {
-    require(this, checkCharSequenceRange(start, end), ofIOOB(start, end));
-    if (start == end) {
-      return Strings.EMPTY;
-    } else {
-      final char[] copy = new char[end - start];
-      doGetChars(start, end, copy, 0);
-      return new String(copy);
-    }
+    checkRange(this, start, end);
+    return start == end ? Strings.EMPTY : toString(start, end);
   }
 
   /**
-   * Copies characters from the buffer contents in the specified range into the specified target
+   * Copies characters from the buffer contents in the specified range to the specified target
    * array starting from the specified offset.
    *
-   * @param start The starting position in the buffer (inclusive).
-   * @param end The ending position in the buffer (exclusive).
-   * @param target The target array to copy to.
-   * @param offset The starting position in the target array (inclusive).
+   * <p>The start and end positions are zero-based and must not be greater than {@link #length()},
+   * the start position must not be greater than the end position (i.e.
+   * {@code 0 <= start <= end <= length()}). The target offset is zero-based and must not be
+   * greater than the target array length, which must be enough to receive requested number of
+   * characters (i.e. {@code 0 <= offset <= offset + end - start <= array.length}).</p>
+   *
+   * @param start The start position in the buffer contents.
+   * @param end The end position in the buffer contents.
+   * @param target The target array to copy.
+   * @param offset The start position in the target array.
    * @throws NullPointerException if the specified target array is {@code null}.
-   * @throws IndexOutOfBoundsException if the specified starting or ending position is invalid.
-   * @see #doGetChars(int, int, char[], int)
+   * @throws IndexOutOfBoundsException if the specified start or end position is out of range or
+   *         length of the specified target array is not enough to receive requested number of
+   *         characters.
+   * @see #copyChars(int, int, char[], int)
    */
   @Override
-  public final void getChars(int start, int end, char[] array, int index) {
-    require(this, checkCharSequenceRange(start, end), ofIOOB(start, end));
-    require(requireNonNull(array), checkCharArrayIndex(index), ofIOOB(index));
+  public final void getChars(int start, int end, char[] target, int offset) {
+    checkRange(this, start, end);
+    checkRange(target, offset, offset + end - start);
     if (start < end) {
-      doGetChars(start, end, array, index);
+      copyChars(start, end, target, offset);
     }
   }
 
   /**
-   * Performs the actual copying of characters from the buffer contents in the specified range into
-   * the specified target array starting from the specified offset. Subclasses should not worry
-   * about the correctness of the given arguments as they should already be verified by a
-   * {@code public} methods.
+   * Does an actual copying of characters from the buffer contents in the specified range to the
+   * specified target array starting from the specified offset.
    *
-   * @param start The starting position in the buffer (inclusive).
-   * @param end The ending position in the buffer (exclusive).
-   * @param target The target array to copy to.
-   * @param offset The starting position in the target array (inclusive).
+   * <p>Subclasses should not worry about correctness of the arguments provided since they should
+   * already be verified by the {@code public} methods.</p>
+   *
+   * @param start The start position in the buffer contents.
+   * @param end The end position in the buffer contents.
+   * @param target The target array to copy.
+   * @param offset The start position in the target array.
    */
-  protected abstract void doGetChars(int start, int end, char[] target, int offset);
+  protected abstract void copyChars(int start, int end, char[] target, int offset);
 
   /**
    * Ensures that the buffer capacity is sufficient to append the specified number of characters
-   * and returns actual number of characters that can be appended. If the current capacity is not
-   * enough then this method should try to allocate additional space to append as many characters
-   * as possible. In other words, returned actual number of characters cannot be greater than
-   * result of the {@link #remaining()} method.
+   * and returns actual number of characters that can be appended.
+   *
+   * <p>If the current capacity is not enough then additional space should be allocated to append
+   * as many characters as possible. In other words, returned actual number of characters cannot be
+   * greater than {@link #remaining()}.</p>
    *
    * @param count The desired number of characters to append.
    * @return The actual number of characters that can be appended.
+   * @throws ThresholdReachedException if the buffer is full and cannot receive characters anymore.
+   * @see #extendCapacity(int)
    * @see #remaining()
    */
-  public abstract int ensureCapacity(int count);
+  public final int ensureCapacity(int count) {
+    long nlength = (long) length() + (long) count; // avoid int overflow
+    // trim count if it exceeds threshold
+    if (nlength > threshold) {
+      count = (int) (nlength = threshold) - length();
+      if (count == 0) { // fast check
+        throw new ThresholdReachedException(this);
+      }
+    }
+    extendCapacity((int) nlength);
+    return count;
+  }
 
   /**
-   * Appends the specified character to the buffer and increments the current length. Note that
-   * this method does not completely satisfy the {@link Appendable} interface contract because it
-   * may throw {@link ThresholdReachedException} instead of {@link java.io.IOException}.
+   * Extends capacity of the buffer to the specified new length, if necessary, in order to be able
+   * to append new characters.
+   *
+   * @param nlength A new requested length of the buffer.
+   */
+  protected abstract void extendCapacity(int nlength);
+
+  /**
+   * Appends the specified character to the buffer and increments the current length.
+   *
+   * <p>Note that this method does not completely satisfy the {@link Appendable} interface contract
+   * because it might throw {@link ThresholdReachedException} instead of
+   * {@link java.io.IOException}.</p>
    *
    * @param ch The character to append.
    * @return A reference to this buffer.
    * @throws ThresholdReachedException if threshold of the buffer has been reached.
    * @see #append(int)
-   * @see #doAppend(char)
+   * @see #appendChar(char)
    */
   @Override
   public final CharBuffer append(char ch) {
     ensureCapacity(1);
-    return doAppend(ch);
+    return appendChar(ch);
   }
 
   /**
    * Appends the specified character (Unicode code point) to the buffer and increases the current
    * length by 1 or 2 depending on whether the specified character is in the Basic Multilingual
-   * Plane (BMP) or is it a supplementary character, respectively. If the specified character is a
-   * supplementary character (i.e. 2 {@code char}s long) and the {@link #remaining()} number of
-   * characters is 1 then none will be appended and {@link ThresholdReachedException} will be
-   * thrown. Note that this method does not validate the specified character to be a valid Unicode
-   * code point.
+   * Plane (BMP) or is it a supplementary character, respectively.
+   *
+   * <p>If the specified character is a supplementary character (i.e. 2 {@code char}s long) and the
+   * {@link #remaining()} number of characters is 1 then none will be appended and
+   * {@link ThresholdReachedException} will be thrown.
+   *
+   * <p>Note that this method does not validate the specified character to be a valid Unicode code
+   * point.</p>
    *
    * @param ch The character (Unicode code point) to append.
    * @return A reference to this buffer.
    * @throws ThresholdReachedException if threshold of the buffer has been reached.
    * @see Character#isBmpCodePoint(int)
-   * @see #doAppend(char)
+   * @see #appendChar(char)
    */
   public final CharBuffer append(int ch) {
     if (Character.isBmpCodePoint(ch)) {
       ensureCapacity(1);
-      return doAppend((char) ch);
+      return appendChar((char) ch);
     } else if (ensureCapacity(2) < 2) {
       throw new ThresholdReachedException(this);
     } else {
-      doAppend(Character.highSurrogate(ch));
-      return doAppend(Character.lowSurrogate(ch));
+      appendChar(Character.highSurrogate(ch));
+      return appendChar(Character.lowSurrogate(ch));
     }
   }
 
   /**
+   * Does an actual appending of the specified character to the buffer.
+   *
+   * <p>Subclasses should expect that the {@code #ensureCapacity(int)} method has been called right
+   * before calling this method.</p>
+   *
+   * @param ch The character to append.
+   * @return A reference to this buffer.
+   */
+  protected abstract CharBuffer appendChar(char ch);
+
+  /**
    * Appends all characters of the specified array to the buffer and increases the current length
-   * accordingly. If threshold of the buffer will be exceeded during this operation then the first
+   * accordingly.
+   *
+   * <p>If threshold of the buffer is exceeded during this operation then the first
    * {@link #remaining()} characters will be appended and the {@code ThresholdReachedException}
-   * will be thrown.
+   * will be thrown.</p>
    *
    * @param array The array of characters to append.
    * @return A reference to this buffer.
    * @throws NullPointerException if the specified array of characters is {@code null}.
    * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   * @see #doAppend(GetChars, int, int)
+   * @see #appendSequence(GetChars, int, int)
    */
   public final CharBuffer append(char... array) {
-    return doAppend(GetChars.from(array), 0, array.length);
+    return appendSequence(GetChars.from(array), 0, array.length);
   }
 
   /**
-   * Appends characters of the specified array from the specified starting position to the buffer
-   * and increases the current length accordingly. If threshold of the buffer will be exceeded
-   * during this operation then the first {@link #remaining()} characters will be appended and the
-   * {@code ThresholdReachedException} will be thrown.
+   * Appends characters of the specified array from the specified start position to the buffer and
+   * increases the current length accordingly.
+   *
+   * <p>The start position is zero-based and must not be greater than length of the specified array
+   * (i.e. {@code 0 <= start array.length}). If threshold of the buffer is exceeded during this
+   * operation then the first {@link #remaining()} characters will be appended and the
+   * {@code ThresholdReachedException} will be thrown.</p>
    *
    * @param array The array of characters to append.
-   * @param start The starting position in the specified array to append from.
+   * @param start The start position in the specified array to append from.
    * @return A reference to this buffer.
    * @throws NullPointerException if the specified array of characters is {@code null}.
-   * @throws IndexOutOfBoundsException if the specified starting position is invalid.
+   * @throws IndexOutOfBoundsException if the specified start position is out of range.
    * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   * @see #doAppend(GetChars, int, int)
+   * @see #appendSequence(GetChars, int, int)
    */
   public final CharBuffer append(char[] array, int start) {
-    require(array, checkCharArrayRange(start), ofIOOB(start, array.length));
-    return doAppend(GetChars.from(array), start, array.length);
+    return appendSequence(GetChars.from(checkRange(array, start)), start, array.length);
   }
 
   /**
    * Appends characters of the specified array in the specified range to the buffer and increases
-   * the current length accordingly. If threshold of the buffer will be exceeded during this
+   * the current length accordingly.
+   *
+   * <p>The start and end positions are zero-based and must not be greater than length of the
+   * specified array, the start position must not be greater than the end position (i.e.
+   * {@code 0 <= start <= end <= array.length}). If threshold of the buffer is exceeded during this
    * operation then the first {@link #remaining()} characters will be appended and the
-   * {@code ThresholdReachedException} will be thrown.
+   * {@code ThresholdReachedException} will be thrown.</p>
    *
    * @param array The array of characters to append.
-   * @param start The starting position in the specified array to append from.
-   * @param end The ending position in the specified array to append to.
+   * @param start The start position in the specified array.
+   * @param end The end position in the specified array.
    * @return A reference to this buffer.
    * @throws NullPointerException if the specified array of characters is {@code null}.
-   * @throws IndexOutOfBoundsException if the specified starting or ending position is invalid.
+   * @throws IndexOutOfBoundsException if the specified start or end position is out of range.
    * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   * @see #doAppend(GetChars, int, int)
+   * @see #appendSequence(GetChars, int, int)
    */
   public final CharBuffer append(char[] array, int start, int end) {
-    require(requireNonNull(array), checkCharArrayRange(start, end), ofIOOB(start, end));
-    return doAppend(GetChars.from(array), start, end);
+    return appendSequence(GetChars.from(checkRange(array, start, end)), start, end);
   }
 
   /**
-   * Appends all characters of the specified sequence to the buffer and increases the current length
-   * accordingly. If threshold of the buffer will be exceeded during this operation then the first
+   * Appends all characters of the specified sequence to the buffer and increases the current
+   * length accordingly.
+   *
+   * <p>If threshold of the buffer is exceeded during this operation then the first
    * {@link #remaining()} characters will be appended and the {@code ThresholdReachedException}
-   * will be thrown.
+   * will be thrown.</p>
    *
    * @param sequence The sequence of characters to append.
    * @return A reference to this buffer.
    * @throws NullPointerException if the specified sequence of characters is {@code null}.
    * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   * @see #doAppend(GetChars, int, int)
+   * @see #appendSequence(GetChars, int, int)
    */
   @Override
   public final CharBuffer append(CharSequence sequence) {
-    return doAppend(GetChars.from(sequence), 0, sequence.length());
+    return appendSequence(GetChars.from(sequence), 0, sequence.length());
   }
 
   /**
-   * Appends characters of the specified sequence from the specified starting position to the
-   * buffer and increases the current length accordingly. If threshold of the buffer will be
+   * Appends characters of the specified sequence from the specified start position to the buffer
+   * and increases the current length accordingly.
+   *
+   * <p>The start position is zero-based and must not be greater than length of the specified
+   * sequence (i.e. {@code 0 <= start <= sequence.length()}). If threshold of the buffer is
    * exceeded during this operation then the first {@link #remaining()} characters will be appended
-   * and the {@code ThresholdReachedException} will be thrown.
+   * and the {@code ThresholdReachedException} will be thrown.</p>
    *
    * @param sequence The sequence of characters to append.
-   * @param start The starting position in the specified sequence to append from.
+   * @param start The start position in the specified sequence.
    * @return A reference to this buffer.
    * @throws NullPointerException if the specified sequence of characters is {@code null}.
-   * @throws IndexOutOfBoundsException if the specified starting position is invalid.
+   * @throws IndexOutOfBoundsException if the specified start position is out of range.
    * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   * @see #doAppend(GetChars, int, int)
+   * @see #appendSequence(GetChars, int, int)
    */
   public final CharBuffer append(CharSequence sequence, int start) {
-    require(sequence, checkCharSequenceRange(start), ofIOOB(start, sequence.length()));
-    return doAppend(GetChars.from(sequence), start, sequence.length());
+    return appendSequence(GetChars.from(checkRange(sequence, start)), start, sequence.length());
   }
 
   /**
    * Appends characters of the specified sequence in the specified range to the buffer and
-   * increases the current length accordingly. If threshold of the buffer will be exceeded during
+   * increases the current length accordingly.
+   *
+   * <p>The start and end positions are zero-based and must not be greater than length of the
+   * specified sequence, the start position must not be greater than the end position (i.e.
+   * {@code 0 <= start <= end <= sequence.length()}). If threshold of the buffer is exceeded during
    * this operation then the first {@link #remaining()} characters will be appended and the
-   * {@code ThresholdReachedException} will be thrown.
+   * {@code ThresholdReachedException} will be thrown.</p>
    *
    * @param sequence The sequence of characters to append.
-   * @param start The starting position in the specified sequence to append from.
-   * @param end The ending position in the specified sequence to append to.
+   * @param start The start position in the specified sequence.
+   * @param end The end position in the specified sequence.
    * @return A reference to this buffer.
    * @throws NullPointerException if the specified sequence of characters is {@code null}.
-   * @throws IndexOutOfBoundsException if the specified starting or ending position is invalid.
+   * @throws IndexOutOfBoundsException if the specified start or end position is out of range.
    * @throws ThresholdReachedException if threshold of the buffer has been reached.
    */
   @Override
   public final CharBuffer append(CharSequence sequence, int start, int end) {
-    require(requireNonNull(sequence), checkCharSequenceRange(start, end), ofIOOB(start, end));
-    return doAppend(GetChars.from(sequence), start, sequence.length());
+    return appendSequence(GetChars.from(checkRange(sequence, start, end)), start, end);
   }
 
   /**
-   * Performs the actual appending of the specified character to the buffer. Subclasses should
-   * expect that the {@code #ensureCapacity(int)} method has been called right before calling this
-   * method.
+   * Does an actual appending of the characters of the specified {@link GetChars} sequence in the
+   * specified range to the buffer.
    *
-   * @param ch The character to append.
-   * @return A reference to this buffer.
-   * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   */
-  protected abstract CharBuffer doAppend(char ch);
-
-  /**
-   * Performs the actual appending of the characters of the specified {@link GetChars} sequence in
-   * the specified range to the buffer. Subclasses should not worry about the correctness of the
-   * given arguments as they should already be verified by a {@code public} methods. Note that
-   * there is no guarantee that the {@code #ensureCapacity(int)} method was called right before
-   * calling this method, so subclasses must do this themselves.
+   * <p>Subclasses should not worry about the correctness of the arguments provided since they
+   * should already be verified by the {@code public} methods. Note that there is no guarantee that
+   * the {@link #ensureCapacity(int)} method was called right before calling this method, so
+   * subclasses must do that themselves.</p>
    *
    * @param sequence The {@link GetChars} sequence of characters to append.
-   * @param start The starting position in the specified sequence to append from.
-   * @param end The ending position in the specified sequence to append to.
+   * @param start The start position in the specified sequence.
+   * @param end The end position in the specified sequence.
    * @return A reference to this buffer.
    * @throws ThresholdReachedException if threshold of the buffer has been reached.
    */
-  protected abstract CharBuffer doAppend(GetChars sequence, int start, int end);
+  protected abstract CharBuffer appendSequence(GetChars sequence, int start, int end);
 
   /**
    * Resets the buffer length to 0 but does not release allocated memory. This method is useful
@@ -386,24 +468,36 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    */
   @Override
   public CharBuffer toString(CharBuffer buffer) {
-    return buffer.doAppend(GetChars.from(this), 0, length());
+    return buffer.appendSequence(this, 0, length());
   }
 
   /**
-   * Returns a string representation of current state of the buffer (i.e. creates a {@code String}
-   * copy initialized with the current contents of the buffer).
+   * Returns a string representation of current contents of the buffer (i.e. creates a
+   * {@code String} copy).
    *
-   * @return A string representation of current state of the buffer.
+   * @return A string representation of current contents of the buffer.
+   * @see #substring(int, int)
    */
   @Override
   public String toString() {
-    if (length() == 0) {
-      return Strings.EMPTY;
-    } else {
-      final char[] copy = new char[length()];
-      doGetChars(0, copy.length, copy, 0);
-      return new String(copy);
-    }
+    return length() == 0 ? Strings.EMPTY : toString(0, length());
+  }
+
+  /**
+   * Returns a string representation of current contents of the buffer in the specified range
+   * (i.e. creates a {@code String} copy).
+   *
+   * <p>Subclasses may want to override this method to avoid redundant array allocation.</p>
+   *
+   * @param start The start position in the buffer contents.
+   * @param end The end position in the buffer contents.
+   * @return A string representation of current contents of the buffer in the specified range.
+   * @see #copyChars(int, int, char[], int)
+   */
+  protected String toString(int start, int end) {
+    final char[] copy = new char[end - start];
+    copyChars(start, end, copy, 0);
+    return new String(copy);
   }
 
   // Boolean to string representation
@@ -511,9 +605,9 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
     int n = getDecCapacity0(v);
     ensureCapacity(sign + n--);
     for (appendSign(sign); n > 0; v %= INT_TENS[n--]) {
-      doAppend(DIGITS[v / INT_TENS[n]]);
+      appendChar(DIGITS[v / INT_TENS[n]]);
     }
-    return doAppend(DIGITS[v]);
+    return appendChar(DIGITS[v]);
   }
 
   /**
@@ -574,9 +668,9 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
     int n = getDecCapacity0(v);
     ensureCapacity(sign + n--);
     for (appendSign(sign); n > 0; v %= LONG_TENS[n--]) {
-      doAppend(DIGITS[(int) (v / LONG_TENS[n])]);
+      appendChar(DIGITS[(int) (v / LONG_TENS[n])]);
     }
-    return doAppend(DIGITS[(int) v]);
+    return appendChar(DIGITS[(int) v]);
   }
 
   /**
@@ -660,7 +754,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    */
   private final void appendSign(int sign) {
     if (sign != 0) {
-      doAppend('-');
+      appendChar('-');
     }
   }
 
@@ -679,8 +773,8 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   public final CharBuffer appendHex(byte value) {
     ensureCapacity(2);
     // @formatter:off
-    doAppend(DIGITS[value >>> 4 & 0x0f]);
-    doAppend(DIGITS[value >>> 0 & 0x0f]);
+    appendChar(DIGITS[value >>> 4 & 0x0f]);
+    appendChar(DIGITS[value >>> 0 & 0x0f]);
     // @formatter:on
     return this;
   }
@@ -700,7 +794,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
     // 4 or less bits long?
     if (value >>> 4 == 0) {
       ensureCapacity(1);
-      return doAppend(DIGITS[value]);
+      return appendChar(DIGITS[value]);
     }
     // from 5 to 8 bits long
     return appendHex(value);
@@ -732,10 +826,10 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   public final CharBuffer appendHex(short value) {
     ensureCapacity(4);
     // @formatter:off
-    doAppend(DIGITS[value >>> 12 & 0x0f]);
-    doAppend(DIGITS[value >>>  8 & 0x0f]);
-    doAppend(DIGITS[value >>>  4 & 0x0f]);
-    doAppend(DIGITS[value >>>  0 & 0x0f]);
+    appendChar(DIGITS[value >>> 12 & 0x0f]);
+    appendChar(DIGITS[value >>>  8 & 0x0f]);
+    appendChar(DIGITS[value >>>  4 & 0x0f]);
+    appendChar(DIGITS[value >>>  0 & 0x0f]);
     // @formatter:on
     return this;
   }
@@ -760,9 +854,9 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
     if (value >>> 12 == 0) {
       // from 9 to 12 bits long
       ensureCapacity(3);
-      doAppend(DIGITS[value >>> 8 & 0x0f]);
-      doAppend(DIGITS[value >>> 4 & 0x0f]);
-      doAppend(DIGITS[value >>> 0 & 0x0f]);
+      appendChar(DIGITS[value >>> 8 & 0x0f]);
+      appendChar(DIGITS[value >>> 4 & 0x0f]);
+      appendChar(DIGITS[value >>> 0 & 0x0f]);
       return this;
     }
     // from 13 to 16 bits long
@@ -798,14 +892,14 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   public final CharBuffer appendHex(int value) {
     ensureCapacity(8);
     // @formatter:off
-    doAppend(DIGITS[value >>> 28 & 0x0f]);
-    doAppend(DIGITS[value >>> 24 & 0x0f]);
-    doAppend(DIGITS[value >>> 20 & 0x0f]);
-    doAppend(DIGITS[value >>> 16 & 0x0f]);
-    doAppend(DIGITS[value >>> 12 & 0x0f]);
-    doAppend(DIGITS[value >>>  8 & 0x0f]);
-    doAppend(DIGITS[value >>>  4 & 0x0f]);
-    doAppend(DIGITS[value >>>  0 & 0x0f]);
+    appendChar(DIGITS[value >>> 28 & 0x0f]);
+    appendChar(DIGITS[value >>> 24 & 0x0f]);
+    appendChar(DIGITS[value >>> 20 & 0x0f]);
+    appendChar(DIGITS[value >>> 16 & 0x0f]);
+    appendChar(DIGITS[value >>> 12 & 0x0f]);
+    appendChar(DIGITS[value >>>  8 & 0x0f]);
+    appendChar(DIGITS[value >>>  4 & 0x0f]);
+    appendChar(DIGITS[value >>>  0 & 0x0f]);
     // @formatter:on
     return this;
   }
@@ -832,7 +926,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       // from 17 to 28 bits long
       ensureCapacity(n--);
       for (n <<= 2; n >= 0; n -= 4) {
-        doAppend(DIGITS[value >>> n & 0x0f]);
+        appendChar(DIGITS[value >>> n & 0x0f]);
       }
       return this;
     }
@@ -869,22 +963,22 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   public final CharBuffer appendHex(long value) {
     ensureCapacity(16);
     // @formatter:off
-    doAppend(DIGITS[(int) (value >>> 60 & 0x0fL)]);
-    doAppend(DIGITS[(int) (value >>> 56 & 0x0fL)]);
-    doAppend(DIGITS[(int) (value >>> 52 & 0x0fL)]);
-    doAppend(DIGITS[(int) (value >>> 48 & 0x0fL)]);
-    doAppend(DIGITS[(int) (value >>> 44 & 0x0fL)]);
-    doAppend(DIGITS[(int) (value >>> 40 & 0x0fL)]);
-    doAppend(DIGITS[(int) (value >>> 36 & 0x0fL)]);
-    doAppend(DIGITS[(int) (value >>> 32 & 0x0fL)]);
-    doAppend(DIGITS[(int) (value >>> 28 & 0x0fL)]);
-    doAppend(DIGITS[(int) (value >>> 24 & 0x0fL)]);
-    doAppend(DIGITS[(int) (value >>> 20 & 0x0fL)]);
-    doAppend(DIGITS[(int) (value >>> 16 & 0x0fL)]);
-    doAppend(DIGITS[(int) (value >>> 12 & 0x0fL)]);
-    doAppend(DIGITS[(int) (value >>>  8 & 0x0fL)]);
-    doAppend(DIGITS[(int) (value >>>  4 & 0x0fL)]);
-    doAppend(DIGITS[(int) (value >>>  0 & 0x0fL)]);
+    appendChar(DIGITS[(int) (value >>> 60 & 0x0fL)]);
+    appendChar(DIGITS[(int) (value >>> 56 & 0x0fL)]);
+    appendChar(DIGITS[(int) (value >>> 52 & 0x0fL)]);
+    appendChar(DIGITS[(int) (value >>> 48 & 0x0fL)]);
+    appendChar(DIGITS[(int) (value >>> 44 & 0x0fL)]);
+    appendChar(DIGITS[(int) (value >>> 40 & 0x0fL)]);
+    appendChar(DIGITS[(int) (value >>> 36 & 0x0fL)]);
+    appendChar(DIGITS[(int) (value >>> 32 & 0x0fL)]);
+    appendChar(DIGITS[(int) (value >>> 28 & 0x0fL)]);
+    appendChar(DIGITS[(int) (value >>> 24 & 0x0fL)]);
+    appendChar(DIGITS[(int) (value >>> 20 & 0x0fL)]);
+    appendChar(DIGITS[(int) (value >>> 16 & 0x0fL)]);
+    appendChar(DIGITS[(int) (value >>> 12 & 0x0fL)]);
+    appendChar(DIGITS[(int) (value >>>  8 & 0x0fL)]);
+    appendChar(DIGITS[(int) (value >>>  4 & 0x0fL)]);
+    appendChar(DIGITS[(int) (value >>>  0 & 0x0fL)]);
     // @formatter:on
     return this;
   }
@@ -911,7 +1005,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       // from 33 to 60 bits long
       ensureCapacity(n--);
       for (n <<= 2; n >= 0; n -= 4) {
-        doAppend(DIGITS[(int) (value >>> n & 0x0fL)]);
+        appendChar(DIGITS[(int) (value >>> n & 0x0fL)]);
       }
       return this;
     }
@@ -950,9 +1044,9 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   public final CharBuffer appendOct(byte value) {
     ensureCapacity(3);
     // @formatter:off
-    doAppend(DIGITS[value >>> 6 & 0x03]);
-    doAppend(DIGITS[value >>> 3 & 0x07]);
-    doAppend(DIGITS[value >>> 0 & 0x07]);
+    appendChar(DIGITS[value >>> 6 & 0x03]);
+    appendChar(DIGITS[value >>> 3 & 0x07]);
+    appendChar(DIGITS[value >>> 0 & 0x07]);
     // @formatter:on
     return this;
   }
@@ -972,14 +1066,14 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
     // 3 or less bits long?
     if (value >>> 3 == 0) {
       ensureCapacity(1);
-      return doAppend(DIGITS[value]);
+      return appendChar(DIGITS[value]);
     }
     // 6 or less bits long?
     if (value >>> 6 == 0) {
       // from 4 to 6 bits long
       ensureCapacity(2);
-      doAppend(DIGITS[value >>> 3 & 0x07]);
-      doAppend(DIGITS[value >>> 0 & 0x07]);
+      appendChar(DIGITS[value >>> 3 & 0x07]);
+      appendChar(DIGITS[value >>> 0 & 0x07]);
       return this;
     }
     // from 7 to 8 bits long
@@ -1012,12 +1106,12 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   public final CharBuffer appendOct(short value) {
     ensureCapacity(6);
     // @formatter:off
-    doAppend(DIGITS[value >>> 15 & 0x01]);
-    doAppend(DIGITS[value >>> 12 & 0x07]);
-    doAppend(DIGITS[value >>>  9 & 0x07]);
-    doAppend(DIGITS[value >>>  6 & 0x07]);
-    doAppend(DIGITS[value >>>  3 & 0x07]);
-    doAppend(DIGITS[value >>>  0 & 0x07]);
+    appendChar(DIGITS[value >>> 15 & 0x01]);
+    appendChar(DIGITS[value >>> 12 & 0x07]);
+    appendChar(DIGITS[value >>>  9 & 0x07]);
+    appendChar(DIGITS[value >>>  6 & 0x07]);
+    appendChar(DIGITS[value >>>  3 & 0x07]);
+    appendChar(DIGITS[value >>>  0 & 0x07]);
     // @formatter:on
     return this;
   }
@@ -1044,7 +1138,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       // from 9 to 15 bits long
       ensureCapacity(n--);
       for (n *= 3; n >= 0; n -= 3) {
-        doAppend(DIGITS[value >>> n & 0x07]);
+        appendChar(DIGITS[value >>> n & 0x07]);
       }
       return this;
     }
@@ -1084,17 +1178,17 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   public final CharBuffer appendOct(int value) {
     ensureCapacity(11);
     // @formatter:off
-    doAppend(DIGITS[value >>> 30 & 0x03]);
-    doAppend(DIGITS[value >>> 27 & 0x07]);
-    doAppend(DIGITS[value >>> 24 & 0x07]);
-    doAppend(DIGITS[value >>> 21 & 0x07]);
-    doAppend(DIGITS[value >>> 18 & 0x07]);
-    doAppend(DIGITS[value >>> 15 & 0x07]);
-    doAppend(DIGITS[value >>> 12 & 0x07]);
-    doAppend(DIGITS[value >>>  9 & 0x07]);
-    doAppend(DIGITS[value >>>  6 & 0x07]);
-    doAppend(DIGITS[value >>>  3 & 0x07]);
-    doAppend(DIGITS[value >>>  0 & 0x07]);
+    appendChar(DIGITS[value >>> 30 & 0x03]);
+    appendChar(DIGITS[value >>> 27 & 0x07]);
+    appendChar(DIGITS[value >>> 24 & 0x07]);
+    appendChar(DIGITS[value >>> 21 & 0x07]);
+    appendChar(DIGITS[value >>> 18 & 0x07]);
+    appendChar(DIGITS[value >>> 15 & 0x07]);
+    appendChar(DIGITS[value >>> 12 & 0x07]);
+    appendChar(DIGITS[value >>>  9 & 0x07]);
+    appendChar(DIGITS[value >>>  6 & 0x07]);
+    appendChar(DIGITS[value >>>  3 & 0x07]);
+    appendChar(DIGITS[value >>>  0 & 0x07]);
     // @formatter:on
     return this;
   }
@@ -1121,7 +1215,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       // from 17 to 30 bits long
       ensureCapacity(n--);
       for (n *= 3; n >= 0; n -= 3) {
-        doAppend(DIGITS[value >>> n & 0x07]);
+        appendChar(DIGITS[value >>> n & 0x07]);
       }
       return this;
     }
@@ -1161,28 +1255,28 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   public final CharBuffer appendOct(long value) {
     ensureCapacity(22);
     // @formatter:off
-    doAppend(DIGITS[(int) (value >>> 63 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 60 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>> 57 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>> 54 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>> 51 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>> 48 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>> 45 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>> 42 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>> 39 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>> 36 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>> 33 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>> 30 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>> 27 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>> 24 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>> 21 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>> 18 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>> 15 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>> 12 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>>  9 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>>  6 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>>  3 & 0x07L)]);
-    doAppend(DIGITS[(int) (value >>>  0 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 63 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 60 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 57 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 54 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 51 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 48 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 45 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 42 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 39 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 36 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 33 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 30 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 27 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 24 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 21 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 18 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 15 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>> 12 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>>  9 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>>  6 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>>  3 & 0x07L)]);
+    appendChar(DIGITS[(int) (value >>>  0 & 0x07L)]);
     // @formatter:on
     return this;
   }
@@ -1209,7 +1303,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       // from 33 to 63 bits long
       ensureCapacity(n--);
       for (n *= 3; n >= 0; n -= 3) {
-        doAppend(DIGITS[(int) (value >>> n & 0x07L)]);
+        appendChar(DIGITS[(int) (value >>> n & 0x07L)]);
       }
       return this;
     }
@@ -1257,14 +1351,14 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   public final CharBuffer appendBin(byte value) {
     ensureCapacity(8);
     // @formatter:off
-    doAppend(DIGITS[value >>> 7 & 0x01]);
-    doAppend(DIGITS[value >>> 6 & 0x01]);
-    doAppend(DIGITS[value >>> 5 & 0x01]);
-    doAppend(DIGITS[value >>> 4 & 0x01]);
-    doAppend(DIGITS[value >>> 3 & 0x01]);
-    doAppend(DIGITS[value >>> 2 & 0x01]);
-    doAppend(DIGITS[value >>> 1 & 0x01]);
-    doAppend(DIGITS[value >>> 0 & 0x01]);
+    appendChar(DIGITS[value >>> 7 & 0x01]);
+    appendChar(DIGITS[value >>> 6 & 0x01]);
+    appendChar(DIGITS[value >>> 5 & 0x01]);
+    appendChar(DIGITS[value >>> 4 & 0x01]);
+    appendChar(DIGITS[value >>> 3 & 0x01]);
+    appendChar(DIGITS[value >>> 2 & 0x01]);
+    appendChar(DIGITS[value >>> 1 & 0x01]);
+    appendChar(DIGITS[value >>> 0 & 0x01]);
     // @formatter:on
     return this;
   }
@@ -1284,9 +1378,9 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
     int n = getBinCapacity(value);
     ensureCapacity(n--);
     for (; n > 0; n--) {
-      doAppend(DIGITS[value >>> n & 0x01]);
+      appendChar(DIGITS[value >>> n & 0x01]);
     }
-    return doAppend(DIGITS[value & 0x01]);
+    return appendChar(DIGITS[value & 0x01]);
   }
 
   /**
@@ -1324,22 +1418,22 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   public final CharBuffer appendBin(short value) {
     ensureCapacity(16);
     // @formatter:off
-    doAppend(DIGITS[value >>> 15 & 0x01]);
-    doAppend(DIGITS[value >>> 14 & 0x01]);
-    doAppend(DIGITS[value >>> 13 & 0x01]);
-    doAppend(DIGITS[value >>> 12 & 0x01]);
-    doAppend(DIGITS[value >>> 11 & 0x01]);
-    doAppend(DIGITS[value >>> 10 & 0x01]);
-    doAppend(DIGITS[value >>>  9 & 0x01]);
-    doAppend(DIGITS[value >>>  8 & 0x01]);
-    doAppend(DIGITS[value >>>  7 & 0x01]);
-    doAppend(DIGITS[value >>>  6 & 0x01]);
-    doAppend(DIGITS[value >>>  5 & 0x01]);
-    doAppend(DIGITS[value >>>  4 & 0x01]);
-    doAppend(DIGITS[value >>>  3 & 0x01]);
-    doAppend(DIGITS[value >>>  2 & 0x01]);
-    doAppend(DIGITS[value >>>  1 & 0x01]);
-    doAppend(DIGITS[value >>>  0 & 0x01]);
+    appendChar(DIGITS[value >>> 15 & 0x01]);
+    appendChar(DIGITS[value >>> 14 & 0x01]);
+    appendChar(DIGITS[value >>> 13 & 0x01]);
+    appendChar(DIGITS[value >>> 12 & 0x01]);
+    appendChar(DIGITS[value >>> 11 & 0x01]);
+    appendChar(DIGITS[value >>> 10 & 0x01]);
+    appendChar(DIGITS[value >>>  9 & 0x01]);
+    appendChar(DIGITS[value >>>  8 & 0x01]);
+    appendChar(DIGITS[value >>>  7 & 0x01]);
+    appendChar(DIGITS[value >>>  6 & 0x01]);
+    appendChar(DIGITS[value >>>  5 & 0x01]);
+    appendChar(DIGITS[value >>>  4 & 0x01]);
+    appendChar(DIGITS[value >>>  3 & 0x01]);
+    appendChar(DIGITS[value >>>  2 & 0x01]);
+    appendChar(DIGITS[value >>>  1 & 0x01]);
+    appendChar(DIGITS[value >>>  0 & 0x01]);
     // @formatter:on
     return this;
   }
@@ -1359,9 +1453,9 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
     int n = getBinCapacity(value);
     ensureCapacity(n--);
     for (; n > 0; n--) {
-      doAppend(DIGITS[value >>> n & 0x01]);
+      appendChar(DIGITS[value >>> n & 0x01]);
     }
-    return doAppend(DIGITS[value & 0x01]);
+    return appendChar(DIGITS[value & 0x01]);
   }
 
   /**
@@ -1393,38 +1487,38 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   public final CharBuffer appendBin(int value) {
     ensureCapacity(32);
     // @formatter:off
-    doAppend(DIGITS[value >>> 31 & 0x01]);
-    doAppend(DIGITS[value >>> 30 & 0x01]);
-    doAppend(DIGITS[value >>> 29 & 0x01]);
-    doAppend(DIGITS[value >>> 28 & 0x01]);
-    doAppend(DIGITS[value >>> 27 & 0x01]);
-    doAppend(DIGITS[value >>> 26 & 0x01]);
-    doAppend(DIGITS[value >>> 25 & 0x01]);
-    doAppend(DIGITS[value >>> 24 & 0x01]);
-    doAppend(DIGITS[value >>> 23 & 0x01]);
-    doAppend(DIGITS[value >>> 22 & 0x01]);
-    doAppend(DIGITS[value >>> 21 & 0x01]);
-    doAppend(DIGITS[value >>> 20 & 0x01]);
-    doAppend(DIGITS[value >>> 19 & 0x01]);
-    doAppend(DIGITS[value >>> 18 & 0x01]);
-    doAppend(DIGITS[value >>> 17 & 0x01]);
-    doAppend(DIGITS[value >>> 16 & 0x01]);
-    doAppend(DIGITS[value >>> 15 & 0x01]);
-    doAppend(DIGITS[value >>> 14 & 0x01]);
-    doAppend(DIGITS[value >>> 13 & 0x01]);
-    doAppend(DIGITS[value >>> 12 & 0x01]);
-    doAppend(DIGITS[value >>> 11 & 0x01]);
-    doAppend(DIGITS[value >>> 10 & 0x01]);
-    doAppend(DIGITS[value >>>  9 & 0x01]);
-    doAppend(DIGITS[value >>>  8 & 0x01]);
-    doAppend(DIGITS[value >>>  7 & 0x01]);
-    doAppend(DIGITS[value >>>  6 & 0x01]);
-    doAppend(DIGITS[value >>>  5 & 0x01]);
-    doAppend(DIGITS[value >>>  4 & 0x01]);
-    doAppend(DIGITS[value >>>  3 & 0x01]);
-    doAppend(DIGITS[value >>>  2 & 0x01]);
-    doAppend(DIGITS[value >>>  1 & 0x01]);
-    doAppend(DIGITS[value >>>  0 & 0x01]);
+    appendChar(DIGITS[value >>> 31 & 0x01]);
+    appendChar(DIGITS[value >>> 30 & 0x01]);
+    appendChar(DIGITS[value >>> 29 & 0x01]);
+    appendChar(DIGITS[value >>> 28 & 0x01]);
+    appendChar(DIGITS[value >>> 27 & 0x01]);
+    appendChar(DIGITS[value >>> 26 & 0x01]);
+    appendChar(DIGITS[value >>> 25 & 0x01]);
+    appendChar(DIGITS[value >>> 24 & 0x01]);
+    appendChar(DIGITS[value >>> 23 & 0x01]);
+    appendChar(DIGITS[value >>> 22 & 0x01]);
+    appendChar(DIGITS[value >>> 21 & 0x01]);
+    appendChar(DIGITS[value >>> 20 & 0x01]);
+    appendChar(DIGITS[value >>> 19 & 0x01]);
+    appendChar(DIGITS[value >>> 18 & 0x01]);
+    appendChar(DIGITS[value >>> 17 & 0x01]);
+    appendChar(DIGITS[value >>> 16 & 0x01]);
+    appendChar(DIGITS[value >>> 15 & 0x01]);
+    appendChar(DIGITS[value >>> 14 & 0x01]);
+    appendChar(DIGITS[value >>> 13 & 0x01]);
+    appendChar(DIGITS[value >>> 12 & 0x01]);
+    appendChar(DIGITS[value >>> 11 & 0x01]);
+    appendChar(DIGITS[value >>> 10 & 0x01]);
+    appendChar(DIGITS[value >>>  9 & 0x01]);
+    appendChar(DIGITS[value >>>  8 & 0x01]);
+    appendChar(DIGITS[value >>>  7 & 0x01]);
+    appendChar(DIGITS[value >>>  6 & 0x01]);
+    appendChar(DIGITS[value >>>  5 & 0x01]);
+    appendChar(DIGITS[value >>>  4 & 0x01]);
+    appendChar(DIGITS[value >>>  3 & 0x01]);
+    appendChar(DIGITS[value >>>  2 & 0x01]);
+    appendChar(DIGITS[value >>>  1 & 0x01]);
+    appendChar(DIGITS[value >>>  0 & 0x01]);
     // @formatter:on
     return this;
   }
@@ -1444,9 +1538,9 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
     int n = getBinCapacity(value);
     ensureCapacity(n--);
     for (; n > 0; n--) {
-      doAppend(DIGITS[value >>> n & 0x01]);
+      appendChar(DIGITS[value >>> n & 0x01]);
     }
-    return doAppend(DIGITS[value & 0x01]);
+    return appendChar(DIGITS[value & 0x01]);
   }
 
   /**
@@ -1478,70 +1572,70 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   public final CharBuffer appendBin(long value) {
     ensureCapacity(64);
     // @formatter:off
-    doAppend(DIGITS[(int) (value >>> 63 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 62 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 61 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 60 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 59 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 58 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 57 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 56 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 55 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 54 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 53 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 52 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 51 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 50 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 49 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 48 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 47 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 46 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 45 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 44 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 43 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 42 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 41 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 40 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 39 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 38 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 37 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 36 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 35 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 34 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 33 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 32 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 31 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 30 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 29 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 28 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 27 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 26 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 25 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 24 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 23 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 22 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 21 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 20 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 19 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 18 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 17 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 16 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 15 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 14 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 13 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 12 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 11 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>> 10 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>>  9 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>>  8 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>>  7 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>>  6 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>>  5 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>>  4 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>>  3 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>>  2 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>>  1 & 0x01L)]);
-    doAppend(DIGITS[(int) (value >>>  0 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 63 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 62 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 61 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 60 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 59 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 58 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 57 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 56 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 55 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 54 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 53 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 52 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 51 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 50 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 49 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 48 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 47 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 46 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 45 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 44 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 43 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 42 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 41 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 40 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 39 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 38 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 37 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 36 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 35 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 34 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 33 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 32 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 31 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 30 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 29 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 28 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 27 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 26 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 25 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 24 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 23 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 22 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 21 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 20 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 19 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 18 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 17 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 16 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 15 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 14 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 13 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 12 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 11 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>> 10 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>>  9 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>>  8 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>>  7 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>>  6 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>>  5 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>>  4 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>>  3 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>>  2 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>>  1 & 0x01L)]);
+    appendChar(DIGITS[(int) (value >>>  0 & 0x01L)]);
     // @formatter:on
     return this;
   }
@@ -1561,9 +1655,9 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
     int n = getBinCapacity(value);
     ensureCapacity(n--);
     for (; n > 0; n--) {
-      doAppend(DIGITS[(int) (value >>> n & 0x01L)]);
+      appendChar(DIGITS[(int) (value >>> n & 0x01L)]);
     }
-    return doAppend(DIGITS[(int) (value & 0x01L)]);
+    return appendChar(DIGITS[(int) (value & 0x01L)]);
   }
 
   /**
@@ -1611,19 +1705,122 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    *
    * @return A reference to this buffer.
    */
-  public CharBuffer appendNull() {
+  public final CharBuffer appendNull() {
     return append(NULL_REFERENCE);
   }
 
   /**
-   * Appends string representation of the specified object to the buffer.
+   * Appends a string representation of the specified object to the buffer.
    *
-   * <p>The cross-reference map is used to detect circular references between objects.</p>
+   * <p>
+   * This method just delegates creation of the resulting string representation to another method
+   * depending on type of the specified object. The following table shows mappings between object
+   * classes and corresponding methods that will be used to create the resulting string
+   * representation:
+   * <table>
+   *   <tr>
+   *     <th>Class</th>
+   *     <th>Method</th>
+   *   </tr>
+   *   <tr>
+   *     <td>{@code null}</td>
+   *     <td>{@link #appendNull()}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@code Object[]}</td>
+   *     <td>{@link #appendObjectArray(Object[])}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@link Boolean}</td>
+   *     <td>{@link #appendBoolean(boolean)}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@code boolean[]}</td>
+   *     <td>{@link #appendBooleanArray(boolean[])}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@link Byte}</td>
+   *     <td>{@link #appendByte(byte)}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@code byte[]}</td>
+   *     <td>{@link #appendByteArray(byte[])}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@link Short}</td>
+   *     <td>{@link #appendShort(short)}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@code short[]}</td>
+   *     <td>{@link #appendShortArray(short[])}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@link Integer}</td>
+   *     <td>{@link #appendInteger(int)}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@code int[]}</td>
+   *     <td>{@link #appendIntegerArray(int[])}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@link Long}</td>
+   *     <td>{@link #appendLong(long)}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@code long[]}</td>
+   *     <td>{@link #appendLongArray(long[])}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@link Float}</td>
+   *     <td>{@link #appendFloat(float)}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@code float[]}</td>
+   *     <td>{@link #appendFloatArray(float[])}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@link Double}</td>
+   *     <td>{@link #appendDouble(double)}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@code double[]}</td>
+   *     <td>{@link #appendDoubleArray(double[])}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@link Character}</td>
+   *     <td>{@link #appendCharacter(char)}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@code char[]}</td>
+   *     <td>{@link #appendCharacterArray(char[])}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@link CharSequence}</td>
+   *     <td>{@link #appendString(CharSequence)}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@link Enum}</td>
+   *     <td>{@link #appendEnum(Enum)}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@link Iterable}</td>
+   *     <td>{@link #appendIterable(Iterable)}</td>
+   *   </tr>
+   *   <tr>
+   *     <td>{@link Map}</td>
+   *     <td>{@link #appendMap(Map)}</td>
+   *   </tr>
+   *   <tr>
+   *     <td><strong>None of the above</strong></td>
+   *     <td>{@link #appendPlain(Object)}</td>
+   *   </tr>
+   * </table>
+   * </p>
    *
    * @param object The object to append to the buffer.
    * @return A reference to this buffer.
    */
-  public CharBuffer appendObject(Object object) {
+  public final CharBuffer appendObject(Object object) {
     // discard null reference
     if (object == null) {
       return appendNull();
@@ -1633,7 +1830,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       return appendString((CharSequence) object);
     }
     if (object instanceof Integer) {
-      return appendInt(((Integer) object).intValue());
+      return appendInteger(((Integer) object).intValue());
     }
     if (object instanceof Long) {
       return appendLong(((Long) object).longValue());
@@ -1651,7 +1848,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       return appendShort(((Short) object).shortValue());
     }
     if (object instanceof Character) {
-      return appendChar(((Character) object).charValue());
+      return appendCharacter(((Character) object).charValue());
     }
     if (object instanceof Boolean) {
       return appendBoolean(((Boolean) object).booleanValue());
@@ -1669,7 +1866,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       return appendObjectArray((Object[]) object);
     }
     if (object instanceof int[]) {
-      return appendIntArray((int[]) object);
+      return appendIntegerArray((int[]) object);
     }
     if (object instanceof long[]) {
       return appendLongArray((long[]) object);
@@ -1687,7 +1884,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       return appendShortArray((short[]) object);
     }
     if (object instanceof char[]) {
-      return appendCharArray((char[]) object);
+      return appendCharacterArray((char[]) object);
     }
     if (object instanceof boolean[]) {
       return appendBooleanArray((boolean[]) object);
@@ -1711,15 +1908,15 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @see #appendObject(Object)
    * @see #appendNull()
    */
-  public CharBuffer appendObjectArray(Object[] array) {
+  public final CharBuffer appendObjectArray(Object[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
       ensureCapacity(2);
-      return doAppend('[').doAppend(']');
+      return appendChar('[').appendChar(']');
     }
     ensureCapacity(array.length * 4); // guessing
-    doAppend('[');
+    appendChar('[');
     // remember reference to the object and check for circular reference
     if (pushReference(array)) {
       // cross-reference detected!
@@ -1748,7 +1945,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @return A reference to this buffer.
    * @see #appendBool(boolean)
    */
-  public CharBuffer appendBoolean(boolean value) {
+  public final CharBuffer appendBoolean(boolean value) {
     return appendBool(value);
   }
 
@@ -1767,15 +1964,15 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @see #appendBoolean(boolean)
    * @see #appendNull()
    */
-  public CharBuffer appendBooleanArray(boolean[] array) {
+  public final CharBuffer appendBooleanArray(boolean[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
       ensureCapacity(2);
-      return doAppend('[').doAppend(']');
+      return appendChar('[').appendChar(']');
     }
     ensureCapacity(array.length * FALSE_CONSTANT.length); // almost guessing
-    doAppend('[').appendBoolean(array[0]);
+    appendChar('[').appendBoolean(array[0]);
     for (int index = 1; index < array.length; index++) {
       // cannot use append0() because appendBoolean() may be overridden
       append(',').append(' ').appendBoolean(array[index]);
@@ -1793,7 +1990,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @return A reference to this buffer.
    * @see #appendDec(int)
    */
-  public CharBuffer appendByte(byte value) {
+  public final CharBuffer appendByte(byte value) {
     return appendDec(value);
   }
 
@@ -1812,15 +2009,15 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @see #appendByte(byte)
    * @see #appendNull()
    */
-  public CharBuffer appendByteArray(byte[] array) {
+  public final CharBuffer appendByteArray(byte[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
       ensureCapacity(2);
-      return doAppend('[').doAppend(']');
+      return appendChar('[').appendChar(']');
     }
     ensureCapacity(array.length * 4); // guessing
-    doAppend('[').appendByte(array[0]);
+    appendChar('[').appendByte(array[0]);
     for (int index = 1; index < array.length; index++) {
       append(',').append(' ').appendByte(array[index]);
     }
@@ -1837,7 +2034,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @return A reference to this buffer.
    * @see #appendDec(int)
    */
-  public CharBuffer appendShort(short value) {
+  public final CharBuffer appendShort(short value) {
     return appendDec(value);
   }
 
@@ -1856,15 +2053,15 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @see #appendShort(short)
    * @see #appendNull()
    */
-  public CharBuffer appendShortArray(short[] array) {
+  public final CharBuffer appendShortArray(short[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
       ensureCapacity(2);
-      return doAppend('[').doAppend(']');
+      return appendChar('[').appendChar(']');
     }
     ensureCapacity(array.length * 4); // guessing
-    doAppend('[').appendShort(array[0]);
+    appendChar('[').appendShort(array[0]);
     for (int index = 1; index < array.length; index++) {
       append(',').append(' ').appendShort(array[index]);
     }
@@ -1881,7 +2078,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @return A reference to this buffer.
    * @see #appendDec(int)
    */
-  public CharBuffer appendInt(int value) {
+  public final CharBuffer appendInteger(int value) {
     return appendDec(value);
   }
 
@@ -1893,24 +2090,24 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * <p>The format is <code>\[(E<sub>0</sub>(, E<sub>n={0 &lt; n &lt; L}</sub>)*)?\]</code>, where
    * {@code L} is length of the array, <code>E<sub>0</sub></code> and <code>E<sub>n</sub></code>
    * are string representations of the first and n<sup>th</sup> elements of the array respectively,
-   * appended to the buffer by the {@link #appendInt(int)} method.</p>
+   * appended to the buffer by the {@link #appendInteger(int)} method.</p>
    *
    * @param array The {@code int[]} array which string representation to append to the buffer.
    * @return A reference to this buffer.
-   * @see #appendInt(int)
+   * @see #appendInteger(int)
    * @see #appendNull()
    */
-  public CharBuffer appendIntArray(int[] array) {
+  public final CharBuffer appendIntegerArray(int[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
       ensureCapacity(2);
-      return doAppend('[').doAppend(']');
+      return appendChar('[').appendChar(']');
     }
     ensureCapacity(array.length * 4); // guessing
-    doAppend('[').appendInt(array[0]);
+    appendChar('[').appendInteger(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append(',').append(' ').appendInt(array[index]);
+      append(',').append(' ').appendInteger(array[index]);
     }
     return append(']');
   }
@@ -1925,7 +2122,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @return A reference to this buffer.
    * @see #appendDec(long)
    */
-  public CharBuffer appendLong(long value) {
+  public final CharBuffer appendLong(long value) {
     return appendDec(value).append('L');
   }
 
@@ -1944,15 +2141,15 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @see #appendLong(long)
    * @see #appendNull()
    */
-  public CharBuffer appendLongArray(long[] array) {
+  public final CharBuffer appendLongArray(long[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
       ensureCapacity(2);
-      return doAppend('[').doAppend(']');
+      return appendChar('[').appendChar(']');
     }
     ensureCapacity(array.length * 4); // guessing
-    doAppend('[').appendLong(array[0]);
+    appendChar('[').appendLong(array[0]);
     for (int index = 1; index < array.length; index++) {
       append(',').append(' ').appendLong(array[index]);
     }
@@ -1969,7 +2166,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @return A reference to this buffer.
    * @see #appendDec(float)
    */
-  public CharBuffer appendFloat(float value) {
+  public final CharBuffer appendFloat(float value) {
     return Float.isFinite(value) ? appendDec(value).append('f') : appendDec(value);
   }
 
@@ -1988,15 +2185,15 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @see #appendFloat(float)
    * @see #appendNull()
    */
-  public CharBuffer appendFloatArray(float[] array) {
+  public final CharBuffer appendFloatArray(float[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
       ensureCapacity(2);
-      return doAppend('[').doAppend(']');
+      return appendChar('[').appendChar(']');
     }
     ensureCapacity(array.length * 6); // guessing
-    doAppend('[').appendFloat(array[0]);
+    appendChar('[').appendFloat(array[0]);
     for (int index = 1; index < array.length; index++) {
       append(',').append(' ').appendFloat(array[index]);
     }
@@ -2013,7 +2210,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @return A reference to this buffer.
    * @see #appendDec(double)
    */
-  public CharBuffer appendDouble(double value) {
+  public final CharBuffer appendDouble(double value) {
     return Double.isFinite(value) ? appendDec(value).append('d') : appendDec(value);
   }
 
@@ -2032,15 +2229,15 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @see #appendDouble(double)
    * @see #appendNull()
    */
-  public CharBuffer appendDoubleArray(double[] array) {
+  public final CharBuffer appendDoubleArray(double[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
       ensureCapacity(2);
-      return doAppend('[').doAppend(']');
+      return appendChar('[').appendChar(']');
     }
     ensureCapacity(array.length * 6); // guessing
-    doAppend('[').appendDouble(array[0]);
+    appendChar('[').appendDouble(array[0]);
     for (int index = 1; index < array.length; index++) {
       append(',').append(' ').appendDouble(array[index]);
     }
@@ -2057,7 +2254,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @return A reference to this buffer.
    * @see CharEncoder#JAVA
    */
-  public CharBuffer appendChar(char value) {
+  public final CharBuffer appendCharacter(char value) {
     return CharEncoder.JAVA.encode(value, append('\'')).append('\'');
   }
 
@@ -2069,24 +2266,24 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * <p>The format is <code>\[(E<sub>0</sub>(, E<sub>n={0 &lt; n &lt; L}</sub>)*)?\]</code>, where
    * {@code L} is length of the array, <code>E<sub>0</sub></code> and <code>E<sub>n</sub></code>
    * are string representations of the first and n<sup>th</sup> elements of the array respectively,
-   * appended to the buffer by the {@link #appendChar(char)} method.</p>
+   * appended to the buffer by the {@link #appendCharacter(char)} method.</p>
    *
    * @param array The {@code char[]} array which string representation to append to the buffer.
    * @return A reference to this buffer.
-   * @see #appendChar(char)
+   * @see #appendCharacter(char)
    * @see #appendNull()
    */
-  public CharBuffer appendCharArray(char[] array) {
+  public final CharBuffer appendCharacterArray(char[] array) {
     if (array == null) {
       return appendNull();
     } else if (array.length == 0) { // fast check
       ensureCapacity(2);
-      return doAppend('[').doAppend(']');
+      return appendChar('[').appendChar(']');
     }
     ensureCapacity(array.length * 5); // guessing
-    doAppend('[').appendChar(array[0]);
+    appendChar('[').appendCharacter(array[0]);
     for (int index = 1; index < array.length; index++) {
-      append(',').append(' ').appendChar(array[index]);
+      append(',').append(' ').appendCharacter(array[index]);
     }
     return append(']');
   }
@@ -2106,7 +2303,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @see CharEncoder#JAVA
    * @see #appendNull()
    */
-  public CharBuffer appendString(CharSequence value) {
+  public final CharBuffer appendString(CharSequence value) {
     if (value == null) {
       return appendNull();
     }
@@ -2125,7 +2322,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @see #append(CharSequence)
    * @see #appendNull()
    */
-  public CharBuffer appendEnum(Enum<?> value) {
+  public final CharBuffer appendEnum(Enum<?> value) {
     return value != null ? append(value.name()) : appendNull();
   }
 
@@ -2145,7 +2342,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @see #appendObject(Object)
    * @see #appendNull()
    */
-  public CharBuffer appendIterable(Iterable<?> iterable) {
+  public final CharBuffer appendIterable(Iterable<?> iterable) {
     // make sure that nothing is null to avoid NPE
     final Iterator<?> itr = iterable != null
         ? iterable.iterator()
@@ -2154,7 +2351,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       return appendNull();
     } else if (!itr.hasNext()) { // fast check
       ensureCapacity(2);
-      return doAppend('[').doAppend(']');
+      return appendChar('[').appendChar(']');
     }
     append('[');
     // remember reference to the object and check for circular reference
@@ -2192,7 +2389,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @see #appendObject(Object)
    * @see #appendNull()
    */
-  public CharBuffer appendMap(Map<?, ?> map) {
+  public final CharBuffer appendMap(Map<?, ?> map) {
     // make sure that nothing is null to avoid NPE
     final Set<? extends Map.Entry<?, ?>> entries = map != null
         ? map.entrySet()
@@ -2204,10 +2401,10 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       return appendNull();
     } else if (!itr.hasNext()) { // fast check
       ensureCapacity(2);
-      return doAppend('{').doAppend('}');
+      return appendChar('{').appendChar('}');
     }
     ensureCapacity(map.size() * 10); // guessing
-    doAppend('{');
+    appendChar('{');
     // remember reference to the object and check for circular reference
     if (pushReference(map)) {
       // cross-reference detected!
@@ -2251,7 +2448,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @param object The object which string representation to append to the buffer.
    * @return A reference to this buffer.
    */
-  public CharBuffer appendPlain(Object object) {
+  public final CharBuffer appendPlain(Object object) {
     if (object == null) {
       return appendNull();
     }
@@ -2262,7 +2459,6 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       return this;
     }
     try {
-      // FIXME Move advanced features to a subclass like AdvancedCharBuffer or EnhancedCharBuffer?
       // look for overrider first
       final ToString.Overrider<Object> overrider =
           Objects.cast(TO_STRING_OVERRIDERS.get(object.getClass()));
@@ -2332,8 +2528,8 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       if (crossref == null) {
         final String classname = object.getClass().getName();
         crossref = new SimpleCharBuffer(classname.length() + 10);
-        crossref.doAppend('!').append(classname);
-        crossref.doAppend('@').appendHex(System.identityHashCode(object));
+        crossref.appendChar('!').append(classname);
+        crossref.appendChar('@').appendHex(System.identityHashCode(object));
       }
       append(crossref);
       return true;
@@ -2393,7 +2589,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       do {
         if (length < 4) { // could be a bit faster
           for (; length > 0; length--) {
-            doAppend(' ');
+            appendChar(' ');
           }
         } else {
           final char[] spaces = SPACES[Math.min(length, SPACES.length) - 4];
@@ -2422,7 +2618,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
     if (require(length, INT_POSITIVE_OR_ZERO) > 0) {
       ensureCapacity(length);
       for (; length > 0; length--) {
-        doAppend(indent);
+        appendChar(indent);
       }
     }
     return this;
@@ -2448,7 +2644,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       final char high = Character.highSurrogate(indent);
       final char low = Character.lowSurrogate(indent);
       for (; length > 0; length--) {
-        doAppend(high).doAppend(low);
+        appendChar(high).appendChar(low);
       }
     }
     return this;

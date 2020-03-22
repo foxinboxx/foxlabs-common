@@ -17,7 +17,6 @@
 package org.foxlabs.common.text;
 
 import static org.foxlabs.common.Predicates.*;
-import static org.foxlabs.common.Predicates.ExceptionProvider.ofIOOB;
 
 import org.foxlabs.common.exception.ThresholdReachedException;
 
@@ -75,13 +74,13 @@ public class BigCharBuffer extends CharBuffer {
   // Basic operations
 
   @Override
-  protected CharBuffer doAppend(char ch) {
+  protected CharBuffer appendChar(char ch) {
     nextSlot()[length++] = ch;
     return this;
   }
 
   @Override
-  protected final CharBuffer doAppend(GetChars sequence, int start, int end) {
+  protected final CharBuffer appendSequence(GetChars sequence, int start, int end) {
     // calculate the number of characters to append
     int count = end - start;
     if (count > 0) { // fast check
@@ -103,25 +102,15 @@ public class BigCharBuffer extends CharBuffer {
   }
 
   @Override
-  public final int ensureCapacity(int count) {
-    // trim count if it exceeds threshold
-    long nlength = (long) length + (long) count; // avoid int overflow
-    if (nlength > threshold) {
-      count = (int) (nlength = threshold) - length;
-      if (count == 0) { // fast check
-        throw new ThresholdReachedException(this);
-      }
-    }
+  protected void extendCapacity(int nlength) {
     // calculate total number of required slots
-    final int nslots = ((int) nlength - 1) / depth + 1;
+    final int nslots = (nlength - 1) / depth + 1;
     if (nslots > buffer.length) {
       // extend buffer for new slots as x2 required slots
       final char[][] copy = new char[Math.min(nslots << 1, capacity)][];
       System.arraycopy(buffer, 0, copy, 0, (length - 1) / depth + 1);
       buffer = copy;
     }
-    // return the actual number of characters that can be appended
-    return count;
   }
 
   private final char[] nextSlot() {
@@ -131,13 +120,12 @@ public class BigCharBuffer extends CharBuffer {
   }
 
   @Override
-  public char charAt(int index) {
-    require(this, checkCharSequenceIndex(index), ofIOOB(index));
+  protected char getChar(int index) {
     return buffer[index / depth][index % depth];
   }
 
   @Override
-  protected final void doGetChars(int start, int end, char[] target, int offset) {
+  protected final void copyChars(int start, int end, char[] target, int offset) {
     while (start < end) {
       final int index = start % depth;
       final int remainder = Math.min(depth - index, end - start);

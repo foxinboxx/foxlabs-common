@@ -18,11 +18,10 @@ package org.foxlabs.common.text;
 
 import org.junit.Test;
 
-import org.foxlabs.common.text.CharBuffer;
 import org.foxlabs.common.text.CharEncoder;
 
-import static org.foxlabs.common.text.CharEncoder.*;
 import static org.junit.Assert.*;
+import static org.foxlabs.common.text.CharEncoder.*;
 
 /**
  * Tests for the character encoders defined in the {@link CharEncoder} interface.

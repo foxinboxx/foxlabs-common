@@ -36,15 +36,21 @@ public interface CharEncoder {
    * A dummy character encoder that does not apply any conversion to characters and appends them to
    * the buffer as is.
    */
-  CharEncoder DUMMY = (ch, buffer) -> buffer.append(ch);
+  CharEncoder DUMMY = new CharEncoder() {
+    @Override public CharBuffer encode(int ch, CharBuffer buffer) {
+      return buffer.append(ch);
+    }
+  };
 
   /**
    * A character encoder that converts characters to uppercase according to the
    * {@link Character#toUpperCase(int)} method. Note that this encoder does not take locale into
    * account.
    */
-  CharEncoder UPPERCASE = (ch, buffer) -> {
-    return buffer.append(Character.toUpperCase(ch));
+  CharEncoder UPPERCASE = new CharEncoder() {
+    @Override public CharBuffer encode(int ch, CharBuffer buffer) {
+      return buffer.append(Character.toUpperCase(ch));
+    }
   };
 
   /**
@@ -52,8 +58,10 @@ public interface CharEncoder {
    * {@link Character#toLowerCase(int)} method. Note that this encoder does not take locale into
    * account.
    */
-  CharEncoder LOWERCASE = (ch, buffer) -> {
-    return buffer.append(Character.toLowerCase(ch));
+  CharEncoder LOWERCASE = new CharEncoder() {
+    @Override public CharBuffer encode(int ch, CharBuffer buffer) {
+      return buffer.append(Character.toLowerCase(ch));
+    }
   };
 
   /**
@@ -67,14 +75,16 @@ public interface CharEncoder {
    * method. The format is compatible with Java language. Note that this encoder does not validate
    * the specified character to be a valid Unicode code point.
    */
-  CharEncoder UCODE = (ch, buffer) -> {
-    if (Character.isBmpCodePoint(ch)) {
-      buffer.ensureCapacity(6);
-      return buffer.append('\\').append('u').appendHex((short) ch);
+  CharEncoder UCODE = new CharEncoder() {
+    @Override public CharBuffer encode(int ch, CharBuffer buffer) {
+      if (Character.isBmpCodePoint(ch)) {
+        buffer.ensureCapacity(6);
+        return buffer.append('\\').append('u').appendHex((short) ch);
+      }
+      buffer.ensureCapacity(11);
+      return buffer.append('\\').append('u').appendHex((short) Character.highSurrogate(ch))
+          .append('\\').append('u').appendHex((short) Character.lowSurrogate(ch));
     }
-    buffer.ensureCapacity(11);
-    return buffer.append('\\').append('u').appendHex((short) Character.highSurrogate(ch))
-        .append('\\').append('u').appendHex((short) Character.lowSurrogate(ch));
   };
 
   /**
@@ -83,26 +93,28 @@ public interface CharEncoder {
    * {@code '\f'} characters. All the {@link Character#isISOControl(int) ISO Control} characters
    * will be converted to the {@link #UCODE} format as well.
    */
-  CharEncoder JAVA = (ch, buffer) -> {
-    switch (ch) {
-    case '\\':
-      return buffer.append('\\').append('\\');
-    case '\'':
-      return buffer.append('\\').append('\'');
-    case '\"':
-      return buffer.append('\\').append('\"');
-    case '\n':
-      return buffer.append('\\').append('n');
-    case '\r':
-      return buffer.append('\\').append('r');
-    case '\t':
-      return buffer.append('\\').append('t');
-    case '\b':
-      return buffer.append('\\').append('b');
-    case '\f':
-      return buffer.append('\\').append('f');
-    default:
-      return Character.isISOControl(ch) ? UCODE.encode(ch, buffer) : buffer.append(ch);
+  CharEncoder JAVA = new CharEncoder() {
+    @Override public CharBuffer encode(int ch, CharBuffer buffer) {
+      switch (ch) {
+      case '\\':
+        return buffer.append('\\').append('\\');
+      case '\'':
+        return buffer.append('\\').append('\'');
+      case '\"':
+        return buffer.append('\\').append('\"');
+      case '\n':
+        return buffer.append('\\').append('n');
+      case '\r':
+        return buffer.append('\\').append('r');
+      case '\t':
+        return buffer.append('\\').append('t');
+      case '\b':
+        return buffer.append('\\').append('b');
+      case '\f':
+        return buffer.append('\\').append('f');
+      default:
+        return Character.isISOControl(ch) ? UCODE.encode(ch, buffer) : buffer.append(ch);
+      }
     }
   };
 

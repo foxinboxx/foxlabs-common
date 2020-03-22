@@ -34,7 +34,7 @@ import java.util.function.DoublePredicate;
  *
  * <p>
  * {@code NullPointerException} examples:
- * <pre>
+ * <blockquote><pre>
  * // Returns "success"
  * String result = requireNonNull("success");
  *
@@ -58,12 +58,12 @@ import java.util.function.DoublePredicate;
  * // Throws NPE with detail message: "cannot be null: items[1]"
  * String[] items = requireAllNonNull(new String[]{"one", null, "three"},
  *     ExceptionProvider.OfSequence.ofNPE("cannot be null", "items"));
- * </pre>
+ * </pre></blockquote>
  * </p>
  *
  * <p>
  * {@code IllegalArgumentException} examples:
- * <pre>
+ * <blockquote><pre>
  * // Returns 10
  * int index = require(10, INT_POSITIVE_OR_ZERO);
  *
@@ -90,12 +90,12 @@ import java.util.function.DoublePredicate;
  * List&lt;String&gt; items = requireAll(Arrays.asList("one", "two", "three"),
  *     (s) -> s != null && s.length() <= 3,
  *     ExceptionProvider.OfSequence.ofIAE("length should be <= 3", "items"));
- * </pre>
+ * </pre></blockquote>
  * </p>
  *
  * <p>
  * More complex examples:
- * <pre>
+ * <blockquote><pre>
  * // Throws IndexOutOfBoundsException with detail message: "index should be > 10 and < 100: -5"
  * int index = require(-5, (int i) -> i > 10 && i < 100,
  *     (i) -> new IndexOutOfBoundsException("index should be > 10 and < 100: " + i));
@@ -110,7 +110,7 @@ import java.util.function.DoublePredicate;
  *     require(Arrays.asList("one", null, "three"), COLLECTION_NON_EMPTY_OR_NULL,
  *         "items cannot be null or empty"),
  *     ExceptionProvider.OfSequence.ofNPE("item cannot be null", "items"));
- * </pre>
+ * </pre></blockquote>
  * </p>
  *
  * @author Fox Mulder
@@ -597,9 +597,9 @@ public final class Predicates {
    *
    * <p>
    * This is an equivalent of the:
-   * <pre>
+   * <blockquote><pre>
    * requireNonNull(object, ExceptionProvider.ofNPE())
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param <T> The type of the object.
@@ -620,9 +620,9 @@ public final class Predicates {
    *
    * <p>
    * This is an equivalent of the:
-   * <pre>
+   * <blockquote><pre>
    * requireNonNull(object, ExceptionProvider.ofNPE(message))
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param <T> The type of the object.
@@ -663,9 +663,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * require(object, condition, ExceptionProvider.ofIAE())
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param <T> The type of the object.
@@ -685,9 +685,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * require(object, condition, ExceptionProvider.ofIAE(message))
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param <T> The type of the object.
@@ -730,9 +730,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * require(number, condition, ExceptionProvider.ofIAE())
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param number The {@code int} number to check against condition.
@@ -751,9 +751,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * require(number, condition, ExceptionProvider.ofIAE(message))
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param number The {@code int} number to check against condition.
@@ -794,9 +794,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * require(number, condition, ExceptionProvider.ofIAE())
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param number The {@code long} number to check against condition.
@@ -815,9 +815,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * require(number, condition, ExceptionProvider.ofIAE(message))
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param number The {@code long} number to check against condition.
@@ -858,9 +858,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * require(number, condition, ExceptionProvider.ofIAE())
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param number The {@code double} number to check against condition.
@@ -879,9 +879,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * require(number, condition, ExceptionProvider.ofIAE(message))
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param number The {@code double} number to check against condition.
@@ -925,9 +925,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAllNonNull(array, ExceptionProvider.OfSequence.ofNPE())
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param <T> The type of elements of the array.
@@ -946,9 +946,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAllNonNull(array, ExceptionProvider.OfSequence.ofNPE(message))
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param <T> The type of elements of the array.
@@ -991,9 +991,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE())
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param <T> The type of elements of the array.
@@ -1014,9 +1014,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param <T> The type of elements of the array.
@@ -1065,9 +1065,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE())
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param array The {@code byte[]} array whose elements to check against condition.
@@ -1088,9 +1088,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param array The {@code byte[]} array whose elements to check against condition.
@@ -1137,9 +1137,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE())
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param array The {@code short[]} array whose elements to check against condition.
@@ -1160,9 +1160,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param array The {@code short[]} array whose elements to check against condition.
@@ -1209,9 +1209,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE())
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param array The {@code int[]} array whose elements to check against condition.
@@ -1232,9 +1232,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param array The {@code int[]} array whose elements to check against condition.
@@ -1281,9 +1281,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE())
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param array The {@code long[]} array whose elements to check against condition.
@@ -1304,9 +1304,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param array The {@code long[]} array whose elements to check against condition.
@@ -1353,9 +1353,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE())
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param array The {@code float[]} array whose elements to check against condition.
@@ -1376,9 +1376,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param array The {@code float[]} array whose elements to check against condition.
@@ -1425,9 +1425,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE())
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param array The {@code double[]} array whose elements to check against condition.
@@ -1448,9 +1448,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param array The {@code double[]} array whose elements to check against condition.
@@ -1497,9 +1497,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE())
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param array The {@code char[]} array whose elements to check against condition.
@@ -1520,9 +1520,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(array, condition, ExceptionProvider.OfSequence.ofIAE(message))
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param array The {@code char[]} array whose elements to check against condition.
@@ -1569,9 +1569,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAllNonNull(iterable, ExceptionProvider.OfSequence.ofNPE())
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param <T> The type of elements of the {@code Iterable} sequence.
@@ -1592,9 +1592,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAllNonNull(iterable, ExceptionProvider.OfSequence.ofNPE(message))
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param <T> The type of elements of the {@code Iterable} sequence.
@@ -1643,9 +1643,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(iterable, condition, ExceptionProvider.OfSequence.ofIAE())
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param <T> The type of elements of the {@code Iterable} sequence.
@@ -1668,9 +1668,9 @@ public final class Predicates {
    *
    * <p>
    * This is a shortcut for the:
-   * <pre>
+   * <blockquote><pre>
    * requireAll(iterable, condition, ExceptionProvider.OfSequence.ofIAE(message))
-   * </pre>
+   * </pre></blockquote>
    * </p>
    *
    * @param <T> The type of elements of the {@code Iterable} sequence.
@@ -1714,6 +1714,101 @@ public final class Predicates {
       }
     }
     return iterable;
+  }
+
+  // Optimized range checks
+
+  /**
+   * Checks that the specified index is not negative or greater than length of the specified array
+   * (i.e. {@code 0 <= index < array.length()}) and throws {@link IndexOutOfBoundsException} if it
+   * is. Note that if the specified array is {@code null} then the {@link NullPointerException}
+   * will be thrown.
+   *
+   * <p>
+   * This is an optimized form of the:
+   * <blockquote><pre>
+   * require(array, checkObjectArrayIndex(index),
+   *     ExceptionProvider.ofIOOB(index, array.length))
+   * </pre></blockquote>
+   * </p>
+   *
+   * @param <T> The type of elements of the array.
+   * @param array The array for which to check that the specified index is not out of bounds.
+   * @param index The array index to check.
+   * @return A reference to the specified array.
+   * @throws NullPointerException if the specified array is {@code null}.
+   * @throws IndexOutOfBoundsException if the specified index is out of range.
+   */
+  public static <T> T[] requireIndex(T[] array, int index) {
+    if (index >= 0 && index < array.length) {
+      return array;
+    }
+    throw ExceptionProvider.newIOOB(index, array.length);
+  }
+
+  /**
+   * Checks that the specified index is not negative or greater than length of the specified array
+   * (i.e. {@code 0 <= index < array.length()) and throws {@code {@link IndexOutOfBoundsException}
+   * with the specified detail message if it is not. Note that if the specified array is
+   * {@code null} then no exception will be thrown.
+   *
+   * <p>
+   * This is an optimized form of the:
+   * <blockquote><pre>
+   * require(array, checkObjectArrayIndex(index),
+   *     ExceptionProvider.ofIOOB(message, index, array.length))
+   * </pre></blockquote>
+   * </p>
+   *
+   * @param <T> The type of elements of the array.
+   * @param array The array for which to check that the specified index is not out of bounds.
+   * @return A reference to the specified array.
+   * @throws IndexOutOfBoundsException if the specified index is out of range.
+   */
+  public static <T> T[] requireIndex(T[] array, int index, String message) {
+    return require(array, checkObjectArrayIndex(index), ExceptionProvider.ofIOOB(message, index, array.length));
+  }
+
+  public static char[] checkIndex(char[] array, int index) {
+    if (index >= 0 && index < array.length) {
+      return array;
+    }
+    throw ExceptionProvider.newIOOB(index, array.length);
+  }
+
+  public static char[] checkRange(char[] array, int start) {
+    if (array.length >= start && start >= 0) {
+      return array;
+    }
+    throw ExceptionProvider.newIOOB(start, array.length, array.length);
+  }
+
+  public static char[] checkRange(char[] array, int start, int end) {
+    if (array.length >= end && end >= start && start >= 0) {
+      return array;
+    }
+    throw ExceptionProvider.newIOOB(start, end, array.length);
+  }
+
+  public static <T extends CharSequence> T checkIndex(T sequence, int index) {
+    if (index >= 0 && index < sequence.length()) {
+      return sequence;
+    }
+    throw ExceptionProvider.newIOOB(index, sequence.length());
+  }
+
+  public static <T extends CharSequence> T checkRange(T sequence, int start) {
+    if (sequence.length() >= start && start >= 0) {
+      return sequence;
+    }
+    throw ExceptionProvider.newIOOB(start, sequence.length(), sequence.length());
+  }
+
+  public static <T extends CharSequence> T checkRange(T sequence, int start, int end) {
+    if (start >= 0 && start <= end && end <= sequence.length()) {
+      return sequence;
+    }
+    throw ExceptionProvider.newIOOB(start, end, sequence.length());
   }
 
   // ExceptionProvider
@@ -1785,44 +1880,60 @@ public final class Predicates {
 
     // IndexOutOfBoundsException
 
-    /**
-     * A shortcut for the:
-     * <code>
-     * ofIOOB("Index out of range: [0 <= %d < %d]", index)
-     * </code>
-     */
-    static <T> ExceptionProvider<T, IndexOutOfBoundsException> ofIOOB(int index) {
-      return ofIOOB("Index out of range: [0 <= %d < %d]", index);
+    static IndexOutOfBoundsException newIOOB(int index, int length) {
+      return newIOOB("Index out of range: [0 <= %d < %d]", index, length);
+    }
+
+    static IndexOutOfBoundsException newIOOB(String message, int index, int length) {
+      return new IndexOutOfBoundsException(String.format(message, index, length));
+    }
+
+    static IndexOutOfBoundsException newIOOB(int start, int end, int length) {
+      return newIOOB("Invalid range: [0 <= %d <= %d <= %d]", start, end, length);
+    }
+
+    static IndexOutOfBoundsException newIOOB(String message, int start, int end, int length) {
+      return new IndexOutOfBoundsException(String.format(message, start, end, length));
     }
 
     /**
      * A shortcut for the:
      * <code>
-     * (a) -> new IndexOutOfBoundsException(String.format(message, index, Array.getLength(a)))
+     * (o) -> newIOOB(index, length)
      * </code>
      */
-    static <T> ExceptionProvider<T, IndexOutOfBoundsException> ofIOOB(String message, int index) {
-      return (a) -> new IndexOutOfBoundsException(String.format(message, index, Array.getLength(a)));
+    static <T> ExceptionProvider<T, IndexOutOfBoundsException> ofIOOB(int index, int length) {
+      return (o) -> newIOOB(index, length);
     }
 
     /**
      * A shortcut for the:
      * <code>
-     * ofIOOB("Invalid range: [0 <= %d <= %d <= %d]", start, end)
+     * (o) -> newIOOB(message, index, length)
      * </code>
      */
-    static <T> ExceptionProvider<T, IndexOutOfBoundsException> ofIOOB(int start, int end) {
-      return ofIOOB("Invalid range: [0 <= %d <= %d <= %d]", start, end);
+    static <T> ExceptionProvider<T, IndexOutOfBoundsException> ofIOOB(String message, int index, int length) {
+      return (o) -> newIOOB(message, index, length);
     }
 
     /**
      * A shortcut for the:
      * <code>
-     * (a) -> new IndexOutOfBoundsException(String.format(message, start, end, Array.getLength(a)))
+     * newIOOB(start, end, length)
      * </code>
      */
-    static <T> ExceptionProvider<T, IndexOutOfBoundsException> ofIOOB(String message, int start, int end) {
-      return (a) -> new IndexOutOfBoundsException(String.format(message, start, end, Array.getLength(a)));
+    static <T> ExceptionProvider<T, IndexOutOfBoundsException> ofIOOB(int start, int end, int length) {
+      return (o) -> newIOOB(start, end, length);
+    }
+
+    /**
+     * A shortcut for the:
+     * <code>
+     * (o) -> newIOOB(message, start, end, length)
+     * </code>
+     */
+    static <T> ExceptionProvider<T, IndexOutOfBoundsException> ofIOOB(String message, int start, int end, int length) {
+      return (o) -> newIOOB(message, start, end, length);
     }
 
     // ExceptionProvider.OfSequence
