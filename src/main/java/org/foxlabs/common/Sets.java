@@ -49,7 +49,7 @@ public final class Sets {
    */
   @SafeVarargs
   public static <E> HashSet<E> toHashSet(E... elements) {
-    Predicates.requireNonNull(elements);
+    Checks.checkNotNull(elements);
     return addAll0(new HashSet<>(), elements);
   }
 
@@ -80,7 +80,7 @@ public final class Sets {
    */
   @SafeVarargs
   public static <E> LinkedHashSet<E> toLinkedHashSet(E... elements) {
-    Predicates.requireNonNull(elements);
+    Checks.checkNotNull(elements);
     return addAll0(new LinkedHashSet<>(), elements);
   }
 
@@ -111,7 +111,7 @@ public final class Sets {
    */
   @SafeVarargs
   public static <E extends Comparable<? super E>> TreeSet<E> toTreeSet(E... elements) {
-    Predicates.requireNonNull(elements);
+    Checks.checkNotNull(elements);
     return addAll0(new TreeSet<>(), elements);
   }
 
@@ -144,8 +144,8 @@ public final class Sets {
    */
   @SafeVarargs
   public static <E> TreeSet<E> toTreeSet(Comparator<? super E> comparator, E... elements) {
-    Predicates.requireNonNull(comparator);
-    Predicates.requireNonNull(elements);
+    Checks.checkNotNull(comparator);
+    Checks.checkNotNull(elements);
     return addAll0(new TreeSet<>(comparator), elements);
   }
 
@@ -162,7 +162,7 @@ public final class Sets {
    */
   @SafeVarargs
   public static <E> SortedSet<E> toImmutableTreeSet(Comparator<? super E> comparator, E... elements) {
-    Predicates.requireNonNull(comparator);
+    Checks.checkNotNull(comparator);
     return elements.length > 0
         ? Collections.unmodifiableSortedSet(addAll0(new TreeSet<>(comparator), elements))
         : Collections.emptySortedSet();
@@ -182,8 +182,8 @@ public final class Sets {
    */
   @SafeVarargs
   public static <E, S extends Set<E>> S addAll(S set, E... elements) {
-    Predicates.requireNonNull(set);
-    Predicates.requireNonNull(elements);
+    Checks.checkNotNull(set);
+    Checks.checkNotNull(elements);
     return addAll0(set, elements);
   }
 

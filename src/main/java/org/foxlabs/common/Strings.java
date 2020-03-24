@@ -152,7 +152,7 @@ public final class Strings {
       return true;
     }
     return new Iterators.CodePointIterator(string)
-        .tryEachRemaining(Predicates.CHAR_WHITESPACE) == string.length();
+        .tryEachRemaining(Character::isWhitespace) == string.length();
   }
 
   /**
@@ -180,7 +180,7 @@ public final class Strings {
       return false;
     }
     return new Iterators.CodePointIterator(string)
-        .tryEachRemaining(Predicates.CHAR_NON_WHITESPACE) == string.length();
+        .tryEachRemaining((c) -> !Character.isWhitespace(c)) == string.length();
   }
 
   /**
@@ -198,7 +198,7 @@ public final class Strings {
       } else {
         final Iterators.CodePointIterator itr = new Iterators.CodePointIterator(string);
         while (itr.hasNext()) {
-          if (Predicates.CHAR_WHITESPACE.test(itr.nextInt())) {
+          if (Character.isWhitespace(itr.nextInt())) {
             return true;
           }
         }
@@ -248,7 +248,7 @@ public final class Strings {
    * @throws NullPointerException if the specified operator is {@code null}.
    */
   public static String forEachChar(String string, IntUnaryOperator operator) {
-    Predicates.requireNonNull(operator);
+    Checks.checkNotNull(operator);
     final int length0 = string == null ? 0 : string.length();
     for (int i = 0, j, cc0, cc1; i < length0; i += cc0) {
       int ch0 = string.codePointAt(i);
@@ -288,7 +288,7 @@ public final class Strings {
    * @see #forEachChar(String, IntUnaryOperator)
    */
   public static String replace(String string, int replacement, IntPredicate predicate) {
-    Predicates.requireNonNull(predicate);
+    Checks.checkNotNull(predicate);
     return forEachChar(string, (ch) -> predicate.test(ch) ? replacement : ch);
   }
 
@@ -417,7 +417,7 @@ public final class Strings {
    * @throws IllegalArgumentException if the specified limit is negative.
    */
   public static String cut(String string, int limit) {
-    Predicates.require(limit, Predicates.INT_POSITIVE_OR_ZERO);
+    Checks.checkThat(limit, limit >= 0);
     if (limit == 0 || string == null || string.isEmpty()) {
       return null;
     }

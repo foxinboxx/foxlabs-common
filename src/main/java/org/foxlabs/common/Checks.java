@@ -153,6 +153,10 @@ public final class Checks {
     return iterable;
   }
 
+  // ===== EMPTY CHECKS ===========================================================================
+
+  // TODO Object[], Collection, Map, all primitive type arrays
+
   // ===== INDEX CHECKS ===========================================================================
 
   // --- boolean[]
@@ -527,7 +531,7 @@ public final class Checks {
    *
    * @see #checkIndex(CharSequence, int, String)
    */
-  public static CharSequence checkIndex(CharSequence sequence, int index) {
+  public static <S extends CharSequence> S checkIndex(S sequence, int index) {
     if (index < 0 || index >= sequence.length()) {
       throw new IndexOutOfBoundsException(
           String.format("Index out of range: {0 <= %s < %s}", index, sequence.length()));
@@ -544,7 +548,7 @@ public final class Checks {
    * <p>Note that {@link NullPointerException} will be thrown if the specified character
    * <code>sequence</code> reference is <code>null</code>.</p>
    */
-  public static CharSequence checkIndex(CharSequence sequence, int index, String message) {
+  public static <S extends CharSequence> S checkIndex(S sequence, int index, String message) {
     if (index < 0 || index >= sequence.length()) {
       throw new IndexOutOfBoundsException(String.format(message, index, sequence.length()));
     }
@@ -1285,7 +1289,7 @@ public final class Checks {
    *
    * @see #checkRange(CharSequence, int, String)
    */
-  public static CharSequence checkRange(CharSequence sequence, int start) {
+  public static <S extends CharSequence> S checkRange(S sequence, int start) {
     if (start < 0 || start > sequence.length()) {
       throw new IndexOutOfBoundsException(
           String.format("Invalid range: {0 <= %s <= %s}", start, sequence.length()));
@@ -1302,7 +1306,7 @@ public final class Checks {
    * <p>Note that {@link NullPointerException} will be thrown if the specified character
    * <code>sequence</code> reference is <code>null</code>.</p>
    */
-  public static CharSequence checkRange(CharSequence sequence, int start, String message) {
+  public static <S extends CharSequence> S checkRange(S sequence, int start, String message) {
     if (start < 0 || start > sequence.length()) {
       throw new IndexOutOfBoundsException(String.format(message, start, sequence.length()));
     }
@@ -1320,7 +1324,7 @@ public final class Checks {
    *
    * @see #checkRange(CharSequence, int, int, String)
    */
-  public static CharSequence checkRange(CharSequence sequence, int start, int end) {
+  public static <S extends CharSequence> S checkRange(S sequence, int start, int end) {
     if (start < 0 || start > end || end > sequence.length()) {
       throw new IndexOutOfBoundsException(
           String.format("Invalid range: {0 <= %s <= %s <= %s}", start, end, sequence.length()));
@@ -1338,7 +1342,7 @@ public final class Checks {
    * <p>Note that {@link NullPointerException} will be thrown if the specified character
    * <code>sequence</code> reference is <code>null</code>.</p>
    */
-  public static CharSequence checkRange(CharSequence sequence, int start, int end, String message) {
+  public static <S extends CharSequence> S checkRange(S sequence, int start, int end, String message) {
     if (start < 0 || start > end || end > sequence.length()) {
       throw new IndexOutOfBoundsException(String.format(message, start, end, sequence.length()));
     }
@@ -1991,7 +1995,7 @@ public final class Checks {
    *
    * @see #checkMatch(CharSequence, Pattern, String)
    */
-  public static CharSequence checkMatch(CharSequence sequence, Pattern pattern) {
+  public static <S extends CharSequence> S checkMatch(S sequence, Pattern pattern) {
     if (sequence != null) {
       if (pattern.matcher(sequence).matches() == false) {
         throw new IllegalArgumentException(
@@ -2010,7 +2014,7 @@ public final class Checks {
    * <p>Note that if the specified character <code>sequence</code> reference is <code>null</code>
    * then no exception will be thrown and <code>null</code> will be returned.</p>
    */
-  public static CharSequence checkMatch(CharSequence sequence, Pattern pattern, String message) {
+  public static <S extends CharSequence> S checkMatch(S sequence, Pattern pattern, String message) {
     if (sequence != null) {
       if (pattern.matcher(sequence).matches() == false) {
         throw new IllegalArgumentException(

@@ -88,7 +88,7 @@ public final class Objects {
    * @throws NullPointerException if the specified formatter is {@code null}.
    */
   public static Object message(Supplier<String> formatter) {
-    Predicates.requireNonNull(formatter);
+    Checks.checkNotNull(formatter);
     return new Object() {
       @Override public String toString() {
         return formatter.get();

@@ -1592,10 +1592,10 @@ public class CharBufferTest {
    */
   @Test
   public void test_appendByte() {
-    assertEquals("0", new BigCharBuffer(1).appendByte((byte) 0).toString());
-    assertEquals("91", new BigCharBuffer(2).appendByte((byte) 91).toString());
-    assertEquals("127", new BigCharBuffer(3).appendByte((byte) 127).toString());
-    assertEquals("-128", new BigCharBuffer(4).appendByte((byte) -128).toString());
+    assertEquals("0x00", new BigCharBuffer(4).appendByte((byte) 0x00).toString());
+    assertEquals("0x91", new BigCharBuffer(4).appendByte((byte) 0x91).toString());
+    assertEquals("0x7f", new BigCharBuffer(4).appendByte((byte) 0x7f).toString());
+    assertEquals("0x80", new BigCharBuffer(4).appendByte((byte) 0x80).toString());
   }
 
   /**
@@ -1606,8 +1606,8 @@ public class CharBufferTest {
     // @formatter:off
     assertEquals("null", new BigCharBuffer(4).appendByteArray(null).toString());
     assertEquals("[]", new BigCharBuffer(2).appendByteArray(new byte[0]).toString());
-    assertEquals("[32]", new BigCharBuffer(4).appendByteArray(new byte[]{32}).toString());
-    assertEquals("[32, -64, 96]", new BigCharBuffer(13).appendByteArray(new byte[]{32, -64, 96}).toString());
+    assertEquals("[0x20]", new BigCharBuffer(6).appendByteArray(new byte[]{0x20}).toString());
+    assertEquals("[0x32, 0xc8, 0x96]", new BigCharBuffer(18).appendByteArray(new byte[]{0x32, (byte) 0xc8, (byte) 0x96}).toString());
     // @formatter:on
   }
 

@@ -51,20 +51,21 @@ public class SimpleCharBuffer extends CharBuffer {
   @Override
   protected void extendCapacity(int nlength) {
     if (nlength > buffer.length) {
-      final char[] copy = new char[Math.min(nlength << 2, threshold)];
+      final char[] copy = new char[Math.min(nlength << 1, threshold)];
       System.arraycopy(buffer, 0, copy, 0, buffer.length);
       buffer = copy;
     }
   }
 
   @Override
-  protected CharBuffer appendChar(char ch) {
+  public CharBuffer append(char ch) {
+    ensureCapacity(1);
     buffer[length++] = ch;
     return this;
   }
 
   @Override
-  protected CharBuffer appendSequence(GetChars sequence, int start, int end) {
+  protected CharBuffer append(GetChars sequence, int start, int end) {
     final int count = ensureCapacity(end - start);
     sequence.getChars(start, end, buffer, length);
     length += count;

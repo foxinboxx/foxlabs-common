@@ -16,29 +16,30 @@
 
 package org.foxlabs.common.text;
 
-import org.foxlabs.common.Predicates;
-
+/**
+ * A character encoder that converts a given single character (Unicode code point) to a sequence of
+ * characters (1:M mapping) and appends the encoded representation to the buffer.
+ *
+ * @author Fox Mulder
+ * @see CharBuffer
+ */
 @FunctionalInterface
 public interface CharEncoder {
 
-  CharBuffer encode(int ch, CharBuffer buffer);
-
-  default CharBuffer encode(CharSequence sequence, CharBuffer buffer) {
-    Predicates.requireNonNull(buffer);
-    final int length = sequence == null ? 0 : sequence.length();
-    for (int index = 0; index < length; index++) {
-      encode(sequence.charAt(index), buffer);
-    }
-    return buffer;
-  }
+  /**
+   * Appends an encoded representation of the {@code ch} character (Unicode code point) to the
+   * {@code buffer} and returns a number of characters ({@code char}) appended.
+   */
+  int encode(int ch, CharBuffer buffer);
 
   /**
-   * A dummy character encoder that does not apply any conversion to characters and appends them to
-   * the buffer as is.
+   * An identity character encoder that does not apply any conversion to characters and appends
+   * them to the buffer as is (1:1 mapping).
    */
-  CharEncoder DUMMY = new CharEncoder() {
-    @Override public CharBuffer encode(int ch, CharBuffer buffer) {
-      return buffer.append(ch);
+  CharEncoder IDENTITY = new CharEncoder() {
+    @Override public int encode(int ch, CharBuffer buffer) {
+      buffer.append(ch);
+      return Character.charCount(ch);
     }
   };
 
@@ -48,8 +49,9 @@ public interface CharEncoder {
    * account.
    */
   CharEncoder UPPERCASE = new CharEncoder() {
-    @Override public CharBuffer encode(int ch, CharBuffer buffer) {
-      return buffer.append(Character.toUpperCase(ch));
+    @Override public int encode(int ch, CharBuffer buffer) {
+      buffer.append(ch = Character.toUpperCase(ch));
+      return Character.charCount(ch);
     }
   };
 
@@ -59,8 +61,21 @@ public interface CharEncoder {
    * account.
    */
   CharEncoder LOWERCASE = new CharEncoder() {
-    @Override public CharBuffer encode(int ch, CharBuffer buffer) {
-      return buffer.append(Character.toLowerCase(ch));
+    @Override public int encode(int ch, CharBuffer buffer) {
+      buffer.append(ch = Character.toLowerCase(ch));
+      return Character.charCount(ch);
+    }
+  };
+
+  /**
+   * A character encoder that converts characters to titlecase according to the
+   * {@link Character#toTitleCase(int)} method. Note that this encoder does not take locale into
+   * account.
+   */
+  CharEncoder TITLECASE = new CharEncoder() {
+    @Override public int encode(int ch, CharBuffer buffer) {
+      buffer.append(ch = Character.toTitleCase(ch));
+      return Character.charCount(ch);
     }
   };
 
@@ -76,44 +91,56 @@ public interface CharEncoder {
    * the specified character to be a valid Unicode code point.
    */
   CharEncoder UCODE = new CharEncoder() {
-    @Override public CharBuffer encode(int ch, CharBuffer buffer) {
+    @Override public int encode(int ch, CharBuffer buffer) {
       if (Character.isBmpCodePoint(ch)) {
         buffer.ensureCapacity(6);
-        return buffer.append('\\').append('u').appendHex((short) ch);
+        buffer.append('\\').append('u').appendHex((short) ch);
+        return 6;
+      } else {
+        buffer.ensureCapacity(12);
+        buffer.append('\\').append('u').appendHex((short) Character.highSurrogate(ch));
+        buffer.append('\\').append('u').appendHex((short) Character.lowSurrogate(ch));
+        return 12;
       }
-      buffer.ensureCapacity(11);
-      return buffer.append('\\').append('u').appendHex((short) Character.highSurrogate(ch))
-          .append('\\').append('u').appendHex((short) Character.lowSurrogate(ch));
     }
   };
 
   /**
    * The Java character encoder that adds {@code '\\'} escape character for the {@code '\\'},
    * {@code '\''}, {@code '\"'}, {@code '\n'}, {@code '\r'}, {@code '\t'}, {@code '\b'} and
-   * {@code '\f'} characters. All the {@link Character#isISOControl(int) ISO Control} characters
-   * will be converted to the {@link #UCODE} format as well.
+   * {@code '\f'} characters. All the {@link Character#isISOControl(int)} characters will be
+   * converted to the {@link #UCODE} format as well. Other characters will be appended to the
+   * buffer as is.
    */
   CharEncoder JAVA = new CharEncoder() {
-    @Override public CharBuffer encode(int ch, CharBuffer buffer) {
+    @Override public int encode(int ch, CharBuffer buffer) {
       switch (ch) {
       case '\\':
-        return buffer.append('\\').append('\\');
+        buffer.append('\\').append('\\');
+        return 2;
       case '\'':
-        return buffer.append('\\').append('\'');
+        buffer.append('\\').append('\'');
+        return 2;
       case '\"':
-        return buffer.append('\\').append('\"');
+        buffer.append('\\').append('\"');
+        return 2;
       case '\n':
-        return buffer.append('\\').append('n');
+        buffer.append('\\').append('n');
+        return 2;
       case '\r':
-        return buffer.append('\\').append('r');
+        buffer.append('\\').append('r');
+        return 2;
       case '\t':
-        return buffer.append('\\').append('t');
+        buffer.append('\\').append('t');
+        return 2;
       case '\b':
-        return buffer.append('\\').append('b');
+        buffer.append('\\').append('b');
+        return 2;
       case '\f':
-        return buffer.append('\\').append('f');
+        buffer.append('\\').append('f');
+        return 2;
       default:
-        return Character.isISOControl(ch) ? UCODE.encode(ch, buffer) : buffer.append(ch);
+        return Character.isISOControl(ch) ? UCODE.encode(ch, buffer) : IDENTITY.encode(ch, buffer);
       }
     }
   };

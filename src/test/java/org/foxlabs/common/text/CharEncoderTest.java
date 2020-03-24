@@ -31,13 +31,14 @@ import static org.foxlabs.common.text.CharEncoder.*;
 public class CharEncoderTest {
 
   /**
-   * Tests the {@link CharEncoder#DUMMY} character encoder.
+   * Tests the {@link CharEncoder#IDENTITY} character encoder.
    */
   @Test
-  public void test_DUMMY_encoder() {
+  public void test_IDENTITY_encoder() {
     // @formatter:off
-    assertEquals("a",   DUMMY.encode('a',   new BigCharBuffer(1)).toString());
-    assertEquals("abc", DUMMY.encode("abc", new BigCharBuffer(3)).toString());
+    final CharBuffer buffer = new BigCharBuffer(1);
+    assertEquals(1, IDENTITY.encode('a', buffer));
+    assertEquals("a", buffer.toString());
     // @formatter:on
   }
 
@@ -46,9 +47,11 @@ public class CharEncoderTest {
    */
   @Test
   public void test_UPPERCASE_encoder() {
-    assertEquals("A", UPPERCASE.encode('a', new BigCharBuffer(1)).toString());
-    assertEquals("A", UPPERCASE.encode('A', new BigCharBuffer(1)).toString());
-    assertEquals("_", UPPERCASE.encode('_', new BigCharBuffer(1)).toString());
+    final CharBuffer buffer = new BigCharBuffer(3);
+    assertEquals(1, UPPERCASE.encode('a', buffer));
+    assertEquals(1, UPPERCASE.encode('A', buffer));
+    assertEquals(1, UPPERCASE.encode('_', buffer));
+    assertEquals("AA_", buffer.toString());
   }
 
   /**
@@ -56,9 +59,11 @@ public class CharEncoderTest {
    */
   @Test
   public void test_LOWERCASE_encoder() {
-    assertEquals("a", LOWERCASE.encode('a', new BigCharBuffer(1)).toString());
-    assertEquals("a", LOWERCASE.encode('A', new BigCharBuffer(1)).toString());
-    assertEquals("_", LOWERCASE.encode('_', new BigCharBuffer(1)).toString());
+    final CharBuffer buffer = new BigCharBuffer(3);
+    assertEquals(1, LOWERCASE.encode('a', buffer));
+    assertEquals(1, LOWERCASE.encode('A', buffer));
+    assertEquals(1, LOWERCASE.encode('_', buffer));
+    assertEquals("aa_", buffer.toString());
   }
 
   /**
@@ -67,10 +72,12 @@ public class CharEncoderTest {
   @Test
   public void test_UCODE_encoder() {
     // @formatter:off
-    assertEquals("\\u0001",        UCODE.encode(0x00000001, new BigCharBuffer( 6)).toString());
-    assertEquals("\\u1000",        UCODE.encode(0x00001000, new BigCharBuffer( 6)).toString());
-    assertEquals("\\uffff",        UCODE.encode(0x0000ffff, new BigCharBuffer( 6)).toString());
-    assertEquals("\\ud840\\udc00", UCODE.encode(0x00020000, new BigCharBuffer(12)).toString());
+    final CharBuffer buffer = new BigCharBuffer(30);
+    assertEquals( 6, UCODE.encode(0x00000001, buffer));
+    assertEquals( 6, UCODE.encode(0x00001000, buffer));
+    assertEquals( 6, UCODE.encode(0x0000ffff, buffer));
+    assertEquals(12, UCODE.encode(0x00020000, buffer));
+    assertEquals("\\u0001\\u1000\\uffff\\ud840\\udc00", buffer.toString());
     // @formatter:on
   }
 
@@ -80,19 +87,21 @@ public class CharEncoderTest {
   @Test
   public void test_JAVA_encoder() {
     // @formatter:off
-    assertEquals("a",       JAVA.encode('a',    new BigCharBuffer(1)).toString());
-    assertEquals("\\\\",    JAVA.encode('\\',   new BigCharBuffer(2)).toString());
-    assertEquals("\\\'",    JAVA.encode('\'',   new BigCharBuffer(2)).toString());
-    assertEquals("\\\"",    JAVA.encode('\"',   new BigCharBuffer(2)).toString());
-    assertEquals("\\n",     JAVA.encode('\n',   new BigCharBuffer(2)).toString());
-    assertEquals("\\r",     JAVA.encode('\r',   new BigCharBuffer(2)).toString());
-    assertEquals("\\t",     JAVA.encode('\t',   new BigCharBuffer(2)).toString());
-    assertEquals("\\f",     JAVA.encode('\f',   new BigCharBuffer(2)).toString());
-    assertEquals("\\b",     JAVA.encode('\b',   new BigCharBuffer(2)).toString());
-    assertEquals("\\u0000", JAVA.encode(0x0000, new BigCharBuffer(6)).toString());
-    assertEquals("\\u001f", JAVA.encode(0x001f, new BigCharBuffer(6)).toString());
-    assertEquals("\\u007f", JAVA.encode(0x007f, new BigCharBuffer(6)).toString());
-    assertEquals("\\u009f", JAVA.encode(0x009f, new BigCharBuffer(6)).toString());
+    final CharBuffer buffer = new BigCharBuffer(41);
+    assertEquals(1, JAVA.encode('a',    buffer));
+    assertEquals(2, JAVA.encode('\\',   buffer));
+    assertEquals(2, JAVA.encode('\'',   buffer));
+    assertEquals(2, JAVA.encode('\"',   buffer));
+    assertEquals(2, JAVA.encode('\n',   buffer));
+    assertEquals(2, JAVA.encode('\r',   buffer));
+    assertEquals(2, JAVA.encode('\t',   buffer));
+    assertEquals(2, JAVA.encode('\f',   buffer));
+    assertEquals(2, JAVA.encode('\b',   buffer));
+    assertEquals(6, JAVA.encode(0x0000, buffer));
+    assertEquals(6, JAVA.encode(0x001f, buffer));
+    assertEquals(6, JAVA.encode(0x007f, buffer));
+    assertEquals(6, JAVA.encode(0x009f, buffer));
+    assertEquals("a\\\\\\\'\\\"\\n\\r\\t\\f\\b\\u0000\\u001f\\u007f\\u009f", buffer.toString());
     // @formatter:on
   }
 

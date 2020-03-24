@@ -16,8 +16,7 @@
 
 package org.foxlabs.common.text;
 
-import static org.foxlabs.common.Predicates.*;
-
+import org.foxlabs.common.Checks;
 import org.foxlabs.common.exception.ThresholdReachedException;
 
 /**
@@ -51,7 +50,7 @@ public class BigCharBuffer extends CharBuffer {
   public BigCharBuffer(int threshold, int depth) {
     super(threshold);
     // round depth to be a multiple of 32 and trim it to maximum possible
-    this.depth = Math.min((((require(depth, INT_POSITIVE) - 1) >>> 5) + 1) << 5, MAX_DEPTH);
+    this.depth = Math.min((((Checks.checkThat(depth, depth > 0) - 1) >>> 5) + 1) << 5, MAX_DEPTH);
     // calculate maximum number of slots
     this.capacity = (this.threshold - 1) / this.depth + 1;
     // allocate at most 16 initial slots depending on the capacity
@@ -74,13 +73,14 @@ public class BigCharBuffer extends CharBuffer {
   // Basic operations
 
   @Override
-  protected CharBuffer appendChar(char ch) {
+  public CharBuffer append(char ch) {
+    ensureCapacity(1);
     nextSlot()[length++ % depth] = ch;
     return this;
   }
 
   @Override
-  protected final CharBuffer appendSequence(GetChars sequence, int start, int end) {
+  protected final CharBuffer append(GetChars sequence, int start, int end) {
     // calculate the number of characters to append
     int count = end - start;
     if (count > 0) { // fast check
