@@ -1836,82 +1836,74 @@ public class CharBufferTest {
    * Tests the {@link CharBuffer#appendIdent(int, char)} method.
    */
   @Test
-  public void test_appendIdent_int_char() {
-    assertThrows(IllegalArgumentException.class, () -> new BigCharBuffer().appendIndent(-1, '_'));
-    // @formatter:off
-    assertEquals("",                                    new BigCharBuffer( 1).appendIndent( 0, '0').toString());
-    assertEquals("1",                                   new BigCharBuffer( 1).appendIndent( 1, '1').toString());
-    assertEquals("22",                                  new BigCharBuffer( 2).appendIndent( 2, '2').toString());
-    assertEquals("333",                                 new BigCharBuffer( 3).appendIndent( 3, '3').toString());
-    assertEquals("4444",                                new BigCharBuffer( 4).appendIndent( 4, '4').toString());
-    assertEquals("55555",                               new BigCharBuffer( 5).appendIndent( 5, '5').toString());
-    assertEquals("666666",                              new BigCharBuffer( 6).appendIndent( 6, '6').toString());
-    assertEquals("7777777",                             new BigCharBuffer( 7).appendIndent( 7, '7').toString());
-    assertEquals("88888888",                            new BigCharBuffer( 8).appendIndent( 8, '8').toString());
-    assertEquals("999999999",                           new BigCharBuffer( 9).appendIndent( 9, '9').toString());
-    assertEquals("aaaaaaaaaa",                          new BigCharBuffer(10).appendIndent(10, 'a').toString());
-    assertEquals("bbbbbbbbbbb",                         new BigCharBuffer(11).appendIndent(11, 'b').toString());
-    assertEquals("cccccccccccc",                        new BigCharBuffer(12).appendIndent(12, 'c').toString());
-    assertEquals("ddddddddddddd",                       new BigCharBuffer(13).appendIndent(13, 'd').toString());
-    assertEquals("eeeeeeeeeeeeee",                      new BigCharBuffer(14).appendIndent(14, 'e').toString());
-    assertEquals("fffffffffffffff",                     new BigCharBuffer(15).appendIndent(15, 'f').toString());
-    assertEquals("gggggggggggggggg",                    new BigCharBuffer(16).appendIndent(16, 'g').toString());
-    assertEquals("hhhhhhhhhhhhhhhhh",                   new BigCharBuffer(17).appendIndent(17, 'h').toString());
-    assertEquals("iiiiiiiiiiiiiiiiii",                  new BigCharBuffer(18).appendIndent(18, 'i').toString());
-    assertEquals("jjjjjjjjjjjjjjjjjjj",                 new BigCharBuffer(19).appendIndent(19, 'j').toString());
-    assertEquals("kkkkkkkkkkkkkkkkkkkk",                new BigCharBuffer(20).appendIndent(20, 'k').toString());
-    assertEquals("lllllllllllllllllllll",               new BigCharBuffer(21).appendIndent(21, 'l').toString());
-    assertEquals("mmmmmmmmmmmmmmmmmmmmmm",              new BigCharBuffer(22).appendIndent(22, 'm').toString());
-    assertEquals("nnnnnnnnnnnnnnnnnnnnnnn",             new BigCharBuffer(23).appendIndent(23, 'n').toString());
-    assertEquals("oooooooooooooooooooooooo",            new BigCharBuffer(24).appendIndent(24, 'o').toString());
-    assertEquals("ppppppppppppppppppppppppp",           new BigCharBuffer(25).appendIndent(25, 'p').toString());
-    assertEquals("qqqqqqqqqqqqqqqqqqqqqqqqqq",          new BigCharBuffer(26).appendIndent(26, 'q').toString());
-    assertEquals("rrrrrrrrrrrrrrrrrrrrrrrrrrr",         new BigCharBuffer(27).appendIndent(27, 'r').toString());
-    assertEquals("ssssssssssssssssssssssssssss",        new BigCharBuffer(28).appendIndent(28, 's').toString());
-    assertEquals("ttttttttttttttttttttttttttttt",       new BigCharBuffer(29).appendIndent(29, 't').toString());
-    assertEquals("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",      new BigCharBuffer(30).appendIndent(30, 'u').toString());
-    assertEquals("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",     new BigCharBuffer(31).appendIndent(31, 'v').toString());
-    assertEquals("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",    new BigCharBuffer(32).appendIndent(32, 'w').toString());
-    assertEquals("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",   new BigCharBuffer(33).appendIndent(33, 'x').toString());
-    assertEquals("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",  new BigCharBuffer(34).appendIndent(34, 'y').toString());
-    assertEquals("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", new BigCharBuffer(35).appendIndent(35, 'z').toString());
-    // @formatter:on
-  }
-
-  /**
-   * Tests the {@link CharBuffer#appendIdent(int, int)} method.
-   */
-  @Test
   public void test_appendIdent_int_int() {
+    assertThrows(IllegalArgumentException.class, () -> new BigCharBuffer(1).appendIndent('_', -1));
+    // @formatter:off
+    assertEquals("",                                    new BigCharBuffer( 1).appendIndent('0',  0).toString());
+    assertEquals("1",                                   new BigCharBuffer( 1).appendIndent('1',  1).toString());
+    assertEquals("22",                                  new BigCharBuffer( 2).appendIndent('2',  2).toString());
+    assertEquals("333",                                 new BigCharBuffer( 3).appendIndent('3',  3).toString());
+    assertEquals("4444",                                new BigCharBuffer( 4).appendIndent('4',  4).toString());
+    assertEquals("55555",                               new BigCharBuffer( 5).appendIndent('5',  5).toString());
+    assertEquals("666666",                              new BigCharBuffer( 6).appendIndent('6',  6).toString());
+    assertEquals("7777777",                             new BigCharBuffer( 7).appendIndent('7',  7).toString());
+    assertEquals("88888888",                            new BigCharBuffer( 8).appendIndent('8',  8).toString());
+    assertEquals("999999999",                           new BigCharBuffer( 9).appendIndent('9',  9).toString());
+    assertEquals("aaaaaaaaaa",                          new BigCharBuffer(10).appendIndent('a', 10).toString());
+    assertEquals("bbbbbbbbbbb",                         new BigCharBuffer(11).appendIndent('b', 11).toString());
+    assertEquals("cccccccccccc",                        new BigCharBuffer(12).appendIndent('c', 12).toString());
+    assertEquals("ddddddddddddd",                       new BigCharBuffer(13).appendIndent('d', 13).toString());
+    assertEquals("eeeeeeeeeeeeee",                      new BigCharBuffer(14).appendIndent('e', 14).toString());
+    assertEquals("fffffffffffffff",                     new BigCharBuffer(15).appendIndent('f', 15).toString());
+    assertEquals("gggggggggggggggg",                    new BigCharBuffer(16).appendIndent('g', 16).toString());
+    assertEquals("hhhhhhhhhhhhhhhhh",                   new BigCharBuffer(17).appendIndent('h', 17).toString());
+    assertEquals("iiiiiiiiiiiiiiiiii",                  new BigCharBuffer(18).appendIndent('i', 18).toString());
+    assertEquals("jjjjjjjjjjjjjjjjjjj",                 new BigCharBuffer(19).appendIndent('j', 19).toString());
+    assertEquals("kkkkkkkkkkkkkkkkkkkk",                new BigCharBuffer(20).appendIndent('k', 20).toString());
+    assertEquals("lllllllllllllllllllll",               new BigCharBuffer(21).appendIndent('l', 21).toString());
+    assertEquals("mmmmmmmmmmmmmmmmmmmmmm",              new BigCharBuffer(22).appendIndent('m', 22).toString());
+    assertEquals("nnnnnnnnnnnnnnnnnnnnnnn",             new BigCharBuffer(23).appendIndent('n', 23).toString());
+    assertEquals("oooooooooooooooooooooooo",            new BigCharBuffer(24).appendIndent('o', 24).toString());
+    assertEquals("ppppppppppppppppppppppppp",           new BigCharBuffer(25).appendIndent('p', 25).toString());
+    assertEquals("qqqqqqqqqqqqqqqqqqqqqqqqqq",          new BigCharBuffer(26).appendIndent('q', 26).toString());
+    assertEquals("rrrrrrrrrrrrrrrrrrrrrrrrrrr",         new BigCharBuffer(27).appendIndent('r', 27).toString());
+    assertEquals("ssssssssssssssssssssssssssss",        new BigCharBuffer(28).appendIndent('s', 28).toString());
+    assertEquals("ttttttttttttttttttttttttttttt",       new BigCharBuffer(29).appendIndent('t', 29).toString());
+    assertEquals("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",      new BigCharBuffer(30).appendIndent('u', 30).toString());
+    assertEquals("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",     new BigCharBuffer(31).appendIndent('v', 31).toString());
+    assertEquals("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",    new BigCharBuffer(32).appendIndent('w', 32).toString());
+    assertEquals("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",   new BigCharBuffer(33).appendIndent('x', 33).toString());
+    assertEquals("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",  new BigCharBuffer(34).appendIndent('y', 34).toString());
+    assertEquals("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", new BigCharBuffer(35).appendIndent('z', 35).toString());
+    // @formatter:on
     final int ch = 0x2070e;
     // @formatter:off
-    assertThrows(IllegalArgumentException.class, () -> new BigCharBuffer().appendIndent(-1, ch));
-    assertEquals( 0, new BigCharBuffer( 1).appendIndent( 0, ch).length());
-    assertEquals( 2, new BigCharBuffer( 2).appendIndent( 1, ch).length());
-    assertEquals( 4, new BigCharBuffer( 4).appendIndent( 2, ch).length());
-    assertEquals( 6, new BigCharBuffer( 6).appendIndent( 3, ch).length());
-    assertEquals( 8, new BigCharBuffer( 8).appendIndent( 4, ch).length());
-    assertEquals(10, new BigCharBuffer(10).appendIndent( 5, ch).length());
-    assertEquals(12, new BigCharBuffer(12).appendIndent( 6, ch).length());
-    assertEquals(14, new BigCharBuffer(14).appendIndent( 7, ch).length());
-    assertEquals(16, new BigCharBuffer(16).appendIndent( 8, ch).length());
-    assertEquals(18, new BigCharBuffer(18).appendIndent( 9, ch).length());
-    assertEquals(20, new BigCharBuffer(20).appendIndent(10, ch).length());
-    assertEquals(22, new BigCharBuffer(22).appendIndent(11, ch).length());
-    assertEquals(24, new BigCharBuffer(24).appendIndent(12, ch).length());
-    assertEquals(26, new BigCharBuffer(26).appendIndent(13, ch).length());
-    assertEquals(28, new BigCharBuffer(28).appendIndent(14, ch).length());
-    assertEquals(30, new BigCharBuffer(30).appendIndent(15, ch).length());
-    assertEquals(32, new BigCharBuffer(32).appendIndent(16, ch).length());
-    assertEquals(34, new BigCharBuffer(34).appendIndent(17, ch).length());
-    assertEquals(36, new BigCharBuffer(36).appendIndent(18, ch).length());
-    assertEquals(38, new BigCharBuffer(38).appendIndent(19, ch).length());
-    assertEquals(40, new BigCharBuffer(40).appendIndent(20, ch).length());
-    assertEquals(42, new BigCharBuffer(42).appendIndent(21, ch).length());
-    assertEquals(44, new BigCharBuffer(44).appendIndent(22, ch).length());
-    assertEquals(46, new BigCharBuffer(46).appendIndent(23, ch).length());
-    assertEquals(48, new BigCharBuffer(48).appendIndent(24, ch).length());
-    assertEquals(50, new BigCharBuffer(50).appendIndent(25, ch).length());
+    assertEquals( 0, new BigCharBuffer( 1).appendIndent(ch,  0).length());
+    assertEquals( 2, new BigCharBuffer( 2).appendIndent(ch,  1).length());
+    assertEquals( 4, new BigCharBuffer( 4).appendIndent(ch,  2).length());
+    assertEquals( 6, new BigCharBuffer( 6).appendIndent(ch,  3).length());
+    assertEquals( 8, new BigCharBuffer( 8).appendIndent(ch,  4).length());
+    assertEquals(10, new BigCharBuffer(10).appendIndent(ch,  5).length());
+    assertEquals(12, new BigCharBuffer(12).appendIndent(ch,  6).length());
+    assertEquals(14, new BigCharBuffer(14).appendIndent(ch,  7).length());
+    assertEquals(16, new BigCharBuffer(16).appendIndent(ch,  8).length());
+    assertEquals(18, new BigCharBuffer(18).appendIndent(ch,  9).length());
+    assertEquals(20, new BigCharBuffer(20).appendIndent(ch, 10).length());
+    assertEquals(22, new BigCharBuffer(22).appendIndent(ch, 11).length());
+    assertEquals(24, new BigCharBuffer(24).appendIndent(ch, 12).length());
+    assertEquals(26, new BigCharBuffer(26).appendIndent(ch, 13).length());
+    assertEquals(28, new BigCharBuffer(28).appendIndent(ch, 14).length());
+    assertEquals(30, new BigCharBuffer(30).appendIndent(ch, 15).length());
+    assertEquals(32, new BigCharBuffer(32).appendIndent(ch, 16).length());
+    assertEquals(34, new BigCharBuffer(34).appendIndent(ch, 17).length());
+    assertEquals(36, new BigCharBuffer(36).appendIndent(ch, 18).length());
+    assertEquals(38, new BigCharBuffer(38).appendIndent(ch, 19).length());
+    assertEquals(40, new BigCharBuffer(40).appendIndent(ch, 20).length());
+    assertEquals(42, new BigCharBuffer(42).appendIndent(ch, 21).length());
+    assertEquals(44, new BigCharBuffer(44).appendIndent(ch, 22).length());
+    assertEquals(46, new BigCharBuffer(46).appendIndent(ch, 23).length());
+    assertEquals(48, new BigCharBuffer(48).appendIndent(ch, 24).length());
+    assertEquals(50, new BigCharBuffer(50).appendIndent(ch, 25).length());
     // @formatter:on
   }
 

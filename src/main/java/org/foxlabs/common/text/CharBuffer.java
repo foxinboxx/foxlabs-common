@@ -22,12 +22,12 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.function.Function;
 
+import org.foxlabs.common.Checks;
 import org.foxlabs.common.Strings;
+import org.foxlabs.common.Iterators;
 import org.foxlabs.common.exception.ThresholdReachedException;
 
-import static org.foxlabs.common.Checks.*;
-
-public abstract class CharBuffer implements CharSequence, Appendable, GetChars, ToString {
+public abstract class CharBuffer implements Appendable, CharSegment, ToString {
 
   /**
    * The buffer threshold that is recommended for logging purposes.
@@ -46,7 +46,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @throws IllegalArgumentException if the specified threshold is negative.
    */
   protected CharBuffer(int threshold) {
-    this.threshold = checkThat(threshold, threshold >= 0);
+    this.threshold = Checks.checkThat(threshold, threshold >= 0);
   }
 
   // Basic operations
@@ -93,7 +93,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    */
   @Override
   public final char charAt(int index) {
-    return checkIndex(this, index).getChar(index);
+    return Checks.checkIndex(this, index).getChar(index);
   }
 
   /**
@@ -122,8 +122,8 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @see #substring(int, int)
    */
   @Override
-  public final CharSequence subSequence(int start, int end) {
-    return substring(start, end);
+  public final CharSegment subSequence(int start, int end) {
+    return CharSegment.from(substring(start, end));
   }
 
   /**
@@ -156,7 +156,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @see #toString(int, int)
    */
   public final String substring(int start, int end) {
-    checkRange(this, start, end);
+    Checks.checkRange(this, start, end);
     return start == end ? Strings.EMPTY : toString(start, end);
   }
 
@@ -181,9 +181,9 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @see #copyChars(int, int, char[], int)
    */
   @Override
-  public final void getChars(int start, int end, char[] target, int offset) {
-    checkRange(this, start, end);
-    checkRange(target, offset, offset + end - start);
+  public final void copyTo(int start, int end, char[] target, int offset) {
+    Checks.checkRange(this, start, end);
+    Checks.checkRange(target, offset, offset + end - start);
     if (start < end) {
       copyChars(start, end, target, offset);
     }
@@ -293,54 +293,10 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @return A reference to this buffer.
    * @throws NullPointerException if the specified array of characters is {@code null}.
    * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   * @see #append(GetChars, int, int)
+   * @see #append(CharSegment)
    */
   public final CharBuffer append(char... array) {
-    return append(GetChars.from(array), 0, array.length);
-  }
-
-  /**
-   * Appends characters of the specified array from the specified start position to the buffer and
-   * increases the current length accordingly.
-   *
-   * <p>The start position is zero-based and must not be greater than length of the specified array
-   * (i.e. {@code 0 <= start array.length}). If threshold of the buffer is exceeded during this
-   * operation then the first {@link #remaining()} characters will be appended and the
-   * {@code ThresholdReachedException} will be thrown.</p>
-   *
-   * @param array The array of characters to append.
-   * @param start The start position in the specified array to append from.
-   * @return A reference to this buffer.
-   * @throws NullPointerException if the specified array of characters is {@code null}.
-   * @throws IndexOutOfBoundsException if the specified start position is out of range.
-   * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   * @see #append(GetChars, int, int)
-   */
-  public final CharBuffer append(char[] array, int start) {
-    return append(GetChars.from(checkRange(array, start)), start, array.length);
-  }
-
-  /**
-   * Appends characters of the specified array in the specified range to the buffer and increases
-   * the current length accordingly.
-   *
-   * <p>The start and end positions are zero-based and must not be greater than length of the
-   * specified array, the start position must not be greater than the end position (i.e.
-   * {@code 0 <= start <= end <= array.length}). If threshold of the buffer is exceeded during this
-   * operation then the first {@link #remaining()} characters will be appended and the
-   * {@code ThresholdReachedException} will be thrown.</p>
-   *
-   * @param array The array of characters to append.
-   * @param start The start position in the specified array.
-   * @param end The end position in the specified array.
-   * @return A reference to this buffer.
-   * @throws NullPointerException if the specified array of characters is {@code null}.
-   * @throws IndexOutOfBoundsException if the specified start or end position is out of range.
-   * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   * @see #append(GetChars, int, int)
-   */
-  public final CharBuffer append(char[] array, int start, int end) {
-    return append(GetChars.from(checkRange(array, start, end)), start, end);
+    return append(CharSegment.from(array));
   }
 
   /**
@@ -355,32 +311,11 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @return A reference to this buffer.
    * @throws NullPointerException if the specified sequence of characters is {@code null}.
    * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   * @see #append(GetChars, int, int)
+   * @see #append(CharSegment)
    */
   @Override
   public final CharBuffer append(CharSequence sequence) {
-    return append(GetChars.from(sequence), 0, sequence.length());
-  }
-
-  /**
-   * Appends characters of the specified sequence from the specified start position to the buffer
-   * and increases the current length accordingly.
-   *
-   * <p>The start position is zero-based and must not be greater than length of the specified
-   * sequence (i.e. {@code 0 <= start <= sequence.length()}). If threshold of the buffer is
-   * exceeded during this operation then the first {@link #remaining()} characters will be appended
-   * and the {@code ThresholdReachedException} will be thrown.</p>
-   *
-   * @param sequence The sequence of characters to append.
-   * @param start The start position in the specified sequence.
-   * @return A reference to this buffer.
-   * @throws NullPointerException if the specified sequence of characters is {@code null}.
-   * @throws IndexOutOfBoundsException if the specified start position is out of range.
-   * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   * @see #append(GetChars, int, int)
-   */
-  public final CharBuffer append(CharSequence sequence, int start) {
-    return append(GetChars.from(checkRange(sequence, start)), start, sequence.length());
+    return append(CharSegment.from(sequence));
   }
 
   /**
@@ -400,28 +335,28 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @throws NullPointerException if the specified sequence of characters is {@code null}.
    * @throws IndexOutOfBoundsException if the specified start or end position is out of range.
    * @throws ThresholdReachedException if threshold of the buffer has been reached.
+   * @see #append(CharSegment)
    */
   @Override
   public final CharBuffer append(CharSequence sequence, int start, int end) {
-    return append(GetChars.from(checkRange(sequence, start, end)), start, end);
+    return append(CharSegment.from(sequence, start, end));
   }
 
   /**
-   * Does an actual appending of the characters of the specified {@link GetChars} sequence in the
-   * specified range to the buffer.
+   * Does an actual appending of the characters of the specified {@link CharSegment} sequence in
+   * the specified range to the buffer.
    *
    * <p>Subclasses should not worry about the correctness of the arguments provided since they
    * should already be verified by the {@code public} methods. Note that there is no guarantee that
    * the {@link #ensureCapacity(int)} method was called right before calling this method, so
    * subclasses must do that themselves.</p>
    *
-   * @param sequence The {@link GetChars} sequence of characters to append.
-   * @param start The start position in the specified sequence.
-   * @param end The end position in the specified sequence.
+   * @param segment The {@link CharSegment} to append.
    * @return A reference to this buffer.
+   * @throws NullPointerException if a reference to the specified {@code segment} is {@code null}.
    * @throws ThresholdReachedException if threshold of the buffer has been reached.
    */
-  protected abstract CharBuffer append(GetChars sequence, int start, int end);
+  public abstract CharBuffer append(CharSegment segment);
 
   /**
    * Resets the buffer length to 0 but does not release allocated memory. This method is useful
@@ -450,7 +385,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    */
   @Override
   public CharBuffer toString(CharBuffer buffer) {
-    return buffer.append((GetChars) this, 0, length());
+    return buffer.append(this, 0, length());
   }
 
   /**
@@ -487,16 +422,12 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   /**
    * The string representation of the {@code true} constant.
    */
-  private static final char[] TRUE_CONSTANT = {
-      't', 'r', 'u', 'e'
-  };
+  private static final CharSegment TRUE_CONSTANT = CharSegment.from('t', 'r', 'u', 'e');
 
   /**
    * The string representation of the {@code false} constant.
    */
-  private static final char[] FALSE_CONSTANT = {
-      'f', 'a', 'l', 's', 'e'
-  };
+  private static final CharSegment FALSE_CONSTANT = CharSegment.from('f', 'a', 'l', 's', 'e');
 
   /**
    * Appends a string representation of the specified {@code boolean} value to the buffer.
@@ -521,7 +452,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * @see #appendBool(boolean)
    */
   public static int getBoolCapacity(boolean value) {
-    return value ? TRUE_CONSTANT.length : FALSE_CONSTANT.length;
+    return value ? TRUE_CONSTANT.length() : FALSE_CONSTANT.length();
   }
 
   // Number to string representation
@@ -537,17 +468,17 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   /**
    * The decimal string representation of the {@code int} min value ({@code -2147483648}).
    */
-  private static final char[] MIN_INT_DIGITS = {
+  private static final CharSegment MIN_INT_DIGITS = CharSegment.from(
       '-', '2', '1', '4', '7', '4', '8', '3', '6', '4', '8'
-  };
+  );
 
   /**
    * The decimal string representation of the {@code long} min value ({@code -9223372036854775808}).
    */
-  private static final char[] MIN_LONG_DIGITS = {
+  private static final CharSegment MIN_LONG_DIGITS = CharSegment.from(
       '-', '9', '2', '2', '3', '3', '7', '2', '0', '3',
       '6', '8', '5', '4', '7', '7', '5', '8', '0', '8'
-  };
+  );
 
   /**
    * All possible {@code 10^n} values for the {@code int} number.
@@ -606,7 +537,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       return (value >>> 31) + getDecCapacity0(value < 0 ? -value : value);
     }
     // special case - sign inversion does not work for -2147483648
-    return MIN_INT_DIGITS.length;
+    return MIN_INT_DIGITS.length();
   }
 
   /**
@@ -669,7 +600,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
       return (int) (value >>> 63) + getDecCapacity0(value < 0L ? -value : value);
     }
     // special case - sign inversion does not work for -9223372036854775808
-    return MIN_LONG_DIGITS.length;
+    return MIN_LONG_DIGITS.length();
   }
 
   /**
@@ -1663,9 +1594,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
   /**
    * The string representation of the {@code null} reference.
    */
-  private static final char[] NULL_REFERENCE = {
-      'n', 'u', 'l', 'l'
-  };
+  private static final CharSegment NULL_REFERENCE = CharSegment.from('n', 'u', 'l', 'l');
 
   /**
    * The objects cross-reference map to detect circular references.
@@ -1942,7 +1871,7 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
     } else if (array.length == 0) { // fast check
       return append('[').append(']');
     }
-    ensureCapacity(array.length * FALSE_CONSTANT.length); // almost guessing
+    ensureCapacity(array.length * FALSE_CONSTANT.length()); // almost guessing
     append('[').appendBoolean(array[0]);
     for (int index = 1; index < array.length; index++) {
       // cannot use append() because appendBoolean() may be overridden
@@ -2505,34 +2434,8 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
     return this;
   }
 
-  public final CharBuffer appendEncoded(char[] array, CharEncoder encoder) {
-    return appendEncoded(array, 0, array.length, encoder);
-  }
-
-  public final CharBuffer appendEncoded(char[] array, int start, CharEncoder encoder) {
-    return appendEncoded(array, start, array.length, encoder);
-  }
-
-  public final CharBuffer appendEncoded(char[] array, int start, int end, CharEncoder encoder) {
-    checkNotNull(encoder);
-    checkRange(array, start, end);
-    for (int index = start; index < end; index++) {
-      encoder.encode(array[index], this);
-    }
-    return this;
-  }
-
   public final CharBuffer appendEncoded(CharSequence sequence, CharEncoder encoder) {
-    return appendEncoded(sequence, 0, sequence.length(), encoder);
-  }
-
-  public final CharBuffer appendEncoded(CharSequence sequence, int start, CharEncoder encoder) {
-    return appendEncoded(sequence, start, sequence.length(), encoder);
-  }
-
-  public final CharBuffer appendEncoded(CharSequence sequence, int start, int end, CharEncoder encoder) {
-    checkNotNull(encoder);
-    checkRange(sequence, start, end);
+    Checks.checkNotNull(encoder);
     final int length = sequence.length();
     for (int index = 0; index < length; index++) {
       encoder.encode(sequence.charAt(index), this);
@@ -2546,69 +2449,46 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * An array of space sequences ({@code '\u0020'}) ranging from 4 to 16 in length, used by the
    * {@link #appendIdent(int)} method.
    */
-  private static final char[][] SPACES = {
-      {' ', ' ', ' ', ' '}, // 4
-      {' ', ' ', ' ', ' ', ' '}, // 5
-      {' ', ' ', ' ', ' ', ' ', ' '}, // 6
-      {' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 7
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 8
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 9
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 10
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 11
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 12
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 13
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 14
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 15
-      {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, // 16
+  private static final CharSegment[] SPACES = {
+      CharSegment.from(' ', ' ', ' ', ' '), // 4
+      CharSegment.from(' ', ' ', ' ', ' ', ' '), // 5
+      CharSegment.from(' ', ' ', ' ', ' ', ' ', ' '), // 6
+      CharSegment.from(' ', ' ', ' ', ' ', ' ', ' ', ' '), // 7
+      CharSegment.from(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '), // 8
+      CharSegment.from(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '), // 9
+      CharSegment.from(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '), // 10
+      CharSegment.from(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '), // 11
+      CharSegment.from(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '), // 12
+      CharSegment.from(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '), // 13
+      CharSegment.from(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '), // 14
+      CharSegment.from(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '), // 15
+      CharSegment.from(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '), // 16
   };
 
   /**
    * Appends an indentation of the specified length to the buffer using the {@code '\u0020'} space
    * character.
    *
-   * @param length The number of {@code '\u0020'} space characters to append.
+   * @param count The number of {@code '\u0020'} space characters to append.
    * @return A reference to this buffer.
    * @throws IllegalArgumentException if the specified length is negative.
    * @see #appendIndent(int, char)
    * @see #appendIndent(int, int)
    */
-  public final CharBuffer appendIndent(int length) {
-    if (checkThat(length, length >= 0) > 0) {
-      ensureCapacity(length);
+  public final CharBuffer appendIndent(int count) {
+    if (Checks.checkThat(count, count >= 0) > 0) {
+      ensureCapacity(count);
       do {
-        if (length < 4) { // could be a bit faster
-          for (; length > 0; length--) {
+        if (count < 4) { // could be a bit faster
+          for (; count > 0; count--) {
             append(' ');
           }
         } else {
-          final char[] spaces = SPACES[Math.min(length, SPACES.length) - 4];
-          length -= spaces.length;
+          final CharSegment spaces = SPACES[Math.min(count, SPACES.length) - 4];
+          count -= spaces.length();
           append(spaces);
         }
-      } while (length > 0);
-    }
-    return this;
-  }
-
-  /**
-   * Appends an indentation of the specified length to the buffer using the specified indentation
-   * character.
-   *
-   * @param length The number of indentation characters to append.
-   * @param indent The indentation character.
-   * @return A reference to this buffer.
-   * @throws IllegalArgumentException if the specified length is negative.
-   * @see #appendIndent(int, int)
-   */
-  public final CharBuffer appendIndent(int length, char indent) {
-    if (indent == ' ') { // who knows
-      return appendIndent(length);
-    }
-    if (checkThat(length, length >= 0) > 0) {
-      ensureCapacity(length);
-      for (; length > 0; length--) {
-        append(indent);
-      }
+      } while (count > 0);
     }
     return this;
   }
@@ -2618,22 +2498,40 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
    * point of indentation character. Note that this method does not validate the specified
    * character to be a valid Unicode code point.
    *
-   * @param length The number of indentation characters to append.
-   * @param indent The Unicode code point of indentation character.
+   * @param count The number of indentation characters to append.
+   * @param indent The indentation character (Unicode code point).
    * @return A reference to this buffer.
    * @throws IllegalArgumentException if the specified length is negative.
    * @see #appendIndent(int, char)
    */
-  public final CharBuffer appendIndent(int length, int indent) {
-    if (Character.isBmpCodePoint(indent)) {
-      return appendIndent(length, (char) indent);
+  public final CharBuffer appendIndent(int indent, int count) {
+    if (indent == ' ') { // who knows
+      return appendIndent(count);
+    } else if (Checks.checkThat(count, count >= 0) > 0) {
+      if (Character.isBmpCodePoint(indent)) {
+        final char ch = (char) indent;
+        ensureCapacity(count);
+        for (; count > 0; count--) {
+          append(ch);
+        }
+      } else {
+        ensureCapacity(count * 2);
+        final char high = Character.highSurrogate(indent);
+        final char low = Character.lowSurrogate(indent);
+        for (; count > 0; count--) {
+          append(high).append(low);
+        }
+      }
     }
-    if (checkThat(length, length >= 0) > 0) {
-      ensureCapacity(length * 2);
-      final char high = Character.highSurrogate(indent);
-      final char low = Character.lowSurrogate(indent);
-      for (; length > 0; length--) {
-        append(high).append(low);
+    return this;
+  }
+
+  public final CharBuffer appendIndent(CharSequence indent, int count) {
+    final CharSegment indentation = CharSegment.from(indent);
+    if (Checks.checkThat(count, count >= 0) > 0) {
+      ensureCapacity(count * indent.length());
+      for (; count > 0; count--) {
+        append(indentation);
       }
     }
     return this;
@@ -2641,25 +2539,95 @@ public abstract class CharBuffer implements CharSequence, Appendable, GetChars, 
 
   // Joining
 
-  public final CharBuffer appendJoin(CharSequence delimiter, CharSequence... elements) {
-    // TODO
+  public final CharBuffer appendJoin(int delimiter, CharSequence... elements) {
+    return appendJoin(delimiter, Iterators.toIterable(elements));
+  }
+
+  @SafeVarargs
+  public final <T> CharBuffer appendJoin(int delimiter, Function<T, CharSequence> mapper, T... elements) {
+    return appendJoin(delimiter, Iterators.withMapper(mapper, Iterators.toIterable(elements)));
+  }
+
+  public final <T> CharBuffer appendJoin(int delimiter, Function<T, CharSequence> mapper, Iterable<T> elements) {
+    return appendJoin(delimiter, Iterators.withMapper(mapper, elements));
+  }
+
+  public final CharBuffer appendJoin(int delimiter, Iterable<CharSequence> elements) {
+    final Iterator<CharSequence> itr = elements.iterator();
+    if (itr.hasNext()) {
+      // append first element
+      CharSequence element = itr.next();
+      if (element == null) {
+        append(NULL_REFERENCE);
+      } else {
+        append(CharSegment.from(element));
+      }
+      // Is delimiter BMP or surrogate character?
+      if (Character.isBmpCodePoint(delimiter)) { // BMP character
+        final char ch = (char) delimiter;
+        // append remaining elements
+        while (itr.hasNext()) {
+          append(ch);
+          element = itr.next();
+          if (element == null) {
+            append(NULL_REFERENCE);
+          } else {
+            append(CharSegment.from(element));
+          }
+        }
+      } else { // surrogate character
+        final char high = Character.highSurrogate(delimiter);
+        final char low = Character.lowSurrogate(delimiter);
+        // append remaining elements
+        while (itr.hasNext()) {
+          append(high).append(low);
+          element = itr.next();
+          if (element == null) {
+            append(NULL_REFERENCE);
+          } else {
+            append(CharSegment.from(element));
+          }
+        }
+      }
+    }
     return this;
   }
 
-  public final <T> CharBuffer appendJoin(CharSequence delimiter, Function<T, CharSequence> mapper,
-      CharSequence... elements) {
-    // TODO
-    return this;
+  public final CharBuffer appendJoin(CharSequence delimiter, CharSequence... elements) {
+    return appendJoin(delimiter, Iterators.toIterable(elements));
+  }
+
+  @SafeVarargs
+  public final <T> CharBuffer appendJoin(CharSequence delimiter, Function<T, CharSequence> mapper, T... elements) {
+    return appendJoin(delimiter, Iterators.withMapper(mapper, Iterators.toIterable(elements)));
+  }
+
+  public final <T> CharBuffer appendJoin(CharSequence delimiter, Function<T, CharSequence> mapper, Iterable<T> elements) {
+    return appendJoin(delimiter, Iterators.withMapper(mapper, elements));
   }
 
   public final CharBuffer appendJoin(CharSequence delimiter, Iterable<CharSequence> elements) {
-    // TODO
-    return this;
-  }
-
-  public final <T> CharBuffer appendJoin(CharSequence delimiter, Function<T, CharSequence> mapper,
-      Iterable<CharSequence> elements) {
-    // TODO
+    final CharSegment separator = CharSegment.from(delimiter);
+    final Iterator<CharSequence> itr = elements.iterator();
+    if (itr.hasNext()) {
+      // append first element
+      CharSequence element = itr.next();
+      if (element == null) {
+        append(NULL_REFERENCE);
+      } else {
+        append(CharSegment.from(element));
+      }
+      // append remaining elements
+      while (itr.hasNext()) {
+        append(separator);
+        element = itr.next();
+        if (element == null) {
+          append(NULL_REFERENCE);
+        } else {
+          append(CharSegment.from(element));
+        }
+      }
+    }
     return this;
   }
 

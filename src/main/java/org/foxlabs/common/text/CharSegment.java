@@ -22,7 +22,7 @@ import org.foxlabs.common.Strings;
 /**
  * A segment of characters with read-only random access.
  *
- * <p>In addition to the {@link CharSequence} interface, this interface defines a
+ * <p>In addition to the {@link CharSequence} interface, this one defines the
  * {@link #copyTo(int, int, char[], int)} method, which has the same semantics as the
  * {@link String#getChars(int, int, char[], int)} method and allows to avoid copying characters in
  * a loop. This interface also defines a number of {@code static} methods that create
@@ -137,7 +137,7 @@ public interface CharSegment extends CharSequence {
    * @throws NullPointerException if the specified {@code char[]} reference is {@code null}.
    * @see #from(char[], int, int)
    */
-  static CharSegment from(char[] array) {
+  static CharSegment from(char... array) {
     return from(array, 0, array.length);
   }
 

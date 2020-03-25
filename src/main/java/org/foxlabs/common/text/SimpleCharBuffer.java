@@ -65,9 +65,9 @@ public class SimpleCharBuffer extends CharBuffer {
   }
 
   @Override
-  protected CharBuffer append(GetChars sequence, int start, int end) {
-    final int count = ensureCapacity(end - start);
-    sequence.getChars(start, end, buffer, length);
+  public CharBuffer append(CharSegment segment) {
+    final int count = ensureCapacity(segment.length());
+    segment.copyTo(0, count, buffer, length);
     length += count;
     return this;
   }

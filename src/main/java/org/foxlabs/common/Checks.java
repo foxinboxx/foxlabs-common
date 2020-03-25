@@ -18,6 +18,7 @@ package org.foxlabs.common;
 
 import java.util.Iterator;
 import java.util.regex.Pattern;
+
 import java.util.function.Predicate;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
@@ -77,7 +78,8 @@ public final class Checks {
    *
    * @see #checkAllNotNull(Object[], String)
    */
-  public static <T> T[] checkAllNotNull(T[] array) {
+  @SafeVarargs
+  public static <T> T[] checkAllNotNull(T... array) {
     if (array != null) {
       for (int index = 0; index < array.length; index++) {
         if (array[index] == null) {
@@ -612,7 +614,7 @@ public final class Checks {
    * Otherwise, returns a reference to the specified {@code array}.
    *
    * <p>Note that {@link NullPointerException} will be thrown if the specified {@code array}
-   * reference is {@code null}. </p>
+   * reference is {@code null}.</p>
    */
   public static byte[] checkRange(byte[] array, int start, String message) {
     if (start < 0 || start > array.length) {
@@ -1275,7 +1277,7 @@ public final class Checks {
    * reference to the specified {@code array}.
    *
    * <p>Note that if the specified {@code array} reference is {@code null} then no exception will
-   * be thrown and {@code null} will be returned. </p>
+   * be thrown and {@code null} will be returned.</p>
    *
    * @see #checkThatAll(byte[], IntPredicate, String)
    */
@@ -1297,7 +1299,7 @@ public final class Checks {
    * returns a reference to the specified {@code array}.
    *
    * <p>Note that if the specified {@code array} reference is {@code null} then no exception will
-   * be thrown and {@code null} will be returned. </p>
+   * be thrown and {@code null} will be returned.</p>
    */
   public static byte[] checkThatAll(byte[] array, IntPredicate condition, String message) {
     if (array != null) {
@@ -1345,7 +1347,7 @@ public final class Checks {
    * reference to the specified {@code array}.
    *
    * <p>Note that if the specified {@code array} reference is {@code null} then no exception will
-   * be thrown and {@code null} will be returned. </p>
+   * be thrown and {@code null} will be returned.</p>
    *
    * @see #checkThatAll(short[], IntPredicate, String)
    */
@@ -1367,7 +1369,7 @@ public final class Checks {
    * returns a reference to the specified {@code array}.
    *
    * <p>Note that if the specified {@code array} reference is {@code null} then no exception will
-   * be thrown and {@code null} will be returned. </p>
+   * be thrown and {@code null} will be returned.</p>
    */
   public static short[] checkThatAll(short[] array, IntPredicate condition, String message) {
     if (array != null) {
@@ -1415,7 +1417,7 @@ public final class Checks {
    * reference to the specified {@code array}.
    *
    * <p>Note that if the specified {@code array} reference is {@code null} then no exception will
-   * be thrown and {@code null} will be returned. </p>
+   * be thrown and {@code null} will be returned.</p>
    *
    * @see #checkThatAll(int[], IntPredicate, String)
    */
@@ -1437,7 +1439,7 @@ public final class Checks {
    * returns a reference to the specified {@code array}.
    *
    * <p>Note that if the specified {@code array} reference is {@code null} then no exception will
-   * be thrown and {@code null} will be returned. </p>
+   * be thrown and {@code null} will be returned.</p>
    */
   public static int[] checkThatAll(int[] array, IntPredicate condition, String message) {
     if (array != null) {
@@ -1485,7 +1487,7 @@ public final class Checks {
    * reference to the specified {@code array}.
    *
    * <p>Note that if the specified {@code array} reference is {@code null} then no exception will
-   * be thrown and {@code null} will be returned. </p>
+   * be thrown and {@code null} will be returned.</p>
    *
    * @see #checkThatAll(long[], LongPredicate, String)
    */
@@ -1507,7 +1509,7 @@ public final class Checks {
    * returns a reference to the specified {@code array}.
    *
    * <p>Note that if the specified {@code array} reference is {@code null} then no exception will
-   * be thrown and {@code null} will be returned. </p>
+   * be thrown and {@code null} will be returned.</p>
    */
   public static long[] checkThatAll(long[] array, LongPredicate condition, String message) {
     if (array != null) {
@@ -1555,7 +1557,7 @@ public final class Checks {
    * reference to the specified {@code array}.
    *
    * <p>Note that if the specified {@code array} reference is {@code null} then no exception will
-   * be thrown and {@code null} will be returned. </p>
+   * be thrown and {@code null} will be returned.</p>
    *
    * @see #checkThatAll(float[], DoublePredicate, String)
    */
@@ -1577,7 +1579,7 @@ public final class Checks {
    * returns a reference to the specified {@code array}.
    *
    * <p>Note that if the specified {@code array} reference is {@code null} then no exception will
-   * be thrown and {@code null} will be returned. </p>
+   * be thrown and {@code null} will be returned.</p>
    */
   public static float[] checkThatAll(float[] array, DoublePredicate condition, String message) {
     if (array != null) {
@@ -1625,7 +1627,7 @@ public final class Checks {
    * reference to the specified {@code array}.
    *
    * <p>Note that if the specified {@code array} reference is {@code null} then no exception will
-   * be thrown and {@code null} will be returned. </p>
+   * be thrown and {@code null} will be returned.</p>
    *
    * @see #checkThatAll(double[], DoublePredicate, String)
    */
@@ -1647,7 +1649,7 @@ public final class Checks {
    * returns a reference to the specified {@code array}.
    *
    * <p>Note that if the specified {@code array} reference is {@code null} then no exception will
-   * be thrown and {@code null} will be returned. </p>
+   * be thrown and {@code null} will be returned.</p>
    */
   public static double[] checkThatAll(double[] array, DoublePredicate condition, String message) {
     if (array != null) {
@@ -1695,7 +1697,7 @@ public final class Checks {
    * reference to the specified {@code array}.
    *
    * <p>Note that if the specified {@code array} reference is {@code null} then no exception will
-   * be thrown and {@code null} will be returned. </p>
+   * be thrown and {@code null} will be returned.</p>
    *
    * @see #checkThatAll(char[], IntPredicate, String)
    */
@@ -1718,7 +1720,7 @@ public final class Checks {
    * returns a reference to the specified {@code array}.
    *
    * <p>Note that if the specified {@code array} reference is {@code null} then no exception will
-   * be thrown and {@code null} will be returned. </p>
+   * be thrown and {@code null} will be returned.</p>
    */
   public static char[] checkThatAll(char[] array, IntPredicate condition, String message) {
     if (array != null) {

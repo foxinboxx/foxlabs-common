@@ -80,20 +80,21 @@ public class BigCharBuffer extends CharBuffer {
   }
 
   @Override
-  protected final CharBuffer append(GetChars sequence, int start, int end) {
+  public final CharBuffer append(CharSegment segment) {
     // calculate the number of characters to append
-    int count = end - start;
+    int count = segment.length();
     if (count > 0) { // fast check
+      int start = 0;
       for (count = ensureCapacity(count); count > 0;) {
         // copy part of the characters to the current slot
         final int offset = length % depth;
         final int remainder = Math.min(depth - offset, count);
-        sequence.getChars(start, start + remainder, nextSlot(), offset);
+        segment.copyTo(start, start + remainder, nextSlot(), offset);
         length += remainder;
         start += remainder;
         count -= remainder;
       }
-      if (start < end) {
+      if (start < segment.length()) {
         // Not all the characters have been appended
         throw new ThresholdReachedException(this);
       }
