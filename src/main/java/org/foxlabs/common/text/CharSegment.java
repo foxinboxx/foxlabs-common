@@ -142,8 +142,8 @@ public interface CharSegment extends CharSequence {
   }
 
   /**
-   * Creates a new {@code CharSegment} for the range {@code [from, array.length]} (inclusive) in
-   * the specified {@code array} or returns {@link #EMPTY} if range is empty.
+   * Creates a new {@code CharSegment} for the range {@code [from, array.length)} in the specified
+   * {@code array} or returns {@link #EMPTY} if range is empty.
    *
    * @throws NullPointerException if the specified {@code char[]} reference is {@code null}.
    * @throws IndexOutOfBoundsException if the specified range is invalid.
@@ -154,8 +154,8 @@ public interface CharSegment extends CharSequence {
   }
 
   /**
-   * Creates a new {@code CharSegment} for the range {@code [from, to]} (inclusive) in the
-   * specified {@code array} or returns {@link #EMPTY} if range is empty.
+   * Creates a new {@code CharSegment} for the range {@code [from, to)} in the specified
+   * {@code array} or returns {@link #EMPTY} if range is empty.
    *
    * @throws NullPointerException if the specified {@code char[]} reference is {@code null}.
    * @throws IndexOutOfBoundsException if the specified range is invalid.
@@ -200,8 +200,8 @@ public interface CharSegment extends CharSequence {
   }
 
   /**
-   * Creates a new {@code CharSegment} for the range {@code [from, string.length()]} (inclusive) in
-   * the specified {@code string} or returns {@link #EMPTY} if range is empty.
+   * Creates a new {@code CharSegment} for the range {@code [from, string.length())} in the
+   * specified {@code string} or returns {@link #EMPTY} if range is empty.
    *
    * @throws NullPointerException if the specified {@code String} reference is {@code null}.
    * @throws IndexOutOfBoundsException if the specified range is invalid.
@@ -212,8 +212,8 @@ public interface CharSegment extends CharSequence {
   }
 
   /**
-   * Creates a new {@code CharSegment} for the range {@code [from, to]} (inclusive) in the
-   * specified {@code string} or returns {@link #EMPTY} if range is empty.
+   * Creates a new {@code CharSegment} for the range {@code [from, to)} in the specified
+   * {@code string} or returns {@link #EMPTY} if range is empty.
    *
    * @throws NullPointerException if the specified {@code String} reference is {@code null}.
    * @throws IndexOutOfBoundsException if the specified range is invalid.
@@ -258,8 +258,8 @@ public interface CharSegment extends CharSequence {
   }
 
   /**
-   * Creates a new {@code CharSegment} for the range {@code [from, builder.length()]} (inclusive)
-   * in the specified {@code builder} or returns {@link #EMPTY} if range is empty.
+   * Creates a new {@code CharSegment} for the range {@code [from, builder.length())} in the
+   * specified {@code builder} or returns {@link #EMPTY} if range is empty.
    *
    * @throws NullPointerException if the specified {@code StringBuilder} reference is {@code null}.
    * @throws IndexOutOfBoundsException if the specified range is invalid.
@@ -270,8 +270,8 @@ public interface CharSegment extends CharSequence {
   }
 
   /**
-   * Creates a new {@code CharSegment} for the range {@code [from, to]} (inclusive) in the
-   * specified {@code builder} or returns {@link #EMPTY} if range is empty.
+   * Creates a new {@code CharSegment} for the range {@code [from, to)} in the specified
+   * {@code builder} or returns {@link #EMPTY} if range is empty.
    *
    * @throws NullPointerException if the specified {@code StringBuilder} reference is {@code null}.
    * @throws IndexOutOfBoundsException if the specified range is invalid.
@@ -316,8 +316,8 @@ public interface CharSegment extends CharSequence {
   }
 
   /**
-   * Creates a new {@code CharSegment} for the range {@code [from, sequence.length()]} (inclusive)
-   * in the specified {@code sequence} or returns {@link #EMPTY} if range is empty.
+   * Creates a new {@code CharSegment} for the range {@code [from, sequence.length())} in the
+   * specified {@code sequence} or returns {@link #EMPTY} if range is empty.
    *
    * @throws NullPointerException if the specified {@code CharSequence} reference is {@code null}.
    * @throws IndexOutOfBoundsException if the specified range is invalid.
@@ -328,8 +328,8 @@ public interface CharSegment extends CharSequence {
   }
 
   /**
-   * Creates a new {@code CharSegment} for the range {@code [from, to]} (inclusive) in the
-   * specified {@code sequence} or returns {@link #EMPTY} if range is empty.
+   * Creates a new {@code CharSegment} for the range {@code [from, to)} in the specified
+   * {@code sequence} or returns {@link #EMPTY} if range is empty.
    *
    * @throws NullPointerException if the specified {@code CharSequence} reference is {@code null}.
    * @throws IndexOutOfBoundsException if the specified range is invalid.
