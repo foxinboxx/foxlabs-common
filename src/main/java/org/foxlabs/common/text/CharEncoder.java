@@ -21,14 +21,15 @@ package org.foxlabs.common.text;
  * characters (1:M mapping) and appends the encoded representation to the buffer.
  *
  * @author Fox Mulder
- * @see CharBuffer
+ * @see CharBuffer#appendEncoded(int, CharEncoder)
+ * @see CharBuffer#appendEncoded(CharSequence, CharEncoder)
  */
 @FunctionalInterface
 public interface CharEncoder {
 
   /**
-   * Appends an encoded representation of the {@code ch} character (Unicode code point) to the
-   * {@code buffer} and returns a number of characters ({@code char}) appended.
+   * Appends an encoded representation of the specified {@code ch} character (Unicode code point)
+   * to the specified {@code buffer} and returns a number of characters ({@code char}) appended.
    */
   int encode(int ch, CharBuffer buffer);
 

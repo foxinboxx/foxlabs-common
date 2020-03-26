@@ -19,7 +19,7 @@ package org.foxlabs.common;
 import java.util.function.Supplier;
 
 import org.foxlabs.common.text.CharBuffer;
-import org.foxlabs.common.text.SimpleCharBuffer;
+import org.foxlabs.common.text.LinearCharBuffer;
 import org.foxlabs.common.exception.ThresholdReachedException;
 
 /**
@@ -71,7 +71,8 @@ public final class Objects {
    */
   public static String toString(Object object, int threshold) {
     try {
-      return new SimpleCharBuffer(threshold).appendObject(object).toString();
+      return new LinearCharBuffer(LinearCharBuffer.DEFAULT_CAPACITY, threshold)
+          .appendObject(object).toString();
     } catch (ThresholdReachedException e) {
       // threshold has been reached, return partial result anyway
       return e.getProducer().toString();

@@ -36,7 +36,7 @@ public class CharEncoderTest {
   @Test
   public void test_IDENTITY_encoder() {
     // @formatter:off
-    final CharBuffer buffer = new BigCharBuffer(1);
+    final CharBuffer buffer = new PaginalCharBuffer(1);
     assertEquals(1, IDENTITY.encode('a', buffer));
     assertEquals("a", buffer.toString());
     // @formatter:on
@@ -47,7 +47,7 @@ public class CharEncoderTest {
    */
   @Test
   public void test_UPPERCASE_encoder() {
-    final CharBuffer buffer = new BigCharBuffer(3);
+    final CharBuffer buffer = new PaginalCharBuffer(3);
     assertEquals(1, UPPERCASE.encode('a', buffer));
     assertEquals(1, UPPERCASE.encode('A', buffer));
     assertEquals(1, UPPERCASE.encode('_', buffer));
@@ -59,7 +59,7 @@ public class CharEncoderTest {
    */
   @Test
   public void test_LOWERCASE_encoder() {
-    final CharBuffer buffer = new BigCharBuffer(3);
+    final CharBuffer buffer = new PaginalCharBuffer(3);
     assertEquals(1, LOWERCASE.encode('a', buffer));
     assertEquals(1, LOWERCASE.encode('A', buffer));
     assertEquals(1, LOWERCASE.encode('_', buffer));
@@ -72,7 +72,7 @@ public class CharEncoderTest {
   @Test
   public void test_UCODE_encoder() {
     // @formatter:off
-    final CharBuffer buffer = new BigCharBuffer(30);
+    final CharBuffer buffer = new PaginalCharBuffer(30);
     assertEquals( 6, UCODE.encode(0x00000001, buffer));
     assertEquals( 6, UCODE.encode(0x00001000, buffer));
     assertEquals( 6, UCODE.encode(0x0000ffff, buffer));
@@ -87,7 +87,7 @@ public class CharEncoderTest {
   @Test
   public void test_JAVA_encoder() {
     // @formatter:off
-    final CharBuffer buffer = new BigCharBuffer(41);
+    final CharBuffer buffer = new PaginalCharBuffer(41);
     assertEquals(1, JAVA.encode('a',    buffer));
     assertEquals(2, JAVA.encode('\\',   buffer));
     assertEquals(2, JAVA.encode('\'',   buffer));

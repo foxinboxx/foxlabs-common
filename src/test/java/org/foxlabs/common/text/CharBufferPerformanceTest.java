@@ -29,37 +29,46 @@ import org.junit.Assert;
 public class CharBufferPerformanceTest {
 
   /**
+   * Number of iterations for each test.
+   */
+  private static final int ITERATION_COUNT = 1000000;
+
+  /**
+   * A coefficient to multiply loop count in each test.
+   */
+  private static final double LOOP_FACTOR = 1.0;
+
+  /**
    * Tests performance of the {@link CharBuffer#append(char)} method against {@link StringBuilder}.
    */
   @Test
   public void test_append_char() {
-    final int loop = 100000000;
-    // StringBuilder
-    long jsbTime = System.currentTimeMillis();
-    final StringBuilder sb = new StringBuilder(32);
-    for (int n = 0; n < loop; n++) {
-      sb.append((char) n);
+    final int loopCount = (int) (10000 * LOOP_FACTOR);
+    long startTime, jsbTime = 0L, lcbTime = 0L, pcbTime = 0L;
+    for (int i = 0; i < ITERATION_COUNT; i++) {
+      // StringBuilder
+      final StringBuilder sb = new StringBuilder(32);
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        sb.append((char) n);
+      }
+      jsbTime += System.nanoTime() - startTime;
+      // SimpleCharBuffer
+      final LinearCharBuffer lcb = new LinearCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        lcb.append((char) n);
+      }
+      lcbTime += System.nanoTime() - startTime;
+      // BigCharBuffer
+      final PaginalCharBuffer pcb = new PaginalCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        pcb.append((char) n);
+      }
+      pcbTime += System.nanoTime() - startTime;
     }
-    jsbTime = System.currentTimeMillis() - jsbTime;
-    // SimpleCharBuffer
-    long scbTime = System.currentTimeMillis();
-    final SimpleCharBuffer scb = new SimpleCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      scb.append((char) n);
-    }
-    scbTime = System.currentTimeMillis() - scbTime;
-    // BigCharBuffer
-    long bcbTime = System.currentTimeMillis();
-    final BigCharBuffer bcb = new BigCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      bcb.append((char) n);
-    }
-    bcbTime = System.currentTimeMillis() - bcbTime;
-    // Results
-    System.out.printf("StringBuilder.append(char)    : %dms\n", jsbTime);
-    System.out.printf("SimpleCharBuffer.append(char) : %dms\n", scbTime);
-    System.out.printf("BigCharBuffer.append(char)    : %dms\n", bcbTime);
-    assertFaster(jsbTime, scbTime);
+    printResults("append(char)", jsbTime, lcbTime, pcbTime, loopCount);
   }
 
   /**
@@ -67,39 +76,38 @@ public class CharBufferPerformanceTest {
    */
   @Test
   public void test_append_int() {
-    final int loop = 100000000;
-    // StringBuilder
-    long jsbTime = System.currentTimeMillis();
-    final StringBuilder sb = new StringBuilder(32);
-    for (int n = 0; n < loop; n++) {
-      if (Character.isValidCodePoint(n)) {
-        sb.appendCodePoint(n);
+    final int loopCount = (int) (10000 * LOOP_FACTOR);
+    long startTime, jsbTime = 0L, lcbTime = 0L, pcbTime = 0L;
+    for (int i = 0; i < ITERATION_COUNT; i++) {
+      // StringBuilder
+      final StringBuilder sb = new StringBuilder(32);
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        if (Character.isValidCodePoint(n)) {
+          sb.appendCodePoint(n);
+        }
       }
-    }
-    jsbTime = System.currentTimeMillis() - jsbTime;
-    // SimpleCharBuffer
-    long scbTime = System.currentTimeMillis();
-    final SimpleCharBuffer scb = new SimpleCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      if (Character.isValidCodePoint(n)) {
-        scb.append(n);
+      jsbTime += System.nanoTime() - startTime;
+      // SimpleCharBuffer
+      final LinearCharBuffer lcb = new LinearCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        if (Character.isValidCodePoint(n)) {
+          lcb.append(n);
+        }
       }
-    }
-    scbTime = System.currentTimeMillis() - scbTime;
-    // BigCharBuffer
-    long bcbTime = System.currentTimeMillis();
-    final BigCharBuffer bcb = new BigCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      if (Character.isValidCodePoint(n)) {
-        bcb.append(n);
+      lcbTime += System.nanoTime() - startTime;
+      // BigCharBuffer
+      final PaginalCharBuffer pcb = new PaginalCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        if (Character.isValidCodePoint(n)) {
+          pcb.append(n);
+        }
       }
+      pcbTime += System.nanoTime() - startTime;
     }
-    bcbTime = System.currentTimeMillis() - bcbTime;
-    // Results
-    System.out.printf("StringBuilder.appendCodePoint(int) : %dms\n", jsbTime);
-    System.out.printf("SimpleCharBuffer.append(int)       : %dms\n", scbTime);
-    System.out.printf("BigCharBuffer.append(int)          : %dms\n", bcbTime);
-    assertFaster(jsbTime, scbTime);
+    printResults("appendCodePoint(int) / append(int)", jsbTime, lcbTime, pcbTime, loopCount);
   }
 
   /**
@@ -108,34 +116,33 @@ public class CharBufferPerformanceTest {
    */
   @Test
   public void test_append_CharSequence() {
-    final int loop = 100000000;
-    final CharSequence sequence = "test";
-    // StringBuilder
-    long jsbTime = System.currentTimeMillis();
-    final StringBuilder sb = new StringBuilder(32);
-    for (int n = 0; n < loop; n++) {
-      sb.append(sequence);
+    final int loopCount = (int) (10000 * LOOP_FACTOR);
+    long startTime, jsbTime = 0L, lcbTime = 0L, pcbTime = 0L;
+    for (int i = 0; i < ITERATION_COUNT; i++) {
+      final CharSequence sequence = "test";
+      // StringBuilder
+      final StringBuilder sb = new StringBuilder(32);
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        sb.append(sequence);
+      }
+      jsbTime += System.nanoTime() - startTime;
+      // SimpleCharBuffer
+      final LinearCharBuffer lcb = new LinearCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        lcb.append(sequence);
+      }
+      lcbTime += System.nanoTime() - startTime;
+      // BigCharBuffer
+      final PaginalCharBuffer pcb = new PaginalCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        pcb.append(sequence);
+      }
+      pcbTime += System.nanoTime() - startTime;
     }
-    jsbTime = System.currentTimeMillis() - jsbTime;
-    // SimpleCharBuffer
-    long scbTime = System.currentTimeMillis();
-    final SimpleCharBuffer scb = new SimpleCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      scb.append(sequence);
-    }
-    scbTime = System.currentTimeMillis() - scbTime;
-    // BigCharBuffer
-    long bcbTime = System.currentTimeMillis();
-    final BigCharBuffer bcb = new BigCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      bcb.append(sequence);
-    }
-    bcbTime = System.currentTimeMillis() - bcbTime;
-    // Results
-    System.out.printf("StringBuilder.append(CharSequence)    : %dms\n", jsbTime);
-    System.out.printf("SimpleCharBuffer.append(CharSequence) : %dms\n", scbTime);
-    System.out.printf("BigCharBuffer.append(CharSequence)    : %dms\n", bcbTime);
-    assertFaster(jsbTime, scbTime);
+    printResults("append(CharSequence)", jsbTime, lcbTime, pcbTime, loopCount);
   }
 
   /**
@@ -144,33 +151,32 @@ public class CharBufferPerformanceTest {
    */
   @Test
   public void test_appendBool() {
-    final int loop = 100000000;
-    // StringBuilder
-    long jsbTime = System.currentTimeMillis();
-    final StringBuilder sb = new StringBuilder(32);
-    for (int n = 0; n < loop; n++) {
-      sb.append(n % 10 == 0);
+    final int loopCount = (int) (10000 * LOOP_FACTOR);
+    long startTime, jsbTime = 0L, lcbTime = 0L, pcbTime = 0L;
+    for (int i = 0; i < ITERATION_COUNT; i++) {
+      // StringBuilder
+      final StringBuilder sb = new StringBuilder(32);
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        sb.append(n % 10 == 0);
+      }
+      jsbTime += System.nanoTime() - startTime;
+      // SimpleCharBuffer
+      final LinearCharBuffer lcb = new LinearCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        lcb.appendBool(n % 10 == 0);
+      }
+      lcbTime += System.nanoTime() - startTime;
+      // BigCharBuffer
+      final PaginalCharBuffer pcb = new PaginalCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        pcb.appendBool(n % 10 == 0);
+      }
+      pcbTime += System.nanoTime() - startTime;
     }
-    jsbTime = System.currentTimeMillis() - jsbTime;
-    // SimpleCharBuffer
-    long scbTime = System.currentTimeMillis();
-    final SimpleCharBuffer scb = new SimpleCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      scb.appendBool(n % 10 == 0);
-    }
-    scbTime = System.currentTimeMillis() - scbTime;
-    // BigCharBuffer
-    long bcbTime = System.currentTimeMillis();
-    final BigCharBuffer bcb = new BigCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      bcb.appendBool(n % 10 == 0);
-    }
-    bcbTime = System.currentTimeMillis() - bcbTime;
-    // Results
-    System.out.printf("StringBuilder.append(boolean)        : %dms\n", jsbTime);
-    System.out.printf("SimpleCharBuffer.appendBool(boolean) : %dms\n", scbTime);
-    System.out.printf("BigCharBuffer.appendBool(boolean)    : %dms\n", bcbTime);
-    assertFaster(jsbTime, scbTime);
+    printResults("append(boolan) / appendBool(boolean)", jsbTime, lcbTime, pcbTime, loopCount);
   }
 
   /**
@@ -179,33 +185,32 @@ public class CharBufferPerformanceTest {
    */
   @Test
   public void test_appendDec_int() {
-    final int loop = 100000000;
-    // StringBuilder
-    long jsbTime = System.currentTimeMillis();
-    final StringBuilder sb = new StringBuilder(32);
-    for (int n = 0; n < loop; n++) {
-      sb.append(n);
+    final int loopCount = (int) (10000 * LOOP_FACTOR);
+    long startTime, jsbTime = 0L, lcbTime = 0L, pcbTime = 0L;
+    for (int i = 0; i < ITERATION_COUNT; i++) {
+      // StringBuilder
+      final StringBuilder sb = new StringBuilder(32);
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        sb.append(n);
+      }
+      jsbTime += System.nanoTime() - startTime;
+      // SimpleCharBuffer
+      final LinearCharBuffer lcb = new LinearCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        lcb.appendDec(n);
+      }
+      lcbTime += System.nanoTime() - startTime;
+      // BigCharBuffer
+      final PaginalCharBuffer pcb = new PaginalCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        pcb.appendDec(n);
+      }
+      pcbTime += System.nanoTime() - startTime;
     }
-    jsbTime = System.currentTimeMillis() - jsbTime;
-    // SimpleCharBuffer
-    long scbTime = System.currentTimeMillis();
-    final SimpleCharBuffer scb = new SimpleCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      scb.appendDec(n);
-    }
-    scbTime = System.currentTimeMillis() - scbTime;
-    // BigCharBuffer
-    long bcbTime = System.currentTimeMillis();
-    final BigCharBuffer bcb = new BigCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      bcb.appendDec(n);
-    }
-    bcbTime = System.currentTimeMillis() - bcbTime;
-    // Results
-    System.out.printf("StringBuilder.append(int)       : %dms\n", jsbTime);
-    System.out.printf("SimpleCharBuffer.appendDec(int) : %dms\n", scbTime);
-    System.out.printf("BigCharBuffer.appendDec(int)    : %dms\n", bcbTime);
-    assertFaster(jsbTime, scbTime);
+    printResults("append(int) / appendDec(int)", jsbTime, lcbTime, pcbTime, loopCount);
   }
 
   /**
@@ -214,33 +219,32 @@ public class CharBufferPerformanceTest {
    */
   @Test
   public void test_appendDec_long() {
-    final int loop = 100000000;
-    // StringBuilder
-    long jsbTime = System.currentTimeMillis();
-    final StringBuilder sb = new StringBuilder(32);
-    for (long n = 0L; n < loop; n++) {
-      sb.append(n);
+    final int loopCount = (int) (10000 * LOOP_FACTOR);
+    long startTime, jsbTime = 0L, lcbTime = 0L, pcbTime = 0L;
+    for (int i = 0; i < ITERATION_COUNT; i++) {
+      // StringBuilder
+      final StringBuilder sb = new StringBuilder(32);
+      startTime = System.nanoTime();
+      for (long n = 0L; n < loopCount; n++) {
+        sb.append(n);
+      }
+      jsbTime += System.nanoTime() - startTime;
+      // SimpleCharBuffer
+      final LinearCharBuffer lcb = new LinearCharBuffer();
+      startTime = System.nanoTime();
+      for (long n = 0L; n < loopCount; n++) {
+        lcb.appendDec(n);
+      }
+      lcbTime += System.nanoTime() - startTime;
+      // BigCharBuffer
+      final PaginalCharBuffer pcb = new PaginalCharBuffer();
+      startTime = System.nanoTime();
+      for (long n = 0L; n < loopCount; n++) {
+        pcb.appendDec(n);
+      }
+      pcbTime += System.nanoTime() - startTime;
     }
-    jsbTime = System.currentTimeMillis() - jsbTime;
-    // SimpleCharBuffer
-    long scbTime = System.currentTimeMillis();
-    final SimpleCharBuffer scb = new SimpleCharBuffer();
-    for (long n = 0L; n < loop; n++) {
-      scb.appendDec(n);
-    }
-    scbTime = System.currentTimeMillis() - scbTime;
-    // BigCharBuffer
-    long bcbTime = System.currentTimeMillis();
-    final BigCharBuffer bcb = new BigCharBuffer();
-    for (long n = 0L; n < loop; n++) {
-      bcb.appendDec(n);
-    }
-    bcbTime = System.currentTimeMillis() - bcbTime;
-    // Results
-    System.out.printf("StringBuilder.append(long)       : %dms\n", jsbTime);
-    System.out.printf("SimpleCharBuffer.appendDec(long) : %dms\n", scbTime);
-    System.out.printf("BigCharBuffer.appendDec(long)    : %dms\n", bcbTime);
-    assertFaster(jsbTime, scbTime);
+    printResults("append(long) / appendDec(long)", jsbTime, lcbTime, pcbTime, loopCount);
   }
 
   /**
@@ -249,33 +253,32 @@ public class CharBufferPerformanceTest {
    */
   @Test
   public void test_appendDec_float() {
-    final int loop = 100000000;
-    // StringBuilder
-    long jsbTime = System.currentTimeMillis();
-    final StringBuilder sb = new StringBuilder(32);
-    for (int n = 0; n < loop; n++) {
-      sb.append((float) n);
+    final int loopCount = (int) (10000 * LOOP_FACTOR);
+    long startTime, jsbTime = 0L, lcbTime = 0L, pcbTime = 0L;
+    for (int i = 0; i < ITERATION_COUNT; i++) {
+      // StringBuilder
+      final StringBuilder sb = new StringBuilder(32);
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        sb.append((float) n);
+      }
+      jsbTime += System.nanoTime() - startTime;
+      // SimpleCharBuffer
+      final LinearCharBuffer lcb = new LinearCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        lcb.appendDec((float) n);
+      }
+      lcbTime += System.nanoTime() - startTime;
+      // BigCharBuffer
+      final PaginalCharBuffer pcb = new PaginalCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        pcb.appendDec((float) n);
+      }
+      pcbTime += System.nanoTime() - startTime;
     }
-    jsbTime = System.currentTimeMillis() - jsbTime;
-    // SimpleCharBuffer
-    long scbTime = System.currentTimeMillis();
-    final SimpleCharBuffer scb = new SimpleCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      scb.appendDec((float) n);
-    }
-    scbTime = System.currentTimeMillis() - scbTime;
-    // BigCharBuffer
-    long bcbTime = System.currentTimeMillis();
-    final BigCharBuffer bcb = new BigCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      bcb.appendDec((float) n);
-    }
-    bcbTime = System.currentTimeMillis() - bcbTime;
-    // Results
-    System.out.printf("StringBuilder.append(float)       : %dms\n", jsbTime);
-    System.out.printf("SimpleCharBuffer.appendDec(float) : %dms\n", scbTime);
-    System.out.printf("BigCharBuffer.appendDec(float)    : %dms\n", bcbTime);
-    assertFaster(jsbTime, scbTime);
+    printResults("append(float) / appendDec(float)", jsbTime, lcbTime, pcbTime, loopCount);
   }
 
   /**
@@ -284,33 +287,32 @@ public class CharBufferPerformanceTest {
    */
   @Test
   public void test_appendDec_double() {
-    final int loop = 100000000;
-    // StringBuilder
-    long jsbTime = System.currentTimeMillis();
-    final StringBuilder sb = new StringBuilder(32);
-    for (int n = 0; n < loop; n++) {
-      sb.append((double) n);
+    final int loopCount = (int) (10000 * LOOP_FACTOR);
+    long startTime, jsbTime = 0L, lcbTime = 0L, pcbTime = 0L;
+    for (int i = 0; i < ITERATION_COUNT; i++) {
+      // StringBuilder
+      final StringBuilder sb = new StringBuilder(32);
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        sb.append((double) n);
+      }
+      jsbTime += System.nanoTime() - startTime;
+      // SimpleCharBuffer
+      final LinearCharBuffer lcb = new LinearCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        lcb.appendDec((double) n);
+      }
+      lcbTime += System.nanoTime() - startTime;
+      // BigCharBuffer
+      final PaginalCharBuffer pcb = new PaginalCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        pcb.appendDec((double) n);
+      }
+      pcbTime += System.nanoTime() - startTime;
     }
-    jsbTime = System.currentTimeMillis() - jsbTime;
-    // SimpleCharBuffer
-    long scbTime = System.currentTimeMillis();
-    final SimpleCharBuffer scb = new SimpleCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      scb.appendDec((double) n);
-    }
-    scbTime = System.currentTimeMillis() - scbTime;
-    // BigCharBuffer
-    long bcbTime = System.currentTimeMillis();
-    final BigCharBuffer bcb = new BigCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      bcb.appendDec((double) n);
-    }
-    bcbTime = System.currentTimeMillis() - bcbTime;
-    // Results
-    System.out.printf("StringBuilder.append(double)       : %dms\n", jsbTime);
-    System.out.printf("SimpleCharBuffer.appendDec(double) : %dms\n", scbTime);
-    System.out.printf("BigCharBuffer.appendDec(double)    : %dms\n", bcbTime);
-    assertFaster(jsbTime, scbTime);
+    printResults("append(double) / appendDec(double)", jsbTime, lcbTime, pcbTime, loopCount);
   }
 
   /**
@@ -319,33 +321,32 @@ public class CharBufferPerformanceTest {
    */
   @Test
   public void test_appendHex_int() {
-    final int loop = 100000000;
-    // StringBuilder
-    long jsbTime = System.currentTimeMillis();
-    final StringBuilder sb = new StringBuilder(32);
-    for (int n = 0; n < loop; n++) {
-      sb.append(Integer.toHexString(n));
+    final int loopCount = (int) (10000 * LOOP_FACTOR);
+    long startTime, jsbTime = 0L, lcbTime = 0L, pcbTime = 0L;
+    for (int i = 0; i < ITERATION_COUNT; i++) {
+      // StringBuilder
+      final StringBuilder sb = new StringBuilder(32);
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        sb.append(Integer.toHexString(n));
+      }
+      jsbTime += System.nanoTime() - startTime;
+      // SimpleCharBuffer
+      final LinearCharBuffer lcb = new LinearCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        lcb.appendHexStripLeadingZeros(n);
+      }
+      lcbTime += System.nanoTime() - startTime;
+      // BigCharBuffer
+      final PaginalCharBuffer pcb = new PaginalCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        pcb.appendHexStripLeadingZeros(n);
+      }
+      pcbTime += System.nanoTime() - startTime;
     }
-    jsbTime = System.currentTimeMillis() - jsbTime;
-    // SimpleCharBuffer
-    long scbTime = System.currentTimeMillis();
-    final SimpleCharBuffer scb = new SimpleCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      scb.appendHexStripLeadingZeros(n);
-    }
-    scbTime = System.currentTimeMillis() - scbTime;
-    // BigCharBuffer
-    long bcbTime = System.currentTimeMillis();
-    final BigCharBuffer bcb = new BigCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      bcb.appendHexStripLeadingZeros(n);
-    }
-    bcbTime = System.currentTimeMillis() - bcbTime;
-    // Results
-    System.out.printf("StringBuilder.append(Integer.toHexString(int))   : %dms\n", jsbTime);
-    System.out.printf("SimpleCharBuffer.appendHexStripLeadingZeros(int) : %dms\n", scbTime);
-    System.out.printf("BigCharBuffer.appendHexStripLeadingZeros(int)    : %dms\n", bcbTime);
-    assertFaster(jsbTime, scbTime);
+    printResults("append(Integer.toHexString(int)) / appendHex(int)", jsbTime, lcbTime, pcbTime, loopCount);
   }
 
   /**
@@ -354,33 +355,32 @@ public class CharBufferPerformanceTest {
    */
   @Test
   public void test_appendHex_long() {
-    final int loop = 100000000;
-    // StringBuilder
-    long jsbTime = System.currentTimeMillis();
-    final StringBuilder sb = new StringBuilder(32);
-    for (long n = 0L; n < loop; n++) {
-      sb.append(Long.toHexString(n));
+    final int loopCount = (int) (10000 * LOOP_FACTOR);
+    long startTime, jsbTime = 0L, lcbTime = 0L, pcbTime = 0L;
+    for (int i = 0; i < ITERATION_COUNT; i++) {
+      // StringBuilder
+      final StringBuilder sb = new StringBuilder(32);
+      startTime = System.nanoTime();
+      for (long n = 0L; n < loopCount; n++) {
+        sb.append(Long.toHexString(n));
+      }
+      jsbTime += System.nanoTime() - startTime;
+      // SimpleCharBuffer
+      final LinearCharBuffer lcb = new LinearCharBuffer();
+      startTime = System.nanoTime();
+      for (long n = 0L; n < loopCount; n++) {
+        lcb.appendHexStripLeadingZeros(n);
+      }
+      lcbTime += System.nanoTime() - startTime;
+      // BigCharBuffer
+      final PaginalCharBuffer pcb = new PaginalCharBuffer();
+      startTime = System.nanoTime();
+      for (long n = 0L; n < loopCount; n++) {
+        pcb.appendHexStripLeadingZeros(n);
+      }
+      pcbTime += System.nanoTime() - startTime;
     }
-    jsbTime = System.currentTimeMillis() - jsbTime;
-    // SimpleCharBuffer
-    long scbTime = System.currentTimeMillis();
-    final SimpleCharBuffer scb = new SimpleCharBuffer();
-    for (long n = 0L; n < loop; n++) {
-      scb.appendHexStripLeadingZeros(n);
-    }
-    scbTime = System.currentTimeMillis() - scbTime;
-    // BigCharBuffer
-    long bcbTime = System.currentTimeMillis();
-    final BigCharBuffer bcb = new BigCharBuffer();
-    for (long n = 0L; n < loop; n++) {
-      bcb.appendHexStripLeadingZeros(n);
-    }
-    bcbTime = System.currentTimeMillis() - bcbTime;
-    // Results
-    System.out.printf("StringBuilder.append(Long.toHexString(long))      : %dms\n", jsbTime);
-    System.out.printf("SimpleCharBuffer.appendHexStripLeadingZeros(long) : %dms\n", scbTime);
-    System.out.printf("BigCharBuffer.appendHexStripLeadingZeros(long)    : %dms\n", bcbTime);
-    assertFaster(jsbTime, scbTime);
+    printResults("append(Long.toHexString(long)) / appendHex(long)", jsbTime, lcbTime, pcbTime, loopCount);
   }
 
   /**
@@ -389,33 +389,32 @@ public class CharBufferPerformanceTest {
    */
   @Test
   public void test_appendOct_int() {
-    final int loop = 100000000;
-    // StringBuilder
-    long jsbTime = System.currentTimeMillis();
-    final StringBuilder sb = new StringBuilder(32);
-    for (int n = 0; n < loop; n++) {
-      sb.append(Integer.toOctalString(n));
+    final int loopCount = (int) (10000 * LOOP_FACTOR);
+    long startTime, jsbTime = 0L, lcbTime = 0L, pcbTime = 0L;
+    for (int i = 0; i < ITERATION_COUNT; i++) {
+      // StringBuilder
+      final StringBuilder sb = new StringBuilder(32);
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        sb.append(Integer.toOctalString(n));
+      }
+      jsbTime += System.nanoTime() - startTime;
+      // SimpleCharBuffer
+      final LinearCharBuffer lcb = new LinearCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        lcb.appendOctStripLeadingZeros(n);
+      }
+      lcbTime += System.nanoTime() - startTime;
+      // BigCharBuffer
+      final PaginalCharBuffer pcb = new PaginalCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        pcb.appendOctStripLeadingZeros(n);
+      }
+      pcbTime += System.nanoTime() - startTime;
     }
-    jsbTime = System.currentTimeMillis() - jsbTime;
-    // SimpleCharBuffer
-    long scbTime = System.currentTimeMillis();
-    final SimpleCharBuffer scb = new SimpleCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      scb.appendOctStripLeadingZeros(n);
-    }
-    scbTime = System.currentTimeMillis() - scbTime;
-    // BigCharBuffer
-    long bcbTime = System.currentTimeMillis();
-    final BigCharBuffer bcb = new BigCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      bcb.appendOctStripLeadingZeros(n);
-    }
-    bcbTime = System.currentTimeMillis() - bcbTime;
-    // Results
-    System.out.printf("StringBuilder.append(Integer.toOctalString(int)) : %dms\n", jsbTime);
-    System.out.printf("SimpleCharBuffer.appendOctStripLeadingZeros(int) : %dms\n", scbTime);
-    System.out.printf("BigCharBuffer.appendOctStripLeadingZeros(int)    : %dms\n", bcbTime);
-    assertFaster(jsbTime, scbTime);
+    printResults("append(Integer.toOctalString(int)) / appendOct(int)", jsbTime, lcbTime, pcbTime, loopCount);
   }
 
   /**
@@ -424,33 +423,32 @@ public class CharBufferPerformanceTest {
    */
   @Test
   public void test_appendOct_long() {
-    final int loop = 100000000;
-    // StringBuilder
-    long jsbTime = System.currentTimeMillis();
-    final StringBuilder sb = new StringBuilder(32);
-    for (long n = 0L; n < loop; n++) {
-      sb.append(Long.toOctalString(n));
+    final int loopCount = (int) (10000 * LOOP_FACTOR);
+    long startTime, jsbTime = 0L, lcbTime = 0L, pcbTime = 0L;
+    for (int i = 0; i < ITERATION_COUNT; i++) {
+      // StringBuilder
+      final StringBuilder sb = new StringBuilder(32);
+      startTime = System.nanoTime();
+      for (long n = 0L; n < loopCount; n++) {
+        sb.append(Long.toOctalString(n));
+      }
+      jsbTime += System.nanoTime() - startTime;
+      // SimpleCharBuffer
+      final LinearCharBuffer lcb = new LinearCharBuffer();
+      startTime = System.nanoTime();
+      for (long n = 0L; n < loopCount; n++) {
+        lcb.appendOctStripLeadingZeros(n);
+      }
+      lcbTime += System.nanoTime() - startTime;
+      // BigCharBuffer
+      final PaginalCharBuffer pcb = new PaginalCharBuffer();
+      startTime = System.nanoTime();
+      for (long n = 0L; n < loopCount; n++) {
+        pcb.appendOctStripLeadingZeros(n);
+      }
+      pcbTime += System.nanoTime() - startTime;
     }
-    jsbTime = System.currentTimeMillis() - jsbTime;
-    // SimpleCharBuffer
-    long scbTime = System.currentTimeMillis();
-    final SimpleCharBuffer scb = new SimpleCharBuffer();
-    for (long n = 0L; n < loop; n++) {
-      scb.appendOctStripLeadingZeros(n);
-    }
-    scbTime = System.currentTimeMillis() - scbTime;
-    // BigCharBuffer
-    long bcbTime = System.currentTimeMillis();
-    final BigCharBuffer bcb = new BigCharBuffer();
-    for (long n = 0L; n < loop; n++) {
-      bcb.appendOctStripLeadingZeros(n);
-    }
-    bcbTime = System.currentTimeMillis() - bcbTime;
-    // Results
-    System.out.printf("StringBuilder.append(Long.toOctalString(long))    : %dms\n", jsbTime);
-    System.out.printf("SimpleCharBuffer.appendOctStripLeadingZeros(long) : %dms\n", scbTime);
-    System.out.printf("BigCharBuffer.appendOctStripLeadingZeros(long)    : %dms\n", bcbTime);
-    assertFaster(jsbTime, scbTime);
+    printResults("append(Long.toOctalString(long)) / appendOct(long)", jsbTime, lcbTime, pcbTime, loopCount);
   }
 
   /**
@@ -459,33 +457,32 @@ public class CharBufferPerformanceTest {
    */
   @Test
   public void test_appendBin_int() {
-    final int loop = 10000000;
-    // StringBuilder
-    long jsbTime = System.currentTimeMillis();
-    final StringBuilder sb = new StringBuilder(32);
-    for (int n = 0; n < loop; n++) {
-      sb.append(Integer.toBinaryString(n));
+    final int loopCount = (int) (10000 * LOOP_FACTOR);
+    long startTime, jsbTime = 0L, lcbTime = 0L, pcbTime = 0L;
+    for (int i = 0; i < ITERATION_COUNT; i++) {
+      // StringBuilder
+      final StringBuilder sb = new StringBuilder(32);
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        sb.append(Integer.toBinaryString(n));
+      }
+      jsbTime += System.nanoTime() - startTime;
+      // SimpleCharBuffer
+      final LinearCharBuffer lcb = new LinearCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        lcb.appendBinStripLeadingZeros(n);
+      }
+      lcbTime += System.nanoTime() - startTime;
+      // BigCharBuffer
+      final PaginalCharBuffer pcb = new PaginalCharBuffer();
+      startTime = System.nanoTime();
+      for (int n = 0; n < loopCount; n++) {
+        pcb.appendBinStripLeadingZeros(n);
+      }
+      pcbTime += System.nanoTime() - startTime;
     }
-    jsbTime = System.currentTimeMillis() - jsbTime;
-    // SimpleCharBuffer
-    long scbTime = System.currentTimeMillis();
-    final SimpleCharBuffer scb = new SimpleCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      scb.appendBinStripLeadingZeros(n);
-    }
-    scbTime = System.currentTimeMillis() - scbTime;
-    // BigCharBuffer
-    long bcbTime = System.currentTimeMillis();
-    final BigCharBuffer bcb = new BigCharBuffer();
-    for (int n = 0; n < loop; n++) {
-      bcb.appendBinStripLeadingZeros(n);
-    }
-    bcbTime = System.currentTimeMillis() - bcbTime;
-    // Results
-    System.out.printf("StringBuilder.append(Integer.toBinaryString(int)) : %dms\n", jsbTime);
-    System.out.printf("SimpleCharBuffer.appendBinStripLeadingZeros(int)  : %dms\n", scbTime);
-    System.out.printf("BigCharBuffer.appendBinStripLeadingZeros(int)     : %dms\n", bcbTime);
-    assertFaster(jsbTime, scbTime);
+    printResults("append(Integer.toBinaryString(int)) / appendBin(int)", jsbTime, lcbTime, pcbTime, loopCount);
   }
 
   /**
@@ -494,46 +491,71 @@ public class CharBufferPerformanceTest {
    */
   @Test
   public void test_appendBin_long() {
-    final int loop = 10000000;
-    // StringBuilder
-    long jsbTime = System.currentTimeMillis();
-    final StringBuilder sb = new StringBuilder(32);
-    for (long n = 0L; n < loop; n++) {
-      sb.append(Long.toBinaryString(n));
+    final int loopCount = (int) (10000 * LOOP_FACTOR);
+    long startTime, jsbTime = 0L, lcbTime = 0L, pcbTime = 0L;
+    for (int i = 0; i < ITERATION_COUNT; i++) {
+      // StringBuilder
+      final StringBuilder sb = new StringBuilder(32);
+      startTime = System.nanoTime();
+      for (long n = 0L; n < loopCount; n++) {
+        sb.append(Long.toBinaryString(n));
+      }
+      jsbTime += System.nanoTime() - startTime;
+      // SimpleCharBuffer
+      final LinearCharBuffer lcb = new LinearCharBuffer();
+      startTime = System.nanoTime();
+      for (long n = 0L; n < loopCount; n++) {
+        lcb.appendBinStripLeadingZeros(n);
+      }
+      lcbTime += System.nanoTime() - startTime;
+      // BigCharBuffer
+      final PaginalCharBuffer pcb = new PaginalCharBuffer();
+      startTime = System.nanoTime();
+      for (long n = 0L; n < loopCount; n++) {
+        pcb.appendBinStripLeadingZeros(n);
+      }
+      pcbTime += System.nanoTime() - startTime;
     }
-    jsbTime = System.currentTimeMillis() - jsbTime;
-    // SimpleCharBuffer
-    long scbTime = System.currentTimeMillis();
-    final SimpleCharBuffer scb = new SimpleCharBuffer();
-    for (long n = 0L; n < loop; n++) {
-      scb.appendBinStripLeadingZeros(n);
-    }
-    scbTime = System.currentTimeMillis() - scbTime;
-    // BigCharBuffer
-    long bcbTime = System.currentTimeMillis();
-    final BigCharBuffer bcb = new BigCharBuffer();
-    for (long n = 0L; n < loop; n++) {
-      bcb.appendBinStripLeadingZeros(n);
-    }
-    bcbTime = System.currentTimeMillis() - bcbTime;
-    // Results
-    System.out.printf("StringBuilder.append(Long.toBinaryString(long))    : %dms\n", jsbTime);
-    System.out.printf("SimpleCharBuffer.appendBinStripLeadingZeros(long)  : %dms\n", scbTime);
-    System.out.printf("BigCharBuffer.appendBinStripLeadingZeros(long)     : %dms\n", bcbTime);
-    assertFaster(jsbTime, scbTime);
+    printResults("append(Long.toBinaryString(long)) / appendBin(long)", jsbTime, lcbTime, pcbTime, loopCount);
   }
 
   /**
-   * Expects that {@link SimpleCharBuffer} is faster than {@code StringBuilder}.
+   * Prints performance results and fails a test if {@link LinearCharBuffer} is slower than
+   * {@link StringBuilder}.
    */
-  private static void assertFaster(double jsbTime, double scbTime) {
-    if (jsbTime < scbTime) {
-      final double rate = scbTime / jsbTime;
-      System.out.printf("[-] %s times slower!\n\n", rate);
-      Assert.fail(rate + " times slower!");
-    } else {
-      final double rate = jsbTime / scbTime;
-      System.out.printf("[+] %s times faster!\n\n", rate);
+  private static void printResults(String methodName, long jsbTime, long lcbTime, long pcbTime, long loopCount) {
+    // calculate parameters
+    double jsbAvg = jsbTime / ((double) ITERATION_COUNT * loopCount);
+    double lcbAvg = lcbTime / ((double) ITERATION_COUNT * loopCount);
+    double pcbAvg = pcbTime / ((double) ITERATION_COUNT * loopCount);
+    double lcbRate = (double) jsbTime / (double) lcbTime;
+    double pcbRate = (double) jsbTime / (double) pcbTime;
+    String lcbFaster = "FASTER";
+    char lcbSign = '+';
+    if (lcbRate < 1.0) {
+      lcbRate = 1.0 / lcbRate;
+      lcbFaster = "slower";
+      lcbSign = '-';
+    }
+    String pcbFaster = "FASTER";
+    char pcbSign = '+';
+    if (pcbRate < 1.0) {
+      pcbRate = 1.0 / pcbRate;
+      pcbFaster = "slower";
+      pcbSign = '-';
+    }
+    // print results
+    System.out.printf("METHOD                : %s\n", methodName);
+    System.out.printf("Samples               : CALLS = %,d\tLOOPS = %,d\n", loopCount * ITERATION_COUNT, loopCount);
+    System.out.printf("StringBuilder         : TOTAL = %s ns\tAVG = %.10f ns\n", jsbTime, jsbAvg);
+    System.out.printf("LinearCharBuffer      : TOTAL = %s ns\tAVG = %.10f ns\n", lcbTime, lcbAvg);
+    System.out.printf("PaginalCharBuffer     : TOTAL = %s ns\tAVG = %.10f ns\n", pcbTime, pcbAvg);
+    System.out.printf("[%s] LinearCharBuffer  : %.6f times %s!\n", lcbSign, lcbRate, lcbFaster);
+    System.out.printf("[%s] PaginalCharBuffer : %.6f times %s!\n", pcbSign, pcbRate, pcbFaster);
+    System.out.printf("%s!\n\n", jsbTime < lcbTime ? "FAILED" : "SUCCEED");
+    // fail if slower
+    if (jsbTime < lcbTime) {
+      Assert.fail(lcbRate + " times slower!");
     }
   }
 

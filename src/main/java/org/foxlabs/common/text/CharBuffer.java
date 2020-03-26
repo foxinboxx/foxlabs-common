@@ -49,7 +49,12 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
     this.threshold = Checks.checkThat(threshold, threshold >= 0);
   }
 
-  // Basic operations
+  // ===== BASIC OPERATIONS =======================================================================
+
+  @Override
+  public CharBuffer append(char ch) {
+    throw new UnsupportedOperationException();
+  }
 
   /**
    * Returns the current length of the buffer (i.e. the current number of characters that have
@@ -79,33 +84,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
   public final int remaining() {
     return threshold - length();
   }
-
-  /**
-   * Returns a character at the specified index in the buffer contents.
-   *
-   * <p>The index is zero-based and must be less than {@link #length()} (i.e.
-   * {@code 0 <= index < length()}).</p>
-   *
-   * @param index The index of a character to return.
-   * @return A character at the specified index in the buffer contents.
-   * @throws IndexOutOfBoundsException if the specified index is out of range.
-   * @see #getChar(int)
-   */
-  @Override
-  public final char charAt(int index) {
-    return Checks.checkIndex(this, index).getChar(index);
-  }
-
-  /**
-   * Does an actual character retrieval at the specified index in the buffer contents.
-   *
-   * <p>Subclasses should not worry about correctness of the index provided since it should already
-   * be verified by the {@code public} methods.</p>
-   *
-   * @param index The index of a character to return.
-   * @return A character at the specified index in the buffer contents.
-   */
-  protected abstract char getChar(int index);
 
   /**
    * Returns a sequence that is a copy of the buffer contents in the specified range (i.e.
@@ -239,20 +217,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
   protected abstract void extendCapacity(int nlength);
 
   /**
-   * Appends the specified character to the buffer and increments the current length.
-   *
-   * <p>Note that there is no guarantee that the {@link #ensureCapacity(int)} method was called
-   * right before calling this method, so subclasses must do that themselves.</p>
-   *
-   * @param ch The character to append.
-   * @return A reference to this buffer.
-   * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   * @see #append(int)
-   */
-  @Override
-  public abstract CharBuffer append(char ch);
-
-  /**
    * Appends the specified character (Unicode code point) to the buffer and increases the current
    * length by 1 or 2 depending on whether the specified character is in the Basic Multilingual
    * Plane (BMP) or is it a supplementary character, respectively.
@@ -264,20 +228,20 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * <p>Note that this method does not validate the specified character to be a valid Unicode code
    * point.</p>
    *
-   * @param ch The character (Unicode code point) to append.
+   * @param cp The character (Unicode code point) to append.
    * @return A reference to this buffer.
    * @throws ThresholdReachedException if threshold of the buffer has been reached.
    * @see Character#isBmpCodePoint(int)
    * @see #append(char)
    */
-  public final CharBuffer append(int ch) {
-    if (Character.isBmpCodePoint(ch)) {
-      return append((char) ch);
+  public CharBuffer append(int cp) {
+    if (Character.isBmpCodePoint(cp)) {
+      return append((char) cp);
     } else if (ensureCapacity(2) < 2) {
       throw new ThresholdReachedException(this);
     } else {
-      append(Character.highSurrogate(ch));
-      return append(Character.lowSurrogate(ch));
+      append(Character.highSurrogate(cp));
+      return append(Character.lowSurrogate(cp));
     }
   }
 
@@ -417,7 +381,7 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
     return new String(copy);
   }
 
-  // Boolean to string representation
+  // ===== BOOLEAN TO STRING ======================================================================
 
   /**
    * The string representation of the {@code true} constant.
@@ -455,7 +419,7 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
     return value ? TRUE_CONSTANT.length() : FALSE_CONSTANT.length();
   }
 
-  // Number to string representation
+  // ===== NUMBER TO STRING =======================================================================
 
   /**
    * All possible digits (up to the hexadecimal system) of which an integer number can consist.
@@ -1589,7 +1553,7 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
     return 32 + getBinCapacity((int) (value >>> 32));
   }
 
-  // Object to string representation
+  // ===== OBJECT TO STRING =======================================================================
 
   /**
    * The string representation of the {@code null} reference.
@@ -2403,7 +2367,8 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
       CharBuffer crossref = crossrefs.get(object);
       if (crossref == null) {
         final String classname = object.getClass().getName();
-        crossref = new SimpleCharBuffer(classname.length() + 10);
+        final int length = classname.length() + 10;
+        crossref = new LinearCharBuffer(length, length);
         crossref.append('!').append(classname);
         crossref.append('@').appendHex(System.identityHashCode(object));
       }
@@ -2425,20 +2390,41 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
     crossrefs.remove(object);
   }
 
-  // Advanced operations
+  // ===== ADVANCED OPERATIONS ====================================================================
 
   // Encoding
 
-  public final CharBuffer appendEncoded(int ch, CharEncoder encoder) {
-    encoder.encode(ch, this);
+  public final CharBuffer appendEncoded(int cp, CharEncoder encoder) {
+    encoder.encode(cp, this);
     return this;
   }
 
   public final CharBuffer appendEncoded(CharSequence sequence, CharEncoder encoder) {
+    return appendEncoded(CharSegment.from(sequence), encoder);
+  }
+
+  public final CharBuffer appendEncoded(CharSegment segment, CharEncoder encoder) {
     Checks.checkNotNull(encoder);
-    final int length = sequence.length();
-    for (int index = 0; index < length; index++) {
-      encoder.encode(sequence.charAt(index), this);
+    final int length = segment.length();
+    for (int cp, index = 0; index < length; index += Character.charCount(cp)) {
+      cp = segment.codePointAt(index);
+      encoder.encode(cp, this);
+    }
+    return this;
+  }
+
+  public final CharBuffer appendDecoded(CharSequence sequence, CharDecoder decoder) {
+    return appendDecoded(CharSegment.from(sequence), decoder);
+  }
+
+  public final CharBuffer appendDecoded(CharSegment segment, CharDecoder decoder) {
+    Checks.checkNotNull(decoder);
+    final int length = segment.length();
+    for (int count, index = 0; index < length; index += count) {
+      count = decoder.decode(segment, index, this);
+      if (count <= 0) { // avoid infinite loop
+        return this;
+      }
     }
     return this;
   }
@@ -2527,11 +2513,15 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
   }
 
   public final CharBuffer appendIndent(CharSequence indent, int count) {
-    final CharSegment indentation = CharSegment.from(indent);
-    if (Checks.checkThat(count, count >= 0) > 0) {
-      ensureCapacity(count * indent.length());
+    return appendIndent(CharSegment.from(indent), count);
+  }
+
+  public final CharBuffer appendIndent(CharSegment indent, int count) {
+    final int length = indent.length(); // early NPE check
+    if (Checks.checkThat(count, count >= 0) > 0 && length > 0) {
+      ensureCapacity(count * length);
       for (; count > 0; count--) {
-        append(indentation);
+        append(indent);
       }
     }
     return this;

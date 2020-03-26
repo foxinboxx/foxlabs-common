@@ -86,15 +86,16 @@ public interface ToString {
   /**
    * An abstract {@code ToString} implementation which overrides the {@link Object#toString()}
    * method that calls the {@link #toString(CharBuffer)} method with a new empty buffer and returns
-   * the resulting string (i.e. {@code toString(new SimpleCharBuffer()).toString()}). In case of
+   * the resulting string (i.e. {@code toString(new LinearCharBuffer()).toString()}). In case of
    * buffer overflow partial result will be returned and no exception will be thrown.
    *
    * @author Fox Mulder
+   * @see LinearCharBuffer
    */
   public static abstract class Adapter implements ToString {
     @Override public String toString() {
       try {
-        return toString(new SimpleCharBuffer()).toString();
+        return toString(new LinearCharBuffer()).toString();
       } catch (ThresholdReachedException e) {
         // threshold has been reached, return partial result anyway
         return e.getProducer().toString();

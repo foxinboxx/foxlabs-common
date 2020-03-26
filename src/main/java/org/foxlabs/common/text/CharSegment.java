@@ -78,6 +78,14 @@ import org.foxlabs.common.Strings;
 public interface CharSegment extends CharSequence {
 
   /**
+   * Returns a character (Unicode code point) at the specified {@code index}. This method has the
+   * same semantics as the {@link String#codePointAt(int)}.
+   *
+   * @throws IndexOutOfBoundsException if the specified index is out of range.
+   */
+  int codePointAt(int index);
+
+  /**
    * Returns a new {@code CharSegment} that is a subsegment of this {@code CharSegment} in the
    * specified range {@code [start, end)}.
    *
@@ -114,7 +122,10 @@ public interface CharSegment extends CharSequence {
       return 0;
     }
     @Override public char charAt(int index) {
-      return Checks.checkIndex(this, index).charAt(index);
+      throw new IndexOutOfBoundsException("Attempt to get character on an empty segment");
+    }
+    @Override public int codePointAt(int index) {
+      throw new IndexOutOfBoundsException("Attempt to get code point on an empty segment");
     }
     @Override public CharSegment subSequence(int start, int end) {
       return Checks.checkRange(this, start, end);
@@ -134,18 +145,47 @@ public interface CharSegment extends CharSequence {
    * Creates a new {@code CharSegment} for the specified {@code array} or returns {@link #EMPTY} if
    * the specified {@code array} is empty.
    *
-   * @throws NullPointerException if the specified {@code char[]} reference is {@code null}.
+   * @throws NullPointerException if a reference to the specified {@code array} is {@code null}.
    * @see #from(char[], int, int)
    */
   static CharSegment from(char... array) {
-    return from(array, 0, array.length);
+    return array.length == 0 ? EMPTY : new CharSegment() {
+      @Override public int length() {
+        return array.length;
+      }
+      @Override public char charAt(int index) {
+        return array[index];
+      }
+      @Override public int codePointAt(int index) {
+        final char high = array[index];
+        if (Character.isHighSurrogate(high) && ++index < array.length) {
+          final char low = array[index];
+          if (Character.isLowSurrogate(low)) {
+            return Character.toCodePoint(high, low);
+          }
+        }
+        return high;
+      }
+      @Override public CharSegment subSequence(int start, int end) {
+        if (start == 0 && end == array.length) {
+          return this;
+        }
+        return from(array, start, end);
+      }
+      @Override public void copyTo(int start, int end, char[] target, int offset) {
+        System.arraycopy(array, start, target, offset, end - start);
+      }
+      @Override public String toString() {
+        return new String(array);
+      }
+    };
   }
 
   /**
    * Creates a new {@code CharSegment} for the range {@code [from, array.length)} in the specified
    * {@code array} or returns {@link #EMPTY} if range is empty.
    *
-   * @throws NullPointerException if the specified {@code char[]} reference is {@code null}.
+   * @throws NullPointerException if a reference to the specified {@code array} is {@code null}.
    * @throws IndexOutOfBoundsException if the specified range is invalid.
    * @see #from(char[], int, int)
    */
@@ -157,7 +197,7 @@ public interface CharSegment extends CharSequence {
    * Creates a new {@code CharSegment} for the range {@code [from, to)} in the specified
    * {@code array} or returns {@link #EMPTY} if range is empty.
    *
-   * @throws NullPointerException if the specified {@code char[]} reference is {@code null}.
+   * @throws NullPointerException if a reference to the specified {@code array} is {@code null}.
    * @throws IndexOutOfBoundsException if the specified range is invalid.
    */
   static CharSegment from(char[] array, int from, int to) {
@@ -170,6 +210,10 @@ public interface CharSegment extends CharSequence {
       @Override public char charAt(int index) {
         Checks.checkIndex(this, index);
         return array[from + index];
+      }
+      @Override public int codePointAt(int index) {
+        Checks.checkIndex(this, index);
+        return Character.codePointAt(array, from + index, from + length);
       }
       @Override public CharSegment subSequence(int start, int end) {
         Checks.checkRange(this, start, end);
@@ -192,18 +236,36 @@ public interface CharSegment extends CharSequence {
    * Creates a new {@code CharSegment} for the specified {@code string} or returns {@link #EMPTY}
    * if the specified {@code string} is empty.
    *
-   * @throws NullPointerException if the specified {@code String} reference is {@code null}.
-   * @see #from(String, int, int)
+   * @throws NullPointerException if a reference to the specified {@code string} is {@code null}.
    */
   static CharSegment from(final String string) {
-    return from(string, 0, string.length());
+    return string.isEmpty() ? EMPTY : new CharSegment() {
+      @Override public int length() {
+        return string.length();
+      }
+      @Override public char charAt(int index) {
+        return string.charAt(index);
+      }
+      @Override public int codePointAt(int index) {
+        return string.codePointAt(index);
+      }
+      @Override public CharSegment subSequence(int start, int end) {
+        return start > 0 || end < string.length() ? from(string, start, end) : this;
+      }
+      @Override public void copyTo(int start, int end, char[] target, int offset) {
+        string.getChars(start, end, target, offset);
+      }
+      @Override public String toString() {
+        return string;
+      }
+    };
   }
 
   /**
    * Creates a new {@code CharSegment} for the range {@code [from, string.length())} in the
    * specified {@code string} or returns {@link #EMPTY} if range is empty.
    *
-   * @throws NullPointerException if the specified {@code String} reference is {@code null}.
+   * @throws NullPointerException if a reference to the specified {@code string} is {@code null}.
    * @throws IndexOutOfBoundsException if the specified range is invalid.
    * @see #from(String, int, int)
    */
@@ -215,7 +277,7 @@ public interface CharSegment extends CharSequence {
    * Creates a new {@code CharSegment} for the range {@code [from, to)} in the specified
    * {@code string} or returns {@link #EMPTY} if range is empty.
    *
-   * @throws NullPointerException if the specified {@code String} reference is {@code null}.
+   * @throws NullPointerException if a reference to the specified {@code string} is {@code null}.
    * @throws IndexOutOfBoundsException if the specified range is invalid.
    */
   static CharSegment from(final String string, int from, int to) {
@@ -226,6 +288,10 @@ public interface CharSegment extends CharSequence {
         return length;
       }
       @Override public char charAt(int index) {
+        Checks.checkIndex(this, index);
+        return string.charAt(from + index);
+      }
+      @Override public int codePointAt(int index) {
         Checks.checkIndex(this, index);
         return string.charAt(from + index);
       }
@@ -250,7 +316,7 @@ public interface CharSegment extends CharSequence {
    * Creates a new {@code CharSegment} for the specified {@code builder} or returns {@link #EMPTY}
    * if the specified {@code builder} is empty.
    *
-   * @throws NullPointerException if the specified {@code StringBuilder} reference is {@code null}.
+   * @throws NullPointerException if a reference to the specified {@code builder} is {@code null}.
    * @see #from(StringBuilder, int, int)
    */
   static CharSegment from(final StringBuilder builder) {
@@ -261,7 +327,7 @@ public interface CharSegment extends CharSequence {
    * Creates a new {@code CharSegment} for the range {@code [from, builder.length())} in the
    * specified {@code builder} or returns {@link #EMPTY} if range is empty.
    *
-   * @throws NullPointerException if the specified {@code StringBuilder} reference is {@code null}.
+   * @throws NullPointerException if a reference to the specified {@code builder} is {@code null}.
    * @throws IndexOutOfBoundsException if the specified range is invalid.
    * @see #from(StringBuilder, int, int)
    */
@@ -273,7 +339,7 @@ public interface CharSegment extends CharSequence {
    * Creates a new {@code CharSegment} for the range {@code [from, to)} in the specified
    * {@code builder} or returns {@link #EMPTY} if range is empty.
    *
-   * @throws NullPointerException if the specified {@code StringBuilder} reference is {@code null}.
+   * @throws NullPointerException if a reference to the specified {@code builder} is {@code null}.
    * @throws IndexOutOfBoundsException if the specified range is invalid.
    */
   static CharSegment from(final StringBuilder builder, int from, int to) {
@@ -286,6 +352,10 @@ public interface CharSegment extends CharSequence {
       @Override public char charAt(int index) {
         Checks.checkIndex(this, index);
         return builder.charAt(from + index);
+      }
+      @Override public int codePointAt(int index) {
+        Checks.checkIndex(this, index);
+        return builder.codePointAt(from + index);
       }
       @Override public CharSegment subSequence(int start, int end) {
         Checks.checkRange(this, start, end);
@@ -308,18 +378,57 @@ public interface CharSegment extends CharSequence {
    * Creates a new {@code CharSegment} for the specified {@code sequence} or returns {@link #EMPTY}
    * if the specified {@code sequence} is empty.
    *
-   * @throws NullPointerException if the specified {@code CharSequence} reference is {@code null}.
+   * @throws NullPointerException if a reference to the specified {@code sequence} is {@code null}.
    * @see #from(CharSequence, int, int)
    */
   static CharSegment from(final CharSequence sequence) {
-    return from(sequence, 0, sequence.length());
+    // check sequence type first
+    if (sequence instanceof CharSegment) {
+      return ((CharSegment) sequence);
+    }
+    if (sequence instanceof String) {
+      return from((String) sequence);
+    }
+    if (sequence instanceof StringBuilder) {
+      return from((StringBuilder) sequence);
+    }
+    // no luck
+    return sequence.length() == 0 ? EMPTY : new CharSegment() {
+      @Override public int length() {
+        return sequence.length();
+      }
+      @Override public char charAt(int index) {
+        return sequence.charAt(index);
+      }
+      @Override public int codePointAt(int index) {
+        final char high = sequence.charAt(index);
+        if (Character.isHighSurrogate(high) && ++index < sequence.length()) {
+          final char low = sequence.charAt(index);
+          if (Character.isLowSurrogate(low)) {
+            return Character.toCodePoint(high, low);
+          }
+        }
+        return high;
+      }
+      @Override public CharSegment subSequence(int start, int end) {
+        return start == 0 && end == sequence.length() ? this : from(sequence, start, end);
+      }
+      @Override public void copyTo(int start, int end, char[] target, int offset) {
+        while (start < end) {
+          target[offset++] = sequence.charAt(start++);
+        }
+      }
+      @Override public String toString() {
+        return sequence.toString();
+      }
+    };
   }
 
   /**
    * Creates a new {@code CharSegment} for the range {@code [from, sequence.length())} in the
    * specified {@code sequence} or returns {@link #EMPTY} if range is empty.
    *
-   * @throws NullPointerException if the specified {@code CharSequence} reference is {@code null}.
+   * @throws NullPointerException if a reference to the specified {@code sequence} is {@code null}.
    * @throws IndexOutOfBoundsException if the specified range is invalid.
    * @see #from(CharSequence, int, int)
    */
@@ -331,7 +440,7 @@ public interface CharSegment extends CharSequence {
    * Creates a new {@code CharSegment} for the range {@code [from, to)} in the specified
    * {@code sequence} or returns {@link #EMPTY} if range is empty.
    *
-   * @throws NullPointerException if the specified {@code CharSequence} reference is {@code null}.
+   * @throws NullPointerException if a reference to the specified {@code sequence} is {@code null}.
    * @throws IndexOutOfBoundsException if the specified range is invalid.
    */
   static CharSegment from(final CharSequence sequence, int from, int to) {
@@ -356,8 +465,19 @@ public interface CharSegment extends CharSequence {
         Checks.checkIndex(this, index);
         return sequence.charAt(from + index);
       }
+      @Override public int codePointAt(int index) {
+        Checks.checkIndex(this, index);
+        final char high = sequence.charAt(from + index);
+        if (Character.isHighSurrogate(high) && ++index < sequence.length()) {
+          final char low = sequence.charAt(from + index);
+          if (Character.isLowSurrogate(low)) {
+            return Character.toCodePoint(high, low);
+          }
+        }
+        return high;
+      }
       @Override public CharSegment subSequence(int start, int end) {
-        return start > 0 || end < length ? from(sequence, from + start, from + end) : this;
+        return start == 0 && end == length ? from(sequence, from + start, from + end) : this;
       }
       @Override public void copyTo(int start, int end, char[] target, int offset) {
         Checks.checkRange(this, start, end);

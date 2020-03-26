@@ -23,7 +23,7 @@ import org.foxlabs.common.exception.ThresholdReachedException;
  *
  * @author Fox Mulder
  */
-public class BigCharBuffer extends CharBuffer {
+public class PaginalCharBuffer extends CharBuffer {
 
   public static final int MAX_THRESHOLD = Integer.MAX_VALUE;
 
@@ -39,15 +39,15 @@ public class BigCharBuffer extends CharBuffer {
 
   private int length;
 
-  public BigCharBuffer() {
+  public PaginalCharBuffer() {
     this(MAX_THRESHOLD, MIN_DEPTH);
   }
 
-  public BigCharBuffer(int threshold) {
+  public PaginalCharBuffer(int threshold) {
     this(threshold, MIN_DEPTH);
   }
 
-  public BigCharBuffer(int threshold, int depth) {
+  public PaginalCharBuffer(int threshold, int depth) {
     super(threshold);
     // round depth to be a multiple of 32 and trim it to maximum possible
     this.depth = Math.min((((Checks.checkThat(depth, depth > 0) - 1) >>> 5) + 1) << 5, MAX_DEPTH);
@@ -107,11 +107,15 @@ public class BigCharBuffer extends CharBuffer {
     // calculate total number of required slots
     final int nslots = (nlength - 1) / depth + 1;
     if (nslots > buffer.length) {
-      // extend buffer for new slots as x2 required slots
-      final char[][] copy = new char[Math.min(nslots << 1, capacity)][];
-      System.arraycopy(buffer, 0, copy, 0, (length - 1) / depth + 1);
-      buffer = copy;
+      extendBuffer(nslots);
     }
+  }
+
+  private final void extendBuffer(int nslots) {
+    // extend buffer for new slots as x2 required slots
+    final char[][] copy = new char[Math.min(nslots << 1, capacity)][];
+    System.arraycopy(buffer, 0, copy, 0, (length - 1) / depth + 1);
+    buffer = copy;
   }
 
   private final char[] nextSlot() {
@@ -121,7 +125,12 @@ public class BigCharBuffer extends CharBuffer {
   }
 
   @Override
-  protected char getChar(int index) {
+  public char charAt(int index) {
+    return buffer[index / depth][index % depth];
+  }
+
+  @Override
+  public int codePointAt(int index) {
     return buffer[index / depth][index % depth];
   }
 
