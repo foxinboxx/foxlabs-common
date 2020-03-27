@@ -149,7 +149,8 @@ public final class LinearCharBuffer extends CharBuffer {
   }
 
   /**
-   * Appends the specified {@code ch} character to the buffer and increments the current length.
+   * Appends the specified {@code ch} character to the buffer contents and increments the current
+   * length.
    *
    * <p>If current capacity of the buffer is not enough then additional space will be automatically
    * allocated.</p>
@@ -167,16 +168,17 @@ public final class LinearCharBuffer extends CharBuffer {
         throw new ThresholdReachedException(this);
       }
       // double the buffer
-      extendBuffer(length + 2);
+      doubleBuffer(length + 2);
     }
+    // append character
     data[length++] = ch;
     return this;
   }
 
   /**
-   * Appends the specified {@code cp} character (Unicode code point) to the buffer and increases
-   * the current length by 1 or 2 depending on whether the specified character is in the Basic
-   * Multilingual Plane (BMP) or is it a supplementary character, respectively.
+   * Appends the specified {@code cp} character (Unicode code point) to the buffer contents and
+   * increases the current length by 1 or 2 depending on whether the specified character is in the
+   * Basic Multilingual Plane (BMP) or is it a supplementary character, respectively.
    *
    * <p>If current capacity of the buffer is not enough then additional space will be automatically
    * allocated. If the specified character is a supplementary character (i.e. 2 {@code char}s long)
@@ -204,7 +206,7 @@ public final class LinearCharBuffer extends CharBuffer {
         throw new ThresholdReachedException(this);
       }
       // double the buffer
-      extendBuffer(nlength);
+      doubleBuffer(nlength);
     }
     // append high and low surrogates
     data[length++] = Character.highSurrogate(cp);
@@ -212,12 +214,43 @@ public final class LinearCharBuffer extends CharBuffer {
     return this;
   }
 
+  /**
+   * Appends the specified {@code segment} of characters to the buffer contents and increases
+   * current length accordingly.
+   *
+   * <p>If current capacity of the buffer is not enough then additional space will be automatically
+   * allocated. If threshold of the buffer is exceeded during this operation then remaining number
+   * of characters (i.e. {@code threshold - length}) will be copied anyway.</p>
+   *
+   * @throws NullPointerException if the specified {@code segment} reference is {@code null}.
+   * @throws ThresholdReachedException if threshold of the buffer has been exceeded.
+   */
   @Override
   public CharBuffer append(CharSegment segment) {
-    final int count = ensureCapacity(segment.length());
-    segment.copyTo(0, count, data, length);
-    length += count;
-    return this;
+    int count = segment.length();
+    // fast current capacity check
+    if (data.length - count >= length) {
+      // current capacity is enough
+      segment.copyTo(0, count, data, length);
+      length += count;
+      return this;
+    }
+    // check threshold
+    if (threshold - count >= length) {
+      // threshold is not reached
+      // double the buffer
+      doubleBuffer(length + count);
+      segment.copyTo(0, count, data, length);
+      length += count;
+      return this;
+    }
+    // threshold exceeded
+    if (length < threshold) {
+      // copy remainder
+      segment.copyTo(0, threshold - length, data, length);
+      length = threshold;
+    }
+    throw new ThresholdReachedException(this);
   }
 
   @Override
@@ -249,7 +282,7 @@ public final class LinearCharBuffer extends CharBuffer {
     }
   }
 
-  private void extendBuffer(long nlength) {
+  private void doubleBuffer(long nlength) {
     final char[] copy = new char[(int) Math.min(nlength << 1, threshold)];
     System.arraycopy(data, 0, copy, 0, data.length);
     data = copy;

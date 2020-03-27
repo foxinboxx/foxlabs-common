@@ -40,9 +40,8 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
   protected final int threshold;
 
   /**
-   * Constructs a new {@code CharBuffer} with the specified threshold.
+   * Constructs a new {@code CharBuffer} with the specified {@code threshold}.
    *
-   * @param threshold The buffer threshold.
    * @throws IllegalArgumentException if the specified threshold is negative.
    */
   protected CharBuffer(int threshold) {
@@ -51,16 +50,9 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
 
   // ===== BASIC OPERATIONS =======================================================================
 
-  @Override
-  public CharBuffer append(char ch) {
-    throw new UnsupportedOperationException();
-  }
-
   /**
    * Returns the current length of the buffer (i.e. the current number of characters that have
    * already been appended to the buffer).
-   *
-   * @return The current length of the buffer.
    */
   @Override
   public abstract int length();
@@ -68,8 +60,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
   /**
    * Returns the threshold of the buffer (i.e. the maximum number of characters that the buffer can
    * contain).
-   *
-   * @return The threshold of the buffer.
    */
   public final int threshold() {
     return threshold;
@@ -78,29 +68,165 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
   /**
    * Returns the remaining number of characters that can be appended to the buffer until the
    * {@link ThresholdReachedException} will be thrown.
-   *
-   * @return The remaining number of characters that can be appended to the buffer.
    */
   public final int remaining() {
     return threshold - length();
   }
 
   /**
-   * Returns a sequence that is a copy of the buffer contents in the specified range (i.e.
-   * {@code substring(start, end)}.
+   * Returns a character at the specified {@code index} in the buffer contents.
    *
-   * <p>The start and end positions are zero-based and must not be greater than {@link #length()},
-   * the start position must not be greater than the end position (i.e.
-   * {@code 0 <= start <= end <= length()}).</p>
+   * <p>The {@code index} is zero-based and must be less than {@link #length()} (i.e.
+   * {@code 0 <= index < length()}).</p>
    *
-   * @param start The start position in the buffer contents.
-   * @param end The end position in the buffer contents.
-   * @return A sequence that is a copy of the buffer contents in the specified range.
+   * @throws IndexOutOfBoundsException if the specified {@code index} is out of range.
+   */
+  @Override
+  public abstract char charAt(int index);
+
+  /**
+   * Returns a character (Unicode code point) at the specified {@code index} in the buffer contents.
+   *
+   * <p>The {@code index} is zero-based and must be less than {@link #length()} (i.e.
+   * {@code 0 <= index < length()}).</p>
+   *
+   * @throws IndexOutOfBoundsException if the specified {@code index} is out of range.
+   */
+  @Override
+  public abstract int codePointAt(int index);
+
+  /**
+   * Appends the specified {@code ch} character to the buffer contents and increments the current
+   * length.
+   *
+   * <p>If current capacity of the buffer is not enough then additional space will be automatically
+   * allocated.</p>
+   *
+   * @throws ThresholdReachedException if threshold of the buffer is exceeded.
+   * @see #append(int)
+   */
+  @Override
+  public abstract CharBuffer append(char ch);
+
+  /**
+   * Appends the specified {@code cp} character (Unicode code point) to the buffer contents and
+   * increases the current length by 1 or 2 depending on whether the specified character is in the
+   * Basic Multilingual Plane (BMP) or is it a supplementary character, respectively.
+   *
+   * <p>If current capacity of the buffer is not enough then additional space will be automatically
+   * allocated. If the specified character is a supplementary character (i.e. 2 {@code char}s long)
+   * and the {@link #remaining()} number of characters is 1 then none will be appended and
+   * {@link ThresholdReachedException} will be thrown.</p>
+   *
+   * <p>Note that this method does not validate the specified character to be a valid Unicode code
+   * point.</p>
+   *
+   * @throws ThresholdReachedException if threshold of the buffer has been reached.
+   * @see #append(char)
+   */
+  public CharBuffer append(int cp) {
+    // check for BMP character
+    if (Character.isBmpCodePoint(cp)) {
+      return append((char) cp);
+    }
+    // avoid partial copy
+    if (ensureCapacity(2) < 2) {
+      throw new ThresholdReachedException(this);
+    }
+    // append supplementary character
+    return append(Character.highSurrogate(cp)).append(Character.lowSurrogate(cp));
+  }
+
+  /**
+   * Appends all characters of the specified array to the buffer and increases the current length
+   * accordingly.
+   *
+   * <p>If threshold of the buffer is exceeded during this operation then the first
+   * {@link #remaining()} characters will be appended and the {@code ThresholdReachedException}
+   * will be thrown.</p>
+   *
+   * @param array The array of characters to append.
+   * @return A reference to this buffer.
+   * @throws NullPointerException if the specified array of characters is {@code null}.
+   * @throws ThresholdReachedException if threshold of the buffer has been reached.
+   * @see #append(CharSegment)
+   */
+  public CharBuffer append(char... array) {
+    return append(CharSegment.from(array));
+  }
+
+  /**
+   * Appends all characters of the specified sequence to the buffer and increases the current
+   * length accordingly.
+   *
+   * <p>If threshold of the buffer is exceeded during this operation then the first
+   * {@link #remaining()} characters will be appended and the {@code ThresholdReachedException}
+   * will be thrown.</p>
+   *
+   * @param sequence The sequence of characters to append.
+   * @return A reference to this buffer.
+   * @throws NullPointerException if the specified sequence of characters is {@code null}.
+   * @throws ThresholdReachedException if threshold of the buffer has been reached.
+   * @see #append(CharSegment)
+   */
+  @Override
+  public CharBuffer append(CharSequence sequence) {
+    return append(CharSegment.from(sequence));
+  }
+
+  /**
+   * Appends characters of the specified sequence in the specified range to the buffer and
+   * increases the current length accordingly.
+   *
+   * <p>The start and end positions are zero-based and must not be greater than length of the
+   * specified sequence, the start position must not be greater than the end position (i.e.
+   * {@code 0 <= start <= end <= sequence.length()}). If threshold of the buffer is exceeded during
+   * this operation then the first {@link #remaining()} characters will be appended and the
+   * {@code ThresholdReachedException} will be thrown.</p>
+   *
+   * @param sequence The sequence of characters to append.
+   * @param start The start position in the specified sequence.
+   * @param end The end position in the specified sequence.
+   * @return A reference to this buffer.
+   * @throws NullPointerException if the specified sequence of characters is {@code null}.
    * @throws IndexOutOfBoundsException if the specified start or end position is out of range.
+   * @throws ThresholdReachedException if threshold of the buffer has been reached.
+   * @see #append(CharSegment)
+   */
+  @Override
+  public CharBuffer append(CharSequence sequence, int start, int end) {
+    return append(CharSegment.from(sequence, start, end));
+  }
+
+  /**
+   * Does an actual appending of the characters of the specified {@link CharSegment} sequence in
+   * the specified range to the buffer.
+   *
+   * <p>Subclasses should not worry about the correctness of the arguments provided since they
+   * should already be verified by the {@code public} methods. Note that there is no guarantee that
+   * the {@link #ensureCapacity(int)} method was called right before calling this method, so
+   * subclasses must do that themselves.</p>
+   *
+   * @param segment The {@link CharSegment} to append.
+   * @return A reference to this buffer.
+   * @throws NullPointerException if a reference to the specified {@code segment} is {@code null}.
+   * @throws ThresholdReachedException if threshold of the buffer has been reached.
+   */
+  public abstract CharBuffer append(CharSegment segment);
+
+  /**
+   * Returns a {@code CharSegment} that is a copy of the buffer contents in the specified range
+   * (i.e. {@code CharSegment.from(substring(start, end))}.
+   *
+   * <p>The {@code start} and {@code end} positions are zero-based and must not be greater than
+   * {@link #length()}, the {@code start} position must not be greater than the {@code end}
+   * position (i.e. {@code 0 <= start <= end <= length()}).</p>
+   *
+   * @throws IndexOutOfBoundsException if the specified range is invalid.
    * @see #substring(int, int)
    */
   @Override
-  public final CharSegment subSequence(int start, int end) {
+  public CharSegment subSequence(int start, int end) {
     return CharSegment.from(substring(start, end));
   }
 
@@ -116,7 +242,7 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @throws IndexOutOfBoundsException if the specified start position is out of range.
    * @see #substring(int, int)
    */
-  public final String substring(int start) {
+  public String substring(int start) {
     return substring(start, length());
   }
 
@@ -133,7 +259,7 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @throws IndexOutOfBoundsException if the specified start or end position is out of range.
    * @see #toString(int, int)
    */
-  public final String substring(int start, int end) {
+  public String substring(int start, int end) {
     Checks.checkRange(this, start, end);
     return start == end ? Strings.EMPTY : toString(start, end);
   }
@@ -159,7 +285,7 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #copyChars(int, int, char[], int)
    */
   @Override
-  public final void copyTo(int start, int end, char[] target, int offset) {
+  public void copyTo(int start, int end, char[] target, int offset) {
     Checks.checkRange(this, start, end);
     Checks.checkRange(target, offset, offset + end - start);
     if (start < end) {
@@ -217,112 +343,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
   protected abstract void extendCapacity(int nlength);
 
   /**
-   * Appends the specified character (Unicode code point) to the buffer and increases the current
-   * length by 1 or 2 depending on whether the specified character is in the Basic Multilingual
-   * Plane (BMP) or is it a supplementary character, respectively.
-   *
-   * <p>If the specified character is a supplementary character (i.e. 2 {@code char}s long) and the
-   * {@link #remaining()} number of characters is 1 then none will be appended and
-   * {@link ThresholdReachedException} will be thrown.
-   *
-   * <p>Note that this method does not validate the specified character to be a valid Unicode code
-   * point.</p>
-   *
-   * @param cp The character (Unicode code point) to append.
-   * @return A reference to this buffer.
-   * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   * @see Character#isBmpCodePoint(int)
-   * @see #append(char)
-   */
-  public CharBuffer append(int cp) {
-    if (Character.isBmpCodePoint(cp)) {
-      return append((char) cp);
-    } else if (ensureCapacity(2) < 2) {
-      throw new ThresholdReachedException(this);
-    } else {
-      append(Character.highSurrogate(cp));
-      return append(Character.lowSurrogate(cp));
-    }
-  }
-
-  /**
-   * Appends all characters of the specified array to the buffer and increases the current length
-   * accordingly.
-   *
-   * <p>If threshold of the buffer is exceeded during this operation then the first
-   * {@link #remaining()} characters will be appended and the {@code ThresholdReachedException}
-   * will be thrown.</p>
-   *
-   * @param array The array of characters to append.
-   * @return A reference to this buffer.
-   * @throws NullPointerException if the specified array of characters is {@code null}.
-   * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   * @see #append(CharSegment)
-   */
-  public final CharBuffer append(char... array) {
-    return append(CharSegment.from(array));
-  }
-
-  /**
-   * Appends all characters of the specified sequence to the buffer and increases the current
-   * length accordingly.
-   *
-   * <p>If threshold of the buffer is exceeded during this operation then the first
-   * {@link #remaining()} characters will be appended and the {@code ThresholdReachedException}
-   * will be thrown.</p>
-   *
-   * @param sequence The sequence of characters to append.
-   * @return A reference to this buffer.
-   * @throws NullPointerException if the specified sequence of characters is {@code null}.
-   * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   * @see #append(CharSegment)
-   */
-  @Override
-  public final CharBuffer append(CharSequence sequence) {
-    return append(CharSegment.from(sequence));
-  }
-
-  /**
-   * Appends characters of the specified sequence in the specified range to the buffer and
-   * increases the current length accordingly.
-   *
-   * <p>The start and end positions are zero-based and must not be greater than length of the
-   * specified sequence, the start position must not be greater than the end position (i.e.
-   * {@code 0 <= start <= end <= sequence.length()}). If threshold of the buffer is exceeded during
-   * this operation then the first {@link #remaining()} characters will be appended and the
-   * {@code ThresholdReachedException} will be thrown.</p>
-   *
-   * @param sequence The sequence of characters to append.
-   * @param start The start position in the specified sequence.
-   * @param end The end position in the specified sequence.
-   * @return A reference to this buffer.
-   * @throws NullPointerException if the specified sequence of characters is {@code null}.
-   * @throws IndexOutOfBoundsException if the specified start or end position is out of range.
-   * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   * @see #append(CharSegment)
-   */
-  @Override
-  public final CharBuffer append(CharSequence sequence, int start, int end) {
-    return append(CharSegment.from(sequence, start, end));
-  }
-
-  /**
-   * Does an actual appending of the characters of the specified {@link CharSegment} sequence in
-   * the specified range to the buffer.
-   *
-   * <p>Subclasses should not worry about the correctness of the arguments provided since they
-   * should already be verified by the {@code public} methods. Note that there is no guarantee that
-   * the {@link #ensureCapacity(int)} method was called right before calling this method, so
-   * subclasses must do that themselves.</p>
-   *
-   * @param segment The {@link CharSegment} to append.
-   * @return A reference to this buffer.
-   * @throws NullPointerException if a reference to the specified {@code segment} is {@code null}.
-   * @throws ThresholdReachedException if threshold of the buffer has been reached.
-   */
-  public abstract CharBuffer append(CharSegment segment);
-
-  /**
    * Resets the buffer length to 0 but does not release allocated memory. This method is useful
    * when the same buffer instance can be reused multiple times.
    *
@@ -334,7 +354,7 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * Clears the buffer and releases allocated memory. This method is useful when the same buffer
    * instance can be reused multiple times in a long term (for example, in an object pool).
    *
-   * @see #reset()
+   * @see #erase()
    */
   public abstract void clear();
 
@@ -477,14 +497,22 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
       // special case - sign inversion does not work for -2147483648
       return append(MIN_INT_DIGITS);
     }
-    final int sign = value >>> 31;
-    int v = value < 0 ? -value : value;
-    int n = getDecCapacity0(v);
-    ensureCapacity(sign + n--);
-    for (appendSign(sign); n > 0; v %= INT_TENS[n--]) {
-      append(DIGITS[v / INT_TENS[n]]);
+    // append minus sign if value is negative
+    if (value >>> 31 != 0) {
+      append('-');
+      value = -value;
     }
-    return append(DIGITS[v]);
+    // fast check for values < 10
+    if (value >= 10) {
+      int n = getDecCapacity0(value) - 1;
+      do {
+        final int divider = INT_TENS[n--];
+        append(DIGITS[value / divider]);
+        value %= divider;
+      } while (n > 0);
+    }
+    // append last digit
+    return append(DIGITS[value]);
   }
 
   /**
@@ -540,14 +568,22 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
       // special case - sign inversion does not work for -9223372036854775808
       return append(MIN_LONG_DIGITS);
     }
-    final int sign = (int) (value >>> 63);
-    long v = value < 0L ? -value : value;
-    int n = getDecCapacity0(v);
-    ensureCapacity(sign + n--);
-    for (appendSign(sign); n > 0; v %= LONG_TENS[n--]) {
-      append(DIGITS[(int) (v / LONG_TENS[n])]);
+    // append minus sign if value is negative
+    if (value >>> 63 != 0) {
+      append('-');
+      value = -value;
     }
-    return append(DIGITS[(int) v]);
+    // fast check for values < 10
+    if (value >= 10L) {
+      int n = getDecCapacity0(value) - 1;
+      do {
+        final long divider = LONG_TENS[n--];
+        append(DIGITS[(int) (value / divider)]);
+        value %= divider;
+      } while (n > 0);
+    }
+    // append last digit
+    return append(DIGITS[(int) value]);
   }
 
   /**
@@ -624,17 +660,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
     return append(Double.toString(value));
   }
 
-  /**
-   * Appends the {@code '-'} sign to the buffer if the specified sign flag is not {@code 0}.
-   *
-   * @param sign The sign flag ({@code 0} for zero or positive number; negative number otherwise).
-   */
-  private final void appendSign(int sign) {
-    if (sign != 0) {
-      append('-');
-    }
-  }
-
   // Hexadecimal representation
 
   /**
@@ -648,7 +673,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #appendHexStripLeadingZeros(byte)
    */
   public final CharBuffer appendHex(byte value) {
-    ensureCapacity(2);
     // @formatter:off
     append(DIGITS[value >>> 4 & 0x0f]);
     append(DIGITS[value >>> 0 & 0x0f]);
@@ -670,7 +694,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
   public final CharBuffer appendHexStripLeadingZeros(byte value) {
     // 4 or less bits long?
     if (value >>> 4 == 0) {
-      ensureCapacity(1);
       return append(DIGITS[value]);
     }
     // from 5 to 8 bits long
@@ -701,7 +724,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #appendHexStripLeadingZeros(short)
    */
   public final CharBuffer appendHex(short value) {
-    ensureCapacity(4);
     // @formatter:off
     append(DIGITS[value >>> 12 & 0x0f]);
     append(DIGITS[value >>>  8 & 0x0f]);
@@ -730,7 +752,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
     // 12 or less bits long?
     if (value >>> 12 == 0) {
       // from 9 to 12 bits long
-      ensureCapacity(3);
       append(DIGITS[value >>> 8 & 0x0f]);
       append(DIGITS[value >>> 4 & 0x0f]);
       append(DIGITS[value >>> 0 & 0x0f]);
@@ -767,7 +788,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #appendHexStripLeadingZeros(int)
    */
   public final CharBuffer appendHex(int value) {
-    ensureCapacity(8);
     // @formatter:off
     append(DIGITS[value >>> 28 & 0x0f]);
     append(DIGITS[value >>> 24 & 0x0f]);
@@ -797,11 +817,10 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
     if (value >>> 16 == 0) {
       return appendHexStripLeadingZeros((short) value);
     }
-    int n = getHexCapacity(value);
+    int n = getHexCapacity(value) - 1;
     // 28 or less bits long?
-    if (n < 8) {
+    if (n < 7) {
       // from 17 to 28 bits long
-      ensureCapacity(n--);
       for (n <<= 2; n >= 0; n -= 4) {
         append(DIGITS[value >>> n & 0x0f]);
       }
@@ -838,7 +857,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #appendHexStripLeadingZeros(long)
    */
   public final CharBuffer appendHex(long value) {
-    ensureCapacity(16);
     // @formatter:off
     append(DIGITS[(int) (value >>> 60 & 0x0fL)]);
     append(DIGITS[(int) (value >>> 56 & 0x0fL)]);
@@ -876,11 +894,10 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
     if (value >>> 32 == 0) {
       return appendHexStripLeadingZeros((int) value);
     }
-    int n = getHexCapacity(value);
+    int n = getHexCapacity(value) - 1;
     // 60 or less bits long?
-    if (n < 16) {
+    if (n < 15) {
       // from 33 to 60 bits long
-      ensureCapacity(n--);
       for (n <<= 2; n >= 0; n -= 4) {
         append(DIGITS[(int) (value >>> n & 0x0fL)]);
       }
@@ -919,7 +936,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #appendOctStripLeadingZeros(byte)
    */
   public final CharBuffer appendOct(byte value) {
-    ensureCapacity(3);
     // @formatter:off
     append(DIGITS[value >>> 6 & 0x03]);
     append(DIGITS[value >>> 3 & 0x07]);
@@ -942,13 +958,11 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
   public final CharBuffer appendOctStripLeadingZeros(byte value) {
     // 3 or less bits long?
     if (value >>> 3 == 0) {
-      ensureCapacity(1);
       return append(DIGITS[value]);
     }
     // 6 or less bits long?
     if (value >>> 6 == 0) {
       // from 4 to 6 bits long
-      ensureCapacity(2);
       append(DIGITS[value >>> 3 & 0x07]);
       append(DIGITS[value >>> 0 & 0x07]);
       return this;
@@ -981,7 +995,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #appendOctStripLeadingZeros(short)
    */
   public final CharBuffer appendOct(short value) {
-    ensureCapacity(6);
     // @formatter:off
     append(DIGITS[value >>> 15 & 0x01]);
     append(DIGITS[value >>> 12 & 0x07]);
@@ -1009,11 +1022,10 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
     if (value >>> 8 == 0) {
       return appendOctStripLeadingZeros((byte) value);
     }
-    int n = getOctCapacity(value);
+    int n = getOctCapacity(value) - 1;
     // 15 or less bits long?
-    if (n < 6) {
+    if (n < 5) {
       // from 9 to 15 bits long
-      ensureCapacity(n--);
       for (n *= 3; n >= 0; n -= 3) {
         append(DIGITS[value >>> n & 0x07]);
       }
@@ -1053,7 +1065,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #appendOctStripLeadingZeros(int)
    */
   public final CharBuffer appendOct(int value) {
-    ensureCapacity(11);
     // @formatter:off
     append(DIGITS[value >>> 30 & 0x03]);
     append(DIGITS[value >>> 27 & 0x07]);
@@ -1086,11 +1097,10 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
     if (value >>> 16 == 0) {
       return appendOctStripLeadingZeros((short) value);
     }
-    int n = getOctCapacity(value);
+    int n = getOctCapacity(value) - 1;
     // 30 or less bits long?
-    if (n < 11) {
+    if (n < 10) {
       // from 17 to 30 bits long
-      ensureCapacity(n--);
       for (n *= 3; n >= 0; n -= 3) {
         append(DIGITS[value >>> n & 0x07]);
       }
@@ -1130,7 +1140,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #appendOctStripLeadingZeros(long)
    */
   public final CharBuffer appendOct(long value) {
-    ensureCapacity(22);
     // @formatter:off
     append(DIGITS[(int) (value >>> 63 & 0x01L)]);
     append(DIGITS[(int) (value >>> 60 & 0x07L)]);
@@ -1174,11 +1183,10 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
     if (value >>> 32 == 0L) {
       return appendOctStripLeadingZeros((int) value);
     }
-    int n = getOctCapacity(value);
+    int n = getOctCapacity(value) - 1;
     // 63 or less bits long?
-    if (n < 22) {
+    if (n < 21) {
       // from 33 to 63 bits long
-      ensureCapacity(n--);
       for (n *= 3; n >= 0; n -= 3) {
         append(DIGITS[(int) (value >>> n & 0x07L)]);
       }
@@ -1226,7 +1234,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #appendBinStripLeadingZeros(byte)
    */
   public final CharBuffer appendBin(byte value) {
-    ensureCapacity(8);
     // @formatter:off
     append(DIGITS[value >>> 7 & 0x01]);
     append(DIGITS[value >>> 6 & 0x01]);
@@ -1252,9 +1259,7 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #appendBin(byte)
    */
   public final CharBuffer appendBinStripLeadingZeros(byte value) {
-    int n = getBinCapacity(value);
-    ensureCapacity(n--);
-    for (; n > 0; n--) {
+    for (int n = getBinCapacity(value) - 1; n > 0; n--) {
       append(DIGITS[value >>> n & 0x01]);
     }
     return append(DIGITS[value & 0x01]);
@@ -1293,7 +1298,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #appendBinStripLeadingZeros(short)
    */
   public final CharBuffer appendBin(short value) {
-    ensureCapacity(16);
     // @formatter:off
     append(DIGITS[value >>> 15 & 0x01]);
     append(DIGITS[value >>> 14 & 0x01]);
@@ -1327,9 +1331,7 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #appendBin(short)
    */
   public final CharBuffer appendBinStripLeadingZeros(short value) {
-    int n = getBinCapacity(value);
-    ensureCapacity(n--);
-    for (; n > 0; n--) {
+    for (int n = getBinCapacity(value) - 1; n > 0; n--) {
       append(DIGITS[value >>> n & 0x01]);
     }
     return append(DIGITS[value & 0x01]);
@@ -1362,7 +1364,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #appendBinStripLeadingZeros(int)
    */
   public final CharBuffer appendBin(int value) {
-    ensureCapacity(32);
     // @formatter:off
     append(DIGITS[value >>> 31 & 0x01]);
     append(DIGITS[value >>> 30 & 0x01]);
@@ -1412,9 +1413,7 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #appendBin(int)
    */
   public final CharBuffer appendBinStripLeadingZeros(int value) {
-    int n = getBinCapacity(value);
-    ensureCapacity(n--);
-    for (; n > 0; n--) {
+    for (int n = getBinCapacity(value) - 1; n > 0; n--) {
       append(DIGITS[value >>> n & 0x01]);
     }
     return append(DIGITS[value & 0x01]);
@@ -1447,7 +1446,6 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #appendBinStripLeadingZeros(long)
    */
   public final CharBuffer appendBin(long value) {
-    ensureCapacity(64);
     // @formatter:off
     append(DIGITS[(int) (value >>> 63 & 0x01L)]);
     append(DIGITS[(int) (value >>> 62 & 0x01L)]);
@@ -1529,9 +1527,7 @@ public abstract class CharBuffer implements Appendable, CharSegment, ToString {
    * @see #appendBin(long)
    */
   public final CharBuffer appendBinStripLeadingZeros(long value) {
-    int n = getBinCapacity(value);
-    ensureCapacity(n--);
-    for (; n > 0; n--) {
+    for (int n = getBinCapacity(value) - 1; n > 0; n--) {
       append(DIGITS[(int) (value >>> n & 0x01L)]);
     }
     return append(DIGITS[(int) (value & 0x01L)]);
